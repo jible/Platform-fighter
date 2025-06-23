@@ -1,0 +1,53 @@
+[gd_scene load_steps=10 format=3 uid="uid://e6cxo5jrheb1"]
+
+[ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://base_player.gd" id="1_vnujj"]
+[ext_resource type="Texture2D" uid="uid://dtk1g11hitpmo" path="res://assets/images/icon.svg" id="2_aglvc"]
+[ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://prefabs/components/player/mobility_manager.gd" id="3_2qyha"]
+[ext_resource type="Script" uid="uid://sukry204wfhf" path="res://prefabs/components/player/character_state_machine.gd" id="4_om1db"]
+[ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://prefabs/idle.gd" id="5_bcibw"]
+[ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://prefabs/walk.gd" id="6_bcibw"]
+[ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://prefabs/jump.gd" id="7_om1db"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2qyha"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_aglvc")
+}],
+"loop": true,
+"name": &"placeholder",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
+
+[node name="BasePlayer" type="CharacterBody2D"]
+script = ExtResource("1_vnujj")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_2qyha")
+animation = &"placeholder"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vnujj")
+
+[node name="MobilityManager" type="Node" parent="." node_paths=PackedStringArray("character_body")]
+script = ExtResource("3_2qyha")
+character_body = NodePath("..")
+metadata/_custom_type_script = "uid://dm0xti0j6gcur"
+
+[node name="TagStateMachine" type="Node" parent="."]
+script = ExtResource("4_om1db")
+starting_state = "Idle"
+metadata/_custom_type_script = "uid://sukry204wfhf"
+
+[node name="Idle" type="Node" parent="TagStateMachine"]
+script = ExtResource("5_bcibw")
+
+[node name="Walk" type="Node" parent="TagStateMachine"]
+script = ExtResource("6_bcibw")
+
+[node name="Jump" type="Node" parent="TagStateMachine"]
+script = ExtResource("7_om1db")
+
+[connection signal="landed" from="." to="MobilityManager" method="_on_base_player_landed"]
