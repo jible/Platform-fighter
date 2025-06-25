@@ -21,8 +21,9 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
 
-[node name="BasePlayer" type="CharacterBody2D"]
+[node name="BasePlayer" type="CharacterBody2D" node_paths=PackedStringArray("state_machine")]
 script = ExtResource("1_vnujj")
+state_machine = NodePath("StateMachine")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_2qyha")
@@ -36,18 +37,18 @@ script = ExtResource("3_2qyha")
 character_body = NodePath("..")
 metadata/_custom_type_script = "uid://dm0xti0j6gcur"
 
-[node name="TagStateMachine" type="Node" parent="."]
+[node name="StateMachine" type="Node" parent="."]
 script = ExtResource("4_om1db")
 starting_state = "Idle"
 metadata/_custom_type_script = "uid://sukry204wfhf"
 
-[node name="Idle" type="Node" parent="TagStateMachine"]
+[node name="Idle" type="Node" parent="StateMachine"]
 script = ExtResource("5_bcibw")
 
-[node name="Walk" type="Node" parent="TagStateMachine"]
+[node name="Walk" type="Node" parent="StateMachine"]
 script = ExtResource("6_bcibw")
 
-[node name="Jump" type="Node" parent="TagStateMachine"]
+[node name="Jump" type="Node" parent="StateMachine"]
 script = ExtResource("7_om1db")
 
 [connection signal="landed" from="." to="MobilityManager" method="_on_base_player_landed"]

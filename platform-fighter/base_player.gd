@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 var prev_grounded: bool = false
-@export var state_machine: StateMachine
+@export var state_machine: CharacterStateMachine
 signal landed
 
 func _physics_process(_delta):

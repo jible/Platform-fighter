@@ -7,8 +7,9 @@ extends Node
 var states: Dictionary[String, CharacterState] = {}
 var current_state_name: String
 var current_state_node = null
+var locked:bool = false
 
-var condition_keys: Dictionary[String,String] = {}
+var auto_enterable_states: Array[CharacterState] = []
 
 signal state_changed
 
@@ -18,8 +19,13 @@ func _ready():
 	change_state(starting_state)
 
 func _physics_process(delta):
+	
 	update_state(delta)
-
+	if !locked:
+		for state in auto_enterable_states:
+			if state.condition():
+				change_state(state.name)
+				break
 
 func change_state(state_name: String):
 	# Throw error if entering invalid state
@@ -35,31 +41,24 @@ func change_state(state_name: String):
 	emit_signal("state_changed", current_state_node)
 	enter_state(current_state_node)
 
-# When a signal is received, call construct a key and call this function with that key
-func call_key(key):
-	var reaction_state = condition_keys.get(key)
-	if reaction_state:
-		change_state(reaction_state)
-
 func update_state(delta):
 	current_state_node.update_state(delta)
-	pass
 	
 func enter_state(new_state):
 	# Create dictionary of signal keys that correspond to the state to swap to
-	condition_keys = {}
-	for state_name in states:
-		var state = states[state_name]
+	auto_enterable_states = []
+	for state in states.values():
+		if state == new_state:
+			continue
 		for enterable_state_tag in CharacterState.tag_map[new_state.tag]:
 			if state.tag == enterable_state_tag:
-				for key in state.condition_keys:
-					condition_keys[key] = state_name
+				auto_enterable_states.append(state)
 	# Trigger the newly entered state
 	new_state.enter_state()
 	new_state.is_active = true
 
 func exit_state(old_state):
-	condition_keys = {}
+	auto_enterable_states = []
 	
 	old_state.exit_state()
 	old_state.is_active = false
