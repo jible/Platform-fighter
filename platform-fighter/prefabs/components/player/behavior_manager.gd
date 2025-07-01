@@ -1,27 +1,21 @@
-class_name PlayerBehaviorManager
+class_name CharacterBehaviorManager
 extends Node
 
-var all_behaviors: Array[PlayerBehavior]
-var active_behaviors: Array[PlayerBehavior]
-var character: CharacterBody2D
+var all_behaviors: Array[CharacterBehavior]
+var active_behaviors: Array[CharacterBehavior]
+@export var character: CharacterBody2D
 @export var state_machine: CharacterStateMachine
 
-# TODO 
-# Make signal for changing state lock-priority
-# Connect that signal and state change signal to this and call get active behaviors on those signals
-# Potentially remove tags now that the behavior system is in place. (Just list states (or their names) that apply for behaviors instead of tags)
-# Decide how much you put into a base character class if you make one
-# Remove condition func from character states and state base class 
 
 func _ready():
 	for child in get_children():
 		all_behaviors.append(child)
-
+	get_active_behaviors()
 
 func get_active_behaviors():
 	active_behaviors.clear()
 	for behavior in all_behaviors:
-		if behavior.priority >= character.lock_level and state_machine.current_state_node.tag in behavior.valid_tags:
+		if behavior.priority >= character.lock_level and state_machine.current_state_name in behavior.valid_states:
 			active_behaviors.append(behavior)
 
 
@@ -30,3 +24,10 @@ func _physics_process(_delta):
 		if behavior.condition():
 			behavior.trigger()
 			return
+
+
+func _on_state_machine_state_changed(_node):
+	get_active_behaviors()
+
+func _on_base_player_lock_level_changed(_lock_level):
+	get_active_behaviors()

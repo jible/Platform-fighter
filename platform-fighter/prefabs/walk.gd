@@ -1,7 +1,5 @@
 extends CharacterState
 
-func condition():
-	return Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")
 
 func enter_state():
 	pass

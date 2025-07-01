@@ -11,7 +11,7 @@ var current_state_node = null
 var locked:bool = false
 
 
-signal state_changed
+signal state_changed(new_state_node: CharacterState)
 
 func _ready():
 	for child in get_children():
