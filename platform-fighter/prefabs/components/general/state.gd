@@ -11,7 +11,7 @@ func _ready():
 func enter_state():
 	pass
 	
-func update_state(delta:float):
+func update_state(_delta:float):
 	pass
 	
 func exit_state():

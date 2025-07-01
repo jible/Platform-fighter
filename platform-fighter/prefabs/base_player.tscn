@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=11 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://base_player.gd" id="1_vnujj"]
 [ext_resource type="Texture2D" uid="uid://dtk1g11hitpmo" path="res://assets/images/icon.svg" id="2_aglvc"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://prefabs/idle.gd" id="5_bcibw"]
 [ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://prefabs/walk.gd" id="6_bcibw"]
 [ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://prefabs/jump.gd" id="7_om1db"]
+[ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://prefabs/components/player/behavior_manager.gd" id="8_a1fmy"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_2qyha"]
 animations = [{
@@ -21,9 +22,10 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
 
-[node name="BasePlayer" type="CharacterBody2D" node_paths=PackedStringArray("state_machine")]
+[node name="BasePlayer" type="CharacterBody2D" node_paths=PackedStringArray("state_machine", "mobility_manager")]
 script = ExtResource("1_vnujj")
 state_machine = NodePath("StateMachine")
+mobility_manager = NodePath("MobilityManager")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_2qyha")
@@ -47,8 +49,13 @@ script = ExtResource("5_bcibw")
 
 [node name="Walk" type="Node" parent="StateMachine"]
 script = ExtResource("6_bcibw")
+tag = 1
 
 [node name="Jump" type="Node" parent="StateMachine"]
 script = ExtResource("7_om1db")
+tag = 3
+
+[node name="BehaviorManager" type="Node" parent="."]
+script = ExtResource("8_a1fmy")
 
 [connection signal="landed" from="." to="MobilityManager" method="_on_base_player_landed"]

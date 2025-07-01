@@ -4,12 +4,12 @@ extends Node
 # Inspired by https://github.com/jible/capstone/blob/main/scripts/characters/state_machine.gd
 @export var starting_state: String = ""
 
+
 var states: Dictionary[String, CharacterState] = {}
 var current_state_name: String
 var current_state_node = null
 var locked:bool = false
 
-var auto_enterable_states: Array[CharacterState] = []
 
 signal state_changed
 
@@ -19,13 +19,8 @@ func _ready():
 	change_state(starting_state)
 
 func _physics_process(delta):
-	
+	#print(current_state_name)
 	update_state(delta)
-	if !locked:
-		for state in auto_enterable_states:
-			if state.condition():
-				change_state(state.name)
-				break
 
 func change_state(state_name: String):
 	# Throw error if entering invalid state
@@ -45,20 +40,10 @@ func update_state(delta):
 	current_state_node.update_state(delta)
 	
 func enter_state(new_state):
-	# Create dictionary of signal keys that correspond to the state to swap to
-	auto_enterable_states = []
-	for state in states.values():
-		if state == new_state:
-			continue
-		for enterable_state_tag in CharacterState.tag_map[new_state.tag]:
-			if state.tag == enterable_state_tag:
-				auto_enterable_states.append(state)
 	# Trigger the newly entered state
 	new_state.enter_state()
 	new_state.is_active = true
 
 func exit_state(old_state):
-	auto_enterable_states = []
-	
 	old_state.exit_state()
 	old_state.is_active = false

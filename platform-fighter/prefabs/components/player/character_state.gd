@@ -12,23 +12,11 @@ enum TAGS {
 	HURT
 }
 
-
-# The map that tells what type of state each state type can enter
-static var tag_map = {
-	TAGS.IDLE: [
-		TAGS.RUN,
-		TAGS.JUMP,
-		TAGS.FALL,
-		TAGS.ATTACK,
-		TAGS.BLOCK,
-	],
-	TAGS.RUN: [
-		TAGS.IDLE,
-		TAGS.FALL,
-		TAGS.JUMP,
-		TAGS.ATTACK,
-		TAGS.BLOCK
-	]
+enum LockLevel {
+	FREE,
+	ACTION_CANCELABLE,
+	HURT_CANCELABLE,
+	FULL_LOCK,
 }
 
 @export var tag: TAGS
