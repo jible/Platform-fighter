@@ -1,16 +1,17 @@
-[gd_scene load_steps=14 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=15 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://base_player.gd" id="1_vnujj"]
 [ext_resource type="Texture2D" uid="uid://dtk1g11hitpmo" path="res://assets/images/icon.svg" id="2_aglvc"]
 [ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://prefabs/components/player/mobility_manager.gd" id="3_2qyha"]
+[ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://prefabs/components/player/animation_manager.gd" id="3_o2sve"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://prefabs/components/player/character_state_machine.gd" id="4_om1db"]
 [ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://prefabs/idle.gd" id="5_bcibw"]
 [ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://prefabs/walk.gd" id="6_bcibw"]
 [ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://prefabs/jump.gd" id="7_om1db"]
 [ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://prefabs/components/player/behavior_manager.gd" id="8_a1fmy"]
 [ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://prefabs/ariel.gd" id="8_ebb2h"]
-[ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://prefabs/jumpBehavior.gd" id="9_6uefu"]
-[ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://prefabs/landBehavior.gd" id="11_o2sve"]
+[ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://prefabs/jump_behavior.gd" id="9_6uefu"]
+[ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://prefabs/land_behavior.gd" id="11_o2sve"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_2qyha"]
 animations = [{
@@ -30,9 +31,10 @@ script = ExtResource("1_vnujj")
 state_machine = NodePath("StateMachine")
 mobility_manager = NodePath("MobilityManager")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimationManager" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_2qyha")
 animation = &"placeholder"
+script = ExtResource("3_o2sve")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_vnujj")
@@ -76,4 +78,6 @@ valid_states = Array[String](["Ariel"])
 [connection signal="landed" from="." to="MobilityManager" method="_on_base_player_landed"]
 [connection signal="landed" from="." to="BehaviorManager/LandBehavior" method="_on_base_player_landed"]
 [connection signal="lock_level_changed" from="." to="BehaviorManager" method="_on_base_player_lock_level_changed"]
+[connection signal="animation_finished" from="AnimationManager" to="StateMachine" method="_on_animation_manager_animation_finished"]
+[connection signal="state_changed" from="StateMachine" to="AnimationManager" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="StateMachine" to="BehaviorManager" method="_on_state_machine_state_changed"]

@@ -47,3 +47,7 @@ func enter_state(new_state):
 func exit_state(old_state):
 	old_state.exit_state()
 	old_state.is_active = false
+
+
+func _on_animation_manager_animation_finished():
+	current_state_node.on_anim_end()

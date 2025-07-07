@@ -20,3 +20,5 @@ func enter_state():
 func exit_state():
 	pass
 	
+func on_anim_end():
+	pass
