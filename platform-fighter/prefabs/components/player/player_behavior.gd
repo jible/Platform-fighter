@@ -9,6 +9,7 @@ extends Node
 @export var valid_states: Array[String]
 
 var state_machine: CharacterStateMachine
+var is_active:bool = false
 
 func _ready():
 	state_machine = get_parent().state_machine

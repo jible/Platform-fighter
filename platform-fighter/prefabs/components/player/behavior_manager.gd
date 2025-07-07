@@ -16,7 +16,10 @@ func get_active_behaviors():
 	active_behaviors.clear()
 	for behavior in all_behaviors:
 		if behavior.priority >= character.lock_level and state_machine.current_state_name in behavior.valid_states:
+			behavior.is_active = true
 			active_behaviors.append(behavior)
+		else:
+			behavior.is_active = false
 
 
 func _physics_process(_delta):
