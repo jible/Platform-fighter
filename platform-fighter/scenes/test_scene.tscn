@@ -9,6 +9,8 @@ size = Vector2(123, 120)
 [node name="TestScene" type="Node2D"]
 
 [node name="stage" type="StaticBody2D" parent="."]
+position = Vector2(0, 108.765)
+scale = Vector2(4.415, 4.415)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="stage"]
 position = Vector2(31.32, 85.48)
@@ -24,3 +26,4 @@ texture = ExtResource("1_j8ivh")
 position = Vector2(0, -5)
 
 [node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.31, 0.31)

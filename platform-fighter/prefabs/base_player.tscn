@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=17 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://base_player.gd" id="1_vnujj"]
 [ext_resource type="Texture2D" uid="uid://dtk1g11hitpmo" path="res://assets/images/icon.svg" id="2_aglvc"]
@@ -11,7 +11,9 @@
 [ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://prefabs/components/player/behavior_manager.gd" id="8_a1fmy"]
 [ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://prefabs/ariel.gd" id="8_ebb2h"]
 [ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://prefabs/jump_behavior.gd" id="9_6uefu"]
+[ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://prefabs/dash.gd" id="10_dko73"]
 [ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://prefabs/land_behavior.gd" id="11_o2sve"]
+[ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://prefabs/dash_behavior.gd" id="14_3jy72"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_2qyha"]
 animations = [{
@@ -61,6 +63,9 @@ script = ExtResource("7_om1db")
 [node name="Ariel" type="Node" parent="StateMachine"]
 script = ExtResource("8_ebb2h")
 
+[node name="Dash" type="Node" parent="StateMachine"]
+script = ExtResource("10_dko73")
+
 [node name="BehaviorManager" type="Node" parent="." node_paths=PackedStringArray("character", "state_machine")]
 script = ExtResource("8_a1fmy")
 character = NodePath("..")
@@ -74,6 +79,10 @@ valid_states = Array[String](["Idle", "Walk", "Ariel"])
 script = ExtResource("11_o2sve")
 priority = 1
 valid_states = Array[String](["Ariel"])
+
+[node name="DashBehavior" type="Node" parent="BehaviorManager"]
+script = ExtResource("14_3jy72")
+valid_states = Array[String](["Ariel", "Idle", "Walk"])
 
 [connection signal="landed" from="." to="MobilityManager" method="_on_base_player_landed"]
 [connection signal="landed" from="." to="BehaviorManager/LandBehavior" method="_on_base_player_landed"]
