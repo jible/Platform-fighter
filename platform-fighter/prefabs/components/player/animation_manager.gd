@@ -6,8 +6,9 @@ extends AnimatedSprite2D
 var current_state: String = ""
 
 func update_anim():
-	play(current_state)
-	
+	# Commenting this line out since there are no animations yet
+	#play(current_state)
+	return
 
 
 func _on_state_machine_state_changed(new_state_node):

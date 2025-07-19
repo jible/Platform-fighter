@@ -1,6 +1,5 @@
 class_name CharacterState
-extends State
-
+extends Node
 
 enum LockLevel {
 	FREE,
@@ -9,6 +8,16 @@ enum LockLevel {
 	FULL_LOCK,
 }
 
+var is_active:bool = false
+var state_machine: CharacterStateMachine
+var character_body:CharacterBody2D
+var mobility_manager: MobilityManager
+
+func _ready():
+	state_machine = get_parent()
+	character_body = state_machine.get_parent()
+	if character_body.mobility_manager:
+		mobility_manager = character_body.mobility_manager
 
 # The following functions should be overwritten in states that extend this class. 
 func update_state(_delta):
