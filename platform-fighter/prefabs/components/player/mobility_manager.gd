@@ -4,12 +4,11 @@ class_name MobilityManager
 
 @export var character_body: CharacterBody2D
 
-var natural_move_velocity: Vector2 = Vector2.ZERO
-var impulse_move_velocity: Vector2 = Vector2.ZERO
+
 
 var jump_vel = 800
 var acceleration = 1500
-var gravity_force = 25
+var gravity_force = 50
 
 # fraction of velocity removed each second
 var drag = 20
@@ -27,37 +26,35 @@ func _physics_process(delta):
 	standard_movement_process(delta, input_dir)
 	standard_gravity_process()
 	standard_drag_process(delta, input_dir)
-	standard_impulse_decay_process()
+	#standard_impulse_decay_process()
 	# All impulse velocities should be applied by other nodes like states or called through funcs on this object
-	
-	# Once all velocity calculations are done, add both velocities
-	character_body.velocity = natural_move_velocity + impulse_move_velocity
+
 	
 	
 func standard_movement_process(delta, input_dir):
 	#TODO Allow lock out for this process ( like knock back or in the middle of mobility)
 	
-	natural_move_velocity.x += acceleration * input_dir * delta
-	if abs(natural_move_velocity.x) > max_horizontal_velocity:
-		natural_move_velocity.x = sign (natural_move_velocity.x) * max_horizontal_velocity
+	character_body.velocity.x += acceleration * input_dir * delta
+	if abs(character_body.velocity.x) > max_horizontal_velocity:
+		character_body.velocity.x = sign (character_body.velocity.x) * max_horizontal_velocity
 
 func standard_gravity_process():
 	# Apply Gravity
-	natural_move_velocity.y += gravity_force
-	if natural_move_velocity.y > max_fall_velocity:
-		natural_move_velocity.y = max_fall_velocity
+	character_body.velocity.y += gravity_force
+	if character_body.velocity.y > max_fall_velocity:
+		character_body.velocity.y = max_fall_velocity
 		
 func standard_drag_process(delta, input_dir):
 	# If there is no input, apply drag
 	if input_dir == 0:
-		natural_move_velocity.x -= natural_move_velocity.x * delta * drag
-		if abs(natural_move_velocity.x) < velocity_threshold:
-			natural_move_velocity.x = 0
+		character_body.velocity.x -= character_body.velocity.x * delta * drag
+		if abs(character_body.velocity.x) < velocity_threshold:
+			character_body.velocity.x = 0
 
 func standard_impulse_decay_process():
-	impulse_move_velocity *= .99
-	if impulse_move_velocity.length() < .5:
-		impulse_move_velocity = Vector2.ZERO
+	character_body.velocity *= .99
+	if character_body.velocity.length() < .5:
+		character_body.velocity = Vector2.ZERO
 
 
 func can_jump() ->bool:
@@ -65,9 +62,9 @@ func can_jump() ->bool:
 
 func jump():
 	if character_body.is_on_floor():
-		natural_move_velocity.y = -jump_vel
+		character_body.velocity.y = -jump_vel
 	elif used_ariel_jumps < max_ariel_jumps:
-		natural_move_velocity.y = -jump_vel
+		character_body.velocity.y = -jump_vel
 		used_ariel_jumps += 1
 
 func _on_base_player_landed():

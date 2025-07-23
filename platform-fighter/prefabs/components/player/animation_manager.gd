@@ -6,8 +6,7 @@ extends AnimatedSprite2D
 var current_state: String = ""
 
 func update_anim():
-	# Commenting this line out since there are no animations yet
-	#play(current_state)
+	play(current_state)
 	return
 
 

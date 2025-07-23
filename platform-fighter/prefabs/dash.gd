@@ -8,8 +8,11 @@ func update_state(_delta):
 	pass
 
 func enter_state():
-	mobility_manager.impulse_move_velocity = Input.get_vector("move_left","move_right","move_up", "move_down") * dash_velocity
-	state_machine.change_state("Idle")
+	character_body.velocity = Input.get_vector("move_left","move_right","move_up", "move_down") * dash_velocity
+	if character_body.is_on_floor():
+		state_machine.change_state("Idle")
+	else:
+		state_machine.change_state("Ariel")
 	pass
 
 func exit_state():

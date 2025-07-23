@@ -1,7 +1,7 @@
-[gd_scene load_steps=17 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=25 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://base_player.gd" id="1_vnujj"]
-[ext_resource type="Texture2D" uid="uid://dtk1g11hitpmo" path="res://assets/images/icon.svg" id="2_aglvc"]
+[ext_resource type="Texture2D" uid="uid://br2fwdyprah3t" path="res://assets/spritesheets/player_ss1.png" id="2_3jy72"]
 [ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://prefabs/components/player/mobility_manager.gd" id="3_2qyha"]
 [ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://prefabs/components/player/animation_manager.gd" id="3_o2sve"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://prefabs/components/player/character_state_machine.gd" id="4_om1db"]
@@ -15,15 +15,88 @@
 [ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://prefabs/land_behavior.gd" id="11_o2sve"]
 [ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://prefabs/dash_behavior.gd" id="14_3jy72"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_533r6"]
+atlas = ExtResource("2_3jy72")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ccksx"]
+atlas = ExtResource("2_3jy72")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o8v4s"]
+atlas = ExtResource("2_3jy72")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0ajub"]
+atlas = ExtResource("2_3jy72")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fts0j"]
+atlas = ExtResource("2_3jy72")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ainhc"]
+atlas = ExtResource("2_3jy72")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_doc82"]
+atlas = ExtResource("2_3jy72")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ebgru"]
+atlas = ExtResource("2_3jy72")
+region = Rect2(0, 32, 32, 32)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_2qyha"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_aglvc")
+"texture": SubResource("AtlasTexture_533r6")
 }],
 "loop": true,
-"name": &"placeholder",
+"name": &"Ariel",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ccksx")
+}],
+"loop": true,
+"name": &"Dash",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o8v4s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0ajub")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fts0j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ainhc")
+}],
+"loop": true,
+"name": &"Jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_doc82")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ebgru")
+}],
+"loop": true,
+"name": &"Walk",
+"speed": 3.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
@@ -34,8 +107,9 @@ state_machine = NodePath("StateMachine")
 mobility_manager = NodePath("MobilityManager")
 
 [node name="AnimationManager" type="AnimatedSprite2D" parent="."]
+scale = Vector2(13.65, 13.65)
 sprite_frames = SubResource("SpriteFrames_2qyha")
-animation = &"placeholder"
+animation = &"Ariel"
 script = ExtResource("3_o2sve")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
