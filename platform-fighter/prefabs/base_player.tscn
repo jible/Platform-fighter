@@ -15,6 +15,8 @@
 [ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://prefabs/land_behavior.gd" id="11_o2sve"]
 [ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://prefabs/dash_behavior.gd" id="14_3jy72"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_533r6"]
 atlas = ExtResource("2_3jy72")
 region = Rect2(0, 0, 32, 32)
@@ -96,71 +98,73 @@ animations = [{
 }],
 "loop": true,
 "name": &"Walk",
-"speed": 3.0
+"speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
+[node name="BasePlayer" type="Node"]
 
-[node name="BasePlayer" type="CharacterBody2D" node_paths=PackedStringArray("state_machine", "mobility_manager")]
+[node name="PlayerBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("state_machine", "mobility_manager")]
 script = ExtResource("1_vnujj")
 state_machine = NodePath("StateMachine")
 mobility_manager = NodePath("MobilityManager")
 
-[node name="AnimationManager" type="AnimatedSprite2D" parent="."]
-scale = Vector2(13.65, 13.65)
-sprite_frames = SubResource("SpriteFrames_2qyha")
-animation = &"Ariel"
-script = ExtResource("3_o2sve")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerBody"]
 shape = SubResource("CircleShape2D_vnujj")
 
-[node name="MobilityManager" type="Node" parent="." node_paths=PackedStringArray("character_body")]
+[node name="MobilityManager" type="Node" parent="PlayerBody" node_paths=PackedStringArray("character_body")]
 script = ExtResource("3_2qyha")
 character_body = NodePath("..")
 metadata/_custom_type_script = "uid://dm0xti0j6gcur"
 
-[node name="StateMachine" type="Node" parent="."]
+[node name="StateMachine" type="Node" parent="PlayerBody"]
 script = ExtResource("4_om1db")
 starting_state = "Idle"
 metadata/_custom_type_script = "uid://sukry204wfhf"
 
-[node name="Idle" type="Node" parent="StateMachine"]
+[node name="Idle" type="Node" parent="PlayerBody/StateMachine"]
 script = ExtResource("5_bcibw")
 
-[node name="Walk" type="Node" parent="StateMachine"]
+[node name="Walk" type="Node" parent="PlayerBody/StateMachine"]
 script = ExtResource("6_bcibw")
 
-[node name="Jump" type="Node" parent="StateMachine"]
+[node name="Jump" type="Node" parent="PlayerBody/StateMachine"]
 script = ExtResource("7_om1db")
 
-[node name="Ariel" type="Node" parent="StateMachine"]
+[node name="Ariel" type="Node" parent="PlayerBody/StateMachine"]
 script = ExtResource("8_ebb2h")
 
-[node name="Dash" type="Node" parent="StateMachine"]
+[node name="Dash" type="Node" parent="PlayerBody/StateMachine"]
 script = ExtResource("10_dko73")
 
-[node name="BehaviorManager" type="Node" parent="." node_paths=PackedStringArray("character", "state_machine")]
+[node name="BehaviorManager" type="Node" parent="PlayerBody" node_paths=PackedStringArray("character", "state_machine")]
 script = ExtResource("8_a1fmy")
 character = NodePath("..")
 state_machine = NodePath("../StateMachine")
 
-[node name="JumpBehavior" type="Node" parent="BehaviorManager"]
+[node name="JumpBehavior" type="Node" parent="PlayerBody/BehaviorManager"]
 script = ExtResource("9_6uefu")
 valid_states = Array[String](["Idle", "Walk", "Ariel"])
 
-[node name="LandBehavior" type="Node" parent="BehaviorManager"]
+[node name="LandBehavior" type="Node" parent="PlayerBody/BehaviorManager"]
 script = ExtResource("11_o2sve")
 priority = 1
 valid_states = Array[String](["Ariel"])
 
-[node name="DashBehavior" type="Node" parent="BehaviorManager"]
+[node name="DashBehavior" type="Node" parent="PlayerBody/BehaviorManager"]
 script = ExtResource("14_3jy72")
 valid_states = Array[String](["Ariel", "Idle", "Walk"])
 
-[connection signal="landed" from="." to="MobilityManager" method="_on_base_player_landed"]
-[connection signal="landed" from="." to="BehaviorManager/LandBehavior" method="_on_base_player_landed"]
-[connection signal="lock_level_changed" from="." to="BehaviorManager" method="_on_base_player_lock_level_changed"]
-[connection signal="animation_finished" from="AnimationManager" to="StateMachine" method="_on_animation_manager_animation_finished"]
-[connection signal="state_changed" from="StateMachine" to="AnimationManager" method="_on_state_machine_state_changed"]
-[connection signal="state_changed" from="StateMachine" to="BehaviorManager" method="_on_state_machine_state_changed"]
+[node name="AnimationManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("player_body")]
+scale = Vector2(26.325, 26.325)
+sprite_frames = SubResource("SpriteFrames_2qyha")
+animation = &"Walk"
+script = ExtResource("3_o2sve")
+player_body = NodePath("../PlayerBody")
+
+[connection signal="landed" from="PlayerBody" to="PlayerBody/MobilityManager" method="_on_base_player_landed"]
+[connection signal="landed" from="PlayerBody" to="PlayerBody/BehaviorManager/LandBehavior" method="_on_base_player_landed"]
+[connection signal="lock_level_changed" from="PlayerBody" to="PlayerBody/BehaviorManager" method="_on_base_player_lock_level_changed"]
+[connection signal="state_changed" from="PlayerBody/StateMachine" to="AnimationManager" method="_on_state_machine_state_changed"]
+[connection signal="state_changed" from="PlayerBody/StateMachine" to="PlayerBody/BehaviorManager" method="_on_state_machine_state_changed"]
+[connection signal="animation_finished" from="AnimationManager" to="PlayerBody/StateMachine" method="_on_animation_manager_animation_finished"]
+[connection signal="frame_changed" from="AnimationManager" to="AnimationManager" method="_on_frame_changed"]

@@ -23,7 +23,6 @@ scale = Vector2(6.38, 1.195)
 texture = ExtResource("1_j8ivh")
 
 [node name="BasePlayer" parent="." instance=ExtResource("2_nd71p")]
-position = Vector2(0, -5)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.31, 0.31)
