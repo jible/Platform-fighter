@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=57 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://base_player.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://prefabs/components/player/mobility_manager.gd" id="3_2qyha"]
@@ -16,26 +16,6 @@
 [ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://prefabs/dash_behavior.gd" id="14_3jy72"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
-
-[sub_resource type="Shader" id="Shader_3jy72"]
-code = "shader_type canvas_item;
-
-void vertex() {
-	// Called for every vertex the material is visible on.
-}
-
-void fragment() {
-	// Called for every pixel the material is visible on.
-}
-
-//void light() {
-//	// Called for every pixel for every light affecting the CanvasItem.
-//	// Uncomment to replace the default light processing function with this one.
-//}
-"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_533r6"]
-shader = SubResource("Shader_3jy72")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_533r6"]
 atlas = ExtResource("13_3jy72")
@@ -404,8 +384,7 @@ script = ExtResource("14_3jy72")
 valid_states = Array[String](["Ariel", "Idle", "Walk"])
 
 [node name="AnimationManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("player_body")]
-material = SubResource("ShaderMaterial_533r6")
-scale = Vector2(26.325, 26.325)
+scale = Vector2(10, 10)
 sprite_frames = SubResource("SpriteFrames_2qyha")
 animation = &"Walk"
 script = ExtResource("3_o2sve")
