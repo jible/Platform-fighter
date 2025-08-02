@@ -16,5 +16,4 @@ func _on_state_machine_state_changed(new_state_node):
 
 
 func _process(delta):
-	print(scale)
 	position = scale.y * (player_body.position/scale.y).floor()

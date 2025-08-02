@@ -6,15 +6,15 @@ class_name MobilityManager
 
 
 
-var jump_vel = 800
-var acceleration = 1500
-var gravity_force = 50
+@export var jump_vel = 800
+@export var acceleration = 1500
+@export var gravity_force = 50
 
 # fraction of velocity removed each second
-var drag = 20
-var max_horizontal_velocity = 500
-var max_fall_velocity = 800
-var velocity_threshold = .5
+@export var drag = 20
+@export var max_horizontal_velocity = 500
+@export var max_fall_velocity = 800
+@export var velocity_threshold = .5
 
 var max_ariel_jumps = 2
 var used_ariel_jumps = 0
