@@ -18,6 +18,10 @@ config/icon="res://assets/images/icon.svg"
 
 GlobalResources="*res://globals/global_resources.gd"
 
+[display]
+
+window/stretch/aspect="expand"
+
 [dotnet]
 
 project/assembly_name="platform fighter"

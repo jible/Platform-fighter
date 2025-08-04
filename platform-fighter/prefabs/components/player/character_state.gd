@@ -13,6 +13,9 @@ var state_machine: CharacterStateMachine
 var character_body:CharacterBody2D
 var mobility_manager: MobilityManager
 
+@export var state_type:MobilityManager.state_types = MobilityManager.state_types.STANDARD
+
+
 func _ready():
 	state_machine = get_parent()
 	character_body = state_machine.get_parent()

@@ -13,6 +13,8 @@ var locked:bool = false
 
 signal state_changed(new_state_node: CharacterState)
 
+@export var DEBUG_PRINT_STATE_CHANGE: bool = false
+
 func _ready():
 	for child in get_children():
 		states[child.name] = child
@@ -41,6 +43,8 @@ func update_state(delta):
 	
 func enter_state(new_state):
 	# Trigger the newly entered state
+	if DEBUG_PRINT_STATE_CHANGE:
+		print(new_state.name)
 	new_state.enter_state()
 	new_state.is_active = true
 

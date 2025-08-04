@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=54 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://base_player.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://prefabs/components/player/mobility_manager.gd" id="3_2qyha"]
@@ -49,14 +49,6 @@ region = Rect2(192, 160, 32, 32)
 atlas = ExtResource("13_3jy72")
 region = Rect2(224, 160, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_q5cdr"]
-atlas = ExtResource("13_3jy72")
-region = Rect2(0, 160, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_jey0s"]
-atlas = ExtResource("13_3jy72")
-region = Rect2(32, 160, 32, 32)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_rm0l0"]
 atlas = ExtResource("13_3jy72")
 region = Rect2(64, 160, 32, 32)
@@ -76,10 +68,6 @@ region = Rect2(160, 160, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_rx2en"]
 atlas = ExtResource("13_3jy72")
 region = Rect2(192, 160, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_rcfk7"]
-atlas = ExtResource("13_3jy72")
-region = Rect2(224, 160, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_n0px0"]
 atlas = ExtResource("13_3jy72")
@@ -205,16 +193,10 @@ animations = [{
 "texture": SubResource("AtlasTexture_ebgru")
 }],
 "loop": true,
-"name": &"Ariel",
+"name": &"Aerial",
 "speed": 8.0
 }, {
 "frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_q5cdr")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_jey0s")
-}, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_rm0l0")
 }, {
@@ -229,13 +211,10 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_rx2en")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_rcfk7")
 }],
 "loop": false,
 "name": &"Dash",
-"speed": 8.0
+"speed": 7.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -339,7 +318,6 @@ shape = SubResource("CircleShape2D_vnujj")
 script = ExtResource("3_2qyha")
 character_body = NodePath("..")
 jump_vel = 2000
-acceleration = 2860
 gravity_force = 75
 max_horizontal_velocity = 910
 max_fall_velocity = 1035
@@ -359,11 +337,12 @@ script = ExtResource("6_bcibw")
 [node name="Jump" type="Node" parent="PlayerBody/StateMachine"]
 script = ExtResource("7_om1db")
 
-[node name="Ariel" type="Node" parent="PlayerBody/StateMachine"]
+[node name="Aerial" type="Node" parent="PlayerBody/StateMachine"]
 script = ExtResource("8_ebb2h")
 
 [node name="Dash" type="Node" parent="PlayerBody/StateMachine"]
 script = ExtResource("10_dko73")
+state_type = 1
 
 [node name="BehaviorManager" type="Node" parent="PlayerBody" node_paths=PackedStringArray("character", "state_machine")]
 script = ExtResource("8_a1fmy")
@@ -372,28 +351,28 @@ state_machine = NodePath("../StateMachine")
 
 [node name="JumpBehavior" type="Node" parent="PlayerBody/BehaviorManager"]
 script = ExtResource("9_6uefu")
-valid_states = Array[String](["Idle", "Walk", "Ariel"])
+valid_states = Array[String](["Idle", "Walk", "Aerial"])
 
 [node name="LandBehavior" type="Node" parent="PlayerBody/BehaviorManager"]
 script = ExtResource("11_o2sve")
 priority = 1
-valid_states = Array[String](["Ariel"])
+valid_states = Array[String](["Aerial"])
 
 [node name="DashBehavior" type="Node" parent="PlayerBody/BehaviorManager"]
 script = ExtResource("14_3jy72")
-valid_states = Array[String](["Ariel", "Idle", "Walk"])
+valid_states = Array[String](["Aerial", "Idle", "Walk"])
 
 [node name="AnimationManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("player_body")]
 scale = Vector2(10, 10)
 sprite_frames = SubResource("SpriteFrames_2qyha")
-animation = &"Walk"
+animation = &"Aerial"
 script = ExtResource("3_o2sve")
 player_body = NodePath("../PlayerBody")
 
 [connection signal="landed" from="PlayerBody" to="PlayerBody/MobilityManager" method="_on_base_player_landed"]
 [connection signal="landed" from="PlayerBody" to="PlayerBody/BehaviorManager/LandBehavior" method="_on_base_player_landed"]
 [connection signal="lock_level_changed" from="PlayerBody" to="PlayerBody/BehaviorManager" method="_on_base_player_lock_level_changed"]
+[connection signal="state_changed" from="PlayerBody/StateMachine" to="PlayerBody/MobilityManager" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="PlayerBody/StateMachine" to="PlayerBody/BehaviorManager" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="PlayerBody/StateMachine" to="AnimationManager" method="_on_state_machine_state_changed"]
 [connection signal="animation_finished" from="AnimationManager" to="PlayerBody/StateMachine" method="_on_animation_manager_animation_finished"]
-[connection signal="frame_changed" from="AnimationManager" to="AnimationManager" method="_on_frame_changed"]

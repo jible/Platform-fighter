@@ -16,6 +16,6 @@ func _on_state_machine_state_changed(new_state_node):
 
 
 
-func _process(delta):
+func _process(_delta):
 	position.x = snapped(player_body.position.x, scale.x)
 	position.y = snapped(player_body.position.y, scale.y)

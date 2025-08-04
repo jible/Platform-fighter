@@ -1,7 +1,7 @@
 extends CharacterState
 
 
-@export var dash_velocity = 800
+@export var dash_velocity = 2000
 
 
 func update_state(_delta):
@@ -9,14 +9,13 @@ func update_state(_delta):
 
 func enter_state():
 	character_body.velocity = Input.get_vector("move_left","move_right","move_up", "move_down") * dash_velocity
-	if character_body.is_on_floor():
-		state_machine.change_state("Idle")
-	else:
-		state_machine.change_state("Ariel")
-	pass
-
+	
 func exit_state():
 	pass
 	
 func on_anim_end():
+	if character_body.is_on_floor():
+		state_machine.change_state("Idle")
+	else:
+		state_machine.change_state("Aerial")
 	pass
