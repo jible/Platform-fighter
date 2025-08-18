@@ -1,19 +1,19 @@
-[gd_scene load_steps=54 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=56 format=3 uid="uid://e6cxo5jrheb1"]
 
-[ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://base_player.gd" id="1_vnujj"]
-[ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://prefabs/components/player/mobility_manager.gd" id="3_2qyha"]
-[ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://prefabs/components/player/animation_manager.gd" id="3_o2sve"]
-[ext_resource type="Script" uid="uid://sukry204wfhf" path="res://prefabs/components/player/character_state_machine.gd" id="4_om1db"]
-[ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://prefabs/idle.gd" id="5_bcibw"]
-[ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://prefabs/walk.gd" id="6_bcibw"]
-[ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://prefabs/jump.gd" id="7_om1db"]
-[ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://prefabs/components/player/behavior_manager.gd" id="8_a1fmy"]
-[ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://prefabs/ariel.gd" id="8_ebb2h"]
-[ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://prefabs/jump_behavior.gd" id="9_6uefu"]
-[ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://prefabs/dash.gd" id="10_dko73"]
-[ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://prefabs/land_behavior.gd" id="11_o2sve"]
+[ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/generalized/base_player.gd" id="1_vnujj"]
+[ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://components/for_characters/generalized/mobility_manager.gd" id="3_2qyha"]
+[ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/generalized/animation_manager.gd" id="3_o2sve"]
+[ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/generalized/character_state_machine.gd" id="4_om1db"]
+[ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/generalized/states/idle.gd" id="5_bcibw"]
+[ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://components/for_characters/generalized/states/walk.gd" id="6_bcibw"]
+[ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://components/for_characters/generalized/states/jump.gd" id="7_om1db"]
+[ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://components/for_characters/generalized/behavior_manager.gd" id="8_a1fmy"]
+[ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://components/for_characters/generalized/states/ariel.gd" id="8_ebb2h"]
+[ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://components/for_characters/generalized/behaviors/jump_behavior.gd" id="9_6uefu"]
+[ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/generalized/states/dash.gd" id="10_dko73"]
+[ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://components/for_characters/generalized/behaviors/land_behavior.gd" id="11_o2sve"]
 [ext_resource type="Texture2D" uid="uid://c2y7malljq7tq" path="res://assets/spritesheets/knight.png" id="13_3jy72"]
-[ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://prefabs/dash_behavior.gd" id="14_3jy72"]
+[ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://components/for_characters/generalized/behaviors/dash_behavior.gd" id="14_3jy72"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
 
@@ -214,7 +214,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"Dash",
-"speed": 7.0
+"speed": 20.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -304,12 +304,23 @@ animations = [{
 "speed": 8.0
 }]
 
-[node name="BasePlayer" type="Node"]
+[sub_resource type="Animation" id="Animation_smw2u"]
+resource_name = "new_animation"
 
-[node name="PlayerBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("state_machine", "mobility_manager")]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_noerb"]
+_data = {
+&"new_animation": SubResource("Animation_smw2u")
+}
+
+[node name="BasePlayer" type="Node2D"]
+scale = Vector2(15, 15)
+
+[node name="PlayerBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_player", "state_machine", "mobility_manager", "animation_manager")]
 script = ExtResource("1_vnujj")
+base_player = NodePath("..")
 state_machine = NodePath("StateMachine")
 mobility_manager = NodePath("MobilityManager")
+animation_manager = NodePath("../AnimationManager")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerBody"]
 shape = SubResource("CircleShape2D_vnujj")
@@ -318,9 +329,8 @@ shape = SubResource("CircleShape2D_vnujj")
 script = ExtResource("3_2qyha")
 character_body = NodePath("..")
 jump_vel = 2000
-gravity_force = 75
 max_horizontal_velocity = 910
-max_fall_velocity = 1035
+max_fall_velocity = 1300
 metadata/_custom_type_script = "uid://dm0xti0j6gcur"
 
 [node name="StateMachine" type="Node" parent="PlayerBody"]
@@ -363,11 +373,15 @@ script = ExtResource("14_3jy72")
 valid_states = Array[String](["Aerial", "Idle", "Walk"])
 
 [node name="AnimationManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("player_body")]
-scale = Vector2(10, 10)
 sprite_frames = SubResource("SpriteFrames_2qyha")
-animation = &"Aerial"
+animation = &"Dash"
 script = ExtResource("3_o2sve")
 player_body = NodePath("../PlayerBody")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_noerb")
+}
 
 [connection signal="landed" from="PlayerBody" to="PlayerBody/MobilityManager" method="_on_base_player_landed"]
 [connection signal="landed" from="PlayerBody" to="PlayerBody/BehaviorManager/LandBehavior" method="_on_base_player_landed"]

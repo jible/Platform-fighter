@@ -28,7 +28,7 @@ var current_state_type: state_types = state_types.NO_PROCESS
 @export var jump_vel = 800
 @export var grounded_acceleration = 1500
 @export var aeriel_acceleration = 900
-@export var gravity_force = 50
+@export var gravity_force = 4500
 
 # fraction of velocity removed each second
 @export var grounded_drag = 20
@@ -55,7 +55,6 @@ func standard_movement_process(delta, input_dir):
 		# If they are below the max velocity, increase the velocity and cap it.
 		if abs(character_body.velocity.x) < max_horizontal_velocity:
 			character_body.velocity.x += acceleration * input_dir * delta
-			
 			character_body.velocity.x = clamp(character_body.velocity.x, -max_horizontal_velocity, max_horizontal_velocity)
 	else:
 		# If they are trying to turn around, give them a kick
@@ -69,8 +68,11 @@ func standard_drag_process(delta, input_dir):
 		if abs(character_body.velocity.x) < velocity_threshold:
 			character_body.velocity.x = 0
 
-func standard_gravity_process(_delta, _input_dir):
-	character_body.velocity.y += gravity_force
+func standard_gravity_process(delta, _input_dir):
+	if character_body.grounded:
+		character_body.velocity.y = 0
+		return
+	character_body.velocity.y += gravity_force * delta
 	if character_body.velocity.y > max_fall_velocity:
 		character_body.velocity.y = max_fall_velocity
 
