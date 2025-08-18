@@ -1,2 +1,0 @@
-class_name HitboxManager
-extends Node2D
