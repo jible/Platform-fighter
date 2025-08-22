@@ -1,4 +1,4 @@
-class_name AnimationManager
+class_name SpriteManager
 extends AnimatedSprite2D
 
 # Based on https://github.com/jible/capstone/blob/main/scripts/characters/animation_manager.gd

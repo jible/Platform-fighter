@@ -1,8 +1,8 @@
-[gd_scene load_steps=56 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=57 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/generalized/base_player.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://components/for_characters/generalized/mobility_manager.gd" id="3_2qyha"]
-[ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/generalized/animation_manager.gd" id="3_o2sve"]
+[ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/generalized/sprite_manager.gd" id="3_o2sve"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/generalized/character_state_machine.gd" id="4_om1db"]
 [ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/generalized/states/idle.gd" id="5_bcibw"]
 [ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://components/for_characters/generalized/states/walk.gd" id="6_bcibw"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://components/for_characters/generalized/behaviors/land_behavior.gd" id="11_o2sve"]
 [ext_resource type="Texture2D" uid="uid://c2y7malljq7tq" path="res://assets/spritesheets/knight.png" id="13_3jy72"]
 [ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://components/for_characters/generalized/behaviors/dash_behavior.gd" id="14_3jy72"]
+[ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/generalized/animation_updater.gd" id="15_2f3ic"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
 
@@ -315,12 +316,12 @@ _data = {
 [node name="BasePlayer" type="Node2D"]
 scale = Vector2(15, 15)
 
-[node name="PlayerBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_player", "state_machine", "mobility_manager", "animation_manager")]
+[node name="PlayerBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_player", "state_machine", "mobility_manager", "sprite_manager")]
 script = ExtResource("1_vnujj")
 base_player = NodePath("..")
 state_machine = NodePath("StateMachine")
 mobility_manager = NodePath("MobilityManager")
-animation_manager = NodePath("../AnimationManager")
+sprite_manager = NodePath("../SpriteManager")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerBody"]
 shape = SubResource("CircleShape2D_vnujj")
@@ -372,7 +373,7 @@ valid_states = Array[String](["Aerial"])
 script = ExtResource("14_3jy72")
 valid_states = Array[String](["Aerial", "Idle", "Walk"])
 
-[node name="AnimationManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("player_body")]
+[node name="SpriteManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("player_body")]
 sprite_frames = SubResource("SpriteFrames_2qyha")
 animation = &"Dash"
 script = ExtResource("3_o2sve")
@@ -383,10 +384,15 @@ libraries = {
 &"": SubResource("AnimationLibrary_noerb")
 }
 
+[node name="AnimationUpdater" type="Node" parent="." node_paths=PackedStringArray("sprite_manager", "animation_player")]
+script = ExtResource("15_2f3ic")
+sprite_manager = NodePath("../SpriteManager")
+animation_player = NodePath("../AnimationPlayer")
+
 [connection signal="landed" from="PlayerBody" to="PlayerBody/MobilityManager" method="_on_base_player_landed"]
 [connection signal="landed" from="PlayerBody" to="PlayerBody/BehaviorManager/LandBehavior" method="_on_base_player_landed"]
 [connection signal="lock_level_changed" from="PlayerBody" to="PlayerBody/BehaviorManager" method="_on_base_player_lock_level_changed"]
 [connection signal="state_changed" from="PlayerBody/StateMachine" to="PlayerBody/MobilityManager" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="PlayerBody/StateMachine" to="PlayerBody/BehaviorManager" method="_on_state_machine_state_changed"]
-[connection signal="state_changed" from="PlayerBody/StateMachine" to="AnimationManager" method="_on_state_machine_state_changed"]
-[connection signal="animation_finished" from="AnimationManager" to="PlayerBody/StateMachine" method="_on_animation_manager_animation_finished"]
+[connection signal="state_changed" from="PlayerBody/StateMachine" to="SpriteManager" method="_on_state_machine_state_changed"]
+[connection signal="animation_finished" from="SpriteManager" to="PlayerBody/StateMachine" method="_on_sprite_manager_animation_finished"]

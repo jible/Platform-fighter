@@ -53,5 +53,5 @@ func exit_state(old_state):
 	old_state.is_active = false
 
 
-func _on_animation_manager_animation_finished():
+func _on_sprite_manager_animation_finished():
 	current_state_node.on_anim_end()

@@ -5,7 +5,7 @@ var lock_level: CharacterState.LockLevel
 @export var base_player: Node2D
 @export var state_machine: CharacterStateMachine
 @export var mobility_manager: MobilityManager 
-@export var animation_manager: AnimationManager
+@export var sprite_manager: SpriteManager
 
 var grounded:bool = false
 
