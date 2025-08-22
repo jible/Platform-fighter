@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=56 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/generalized/base_player.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://components/for_characters/generalized/mobility_manager.gd" id="3_2qyha"]
@@ -305,13 +305,7 @@ animations = [{
 "speed": 8.0
 }]
 
-[sub_resource type="Animation" id="Animation_smw2u"]
-resource_name = "new_animation"
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_noerb"]
-_data = {
-&"new_animation": SubResource("Animation_smw2u")
-}
 
 [node name="BasePlayer" type="Node2D"]
 scale = Vector2(15, 15)
