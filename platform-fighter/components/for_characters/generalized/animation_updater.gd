@@ -11,20 +11,13 @@ extends Node
 # References
 @export var sprite_manager: SpriteManager
 @export var animation_player: AnimationPlayer
-var anim_library_name: String = ""
-var anim_library: AnimationLibrary = null
 
-func get_standard_anim_library():
-	anim_library = animation_player.get_animation_library(anim_library_name)
-	if !anim_library:
-		anim_library = AnimationLibrary.new()
-	animation_player.add_animation_library(anim_library_name, anim_library)
 
 
 func update_player(): 
-	if !anim_library:
-		get_standard_anim_library()
-	
+	# Leave "" blank! This is the name of the default library which is unqiue to eacch animation player
+	var anim_library = animation_player.get_animation_library("")
+	print(anim_library)
 	var anim_names = Array(sprite_manager.sprite_frames.get_animation_names())
 	for anim_name in anim_names:
 		# Extract anim info from sprite manager
@@ -43,7 +36,15 @@ func update_player():
 		anim.length = frame_count/speed
 		
 		# TODO: Maybe remove all other anim tracks!
+		while anim.get_track_count() > 0:
+			anim.remove_track(0)
 		
+		# Add track that sets animated sprite to the correct animation
+		var anim_name_track = anim.add_track(Animation.TYPE_VALUE)
+		anim.track_set_path(anim_name_track, "%s:animation" % sprite_manager.name)
+		anim.track_insert_key(anim_name_track,0.0, anim_name)
+		
+		# Make track that sets the correct frame at each key
 		var track = anim.add_track(Animation.TYPE_VALUE)
 		anim.track_set_path(track, "%s:frame" %sprite_manager.name)
 		
@@ -52,7 +53,4 @@ func update_player():
 			pass
 		continue
 		
-		
 		anim.resource_changed()
-		
-	animation_player.property_list_changed_notify()
