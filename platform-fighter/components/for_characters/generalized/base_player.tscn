@@ -514,7 +514,7 @@ valid_states = Array[String](["Aerial", "Idle", "Walk"])
 
 [node name="SpriteManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("player_body")]
 sprite_frames = SubResource("SpriteFrames_2qyha")
-animation = &"Dash"
+animation = &"Aerial"
 script = ExtResource("3_o2sve")
 player_body = NodePath("../PlayerBody")
 

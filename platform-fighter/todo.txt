@@ -1,0 +1,5 @@
+SYSTEMS TO CREATE:
+- Buffer System:
+	
+- Hitbox/Hurtbox System:
+	
