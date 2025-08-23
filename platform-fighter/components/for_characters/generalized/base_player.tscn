@@ -1,6 +1,7 @@
-[gd_scene load_steps=61 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=64 format=3 uid="uid://e6cxo5jrheb1"]
 
-[ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/generalized/base_player.gd" id="1_vnujj"]
+[ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/generalized/base_player.gd" id="1_vnujj"]
+[ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/generalized/character_body.gd" id="2_a5pmx"]
 [ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://components/for_characters/generalized/mobility_manager.gd" id="3_2qyha"]
 [ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/generalized/sprite_manager.gd" id="3_o2sve"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/generalized/character_state_machine.gd" id="4_om1db"]
@@ -13,6 +14,7 @@
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/generalized/states/dash.gd" id="10_dko73"]
 [ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://components/for_characters/generalized/behaviors/land_behavior.gd" id="11_o2sve"]
 [ext_resource type="Texture2D" uid="uid://c2y7malljq7tq" path="res://assets/spritesheets/knight.png" id="13_3jy72"]
+[ext_resource type="Script" uid="uid://dh6rrb5uvquv4" path="res://components/for_characters/generalized/hitbox_hurtbox/health.gd" id="13_5ygvn"]
 [ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://components/for_characters/generalized/behaviors/dash_behavior.gd" id="14_3jy72"]
 [ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/generalized/animation_updater.gd" id="15_2f3ic"]
 
@@ -307,6 +309,7 @@ animations = [{
 
 [sub_resource type="Animation" id="Animation_2f3ic"]
 loop_mode = 1
+step = 0.0166667
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -415,6 +418,9 @@ tracks/1/keys = {
 "values": [0, 1, 2, 3]
 }
 
+[sub_resource type="Animation" id="Animation_sai4d"]
+length = 0.001
+
 [sub_resource type="Animation" id="Animation_ynofk"]
 length = 2.0
 loop_mode = 1
@@ -449,18 +455,16 @@ _data = {
 &"Dash": SubResource("Animation_5ygvn"),
 &"Idle": SubResource("Animation_a5pmx"),
 &"Jump": SubResource("Animation_ffvg0"),
+&"RESET": SubResource("Animation_sai4d"),
 &"Walk": SubResource("Animation_ynofk")
 }
 
 [node name="BasePlayer" type="Node2D"]
 scale = Vector2(15, 15)
-
-[node name="PlayerBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_player", "state_machine", "mobility_manager", "sprite_manager")]
 script = ExtResource("1_vnujj")
-base_player = NodePath("..")
-state_machine = NodePath("StateMachine")
-mobility_manager = NodePath("MobilityManager")
-sprite_manager = NodePath("../SpriteManager")
+
+[node name="PlayerBody" type="CharacterBody2D" parent="."]
+script = ExtResource("2_a5pmx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerBody"]
 shape = SubResource("CircleShape2D_vnujj")
@@ -511,6 +515,10 @@ valid_states = Array[String](["Aerial"])
 [node name="DashBehavior" type="Node" parent="PlayerBody/BehaviorManager"]
 script = ExtResource("14_3jy72")
 valid_states = Array[String](["Aerial", "Idle", "Walk"])
+
+[node name="Health" type="Node" parent="PlayerBody"]
+script = ExtResource("13_5ygvn")
+metadata/_custom_type_script = "uid://dh6rrb5uvquv4"
 
 [node name="SpriteManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("player_body")]
 sprite_frames = SubResource("SpriteFrames_2qyha")

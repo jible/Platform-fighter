@@ -1,0 +1,2 @@
+class_name HitboxCluster
+extends Node2D
