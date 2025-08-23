@@ -3,7 +3,6 @@ extends Node
 
 """
 This node stores health
-Identifies characters
 Decides knock back
 """
 

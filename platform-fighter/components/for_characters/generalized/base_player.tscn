@@ -463,8 +463,13 @@ _data = {
 scale = Vector2(15, 15)
 script = ExtResource("1_vnujj")
 
-[node name="PlayerBody" type="CharacterBody2D" parent="."]
+[node name="PlayerBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_player", "state_machine", "mobility_manager", "sprite_manager", "health")]
 script = ExtResource("2_a5pmx")
+base_player = NodePath(".")
+state_machine = NodePath("StateMachine")
+mobility_manager = NodePath("MobilityManager")
+sprite_manager = NodePath("../SpriteManager")
+health = NodePath("Health")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerBody"]
 shape = SubResource("CircleShape2D_vnujj")
