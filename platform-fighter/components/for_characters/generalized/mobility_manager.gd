@@ -2,7 +2,8 @@ extends Node
 class_name MobilityManager
 
 
-@export var character_body: CharacterBody2D
+@onready var base_character: BasePlayer = owner as BasePlayer
+@onready var character_body = base_character.character_body
 
 enum state_types {
 	STANDARD,

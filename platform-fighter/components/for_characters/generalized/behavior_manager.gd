@@ -3,8 +3,9 @@ extends Node
 
 var all_behaviors: Array[CharacterBehavior]
 var active_behaviors: Array[CharacterBehavior]
-@export var character: CharacterBody2D
-@export var state_machine: CharacterStateMachine
+@onready var base_character: BasePlayer = owner as BasePlayer
+@onready var state_machine: CharacterStateMachine = base_character.state_machine
+@onready var character_body: CharacterBody2D = base_character.character_body
 
 
 func _ready():
@@ -15,7 +16,7 @@ func _ready():
 func get_active_behaviors():
 	active_behaviors.clear()
 	for behavior in all_behaviors:
-		if behavior.priority >= character.lock_level and state_machine.current_state_name in behavior.valid_states:
+		if behavior.priority >= character_body.lock_level and state_machine.current_state_name in behavior.valid_states:
 			behavior.is_active = true
 			active_behaviors.append(behavior)
 		else:
