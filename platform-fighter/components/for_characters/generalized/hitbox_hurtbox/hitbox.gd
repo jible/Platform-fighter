@@ -27,32 +27,41 @@ An example of a use for this is a move with a sour spot and a sweet spot. If you
 it should deal more damage, but if it is in the middle, it should not get hit by the weak and strong spot.
 """
 
-
+var on: bool = false
 
 @export var damage: int = 0
 @export var knockback: float = 0
-@export var normalized_knockback_direction: Vector2 =Vector2(0,0) 
+@export var knockback_direction: Vector2 =Vector2(0,0) :
+	set(value):
+		knockback_direction = value.normalized()
 
 var cluster = null
 
-var cluster_member: bool = false
-var successful_hit_list: Array[Hurtbox] = []
+var successful_hit_list: Array[Health] = []
 
 func _ready():
 	var parent = get_parent()
 	if is_instance_of(parent, HitboxCluster):
 		cluster = parent
-		# Make its list reference a reference to the cluster's list instead
-		# That way it can directly modify the same list as the rest of the cluster members. 
+		# Make its list reference a reference to the cluster's list
 		successful_hit_list = cluster.successful_hit_list
 		
 		
 func on_overlap(hurtbox: Hurtbox):
-	var player = hurtbox.get_player()
-	if player in successful_hit_list:
-		return
-	
-	successful_hit_list.append(player)
-	hurtbox.hit_by(self)
+	var other_health = hurtbox.health
+	if !other_health or other_health in successful_hit_list:return 
+	successful_hit_list.append(other_health)
+	other_health.hit_by(self, hurtbox)
 	
 	
+func turn_off():
+	if !on:return
+	monitoring = false
+	monitorable = false
+	if !cluster:
+		successful_hit_list = []
+
+func turn_on():
+	if on:return
+	monitoring = true
+	monitorable = true
