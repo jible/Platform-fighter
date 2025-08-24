@@ -27,11 +27,16 @@ An example of a use for this is a move with a sour spot and a sweet spot. If you
 it should deal more damage, but if it is in the middle, it should not get hit by the weak and strong spot.
 """
 
-var on: bool = false
 
+signal landed_hit(target, hit_data)
+
+var on: bool = true
+
+
+var hit_data = {}
 @export var damage: int = 0
-@export var knockback: float = 0
-@export var knockback_direction: Vector2 =Vector2(0,0) :
+@export var knockback_magnitude: float = 0
+@export var knockback_direction: Vector2 = Vector2(0,0) :
 	set(value):
 		knockback_direction = value.normalized()
 
@@ -40,20 +45,18 @@ var cluster = null
 var successful_hit_list: Array[Health] = []
 
 func _ready():
+	hit_data = {
+		"damage": damage,
+		"knockback_magnitude" : knockback_magnitude,
+		"knockback_direction" : knockback_direction,
+	}
 	var parent = get_parent()
 	if is_instance_of(parent, HitboxCluster):
 		cluster = parent
 		# Make its list reference a reference to the cluster's list
 		successful_hit_list = cluster.successful_hit_list
-		
-		
-func on_overlap(hurtbox: Hurtbox):
-	var other_health = hurtbox.health
-	if !other_health or other_health in successful_hit_list:return 
-	successful_hit_list.append(other_health)
-	other_health.hit_by(self, hurtbox)
-	
-	
+
+
 func turn_off():
 	if !on:return
 	monitoring = false
@@ -65,3 +68,12 @@ func turn_on():
 	if on:return
 	monitoring = true
 	monitorable = true
+
+
+func _on_area_entered(hurtbox:Hurtbox):
+	var other_health = hurtbox.health
+	if !other_health or other_health in successful_hit_list:return 
+	successful_hit_list.append(other_health)
+	
+	hurtbox.hit_by(self, hit_data)
+	emit_signal("landed_hit", hurtbox, hit_data)

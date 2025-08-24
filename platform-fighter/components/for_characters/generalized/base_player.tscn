@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=66 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/generalized/base_player.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/generalized/character_body.gd" id="2_a5pmx"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/generalized/character_state_machine.gd" id="4_om1db"]
 [ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/generalized/states/idle.gd" id="5_bcibw"]
 [ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://components/for_characters/generalized/states/walk.gd" id="6_bcibw"]
+[ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/generalized/hitbox_hurtbox/hitbox.gd" id="6_ffvg0"]
 [ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://components/for_characters/generalized/states/jump.gd" id="7_om1db"]
 [ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://components/for_characters/generalized/behavior_manager.gd" id="8_a1fmy"]
 [ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://components/for_characters/generalized/states/ariel.gd" id="8_ebb2h"]
@@ -19,6 +20,8 @@
 [ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/generalized/animation_updater.gd" id="15_2f3ic"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ynofk"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_533r6"]
 atlas = ExtResource("13_3jy72")
@@ -529,6 +532,17 @@ valid_states = Array[String](["Aerial", "Idle", "Walk"])
 script = ExtResource("13_5ygvn")
 metadata/_custom_type_script = "uid://dh6rrb5uvquv4"
 
+[node name="Hitbox" type="Area2D" parent="CharacterBody"]
+scale = Vector2(0.0666667, 0.0666667)
+collision_layer = 0
+script = ExtResource("6_ffvg0")
+metadata/_custom_type_script = "uid://db3qdsst0ai6x"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody/Hitbox"]
+position = Vector2(0, -61)
+scale = Vector2(19.405, 19.405)
+shape = SubResource("CircleShape2D_ynofk")
+
 [node name="SpriteManager" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_2qyha")
 animation = &"Dash"
@@ -550,4 +564,6 @@ animation_player = NodePath("../AnimationPlayer")
 [connection signal="state_changed" from="CharacterBody/StateMachine" to="CharacterBody/MobilityManager" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="CharacterBody/StateMachine" to="CharacterBody/BehaviorManager" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="CharacterBody/StateMachine" to="SpriteManager" method="_on_state_machine_state_changed"]
+[connection signal="area_entered" from="CharacterBody/Hitbox" to="CharacterBody/Hitbox" method="_on_area_entered"]
+[connection signal="area_shape_entered" from="CharacterBody/Hitbox" to="CharacterBody/Hitbox" method="_on_area_shape_entered"]
 [connection signal="animation_finished" from="SpriteManager" to="CharacterBody/StateMachine" method="_on_sprite_manager_animation_finished"]

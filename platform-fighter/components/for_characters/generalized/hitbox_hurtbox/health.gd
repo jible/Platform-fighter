@@ -6,10 +6,29 @@ This node stores health
 Decides knock back
 """
 
+var base_character
+var state_machine
+
+
 var health: float = 0
 
+func _ready():
+	base_character = owner as BasePlayer
+	if !base_character:
+		return
+	state_machine = base_character.state_machine
+	connect_hurtboxes(state_machine)
+	pass
 
-func hit_by(hitbox, hurtbox):
+
+func connect_hurtboxes(base):
+	for child in base.get_children():
+		if child is Hurtbox:
+			child.hit_by.connect(hit_by)
+		connect_hurtboxes(child)
+	
+
+func hit_by(hitbox, _hurtbox):
 	health -= hitbox.damage
 	print("health: " + str(health) )
 	# Extract knock back and direction from hitbox and decide apply that via mobility manager
