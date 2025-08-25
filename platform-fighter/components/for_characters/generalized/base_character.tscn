@@ -1,0 +1,128 @@
+[gd_scene load_steps=21 format=3 uid="uid://e6cxo5jrheb1"]
+
+[ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/generalized/base_character.gd" id="1_vnujj"]
+[ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/generalized/character_body.gd" id="2_a5pmx"]
+[ext_resource type="Script" uid="uid://dm0xti0j6gcur" path="res://components/for_characters/generalized/mobility_manager.gd" id="3_2qyha"]
+[ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/generalized/sprite_manager.gd" id="3_o2sve"]
+[ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/generalized/character_state_machine.gd" id="4_om1db"]
+[ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/generalized/states/idle.gd" id="5_bcibw"]
+[ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://components/for_characters/generalized/states/walk.gd" id="6_bcibw"]
+[ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/generalized/hitbox_hurtbox/hitbox.gd" id="6_ffvg0"]
+[ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://components/for_characters/generalized/states/jump.gd" id="7_om1db"]
+[ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://components/for_characters/generalized/behavior_manager.gd" id="8_a1fmy"]
+[ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://components/for_characters/generalized/states/ariel.gd" id="8_ebb2h"]
+[ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://components/for_characters/generalized/behaviors/jump_behavior.gd" id="9_6uefu"]
+[ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/generalized/states/dash.gd" id="10_dko73"]
+[ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://components/for_characters/generalized/behaviors/land_behavior.gd" id="11_o2sve"]
+[ext_resource type="Script" uid="uid://dh6rrb5uvquv4" path="res://components/for_characters/generalized/hitbox_hurtbox/health.gd" id="13_5ygvn"]
+[ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://components/for_characters/generalized/behaviors/dash_behavior.gd" id="14_3jy72"]
+[ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/generalized/animation_updater.gd" id="15_2f3ic"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ynofk"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lqsr6"]
+
+[node name="BaseCharacter" type="Node2D" node_paths=PackedStringArray("character_body", "mobility_manager", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player")]
+scale = Vector2(15, 15)
+script = ExtResource("1_vnujj")
+character_body = NodePath("CharacterBody")
+mobility_manager = NodePath("CharacterBody/MobilityManager")
+state_machine = NodePath("CharacterBody/StateMachine")
+behavior_manager = NodePath("CharacterBody/BehaviorManager")
+health = NodePath("CharacterBody/Health")
+sprite_manager = NodePath("SpriteManager")
+animation_player = NodePath("AnimationPlayer")
+
+[node name="CharacterBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_player", "state_machine", "mobility_manager", "sprite_manager", "health")]
+script = ExtResource("2_a5pmx")
+base_player = NodePath(".")
+state_machine = NodePath("StateMachine")
+mobility_manager = NodePath("MobilityManager")
+sprite_manager = NodePath("../SpriteManager")
+health = NodePath("Health")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody"]
+shape = SubResource("CircleShape2D_vnujj")
+
+[node name="MobilityManager" type="Node" parent="CharacterBody"]
+script = ExtResource("3_2qyha")
+jump_vel = 2000
+max_horizontal_velocity = 910
+max_fall_velocity = 1300
+metadata/_custom_type_script = "uid://dm0xti0j6gcur"
+
+[node name="StateMachine" type="Node" parent="CharacterBody"]
+script = ExtResource("4_om1db")
+starting_state = "Idle"
+metadata/_custom_type_script = "uid://sukry204wfhf"
+
+[node name="Idle" type="Node" parent="CharacterBody/StateMachine"]
+script = ExtResource("5_bcibw")
+
+[node name="Walk" type="Node" parent="CharacterBody/StateMachine"]
+script = ExtResource("6_bcibw")
+
+[node name="Jump" type="Node" parent="CharacterBody/StateMachine"]
+script = ExtResource("7_om1db")
+
+[node name="Aerial" type="Node" parent="CharacterBody/StateMachine"]
+script = ExtResource("8_ebb2h")
+
+[node name="Dash" type="Node" parent="CharacterBody/StateMachine"]
+script = ExtResource("10_dko73")
+state_type = 1
+
+[node name="BehaviorManager" type="Node" parent="CharacterBody"]
+script = ExtResource("8_a1fmy")
+
+[node name="JumpBehavior" type="Node" parent="CharacterBody/BehaviorManager"]
+script = ExtResource("9_6uefu")
+valid_states = Array[String](["Idle", "Walk", "Aerial"])
+
+[node name="LandBehavior" type="Node" parent="CharacterBody/BehaviorManager"]
+script = ExtResource("11_o2sve")
+priority = 1
+valid_states = Array[String](["Aerial"])
+
+[node name="DashBehavior" type="Node" parent="CharacterBody/BehaviorManager"]
+script = ExtResource("14_3jy72")
+valid_states = Array[String](["Aerial", "Idle", "Walk"])
+
+[node name="Health" type="Node" parent="CharacterBody"]
+script = ExtResource("13_5ygvn")
+metadata/_custom_type_script = "uid://dh6rrb5uvquv4"
+
+[node name="Hitbox" type="Area2D" parent="CharacterBody"]
+scale = Vector2(0.0666667, 0.0666667)
+collision_layer = 0
+script = ExtResource("6_ffvg0")
+metadata/_custom_type_script = "uid://db3qdsst0ai6x"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody/Hitbox"]
+position = Vector2(0, -61)
+scale = Vector2(19.405, 19.405)
+shape = SubResource("CircleShape2D_ynofk")
+
+[node name="SpriteManager" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_lqsr6")
+animation = &"Aerial"
+script = ExtResource("3_o2sve")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="AnimationUpdater" type="Node" parent="." node_paths=PackedStringArray("sprite_manager", "animation_player")]
+script = ExtResource("15_2f3ic")
+sprite_manager = NodePath("../SpriteManager")
+animation_player = NodePath("../AnimationPlayer")
+
+[connection signal="landed" from="CharacterBody" to="CharacterBody/MobilityManager" method="_on_base_player_landed"]
+[connection signal="landed" from="CharacterBody" to="CharacterBody/BehaviorManager/LandBehavior" method="_on_base_player_landed"]
+[connection signal="lock_level_changed" from="CharacterBody" to="CharacterBody/BehaviorManager" method="_on_base_player_lock_level_changed"]
+[connection signal="state_changed" from="CharacterBody/StateMachine" to="CharacterBody/MobilityManager" method="_on_state_machine_state_changed"]
+[connection signal="state_changed" from="CharacterBody/StateMachine" to="CharacterBody/BehaviorManager" method="_on_state_machine_state_changed"]
+[connection signal="state_changed" from="CharacterBody/StateMachine" to="SpriteManager" method="_on_state_machine_state_changed"]
+[connection signal="area_entered" from="CharacterBody/Hitbox" to="CharacterBody/Hitbox" method="_on_area_entered"]
+[connection signal="area_shape_entered" from="CharacterBody/Hitbox" to="CharacterBody/Hitbox" method="_on_area_shape_entered"]
+[connection signal="animation_finished" from="SpriteManager" to="CharacterBody/StateMachine" method="_on_sprite_manager_animation_finished"]

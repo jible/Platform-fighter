@@ -12,6 +12,9 @@ var player = owner as BasePlayer
 """
 
 
+@export_range(0,3, 1) var team_number = 0
+
+
 @export var character_body:CharacterBody2D
 @export var mobility_manager:MobilityManager
 @export var state_machine: CharacterStateMachine

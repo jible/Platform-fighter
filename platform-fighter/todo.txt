@@ -3,3 +3,4 @@ SYSTEMS TO CREATE:
 	
 - Hitbox/Hurtbox System:
 	
+- Take sprite animations off animated sprite (pause animated sprite) and test if it plays through animationplayer.

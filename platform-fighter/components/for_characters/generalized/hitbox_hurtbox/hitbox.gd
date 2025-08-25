@@ -45,6 +45,14 @@ var cluster = null
 var successful_hit_list: Array[Health] = []
 
 func _ready():
+	var base_character = owner as BasePlayer
+	if base_character:
+		collision_mask = 0
+		for i in range (GlobalResources.max_team_count):
+			if i != base_character.team_number:
+				collision_mask |= 1 << i
+	
+	
 	hit_data = {
 		"damage": damage,
 		"knockback_magnitude" : knockback_magnitude,
@@ -71,6 +79,7 @@ func turn_on():
 
 
 func _on_area_entered(hurtbox:Hurtbox):
+	print("yehaw")
 	var other_health = hurtbox.health
 	if !other_health or other_health in successful_hit_list:return 
 	successful_hit_list.append(other_health)
