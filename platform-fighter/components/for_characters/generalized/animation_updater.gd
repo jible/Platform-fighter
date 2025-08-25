@@ -17,6 +17,10 @@ extends Node
 func update_player(): 
 	# Leave "" blank! This is the name of the default library which is unqiue to eacch animation player
 	var anim_library = animation_player.get_animation_library("")
+	if !anim_library:
+		anim_library = AnimationLibrary.new()
+		animation_player.add_animation_library("", anim_library)
+	
 	var anim_names = Array(sprite_manager.sprite_frames.get_animation_names())
 	for anim_name in anim_names:
 		# Extract anim info from sprite manager
@@ -24,7 +28,7 @@ func update_player():
 		var frame_count =  sprite_manager.sprite_frames.get_frame_count(anim_name)
 		var loop = sprite_manager.sprite_frames.get_animation_loop(anim_name)
 		# Add animation or update animation
-		var anim = animation_player.get_animation(anim_name)
+		var anim = anim_library.get_animation(anim_name)
 		if !anim:
 			anim = Animation.new()
 			anim_library.add_animation(anim_name, anim)

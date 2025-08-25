@@ -1,38 +1,26 @@
-[gd_resource type="SpriteFrames" load_steps=39 format=3 uid="uid://dudspqa3diyk5"]
+[gd_resource type="SpriteFrames" load_steps=36 format=3 uid="uid://dudspqa3diyk5"]
 
 [ext_resource type="Texture2D" uid="uid://c2y7malljq7tq" path="res://assets/spritesheets/knight.png" id="1_bsvl8"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_533r6"]
-atlas = ExtResource("1_bsvl8")
-region = Rect2(0, 160, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ccksx"]
-atlas = ExtResource("1_bsvl8")
-region = Rect2(32, 160, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_o8v4s"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_bsvl8"]
 atlas = ExtResource("1_bsvl8")
 region = Rect2(64, 160, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_0ajub"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_wa6vm"]
 atlas = ExtResource("1_bsvl8")
 region = Rect2(96, 160, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_fts0j"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_duj1w"]
 atlas = ExtResource("1_bsvl8")
 region = Rect2(128, 160, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ainhc"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_7ylcj"]
 atlas = ExtResource("1_bsvl8")
 region = Rect2(160, 160, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_doc82"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_5up1g"]
 atlas = ExtResource("1_bsvl8")
 region = Rect2(192, 160, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ebgru"]
-atlas = ExtResource("1_bsvl8")
-region = Rect2(224, 160, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rm0l0"]
 atlas = ExtResource("1_bsvl8")
@@ -154,28 +142,19 @@ region = Rect2(224, 96, 32, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_533r6")
+"texture": SubResource("AtlasTexture_bsvl8")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ccksx")
+"texture": SubResource("AtlasTexture_wa6vm")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_o8v4s")
+"texture": SubResource("AtlasTexture_duj1w")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_0ajub")
+"texture": SubResource("AtlasTexture_7ylcj")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_fts0j")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ainhc")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_doc82")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ebgru")
+"texture": SubResource("AtlasTexture_5up1g")
 }],
 "loop": true,
 "name": &"Aerial",

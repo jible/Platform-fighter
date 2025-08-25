@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=20 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/generalized/base_character.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/generalized/character_body.gd" id="2_a5pmx"]
@@ -21,8 +21,6 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ynofk"]
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_lqsr6"]
 
 [node name="BaseCharacter" type="Node2D" node_paths=PackedStringArray("character_body", "mobility_manager", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player")]
 scale = Vector2(15, 15)
@@ -106,8 +104,6 @@ scale = Vector2(19.405, 19.405)
 shape = SubResource("CircleShape2D_ynofk")
 
 [node name="SpriteManager" type="AnimatedSprite2D" parent="."]
-sprite_frames = SubResource("SpriteFrames_lqsr6")
-animation = &"Aerial"
 script = ExtResource("3_o2sve")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
