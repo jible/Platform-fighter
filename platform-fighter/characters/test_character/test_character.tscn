@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://dma25oxwib2o8"]
 
-[ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://components/for_characters/generalized/base_character.tscn" id="1_3tpjq"]
+[ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_3tpjq"]
 [ext_resource type="SpriteFrames" uid="uid://dudspqa3diyk5" path="res://assets/spriteframes/test_character.tres" id="2_764ya"]
 
 [sub_resource type="Animation" id="Animation_764ya"]
