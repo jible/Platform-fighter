@@ -45,14 +45,11 @@ var cluster = null
 var successful_hit_list: Array[Health] = []
 
 func _ready():
-	var base_character = owner as BasePlayer
+	var base_character:BasePlayer = owner as BasePlayer
 	if base_character:
-		collision_mask = 0
-		for i in range (GlobalResources.max_team_count):
-			if i != base_character.team_number:
-				collision_mask |= 1 << i
-	
-	
+		var temp = (1 << GlobalResources.max_team_count) - 1
+		collision_mask = temp ^ ( 1<<base_character.team_number)
+		print(collision_mask)
 	hit_data = {
 		"damage": damage,
 		"knockback_magnitude" : knockback_magnitude,

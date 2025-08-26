@@ -1,7 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://dma25oxwib2o8"]
+[gd_scene load_steps=12 format=3 uid="uid://dma25oxwib2o8"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_3tpjq"]
 [ext_resource type="SpriteFrames" uid="uid://dudspqa3diyk5" path="res://assets/spriteframes/test_character.tres" id="2_764ya"]
+[ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/generalized/hitbox_hurtbox/hitbox.gd" id="3_8xi0h"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pvd6p"]
+radius = 16.6005
 
 [sub_resource type="Animation" id="Animation_764ya"]
 loop_mode = 1
@@ -158,6 +162,15 @@ _data = {
 [node name="TestCharacter" type="Node2D"]
 
 [node name="BaseCharacter" parent="." instance=ExtResource("1_3tpjq")]
+
+[node name="Hitbox" type="Area2D" parent="BaseCharacter/CharacterBody" index="5"]
+script = ExtResource("3_8xi0h")
+metadata/_custom_type_script = "uid://db3qdsst0ai6x"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BaseCharacter/CharacterBody/Hitbox"]
+position = Vector2(0.8, -9.4)
+shape = SubResource("CircleShape2D_pvd6p")
+debug_color = Color(0.867772, 0.231211, 0.66925, 0.42)
 
 [node name="SpriteManager" parent="BaseCharacter" index="1"]
 sprite_frames = ExtResource("2_764ya")

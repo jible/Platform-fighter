@@ -1,11 +1,14 @@
 class_name Hurtbox
 extends Area2D
 
-@onready var base_character: BasePlayer = owner as BasePlayer
+
+@onready var base_character = owner as BasePlayer
 var health = null
 
 func _ready():
-	if !base_character: return
+	if !base_character: 
+		base_character = self
+		return
 	collision_layer = 0
 	collision_layer += 1 << base_character.team_number
 	
