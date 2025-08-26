@@ -36,7 +36,7 @@ func update_player():
 			anim.loop_mode = Animation.LOOP_LINEAR
 		else:
 			anim.loop_mode = Animation.LOOP_NONE
-		anim.length = frame_count/speed
+		anim.length = (frame_count - 1) / speed
 		
 		# TODO: Maybe remove all other anim tracks!
 		for i in range(anim.get_track_count() - 1, -1, -1):

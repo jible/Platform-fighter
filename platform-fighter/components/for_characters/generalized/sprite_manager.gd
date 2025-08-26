@@ -10,10 +10,6 @@ var current_state: String = ""
 func _ready():
 	character_body.position = (character_body.position/scale).round() * scale
 
-func _on_state_machine_state_changed(new_state_node):
-	current_state = new_state_node.name
-	play(current_state)
-
 func _process(_delta):
 	if snap:
 		if character_body.velocity.x != 0 and character_body.velocity.y != 0:
