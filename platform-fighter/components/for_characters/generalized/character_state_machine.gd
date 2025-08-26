@@ -53,5 +53,5 @@ func exit_state(old_state):
 	old_state.is_active = false
 
 
-func _on_animation_player_animation_finished(anim_name):
+func _on_animation_player_animation_finished(_anim_name):
 	current_state_node.on_anim_end()
