@@ -44,22 +44,23 @@ var cluster = null
 
 var successful_hit_list: Array[Health] = []
 
+# TODO: Needs fixing once reference server is made
 func _ready():
-	var base_character:BasePlayer = owner as BasePlayer
-	if base_character:
-		var temp = (1 << GlobalResources.max_team_count) - 1
-		collision_mask = temp ^ ( 1<<base_character.team_number)
-		print(collision_mask)
-	hit_data = {
-		"damage": damage,
-		"knockback_magnitude" : knockback_magnitude,
-		"knockback_direction" : knockback_direction,
-	}
-	var parent = get_parent()
-	if is_instance_of(parent, HitboxCluster):
-		cluster = parent
-		# Make its list reference a reference to the cluster's list
-		successful_hit_list = cluster.successful_hit_list
+	pass
+	#if base_character:
+		#var temp = (1 << GlobalResources.max_team_count) - 1
+		#collision_mask = temp ^ ( 1<<base_character.team_number)
+		#print(collision_mask)
+	#hit_data = {
+		#"damage": damage,
+		#"knockback_magnitude" : knockback_magnitude,
+		#"knockback_direction" : knockback_direction,
+	#}
+	#var parent = get_parent()
+	#if is_instance_of(parent, HitboxCluster):
+		#cluster = parent
+		## Make its list reference a reference to the cluster's list
+		#successful_hit_list = cluster.successful_hit_list
 
 
 func turn_off():

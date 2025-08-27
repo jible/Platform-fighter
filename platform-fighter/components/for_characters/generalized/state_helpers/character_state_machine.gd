@@ -16,14 +16,12 @@ signal state_changed(new_state_node: CharacterState)
 @export var DEBUG_PRINT_STATE_CHANGE: bool = false
 
 func _ready():
-	
 	for child in get_children():
 		states[child.name] = child
 		child.configure(self, base_character)
 	change_state(starting_state)
 
 func _physics_process(delta):
-	#print(current_state_name)
 	update_state(delta)
 
 func change_state(state_name: String):

@@ -4,6 +4,8 @@ extends Node2D
 
 var successful_hit_list: Array[Health] = []
 
+
+
 func turn_off():
 	successful_hit_list = []
 	for child in get_children():
