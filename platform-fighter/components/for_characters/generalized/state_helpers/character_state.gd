@@ -1,5 +1,5 @@
 class_name CharacterState
-extends Node
+extends Node2D
 
 enum LockLevel {
 	FREE,
