@@ -31,10 +31,8 @@ health = NodePath("CharacterBody/Health")
 sprite_manager = NodePath("SpriteManager")
 animation_player = NodePath("AnimationPlayer")
 
-[node name="CharacterBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_player", "state_machine", "mobility_manager", "sprite_manager", "health")]
+[node name="CharacterBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("mobility_manager", "sprite_manager", "health")]
 script = ExtResource("2_a5pmx")
-base_player = NodePath(".")
-state_machine = NodePath("StateMachine")
 mobility_manager = NodePath("MobilityManager")
 sprite_manager = NodePath("../SpriteManager")
 health = NodePath("Health")
@@ -48,32 +46,6 @@ jump_vel = 2000
 max_horizontal_velocity = 910
 max_vertical_velocity = 1300
 metadata/_custom_type_script = "uid://dm0xti0j6gcur"
-
-[node name="StateMachine" type="Node" parent="CharacterBody"]
-script = ExtResource("4_om1db")
-starting_state = "Idle"
-metadata/_custom_type_script = "uid://sukry204wfhf"
-
-[node name="Idle" type="Node2D" parent="CharacterBody/StateMachine"]
-script = ExtResource("5_bcibw")
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Walk" type="Node2D" parent="CharacterBody/StateMachine"]
-script = ExtResource("6_bcibw")
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Jump" type="Node2D" parent="CharacterBody/StateMachine"]
-script = ExtResource("7_om1db")
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Aerial" type="Node2D" parent="CharacterBody/StateMachine"]
-script = ExtResource("8_ebb2h")
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Dash" type="Node2D" parent="CharacterBody/StateMachine"]
-script = ExtResource("10_dko73")
-state_type = 1
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="BehaviorManager" type="Node" parent="CharacterBody"]
 script = ExtResource("8_a1fmy")
@@ -94,6 +66,36 @@ valid_states = Array[String](["Aerial", "Idle", "Walk"])
 [node name="Health" type="Node" parent="CharacterBody"]
 script = ExtResource("13_5ygvn")
 metadata/_custom_type_script = "uid://dh6rrb5uvquv4"
+
+[node name="StateMachine" type="Node2D" parent="CharacterBody"]
+script = ExtResource("4_om1db")
+metadata/_custom_type_script = "uid://sukry204wfhf"
+
+[node name="Idle" type="Node2D" parent="CharacterBody/StateMachine"]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("5_bcibw")
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="Jump" type="Node2D" parent="CharacterBody/StateMachine"]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("7_om1db")
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="Walk" type="Node2D" parent="CharacterBody/StateMachine"]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("6_bcibw")
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="Dash" type="Node2D" parent="CharacterBody/StateMachine"]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("10_dko73")
+state_type = 1
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="Aerial" type="Node2D" parent="CharacterBody/StateMachine"]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("8_ebb2h")
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="SpriteManager" type="AnimatedSprite2D" parent="."]
 script = ExtResource("3_o2sve")

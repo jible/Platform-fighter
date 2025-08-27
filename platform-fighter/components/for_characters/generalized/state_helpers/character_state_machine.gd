@@ -1,23 +1,25 @@
 class_name CharacterStateMachine
-extends Node
+extends Node2D
 
 # Inspired by https://github.com/jible/capstone/blob/main/scripts/characters/state_machine.gd
-@export var starting_state: String = ""
+@export var starting_state: String = "Idle"
 
 
 var states: Dictionary[String, CharacterState] = {}
 var current_state_name: String
 var current_state_node = null
 var locked:bool = false
-
+@onready var base_character : BaseCharacter = owner as BaseCharacter
 
 signal state_changed(new_state_node: CharacterState)
 
 @export var DEBUG_PRINT_STATE_CHANGE: bool = false
 
 func _ready():
+	
 	for child in get_children():
 		states[child.name] = child
+		child.configure(self, base_character)
 	change_state(starting_state)
 
 func _physics_process(delta):

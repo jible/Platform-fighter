@@ -3,7 +3,7 @@ extends Node
 
 var all_behaviors: Array[CharacterBehavior]
 var active_behaviors: Array[CharacterBehavior]
-@onready var base_character: BasePlayer = owner as BasePlayer
+@onready var base_character: BaseCharacter = owner as BaseCharacter
 @onready var state_machine: CharacterStateMachine = base_character.state_machine
 @onready var character_body: CharacterBody2D = base_character.character_body
 

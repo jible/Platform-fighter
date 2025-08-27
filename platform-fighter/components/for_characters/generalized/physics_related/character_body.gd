@@ -2,8 +2,9 @@ extends CharacterBody2D
 
 var prev_grounded: bool = false
 var lock_level: CharacterState.LockLevel
-@export var base_player: Node2D
-@export var state_machine: CharacterStateMachine
+
+@onready var base_character : BaseCharacter = owner as BaseCharacter
+@onready var state_machine: CharacterStateMachine = base_character.state_machine
 @export var mobility_manager: MobilityManager 
 @export var sprite_manager: SpriteManager
 @export var health: Health

@@ -13,7 +13,7 @@ var state_machine
 var health: float = 0
 
 func _ready():
-	base_character = owner as BasePlayer
+	base_character = owner as BaseCharacter
 	if !base_character:
 		return
 	state_machine = base_character.state_machine

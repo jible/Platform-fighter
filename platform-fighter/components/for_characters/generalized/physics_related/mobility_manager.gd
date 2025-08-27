@@ -2,7 +2,7 @@ extends Node
 class_name MobilityManager
 
 
-@onready var base_character: BasePlayer = owner as BasePlayer
+@onready var base_character: BaseCharacter = owner as BaseCharacter
 @onready var character_body = base_character.character_body
 
 enum state_types {
@@ -111,7 +111,7 @@ func add_capped_velocity_impulse(impulse_vector):
 		else:
 			# If adding the velocity results in same velocity direction 
 			# (despite adding magintude in another direction), add it.
-			if sign(added_x_velocities) == sign(character_body[axis]):
+			if sign(added_x_velocities) == sign(character_body.velocity[axis]):
 				character_body.velocity[axis] = added_x_velocities
 			# If adding the velocity changes the direction, add it and clamp it.
 			else:

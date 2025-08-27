@@ -2,7 +2,7 @@ class_name Hurtbox
 extends Area2D
 
 
-@onready var base_character = owner as BasePlayer
+@onready var base_character = owner as BaseCharacter
 var health = null
 
 func _ready():
