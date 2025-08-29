@@ -1,10 +1,14 @@
 @tool
 extends Node
 
-# This script automatically serves references to all of the nodes on the character 
-# if they have empty variables that correspond to the names of these variables
+'''
+This script gives all nodes with the "reference_server" property a reference to this node
+ When the Serve References button is pressed
+ This node stores all manager/major node references that a character will only have one of
+ So, if a node needs a reference to the character body, they will type:
+ var character_body = server_refence.character_body
+'''
 @export_tool_button("Serve References") var button = serve_references
-
 
 @export var base_character:BaseCharacter
 @export var character_body:CharacterBody2D
@@ -15,18 +19,26 @@ extends Node
 @export var sprite_manager: SpriteManager
 @export var animation_player: AnimationPlayer
 
+
+
 func serve_references():
-	var root = base_character
-	var references = {}
-	var own_property_list = get_property_list()
-	for property in own_property_list:
-		if property.useage and PROPERTY_USAGE_EDITOR:
-			print(property)
+	propogate_references(base_character)
 	return
 	
 
 func propogate_references(parent):
+	if parent == null:
+		return
+	
 	var children = parent.get_children()
 	for child in children:
-		#for 
-		pass
+		for prop in get_property_list():
+			if not (prop.usage & PROPERTY_USAGE_EDITOR):
+				continue
+				
+			var reference_name = prop.name
+			if reference_name == "script":
+				continue
+			if reference_name in child and not child[reference_name] and self[reference_name]:
+				child[reference_name] = self[reference_name]
+		propogate_references(child)
