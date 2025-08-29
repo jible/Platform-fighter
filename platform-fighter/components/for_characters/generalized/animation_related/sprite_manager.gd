@@ -2,8 +2,8 @@ class_name SpriteManager
 extends AnimatedSprite2D
 
 # Based on https://github.com/jible/capstone/blob/main/scripts/characters/animation_manager.gd
-@onready var base_character: BaseCharacter = owner as BaseCharacter
-@onready var character_body: CharacterBody2D = base_character.character_body
+@export var base_character: BaseCharacter
+@export var character_body: CharacterBody2D
 @export var snap: bool = true
 var current_state: String = ""
 

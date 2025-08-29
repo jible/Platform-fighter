@@ -9,7 +9,7 @@ var states: Dictionary[String, CharacterState] = {}
 var current_state_name: String
 var current_state_node = null
 var locked:bool = false
-@onready var base_character : BaseCharacter = owner as BaseCharacter
+@export var base_character : BaseCharacter
 
 signal state_changed(new_state_node: CharacterState)
 
@@ -18,7 +18,6 @@ signal state_changed(new_state_node: CharacterState)
 func _ready():
 	for child in get_children():
 		states[child.name] = child
-		child.configure(self, base_character)
 	change_state(starting_state)
 
 func _physics_process(delta):

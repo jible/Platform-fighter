@@ -3,9 +3,10 @@ extends Node
 
 var all_behaviors: Array[CharacterBehavior]
 var active_behaviors: Array[CharacterBehavior]
-@onready var base_character: BaseCharacter = owner as BaseCharacter
-@onready var state_machine: CharacterStateMachine = base_character.state_machine
-@onready var character_body: CharacterBody2D = base_character.character_body
+
+@export var base_character: BaseCharacter
+@export var state_machine: CharacterStateMachine
+@export var character_body: CharacterBody2D
 
 
 func _ready():

@@ -6,17 +6,13 @@ This node stores health
 Decides knock back
 """
 
-var base_character
-var state_machine
+@export var base_character: BaseCharacter
+@export var state_machine: CharacterStateMachine
 
 
 var health: float = 0
 
 func _ready():
-	base_character = owner as BaseCharacter
-	if !base_character:
-		return
-	state_machine = base_character.state_machine
 	connect_hurtboxes(state_machine)
 	pass
 

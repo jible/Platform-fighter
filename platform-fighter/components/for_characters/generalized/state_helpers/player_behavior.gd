@@ -7,8 +7,8 @@ extends Node
 @export var priority: CharacterState.LockLevel
 # This behavior only takes effect when the character is in any of the given states
 @export var valid_states: Array[String]
-@onready var base_character: BaseCharacter = owner as BaseCharacter
-@onready var state_machine: CharacterStateMachine = base_character.state_machine
+@export var base_character: BaseCharacter
+@export var state_machine: CharacterStateMachine
 var is_active:bool = false
 
 

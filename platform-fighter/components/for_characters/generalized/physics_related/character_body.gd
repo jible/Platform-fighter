@@ -3,8 +3,8 @@ extends CharacterBody2D
 var prev_grounded: bool = false
 var lock_level: CharacterState.LockLevel
 
-@onready var base_character : BaseCharacter = owner as BaseCharacter
-@onready var state_machine: CharacterStateMachine = base_character.state_machine
+@export var base_character : BaseCharacter
+@export var state_machine: CharacterStateMachine
 @export var mobility_manager: MobilityManager 
 @export var sprite_manager: SpriteManager
 @export var health: Health
