@@ -7,8 +7,9 @@ enum LockLevel {
 	HURT_CANCELABLE,
 	FULL_LOCK,
 }
-
-var is_active:bool = false
+''' Toggle this to prevent this state from being active
+For instance, you may inherit a base state but not want to use it.'''
+@export var is_active:bool = true
 @export var base_character: BaseCharacter
 @export var state_machine: CharacterStateMachine
 @export var character_body:CharacterBody2D

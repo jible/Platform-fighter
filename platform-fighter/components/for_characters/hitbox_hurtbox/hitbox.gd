@@ -34,6 +34,8 @@ var on: bool = true
 
 
 var hit_data = {}
+var collision_shape:CollisionShape2D
+@export var base_character: BaseCharacter
 @export var damage: int = 0
 @export var knockback_magnitude: float = 0
 @export var knockback_direction: Vector2 = Vector2(0,0) :
@@ -42,45 +44,55 @@ var hit_data = {}
 
 var cluster = null
 
-var successful_hit_list: Array[Health] = []
+# Array of either healths or hurtboxes
+var successful_hit_list: Array = []
 
 # TODO: Needs fixing once reference server is made
 func _ready():
-	pass
-	#if base_character:
-		#var temp = (1 << GlobalResources.max_team_count) - 1
-		#collision_mask = temp ^ ( 1<<base_character.team_number)
-		#print(collision_mask)
-	#hit_data = {
-		#"damage": damage,
-		#"knockback_magnitude" : knockback_magnitude,
-		#"knockback_direction" : knockback_direction,
-	#}
-	#var parent = get_parent()
-	#if is_instance_of(parent, HitboxCluster):
-		#cluster = parent
-		## Make its list reference a reference to the cluster's list
-		#successful_hit_list = cluster.successful_hit_list
+	collision_shape = get_child(0)
+	turn_off()
+	
+	area_entered.connect(_on_area_entered)
+	
+	if base_character:
+		var temp = (1 << GlobalResources.max_team_count) - 1
+		collision_mask = temp ^ ( 1<<base_character.team_number)
+	hit_data = {
+		"damage": damage,
+		"knockback_magnitude" : knockback_magnitude,
+		"knockback_direction" : knockback_direction,
+	}
+	var parent = get_parent()
+	if is_instance_of(parent, HitboxCluster):
+		cluster = parent
+		# Make its list reference a reference to the cluster's list
+		successful_hit_list = cluster.successful_hit_list
 
 
 func turn_off():
-	if !on:return
+	collision_shape.debug_color = Color(0,0)
+	collision_shape.disabled = true
 	monitoring = false
 	monitorable = false
 	if !cluster:
 		successful_hit_list = []
+	on = false
 
 func turn_on():
-	if on:return
+	collision_shape.debug_color = Color(Color.RED,1)
+	collision_shape.disabled = false
 	monitoring = true
 	monitorable = true
-
+	on = true
 
 func _on_area_entered(hurtbox:Hurtbox):
-	print("yehaw")
+	print(hurtbox)
 	var other_health = hurtbox.health
-	if !other_health or other_health in successful_hit_list:return 
-	successful_hit_list.append(other_health)
+	if !other_health:
+		if hurtbox in successful_hit_list:return
+		successful_hit_list.append(hurtbox)
+	elif other_health in successful_hit_list:return 
+	else:successful_hit_list.append(other_health)
 	
 	hurtbox.hit_by(self, hit_data)
 	emit_signal("landed_hit", hurtbox, hit_data)

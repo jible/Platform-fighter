@@ -66,4 +66,3 @@ func update_player():
 			pass
 		continue
 		
-		anim.resource_changed()

@@ -19,5 +19,6 @@ func _ready():
 signal received_hit (hitbox, hit_data)
 
 func hit_by(hitbox, hit_data):
-	print("ouch" + str(self))
+	
+	print("ouch")
 	emit_signal("received_hit", hitbox, hit_data)
