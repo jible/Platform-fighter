@@ -25,8 +25,9 @@ var state_processes: Dictionary = {
 }
 
 var current_state_type: state_types = state_types.NO_PROCESS
-
+var input_dir: int = 0
 @export var jump_vel = 800
+@export var jump_horizontal_impulse = 10000
 @export var grounded_acceleration = 1500
 @export var aeriel_acceleration = 900
 @export var gravity_force = 4500
@@ -47,7 +48,7 @@ func _physics_process(delta):
 	# State Decides the movement processes that occur each frame
 	# The default movement process is:
 	# Normal movmenet process
-	var input_dir = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+	input_dir = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	for process in state_processes[current_state_type]:
 		process.call(delta, input_dir)
 
@@ -88,6 +89,7 @@ func jump():
 	elif used_ariel_jumps < max_ariel_jumps:
 		character_body.velocity.y = -jump_vel
 		used_ariel_jumps += 1
+	add_capped_velocity_impulse(Vector2(jump_horizontal_impulse * sign(input_dir), 0) )
 
 func _on_base_player_landed():
 	used_ariel_jumps = 0
@@ -95,18 +97,18 @@ func _on_base_player_landed():
 func _on_state_machine_state_changed(new_state_node):
 	current_state_type = new_state_node.state_type
 
-func add_capped_velocity_impulse(impulse_vector):
+func add_capped_velocity_impulse(impulse_vector: Vector2):
 	# For each axis
+	print(impulse_vector)
 	for axis in ["x", "y"]:
 		if impulse_vector[axis] == 0: continue
 		var added_x_velocities = character_body.velocity[axis] + impulse_vector[axis]
 		# If velociy is added in the same direction:
 		if sign(impulse_vector[axis]) == sign(character_body.velocity[axis]):
 			# If starting velocity is within max velocity range:
-			if abs(character_body.velocity[axis]) < max_velocity_vector:
+			if abs(character_body.velocity[axis]) < max_velocity_vector[axis]:
 				# Add velocity and cap it
-				character_body.velocity[axis] = added_x_velocities
-				character_body.velocity[axis] = clamp(character_body.velocity[axis], -max_velocity_vector, max_velocity_vector)
+				character_body.velocity[axis] = clamp(added_x_velocities, -max_velocity_vector[axis], max_velocity_vector[axis])
 			# Don't add velocity if it already exceeds max
 		else:
 			# If adding the velocity results in same velocity direction 
@@ -120,9 +122,8 @@ func add_capped_velocity_impulse(impulse_vector):
 func add_uncapped_velocity(velocity_impulse):
 	character_body.velocity += velocity_impulse
 
-func set_capped_velocity(new_velocity):
-	for axis in ['x','y']:
-		character_body.velocity[axis] = clamp(new_velocity[axis],-max_velocity_vector[axis],max_velocity_vector[axis])
+func set_capped_velocity_on_axis(new_velocity, axis):
+	character_body.velocity[axis] = clamp(new_velocity,-max_velocity_vector[axis],max_velocity_vector[axis])
 
 func set_uncapped_velocity(new_velocity):
 	character_body.velocity = new_velocity
