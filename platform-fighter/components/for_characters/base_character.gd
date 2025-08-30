@@ -13,3 +13,4 @@ var player = owner as BasePlayer
 
 
 @export_range(0,3, 1) var team_number = 0
+@export_range(0,3,1) var player_number = 0
