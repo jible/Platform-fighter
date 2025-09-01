@@ -13,9 +13,8 @@ For instance, you may inherit a base state but not want to use it.'''
 @export var base_character: BaseCharacter
 @export var state_machine: CharacterStateMachine
 @export var character_body:CharacterBody2D
-@export var mobility_manager: MobilityManager
 
-@export var state_type:MobilityManager.state_types = MobilityManager.state_types.STANDARD
+@export var state_type:SpecializedCharacterBody.state_types = SpecializedCharacterBody.state_types.STANDARD
 
 
 

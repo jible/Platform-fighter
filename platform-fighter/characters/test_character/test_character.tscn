@@ -120,6 +120,50 @@ tracks/1/keys = {
 "values": [0, 1, 2, 3]
 }
 
+[sub_resource type="Animation" id="Animation_d86wp"]
+length = 1.4
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.6, 1.06667),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"turn_on"
+}, {
+"args": [],
+"method": &"turn_off"
+}]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteManager:animation")
+tracks/1/interp = 0
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["Punch"]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteManager:frame")
+tracks/2/interp = 0
+tracks/2/loop_wrap = false
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6]
+}
+
 [sub_resource type="Animation" id="Animation_qsrvy"]
 length = 0.001
 
@@ -179,50 +223,6 @@ tracks/1/keys = {
 "values": []
 }
 
-[sub_resource type="Animation" id="Animation_d86wp"]
-length = 1.4
-tracks/0/type = "method"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0.6, 1.06667),
-"transitions": PackedFloat32Array(1, 1),
-"values": [{
-"args": [],
-"method": &"turn_on"
-}, {
-"args": [],
-"method": &"turn_off"
-}]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("SpriteManager:animation")
-tracks/1/interp = 0
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["Punch"]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("SpriteManager:frame")
-tracks/2/interp = 0
-tracks/2/loop_wrap = false
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qsrvy"]
 _data = {
 &"Aerial": SubResource("Animation_764ya"),
@@ -254,12 +254,11 @@ metadata/_custom_type_script = "uid://ujvf0lqqpayc"
 sprite_frames = ExtResource("2_764ya")
 animation = &"Punch"
 
-[node name="Punch" type="Node2D" parent="BaseCharacter/SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("base_character", "state_machine", "character_body", "mobility_manager")]
+[node name="Punch" type="Node2D" parent="BaseCharacter/SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_8xi0h")
 base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
-mobility_manager = NodePath("../../../CharacterBody/MobilityManager")
 state_type = 2
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 

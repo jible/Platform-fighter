@@ -12,7 +12,6 @@ This script gives all nodes with the "reference_server" property a reference to 
 
 @export var base_character:BaseCharacter
 @export var character_body:CharacterBody2D
-@export var mobility_manager:MobilityManager
 @export var state_machine: CharacterStateMachine
 @export var behavior_manager: CharacterBehaviorManager
 @export var health: Health
