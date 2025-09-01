@@ -90,7 +90,6 @@ func standard_drag_process(delta):
 
 func standard_gravity_process(delta):
 	if grounded:
-		velocity.y = 0
 		return
 	velocity.y += gravity_force * delta
 	if velocity.y > max_vertical_velocity:
@@ -113,7 +112,7 @@ func jump():
 
 
 
-func _on_player_landed():
+func _on_landed():
 	used_ariel_jumps = 0
 
 func _on_state_machine_state_changed(new_state_node):
@@ -155,7 +154,3 @@ func set_lock_level(new_lock_level: CharacterState.LockLevel):
 	if lock_level != new_lock_level:
 		lock_level = new_lock_level
 		emit_signal("lock_level_changed", lock_level)
-
-
-func _on_landed():
-	pass # Replace with function body.

@@ -32,6 +32,9 @@ base_character = NodePath("..")
 state_machine = NodePath("../SpriteManager/StateMachine")
 sprite_manager = NodePath("../SpriteManager")
 health = NodePath("Health")
+jump_vel = 2000
+max_horizontal_velocity = 910
+max_vertical_velocity = 1300
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody"]
 shape = SubResource("CircleShape2D_vnujj")
