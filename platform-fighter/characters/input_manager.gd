@@ -1,4 +1,3 @@
-@tool
 class_name InputManager
 extends Node
 
@@ -10,6 +9,11 @@ In the future it should handle them taking account for the player's specialized 
 """
 
 var drift_threshold = .1
+@onready var current_controller_states: Array[ControllerState] = [
+	ControllerState.new(),
+	ControllerState.new(),
+	ControllerState.new(),
+]
 
 const button_default_controls: Dictionary[int, String] ={
 	0:"B",
@@ -25,10 +29,10 @@ const button_default_controls: Dictionary[int, String] ={
 }
 
 const axis_default_controls: Dictionary[int, String] = {
-	0: "stick_1_horizontal",
-	1: "stick_1_vertical",
-	2: "stick_2_horizontal",
-	3: "stick_2_vertical",
+	0: "left_horizontal",
+	1: "left_vertical",
+	2: "right_horizontal",
+	3: "right_vertical",
 	4: "ZL",
 	5: "ZR",
 }
@@ -36,8 +40,23 @@ const axis_default_controls: Dictionary[int, String] = {
 
 
 func _input(event):
+	var button
 	if event is InputEventJoypadButton:
-		print(button_default_controls[event.button_index])
+		button = button_default_controls.get(event.button_index, null)
+		if !button: return
+		current_controller_states[event.device].buttons[button] = event.pressed
 	elif event is InputEventJoypadMotion:
-		if abs(event.axis_value) >  drift_threshold:
-			print(axis_default_controls[event.axis])
+		var axis_value = event.axis_value
+		if abs(axis_value) < drift_threshold:
+			axis_value = 0
+		button = axis_default_controls.get(event.axis)
+		if !button: return
+		if button == "ZL" or button == "ZR":
+			current_controller_states[event.device].buttons[button] = true if axis_value > .9 else false
+		else: 
+			var stick_num = floor(event.axis/2)
+			var axis = 'x' if event.axis%2 == 0 else 'y'
+			current_controller_states[event.device].sticks[stick_num][axis] = axis_value
+
+func _process(_delta):
+	current_controller_states[0] = current_controller_states[0].get_copy()
