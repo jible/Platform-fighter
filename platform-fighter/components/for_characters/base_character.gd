@@ -23,4 +23,6 @@ that do not exist on the player. Any managers or stages or
 other info about the scene the player is in is grabbed through this. 
 """
 
-	
+func get_references():
+	pass
+	play_scene_manager = get_parent().get_parernt()

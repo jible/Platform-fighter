@@ -13,3 +13,5 @@ zoom = Vector2(0.31, 0.31)
 
 [node name="InputManager" type="Node" parent="."]
 script = ExtResource("1_m1edv")
+
+[node name="CharacterHolder" type="Node2D" parent="."]

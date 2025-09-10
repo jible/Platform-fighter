@@ -17,6 +17,8 @@ script = ExtResource("1_nd71p")
 
 [node name="PlayScene" parent="." instance=ExtResource("3_qjeyg")]
 
+[node name="BaseCharacter" parent="PlayScene/CharacterHolder" index="0" instance=ExtResource("5_qjeyg")]
+
 [node name="stage" type="StaticBody2D" parent="PlayScene"]
 position = Vector2(0, 108.765)
 scale = Vector2(4.415, 4.415)
@@ -41,4 +43,4 @@ metadata/_custom_type_script = "uid://bm3an7ro8eqsd"
 position = Vector2(1040, -355)
 shape = SubResource("CircleShape2D_qjeyg")
 
-[node name="BaseCharacter" parent="PlayScene" instance=ExtResource("5_qjeyg")]
+[editable path="PlayScene"]
