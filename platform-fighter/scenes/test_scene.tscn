@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://bu3j6k8wggx17"]
+[gd_scene load_steps=8 format=3 uid="uid://bu3j6k8wggx17"]
 
 [ext_resource type="Texture2D" uid="uid://dtk1g11hitpmo" path="res://assets/images/icon.svg" id="1_j8ivh"]
 [ext_resource type="Script" uid="uid://cg5i8bu2gpf66" path="res://scenes/test_scene.gd" id="1_nd71p"]
 [ext_resource type="PackedScene" uid="uid://mbd7hr8paxe0" path="res://scenes/play_scene.tscn" id="3_qjeyg"]
 [ext_resource type="Script" uid="uid://bm3an7ro8eqsd" path="res://components/for_characters/hitbox_hurtbox/hurtbox.gd" id="4_7ddre"]
+[ext_resource type="PackedScene" uid="uid://dy4tuhm6pr8b3" path="res://characters/test_character/test_character.tscn" id="5_qjeyg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7ddre"]
 size = Vector2(123, 120)
@@ -39,3 +40,5 @@ metadata/_custom_type_script = "uid://bm3an7ro8eqsd"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayScene/Hurtbox"]
 position = Vector2(1040, -355)
 shape = SubResource("CircleShape2D_qjeyg")
+
+[node name="BaseCharacter" parent="PlayScene" instance=ExtResource("5_qjeyg")]

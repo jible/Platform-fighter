@@ -19,7 +19,10 @@ This script gives all nodes with the "reference_server" property a reference to 
 @export var animation_player: AnimationPlayer
 
 
-
+'''
+Note: After adding new nodes, you have to reload the scene in order for those nodes 
+to be reached by this script.
+'''
 func serve_references():
 	propogate_references(base_character)
 	return
