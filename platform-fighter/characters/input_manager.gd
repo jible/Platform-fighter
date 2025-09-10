@@ -7,8 +7,14 @@ This script parses inputs and feeds them to the player
 
 In the future it should handle them taking account for the player's specialized binds
 """
-
+enum button_event_type{
+	PRESSED,
+	RELEASED,
+	STICK_MOVE,
+}
 var drift_threshold = .1
+signal button_event(button_name: String, device: int, event_type: button_event_type, axis:Vector2)
+
 @onready var current_controller_states: Array[ControllerState] = [
 	ControllerState.new(),
 	ControllerState.new(),
@@ -45,6 +51,8 @@ func _input(event):
 		button = button_default_controls.get(event.button_index, null)
 		if !button: return
 		current_controller_states[event.device].buttons[button] = event.pressed
+		var event_type = button_event_type.PRESSED if event.pressed else button_event_type.RELEASED
+		button_event.emit(button,event.device, event_type, Vector2.ZERO)
 	elif event is InputEventJoypadMotion:
 		var axis_value = event.axis_value
 		if abs(axis_value) < drift_threshold:
@@ -52,11 +60,22 @@ func _input(event):
 		button = axis_default_controls.get(event.axis)
 		if !button: return
 		if button == "ZL" or button == "ZR":
-			current_controller_states[event.device].buttons[button] = true if axis_value > .9 else false
+			var pressed = true if axis_value > .9 else false
+			current_controller_states[event.device].buttons[button] = pressed
+			var event_type = button_event_type.PRESSED if pressed else button_event_type.RELEASED
+			button_event.emit(button,event.device, event_type, Vector2.ZERO)
 		else: 
 			var stick_num = floor(event.axis/2)
 			var axis = 'x' if event.axis%2 == 0 else 'y'
 			current_controller_states[event.device].sticks[stick_num][axis] = axis_value
+			button_event.emit(
+				button,
+				event.device, 
+				button_event_type.STICK_MOVE, 
+				current_controller_states[event.device].sticks[stick_num]
+			)
 
-func _process(_delta):
-	current_controller_states[0] = current_controller_states[0].get_copy()
+func _physics_process(_delta):
+	#current_controller_states[0] = current_controller_states[0].get_copy()
+	pass
+	

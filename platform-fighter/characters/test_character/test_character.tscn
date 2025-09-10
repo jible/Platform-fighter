@@ -252,7 +252,7 @@ metadata/_custom_type_script = "uid://ujvf0lqqpayc"
 
 [node name="SpriteManager" parent="BaseCharacter" index="1"]
 sprite_frames = ExtResource("2_764ya")
-animation = &"Punch"
+animation = &"Aerial"
 
 [node name="Punch" type="Node2D" parent="BaseCharacter/SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_8xi0h")

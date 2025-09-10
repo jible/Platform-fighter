@@ -29,7 +29,7 @@ func propogate_references(parent):
 	if parent == null:
 		return
 	
-	var children = parent.get_children()
+	var children = parent.get_children(true)
 	for child in children:
 		for prop in get_property_list():
 			if not (prop.usage & PROPERTY_USAGE_EDITOR):

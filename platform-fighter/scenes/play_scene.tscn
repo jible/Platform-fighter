@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://mbd7hr8paxe0"]
+
+[ext_resource type="Script" uid="uid://b1g2yvibmsn5v" path="res://characters/input_manager.gd" id="1_m1edv"]
+[ext_resource type="Script" uid="uid://dr5leuuafn8o0" path="res://scenes/play_scene_manager.gd" id="1_wklqy"]
+
+[node name="PlaySceneManager" type="Node2D" node_paths=PackedStringArray("camera", "input_manager")]
+script = ExtResource("1_wklqy")
+camera = NodePath("Camera2D")
+input_manager = NodePath("InputManager")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.31, 0.31)
+
+[node name="InputManager" type="Node" parent="."]
+script = ExtResource("1_m1edv")

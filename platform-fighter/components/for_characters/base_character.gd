@@ -13,3 +13,14 @@ var player = owner as BasePlayer
 
 
 @export_range(0,3, 1) var team_number = 0
+var play_scene_manager: PlaySceneManager
+var input_manager: InputManager
+
+	
+"""
+This function grabs all necessary references for the player
+that do not exist on the player. Any managers or stages or 
+other info about the scene the player is in is grabbed through this. 
+"""
+
+	

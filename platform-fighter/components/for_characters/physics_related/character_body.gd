@@ -29,7 +29,7 @@ var state_processes: Dictionary = {
 	state_types.NO_PROCESS: [],
 	state_types.PHYSICS_ONLY: [
 		Callable(standard_gravity_process),
-		Callable(standard_drag_process),
+		Callable(no_control_drag_process),
 	]
 }
 
@@ -87,6 +87,13 @@ func standard_drag_process(delta):
 		velocity.x -= velocity.x * delta * drag
 		if abs(velocity.x) < velocity_threshold:
 			velocity.x = 0
+
+func no_control_drag_process(delta):
+	# If there is no input, apply drag
+	var drag = grounded_drag if is_on_floor() else aeriel_drag
+	velocity.x -= velocity.x * delta * drag
+	if abs(velocity.x) < velocity_threshold:
+		velocity.x = 0
 
 func standard_gravity_process(delta):
 	if grounded:
