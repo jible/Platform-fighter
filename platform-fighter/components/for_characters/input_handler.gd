@@ -22,7 +22,6 @@ func _ready():
 	input_manager.button_event.connect(pass_button_signal)
 	
 func pass_button_signal(button_name: String, device: int, event_type: InputManager.button_event_type, _axis:Vector2):
-	print(device, player_number)
 	if device != player_number: return
 	match event_type:
 		InputManager.button_event_type.PRESSED:
@@ -31,5 +30,9 @@ func pass_button_signal(button_name: String, device: int, event_type: InputManag
 			button_released.emit(button_name)
 		_:
 			return
-func get_sticks():
-	return input_manager.current_controller_states[player_number].sticks
+
+func get_left_stick() -> Vector2:
+	return input_manager.current_controller_states[player_number].sticks[0]
+
+func get_right_stick() -> Vector2:
+	return input_manager.current_controller_states[player_number].sticks[1]

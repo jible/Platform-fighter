@@ -7,6 +7,7 @@ var lock_level: CharacterState.LockLevel
 @export var base_character : BaseCharacter
 @export var state_machine: CharacterStateMachine
 @export var sprite_manager: SpriteManager
+@export var input_handler: InputHandler
 @export var health: Health
 
 var grounded:bool = false
@@ -56,7 +57,7 @@ var used_ariel_jumps = 0
 func _physics_process(delta):# State Decides the movement processes that occur each frame
 	# The default movement process is:
 	# Normal movmenet process
-	input_dir = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+	input_dir = input_handler.get_left_stick().x
 
 	for process in state_processes[current_state_type]:
 		process.call(delta)

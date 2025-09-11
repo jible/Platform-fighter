@@ -35,5 +35,5 @@ func _on_base_player_lock_level_changed(_lock_level):
 	get_active_behaviors()
 
 
-func _on_state_machine_state_changed(new_state_node):
+func _on_state_machine_state_changed(_new_state_node):
 	get_active_behaviors()

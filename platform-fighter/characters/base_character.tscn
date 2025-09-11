@@ -25,11 +25,12 @@
 scale = Vector2(15, 15)
 script = ExtResource("1_vnujj")
 
-[node name="CharacterBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "sprite_manager", "health")]
+[node name="CharacterBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "sprite_manager", "input_handler", "health")]
 script = ExtResource("2_a5pmx")
 base_character = NodePath("..")
 state_machine = NodePath("../SpriteManager/StateMachine")
 sprite_manager = NodePath("../SpriteManager")
+input_handler = NodePath("../InputHandler")
 health = NodePath("Health")
 jump_vel = 2000
 max_horizontal_velocity = 910
@@ -103,9 +104,10 @@ state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
-[node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
+[node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
 scale = Vector2(0.0666667, 0.0666667)
 script = ExtResource("10_dko73")
+input_handler = NodePath("../../../InputHandler")
 base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")

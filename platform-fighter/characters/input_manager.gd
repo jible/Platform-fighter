@@ -74,18 +74,17 @@ func _input(event):
 			current_controller_states[event.device].buttons[button] = pressed
 			var event_type = button_event_type.PRESSED if pressed else button_event_type.RELEASED
 			button_event.emit(button,event.device, event_type, Vector2.ZERO)
-		# This code is for emiting signals on stick input changes. It isn't being used, so its just commented out
-		# Leave it here unless it is clear it won't be used. 
-		#else: 
-			#var stick_num = floor(event.axis/2)
-			#var axis = 'x' if event.axis%2 == 0 else 'y'
-			#current_controller_states[event.device].sticks[stick_num][axis] = axis_value
-			#button_event.emit(
-				#button,
-				#event.device, 
-				#button_event_type.STICK_MOVE, 
-				#current_controller_states[event.device].sticks[stick_num]
-			#)
+		
+		else: 
+			var stick_num = floor(event.axis/2)
+			var axis = 'x' if event.axis%2 == 0 else 'y'
+			current_controller_states[event.device].sticks[stick_num][axis] = axis_value
+			button_event.emit(
+				button,
+				event.device, 
+				button_event_type.STICK_MOVE, 
+				current_controller_states[event.device].sticks[stick_num]
+			)
 	elif event is InputEventKey:
 		button = keyboard_controls.get(event.keycode, null)
 		if button in [
