@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=20 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/physics_related/character_body.gd" id="2_a5pmx"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://characters/test_character/behaviors/dash_behavior.gd" id="14_3jy72"]
 [ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/animation_related/animation_updater.gd" id="15_2f3ic"]
 [ext_resource type="Script" uid="uid://dfn5xpobmmdm4" path="res://components/for_characters/animation_related/animation_player.gd" id="17_iht17"]
+[ext_resource type="Script" uid="uid://c5vmhdvjvsfbr" path="res://components/for_characters/input_handler.gd" id="18_cgfyo"]
 [ext_resource type="Script" uid="uid://l3olgavpcsgr" path="res://components/for_characters/reference_server.gd" id="18_hcpvk"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
@@ -129,7 +130,7 @@ script = ExtResource("15_2f3ic")
 sprite_manager = NodePath("../../SpriteManager")
 animation_player = NodePath("../../AnimationPlayer")
 
-[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player")]
+[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player", "input_handler")]
 script = ExtResource("18_hcpvk")
 base_character = NodePath("../..")
 character_body = NodePath("../../CharacterBody")
@@ -138,6 +139,11 @@ behavior_manager = NodePath("../../CharacterBody/BehaviorManager")
 health = NodePath("../../CharacterBody/Health")
 sprite_manager = NodePath("../../SpriteManager")
 animation_player = NodePath("../../AnimationPlayer")
+input_handler = NodePath("../../InputHandler")
+
+[node name="InputHandler" type="Node" parent="." node_paths=PackedStringArray("base_character")]
+script = ExtResource("18_cgfyo")
+base_character = NodePath("..")
 
 [connection signal="landed" from="CharacterBody" to="CharacterBody" method="_on_landed"]
 [connection signal="landed" from="CharacterBody" to="CharacterBody/BehaviorManager/LandBehavior" method="_on_base_player_landed"]

@@ -21,6 +21,16 @@ signal button_event(button_name: String, device: int, event_type: button_event_t
 	ControllerState.new(),
 ]
 
+const keyboard_controls: Dictionary = {
+	KEY_SHIFT: "B",
+	KEY_E:"A",
+	KEY_SPACE:"X",
+	KEY_W: "left_up",
+	KEY_S: "left_down",
+	KEY_A: "left_left",
+	KEY_D: "left_right",
+}
+
 const button_default_controls: Dictionary[int, String] ={
 	0:"B",
 	1:"A",
@@ -64,16 +74,28 @@ func _input(event):
 			current_controller_states[event.device].buttons[button] = pressed
 			var event_type = button_event_type.PRESSED if pressed else button_event_type.RELEASED
 			button_event.emit(button,event.device, event_type, Vector2.ZERO)
-		else: 
-			var stick_num = floor(event.axis/2)
-			var axis = 'x' if event.axis%2 == 0 else 'y'
-			current_controller_states[event.device].sticks[stick_num][axis] = axis_value
-			button_event.emit(
-				button,
-				event.device, 
-				button_event_type.STICK_MOVE, 
-				current_controller_states[event.device].sticks[stick_num]
-			)
+		# This code is for emiting signals on stick input changes. It isn't being used, so its just commented out
+		# Leave it here unless it is clear it won't be used. 
+		#else: 
+			#var stick_num = floor(event.axis/2)
+			#var axis = 'x' if event.axis%2 == 0 else 'y'
+			#current_controller_states[event.device].sticks[stick_num][axis] = axis_value
+			#button_event.emit(
+				#button,
+				#event.device, 
+				#button_event_type.STICK_MOVE, 
+				#current_controller_states[event.device].sticks[stick_num]
+			#)
+	elif event is InputEventKey:
+		button = keyboard_controls.get(event.keycode, null)
+		if button in [
+			"left_up",
+			"left_down",
+			"left_left",
+			"left_right",]:
+			return
+		var event_type = button_event_type.PRESSED if event.pressed else button_event_type.RELEASED
+		button_event.emit(button,event.device, event_type, Vector2.ZERO)
 
 func _physics_process(_delta):
 	#current_controller_states[0] = current_controller_states[0].get_copy()

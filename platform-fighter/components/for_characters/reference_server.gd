@@ -17,7 +17,7 @@ This script gives all nodes with the "reference_server" property a reference to 
 @export var health: Health
 @export var sprite_manager: SpriteManager
 @export var animation_player: AnimationPlayer
-
+@export var input_handler: InputHandler
 
 '''
 Note: After adding new nodes, you have to reload the scene in order for those nodes 
@@ -43,4 +43,10 @@ func propogate_references(parent):
 				continue
 			if reference_name in child and not child[reference_name] and self[reference_name]:
 				child[reference_name] = self[reference_name]
+			
+		if input_handler:
+			if child.has_method("_on_button_pressed"):
+				input_handler.button_pressed.connect(child._on_button_pressed)
+			if child.has_method("_on_button_released"):
+				input_handler.button_released.connect(child._on_button_pressed)
 		propogate_references(child)

@@ -17,7 +17,8 @@ script = ExtResource("1_nd71p")
 
 [node name="PlayScene" parent="." instance=ExtResource("3_qjeyg")]
 
-[node name="BaseCharacter" parent="PlayScene/CharacterHolder" index="0" instance=ExtResource("5_qjeyg")]
+[node name="BaseCharacter" parent="PlayScene/CharacterHolder" index="0" node_paths=PackedStringArray("play_scene_manager") instance=ExtResource("5_qjeyg")]
+play_scene_manager = NodePath("../..")
 
 [node name="stage" type="StaticBody2D" parent="PlayScene"]
 position = Vector2(0, 108.765)

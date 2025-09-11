@@ -13,7 +13,7 @@ var is_active:bool = false
 
 
 
-# WHEN MAKING A CLASS BEHAVIOR, COPY AND PASTE THESE FUNCTIONS INTO IT
+# WHEN MAKING A BEHAVIOR, COPY AND PASTE THESE FUNCTIONS INTO IT
 # If the priority is correct and the state is correct, check this condition every frame. If it is true, do trigger the behavior  
 func condition()->bool:
 	return false
