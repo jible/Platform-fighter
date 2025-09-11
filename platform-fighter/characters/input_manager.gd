@@ -90,12 +90,14 @@ func _input(event):
 		if button in [
 			"left_up",
 			"left_down",
-			"left_left",
-			"left_right",]:
+		]:
+			var stick_vector = Vector2.ZERO
+			
+			current_controller_states[event.device].sticks[0] = stick_vector
 			return
 		var event_type = button_event_type.PRESSED if event.pressed else button_event_type.RELEASED
 		button_event.emit(button,event.device, event_type, Vector2.ZERO)
-
+	
 func _physics_process(_delta):
 	#current_controller_states[0] = current_controller_states[0].get_copy()
 	pass
