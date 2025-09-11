@@ -1,9 +1,11 @@
 extends CharacterBehavior
 
 
-func condition():
-	return Input.is_action_just_pressed("dash")
-
 func trigger():
 	state_machine.change_state("Dash")
 	pass
+
+
+func _on_input_handler_button_pressed(button):
+	if button == "B":
+		trigger()

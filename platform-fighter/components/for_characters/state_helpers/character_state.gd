@@ -12,7 +12,7 @@ For instance, you may inherit a base state but not want to use it.'''
 @export var is_active:bool = true
 @export var base_character: BaseCharacter
 @export var state_machine: CharacterStateMachine
-@export var character_body:CharacterBody2D
+@export var character_body:SpecializedCharacterBody
 
 @export var state_type:SpecializedCharacterBody.state_types = SpecializedCharacterBody.state_types.STANDARD
 

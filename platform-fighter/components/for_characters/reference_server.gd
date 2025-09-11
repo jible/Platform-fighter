@@ -11,7 +11,7 @@ This script gives all nodes with the "reference_server" property a reference to 
 @export_tool_button("Serve References") var button = serve_references
 
 @export var base_character:BaseCharacter
-@export var character_body:CharacterBody2D
+@export var character_body: SpecializedCharacterBody
 @export var state_machine: CharacterStateMachine
 @export var behavior_manager: CharacterBehaviorManager
 @export var health: Health
@@ -43,10 +43,4 @@ func propogate_references(parent):
 				continue
 			if reference_name in child and not child[reference_name] and self[reference_name]:
 				child[reference_name] = self[reference_name]
-			
-		if input_handler:
-			if child.has_method("_on_button_pressed"):
-				input_handler.button_pressed.connect(child._on_button_pressed)
-			if child.has_method("_on_button_released"):
-				input_handler.button_released.connect(child._on_button_pressed)
 		propogate_references(child)

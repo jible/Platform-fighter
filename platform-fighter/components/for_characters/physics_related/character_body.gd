@@ -122,8 +122,6 @@ func jump():
 func _on_landed():
 	used_ariel_jumps = 0
 
-func _on_state_machine_state_changed(new_state_node):
-	current_state_type = new_state_node.state_type
 
 func add_capped_velocity_impulse(impulse_vector: Vector2):
 	# For each axis
@@ -161,3 +159,7 @@ func set_lock_level(new_lock_level: CharacterState.LockLevel):
 	if lock_level != new_lock_level:
 		lock_level = new_lock_level
 		emit_signal("lock_level_changed", lock_level)
+
+
+func _on_state_machine_state_changed(new_state_node):
+	current_state_type = new_state_node.state_type

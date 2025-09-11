@@ -6,7 +6,7 @@ var active_behaviors: Array[CharacterBehavior]
 
 @export var base_character: BaseCharacter
 @export var state_machine: CharacterStateMachine
-@export var character_body: CharacterBody2D
+@export var character_body: SpecializedCharacterBody
 
 
 func _ready():
@@ -31,8 +31,9 @@ func _physics_process(_delta):
 			return
 
 
-func _on_state_machine_state_changed(_node):
+func _on_base_player_lock_level_changed(_lock_level):
 	get_active_behaviors()
 
-func _on_base_player_lock_level_changed(_lock_level):
+
+func _on_state_machine_state_changed(new_state_node):
 	get_active_behaviors()

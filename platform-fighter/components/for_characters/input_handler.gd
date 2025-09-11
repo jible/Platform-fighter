@@ -22,7 +22,7 @@ func _ready():
 	input_manager.button_event.connect(pass_button_signal)
 	
 func pass_button_signal(button_name: String, device: int, event_type: InputManager.button_event_type, _axis:Vector2):
-	print(device)
+	print(device, player_number)
 	if device != player_number: return
 	match event_type:
 		InputManager.button_event_type.PRESSED:

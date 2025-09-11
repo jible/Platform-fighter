@@ -3,7 +3,7 @@ extends AnimatedSprite2D
 
 # Based on https://github.com/jible/capstone/blob/main/scripts/characters/animation_manager.gd
 @export var base_character: BaseCharacter
-@export var character_body: CharacterBody2D
+@export var character_body: SpecializedCharacterBody
 @export var snap: bool = true
 var current_state: String = ""
 
