@@ -87,13 +87,20 @@ func _input(event):
 			)
 	elif event is InputEventKey:
 		button = keyboard_controls.get(event.keycode, null)
-		if button in [
-			"left_up",
-			"left_down",
-		]:
-			var stick_vector = Vector2.ZERO
-			
-			current_controller_states[event.device].sticks[0] = stick_vector
+		var dir_keys = {
+			"left_up":Vector2.UP,
+			"left_down":Vector2.DOWN,
+			"left_left":Vector2.LEFT,
+			"left_right":Vector2.RIGHT,
+		}
+		if button in dir_keys.keys():
+			var dir_vector = dir_keys[button]
+			var stick_num = 0
+			dir_vector = dir_vector * (-1 if event.is_released() else 1)
+			dir_vector = current_controller_states[0].sticks[stick_num] + dir_vector
+			dir_vector.x = clamp(dir_vector.x, -1, 1)
+			dir_vector.y = clamp(dir_vector.y, -1, 1)
+			current_controller_states[0].sticks[stick_num] = dir_vector
 			return
 		var event_type = button_event_type.PRESSED if event.pressed else button_event_type.RELEASED
 		button_event.emit(button,event.device, event_type, Vector2.ZERO)
