@@ -93,6 +93,8 @@ func _input(event):
 			"left_left":Vector2.LEFT,
 			"left_right":Vector2.RIGHT,
 		}
+		# TODO Keyboard inputs are funky. I think the sticks get normalized differently
+		# The diagonal dash feels different now.
 		if button in dir_keys.keys():
 			var dir_vector = dir_keys[button]
 			var stick_num = 0

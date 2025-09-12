@@ -8,7 +8,7 @@ func update_state(_delta):
 	pass
 
 func enter_state():
-	character_body.velocity = input_handler.get_left_stick() * dash_velocity
+	character_body.velocity = input_handler.get_left_stick().normalized() * dash_velocity
 	
 func exit_state():
 	pass
