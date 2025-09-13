@@ -51,7 +51,6 @@ var successful_hit_list: Array = []
 func _ready():
 	collision_shape = get_child(0)
 	turn_off()
-	
 	area_entered.connect(_on_area_entered)
 	
 	if base_character:
@@ -86,7 +85,6 @@ func turn_on():
 	on = true
 
 func _on_area_entered(hurtbox:Hurtbox):
-	print(hurtbox)
 	var other_health = hurtbox.health
 	if !other_health:
 		if hurtbox in successful_hit_list:return

@@ -19,18 +19,37 @@ This script gives all nodes with the "reference_server" property a reference to 
 @export var animation_player: AnimationPlayer
 @export var input_handler: InputHandler
 
+var type_to_group = {
+	Hitbox : "Hitbox"
+	
+}
+
 '''
 Note: After adding new nodes, you have to reload the scene in order for those nodes 
 to be reached by this script.
 '''
 func serve_references():
 	propogate_references(base_character)
+	propogate_groups(self)
 	return
 	
+
+
+
+func propogate_groups(parent):
+	pass
+	#if parent == null:
+		#return
+	#var children = parent.get_children(true)
+	#for child in children:
+		#for type in type_to_group.keys():
+			#if child is type:
 
 func propogate_references(parent):
 	if parent == null:
 		return
+	
+	
 	
 	var children = parent.get_children(true)
 	for child in children:

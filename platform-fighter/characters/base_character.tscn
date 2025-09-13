@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=21 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/physics_related/character_body.gd" id="2_a5pmx"]
@@ -18,6 +18,7 @@
 [ext_resource type="Script" uid="uid://dfn5xpobmmdm4" path="res://components/for_characters/animation_related/animation_player.gd" id="17_iht17"]
 [ext_resource type="Script" uid="uid://c5vmhdvjvsfbr" path="res://components/for_characters/input_handler.gd" id="18_cgfyo"]
 [ext_resource type="Script" uid="uid://l3olgavpcsgr" path="res://components/for_characters/reference_server.gd" id="18_hcpvk"]
+[ext_resource type="Script" uid="uid://bkusxx76ru2an" path="res://components/for_characters/direction_flipper.gd" id="19_cgfyo"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
 
@@ -146,6 +147,9 @@ input_handler = NodePath("../../InputHandler")
 [node name="InputHandler" type="Node" parent="." node_paths=PackedStringArray("base_character")]
 script = ExtResource("18_cgfyo")
 base_character = NodePath("..")
+
+[node name="DirectionFlipper" type="Node2D" parent="."]
+script = ExtResource("19_cgfyo")
 
 [connection signal="landed" from="CharacterBody" to="CharacterBody" method="_on_landed"]
 [connection signal="landed" from="CharacterBody" to="CharacterBody/BehaviorManager/LandBehavior" method="_on_base_player_landed"]

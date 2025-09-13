@@ -1,9 +1,5 @@
 TODO:
 - Buffer System:
 	
-- Hitbox/Hurtbox System:
-
-- File orginization
-
 
 Make a game n watch esque character. (make spots where the character can go and thats the only spot. and u swap between them)
