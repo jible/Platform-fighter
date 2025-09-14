@@ -121,6 +121,7 @@ script = ExtResource("8_ebb2h")
 base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
+can_turn_around = false
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -148,8 +149,12 @@ input_handler = NodePath("../../InputHandler")
 script = ExtResource("18_cgfyo")
 base_character = NodePath("..")
 
-[node name="DirectionFlipper" type="Node2D" parent="."]
+[node name="DirectionFlipper" type="Node2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body", "sprite_manager")]
 script = ExtResource("19_cgfyo")
+base_character = NodePath("..")
+state_machine = NodePath("../SpriteManager/StateMachine")
+character_body = NodePath("../CharacterBody")
+sprite_manager = NodePath("../SpriteManager")
 
 [connection signal="landed" from="CharacterBody" to="CharacterBody" method="_on_landed"]
 [connection signal="landed" from="CharacterBody" to="CharacterBody/BehaviorManager/LandBehavior" method="_on_base_player_landed"]

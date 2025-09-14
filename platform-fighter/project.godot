@@ -27,6 +27,10 @@ window/stretch/aspect="expand"
 
 project/assembly_name="platform fighter"
 
+[global_group]
+
+hitboxes=""
+
 [input]
 
 move_right={

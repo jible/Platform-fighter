@@ -87,6 +87,7 @@ func _input(event):
 			)
 	elif event is InputEventKey:
 		button = keyboard_controls.get(event.keycode, null)
+		if !button:return
 		var dir_keys = {
 			"left_up":Vector2.UP,
 			"left_down":Vector2.DOWN,
