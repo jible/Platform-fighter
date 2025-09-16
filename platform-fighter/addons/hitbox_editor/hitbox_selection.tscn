@@ -26,6 +26,8 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Offset"]
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 text = "Offsets:"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Offset"]
@@ -36,34 +38,137 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Offset/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Frame"
+size_flags_horizontal = 4
+text = "Frame:"
 
 [node name="TextEdit" type="TextEdit" parent="Offset/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "0"
 placeholder_text = "0
 "
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="Label2" type="Label" parent="Offset/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "x:"
+
+[node name="TextEdit2" type="TextEdit" parent="Offset/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "0"
+placeholder_text = "0
+"
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="Label3" type="Label" parent="Offset/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "y:"
+
+[node name="TextEdit3" type="TextEdit" parent="Offset/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "0"
+placeholder_text = "0
+"
+scroll_fit_content_height = true
+scroll_fit_content_width = true
 
 [node name="TurnOnFrames" type="HBoxContainer" parent="."]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="TurnOnFrames"]
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 text = "Turn on Frames:"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TurnOnFrames"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TurnOnFrames/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextEdit3" type="TextEdit" parent="TurnOnFrames/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "0"
+placeholder_text = "0
+"
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TurnOnFrames/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="TurnOnFrames/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "+
+"
+
+[node name="Button2" type="Button" parent="TurnOnFrames/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "-"
 
 [node name="TurnOffFrames" type="HBoxContainer" parent="."]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="TurnOffFrames"]
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 text = "Turn off Frames:"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TurnOffFrames"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TurnOffFrames/VBoxContainer"]
+layout_mode = 2
+
+[node name="TextEdit3" type="TextEdit" parent="TurnOffFrames/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "0"
+placeholder_text = "0
+"
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TurnOffFrames/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="TurnOffFrames/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "+
+"
+
+[node name="Button2" type="Button" parent="TurnOffFrames/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "-"
 
 [node name="Damage" type="HBoxContainer" parent="."]
 layout_mode = 2
 
 [node name="Label" type="Label" parent="Damage"]
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 text = "Damage:"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Damage"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="TextEdit" type="TextEdit" parent="Damage/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "0"
+placeholder_text = "0"
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="HSlider" type="HSlider" parent="Damage/VBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
 
 [node name="Knockback Vector" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -71,3 +176,20 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Knockback Vector"]
 layout_mode = 2
 text = "Knockback Vector:"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Knockback Vector"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Knockback Vector/HBoxContainer"]
+layout_mode = 2
+text = "x"
+
+[node name="SpinBox" type="SpinBox" parent="Knockback Vector/HBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Knockback Vector/HBoxContainer"]
+layout_mode = 2
+text = "y"
+
+[node name="SpinBox2" type="SpinBox" parent="Knockback Vector/HBoxContainer"]
+layout_mode = 2
