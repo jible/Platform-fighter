@@ -19,7 +19,7 @@ This script handles mirroring hitboxes and sprites
 '''
 
 
-func _process(delta):
+func _process(_delta):
 	var current_dir = sign(character_body.velocity.x) 
 	if direction != current_dir and current_dir != 0 and state_machine.current_state_node.can_turn_around:
 		if auto_flip_sprite:

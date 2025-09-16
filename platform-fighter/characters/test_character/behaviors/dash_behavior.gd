@@ -1,6 +1,5 @@
 extends CharacterBehavior
 
-
 func trigger():
 	state_machine.change_state("Dash")
 	pass

@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://dsca2owypdldv"]
+
+[node name="HitboxSelection" type="VBoxContainer"]
+offset_right = 143.0
+offset_bottom = 178.0
+size_flags_horizontal = 2
+size_flags_vertical = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Name:"
+
+[node name="Interpolate" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interpolate"]
+layout_mode = 2
+text = "Interpolate Pos:"
+
+[node name="CheckBox" type="CheckBox" parent="Interpolate"]
+layout_mode = 2
+button_pressed = true
+
+[node name="Offset" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Offset"]
+layout_mode = 2
+text = "Offsets:"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Offset"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Offset/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Offset/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Frame"
+
+[node name="TextEdit" type="TextEdit" parent="Offset/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "0"
+placeholder_text = "0
+"
+
+[node name="TurnOnFrames" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TurnOnFrames"]
+layout_mode = 2
+text = "Turn on Frames:"
+
+[node name="TurnOffFrames" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TurnOffFrames"]
+layout_mode = 2
+text = "Turn off Frames:"
+
+[node name="Damage" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Damage"]
+layout_mode = 2
+text = "Damage:"
+
+[node name="Knockback Vector" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Knockback Vector"]
+layout_mode = 2
+text = "Knockback Vector:"
