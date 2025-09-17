@@ -4,6 +4,7 @@ extends VBoxContainer
 @export var character_name_label: Label
 @export var state_drop_down: OptionButton
 @export var hitbox_drop_down: OptionButton
+@export var hitbox_selection: VBoxContainer
 '''
 On start, this loads the characters from the character folder
 '''
@@ -45,4 +46,7 @@ func update_hitboxes(hitboxes):
 	_on_hitbox_drop_down_item_selected(hitbox_drop_down.selected)
 
 func _on_hitbox_drop_down_item_selected(index):
-	pass # Replace with function body.
+	var new_hitbox = find_child(hitbox_drop_down.get_item_text(index))
+	if new_hitbox:
+		hitbox_selection.update_hitbox(new_hitbox, character_root,state_machine)
+	
