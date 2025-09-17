@@ -37,9 +37,10 @@ func _on_state_drop_down_item_selected(index):
 	update_hitboxes(state.get_children())
 
 func update_hitboxes(hitboxes):
+	print(hitboxes)
 	current_state_hitboxes = hitboxes
 	for hitbox in current_state_hitboxes:
-		state_drop_down.add_item(hitbox.name)
+		hitbox_drop_down.add_item(hitbox.name)
 	_on_hitbox_drop_down_item_selected(hitbox_drop_down.selected)
 
 func _on_hitbox_drop_down_item_selected(index):

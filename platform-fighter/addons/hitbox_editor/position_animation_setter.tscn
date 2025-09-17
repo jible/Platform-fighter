@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://cf88wknxp7vkr"]
+
+[ext_resource type="Script" uid="uid://78u3q0q4mnq6" path="res://addons/hitbox_editor/position_animation_setter.gd" id="1_tx1b4"]
+
+[node name="PositionAnimationSetter" type="HBoxContainer"]
+script = ExtResource("1_tx1b4")
+
+[node name="FrameLabel" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Frame:"
+
+[node name="Frame" type="TextEdit" parent="."]
+layout_mode = 2
+text = "0"
+placeholder_text = "0
+"
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="XLabel" type="Label" parent="."]
+layout_mode = 2
+text = "x:"
+
+[node name="X" type="TextEdit" parent="."]
+layout_mode = 2
+text = "0"
+placeholder_text = "0
+"
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="YLabel" type="Label" parent="."]
+layout_mode = 2
+text = "y:"
+
+[node name="Y" type="TextEdit" parent="."]
+layout_mode = 2
+text = "0"
+placeholder_text = "0
+"
+scroll_fit_content_height = true
+scroll_fit_content_width = true

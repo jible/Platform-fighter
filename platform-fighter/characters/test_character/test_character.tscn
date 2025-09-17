@@ -201,15 +201,7 @@ _data = {
 &"Walk": SubResource("Animation_m32lo")
 }
 
-[node name="TestCharacter" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player", "input_handler") instance=ExtResource("1_ka262")]
-base_character = NodePath(".")
-character_body = NodePath("CharacterBody")
-state_machine = NodePath("SpriteManager/StateMachine")
-behavior_manager = NodePath("CharacterBody/BehaviorManager")
-health = NodePath("CharacterBody/Health")
-sprite_manager = NodePath("SpriteManager")
-animation_player = NodePath("AnimationPlayer")
-input_handler = NodePath("InputHandler")
+[node name="TestCharacter" instance=ExtResource("1_ka262")]
 
 [node name="PunchBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="3" node_paths=PackedStringArray("base_character", "state_machine")]
 script = ExtResource("2_ka262")
