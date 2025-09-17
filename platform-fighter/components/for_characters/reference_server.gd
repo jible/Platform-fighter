@@ -31,29 +31,22 @@ to be reached by this script.
 func serve_references():
 	propogate_references(base_character)
 	return
-	
-
-
-
-
-	
-
 
 func propogate_references(parent):
 	if parent == null:
 		return
-	
-	
-	
+
+	for prop in get_property_list():
+		if not (prop.usage & PROPERTY_USAGE_EDITOR):
+			continue
+			
+		var reference_name = prop.name
+		if reference_name == "script":
+			continue
+		if reference_name in parent and not parent[reference_name] and self[reference_name]:
+			parent[reference_name] = self[reference_name]
+
 	var children = parent.get_children(true)
 	for child in children:
-		for prop in get_property_list():
-			if not (prop.usage & PROPERTY_USAGE_EDITOR):
-				continue
-				
-			var reference_name = prop.name
-			if reference_name == "script":
-				continue
-			if reference_name in child and not child[reference_name] and self[reference_name]:
-				child[reference_name] = self[reference_name]
+		
 		propogate_references(child)
