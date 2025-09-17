@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://d0cdlmyionphh"]
 
 [ext_resource type="Script" uid="uid://otcxr03idcud" path="res://addons/hitbox_editor/hitbox_editor_manager.gd" id="1_qna8n"]
-[ext_resource type="PackedScene" uid="uid://dsca2owypdldv" path="res://addons/hitbox_editor/hitbox_selection.tscn" id="2_7kdae"]
+[ext_resource type="PackedScene" uid="uid://dsca2owypdldv" path="res://addons/hitbox_editor/ui_helpers/hitbox_selection.tscn" id="2_7kdae"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_exsm4"]
 content_margin_left = 2.0

@@ -11,6 +11,7 @@ var states = []
 var character_root
 var state_machine
 var current_state_hitboxes = []
+
 func _ready():
 	pass
 

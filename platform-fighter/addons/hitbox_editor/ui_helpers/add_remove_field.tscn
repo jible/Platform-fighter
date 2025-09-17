@@ -1,12 +1,11 @@
 [gd_scene load_steps=2 format=3 uid="uid://cqa5hbka73wi"]
 
-[ext_resource type="Script" uid="uid://c7xf71pikr08g" path="res://addons/hitbox_editor/add_remove_field.gd" id="1_7b3ss"]
+[ext_resource type="Script" uid="uid://c7xf71pikr08g" path="res://addons/hitbox_editor/ui_helpers/add_remove_field.gd" id="1_l6366"]
 
 [node name="AddRemoveField" type="VBoxContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_7b3ss")
-field_path = "uid://dsca2owypdldv"
+script = ExtResource("1_l6366")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
