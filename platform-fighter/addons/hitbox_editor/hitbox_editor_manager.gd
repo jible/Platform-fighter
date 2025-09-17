@@ -3,6 +3,7 @@ extends VBoxContainer
 
 @export var character_name_label: Label
 @export var state_drop_down: OptionButton
+@export var hitbox_drop_down: OptionButton
 '''
 On start, this loads the characters from the character folder
 '''
@@ -22,15 +23,24 @@ func configure(_character_root: BaseCharacter):
 	state_drop_down.clear()
 	for state in states:
 		state_drop_down.add_item(state.name)
-	_on_option_button_item_selected(state_drop_down.selected)
+	_on_state_drop_down_item_selected(state_drop_down.selected)
 
 
 
-func _on_option_button_item_selected(index):
+
+func _on_state_drop_down_item_selected(index):
 	var current_state_name = state_drop_down.get_item_text(index)
 	var state = state_machine.find_child(current_state_name)
 	if !state:
 		print("state does not exist")
 		return
-	current_state_hitboxes = state.get_children()
-	print(current_state_hitboxes)
+	update_hitboxes(state.get_children())
+
+func update_hitboxes(hitboxes):
+	current_state_hitboxes = hitboxes
+	for hitbox in current_state_hitboxes:
+		state_drop_down.add_item(hitbox.name)
+	_on_hitbox_drop_down_item_selected(hitbox_drop_down.selected)
+
+func _on_hitbox_drop_down_item_selected(index):
+	pass # Replace with function body.

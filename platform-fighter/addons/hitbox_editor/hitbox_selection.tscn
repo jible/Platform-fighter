@@ -1,10 +1,14 @@
 [gd_scene format=3 uid="uid://dsca2owypdldv"]
 
-[node name="HitboxSelection" type="VBoxContainer"]
+[node name="HitboxInfo" type="VBoxContainer"]
 offset_right = 143.0
 offset_bottom = 178.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
+
+[node name="SectionLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Hitbox Info"
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
