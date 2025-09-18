@@ -21,7 +21,6 @@ func configure(_character_root: BaseCharacter):
 	character_name_label.text = character_root.name
 	state_machine = character_root.state_machine
 	states = character_root.state_machine.get_children(true)
-	
 	state_drop_down.clear()
 	for state in states:
 		state_drop_down.add_item(state.name)

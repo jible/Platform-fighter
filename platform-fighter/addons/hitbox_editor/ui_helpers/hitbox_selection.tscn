@@ -3,12 +3,20 @@
 [ext_resource type="Script" uid="uid://c8pu6xvi8p3oq" path="res://addons/hitbox_editor/ui_helpers/hitbox_selection.gd" id="1_nufph"]
 [ext_resource type="PackedScene" uid="uid://cqa5hbka73wi" path="res://addons/hitbox_editor/ui_helpers/add_remove_field.tscn" id="2_k4a0x"]
 
-[node name="HitboxInfo" type="VBoxContainer"]
+[node name="HitboxInfo" type="VBoxContainer" node_paths=PackedStringArray("interpolate", "offset_info", "turn_on_frames", "turn_off_frames", "damage_value", "damage_slider", "knockback_x", "knockback_y")]
 offset_right = 143.0
 offset_bottom = 178.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
 script = ExtResource("1_nufph")
+interpolate = NodePath("Interpolate/CheckBox")
+offset_info = NodePath("Offset/AddRemoveField")
+turn_on_frames = NodePath("TurnOnFrames/VBoxContainer/TurnOnFramesField")
+turn_off_frames = NodePath("TurnOffFrames/VBoxContainer2/TurnOffFramesField")
+damage_value = NodePath("Damage/VBoxContainer/SpinBox")
+damage_slider = NodePath("Damage/VBoxContainer/HSlider")
+knockback_x = NodePath("Knockback Vector/HBoxContainer/SpinBox")
+knockback_y = NodePath("Knockback Vector/HBoxContainer/SpinBox2")
 
 [node name="SectionLabel" type="Label" parent="."]
 layout_mode = 2
@@ -81,14 +89,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="TextEdit" type="TextEdit" parent="Damage/VBoxContainer"]
+[node name="SpinBox" type="SpinBox" parent="Damage/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-text = "0"
-placeholder_text = "0"
-scroll_fit_content_height = true
-scroll_fit_content_width = true
 
 [node name="HSlider" type="HSlider" parent="Damage/VBoxContainer"]
 custom_minimum_size = Vector2(100, 0)

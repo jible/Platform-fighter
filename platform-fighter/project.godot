@@ -27,6 +27,10 @@ window/stretch/aspect="expand"
 
 project/assembly_name="platform fighter"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/hitbox_editor/plugin.cfg")
+
 [global_group]
 
 hitboxes=""

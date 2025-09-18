@@ -3,7 +3,8 @@ extends VBoxContainer
 
 @export var interpolate: CheckBox
 @export var offset_info: VBoxContainer
-@export var turn_on_frames: Label
+@export var turn_on_frames: SpinBox
+@export var turn_off_frames: SpinBox
 @export var damage_value: SpinBox
 @export var damage_slider: Slider
 @export var knockback_x: SpinBox
@@ -26,6 +27,7 @@ func update_hitbox(_hitbox, _base_character, state_name):
 	for track in animation.get_track_count():
 		var track_type = animation.track_get_type(track)
 		if track_type == Animation.TrackType.TYPE_VALUE:
+			var interpolated: bool = animation.track_get_interpolation_type(track)
 			var path = animation.track_get_path(track)
 			if path != hitbox_path + ":position": continue
 			for key in animation.track_get_key_count(track):

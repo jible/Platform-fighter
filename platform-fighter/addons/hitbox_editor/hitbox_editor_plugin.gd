@@ -10,7 +10,7 @@ func _enter_tree():
 	configure_editor(get_tree().edited_scene_root)
 
 func configure_editor(scene_root):
-
+	
 	if !scene_root or (! scene_root is BaseCharacter):
 		if in_bottom_panel:
 			remove_control_from_bottom_panel(hitbox_editor)

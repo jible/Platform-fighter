@@ -19,7 +19,7 @@ func reset():
 		if child.scene_file_path == field_scene.resource_path:
 			remove_child(child)
 			child.queue_free()
-	for i in minimum_fields:
+	for i in range(minimum_fields):
 		_on_add_pressed()
 
 func _on_add_pressed():

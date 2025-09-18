@@ -1,9 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cf88wknxp7vkr"]
-
-[ext_resource type="Script" uid="uid://78u3q0q4mnq6" path="res://addons/hitbox_editor/ui_helpers/position_animation_setter.gd" id="1_tx1b4"]
+[gd_scene format=3 uid="uid://cf88wknxp7vkr"]
 
 [node name="PositionAnimationSetter" type="HBoxContainer"]
-script = ExtResource("1_tx1b4")
 
 [node name="FrameLabel" type="Label" parent="."]
 layout_mode = 2
