@@ -17,14 +17,30 @@ func update_hitbox(_hitbox, _base_character, state_name):
 	base_character = _base_character
 	var animation_player = base_character.animation_player
 	var animation_library = animation_player.get_animation_library("")
-	var animation = animation_library.get_animation(state_name)
+	var animation: Animation = animation_library.get_animation(state_name)
 	
 	var pos_track
 	var func_track
+	var hitbox_position_track
+	var hitbox_path = get_node_path_from_root(hitbox)
 	for track in animation.get_track_count():
 		var track_type = animation.track_get_type(track)
 		if track_type == Animation.TrackType.TYPE_VALUE:
 			var path = animation.track_get_path(track)
+			if path != hitbox_path + ":position": continue
+			for key in animation.track_get_key_count(track):
+				var time = animation.track_get_key_time(track, key)
+				var position = animation.track_get_key_value(track, key)
+				print("change pos", time, position)
+				# add keys to ui
+		elif track_type == Animation.TrackType.TYPE_METHOD:
+			var path = animation.track_get_path(track)
+			if animation.track_get_path(track) != path: continue
+			for key in animation.track_get_key_count(track):
+				if animation.method_track_get_name(track,key) == "turn_on":
+					print("turn on", animation.track_get_key_time(track, key))
+					# Add keys to ui
+		
 	'''
 	Update ui
 	
@@ -37,6 +53,9 @@ func update_hitbox(_hitbox, _base_character, state_name):
 	and toggle (method) track
 	and 
 	'''
+	
+	
+	
 func get_node_path_from_root(node):
 	'''
 	Walk up the tree until you hit the root

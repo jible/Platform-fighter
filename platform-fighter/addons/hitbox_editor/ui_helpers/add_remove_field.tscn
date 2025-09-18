@@ -6,6 +6,7 @@
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_l6366")
+field_path = "uid://cf88wknxp7vkr"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2

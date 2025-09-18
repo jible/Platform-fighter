@@ -36,7 +36,6 @@ text = "Offsets:"
 
 [node name="AddRemoveField" parent="Offset" instance=ExtResource("2_k4a0x")]
 layout_mode = 2
-field_path = "uid://cf88wknxp7vkr"
 
 [node name="TurnOnFrames" type="HBoxContainer" parent="."]
 layout_mode = 2
