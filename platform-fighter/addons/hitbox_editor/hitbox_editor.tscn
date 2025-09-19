@@ -11,7 +11,7 @@ content_margin_bottom = 2.0
 bg_color = Color(0.0509804, 0.188235, 0.054902, 1)
 border_color = Color(0.0257315, 0.10205, 0.0713465, 1)
 
-[node name="HitboxEditorManager" type="VBoxContainer" node_paths=PackedStringArray("character_name_label", "state_drop_down", "hitbox_drop_down")]
+[node name="HitboxEditorManager" type="VBoxContainer" node_paths=PackedStringArray("character_name_label", "state_drop_down", "hitbox_drop_down", "hitbox_selection")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,7 +20,8 @@ grow_vertical = 2
 script = ExtResource("1_qna8n")
 character_name_label = NodePath("HBoxContainer/VBoxContainer/NameContainer/CharacterName")
 state_drop_down = NodePath("HBoxContainer/VBoxContainer/StateSelection/StateDropDown")
-hitbox_drop_down = NodePath("HBoxContainer/VBoxContainer/HitboxSelection/HitboxDropDown")
+hitbox_drop_down = NodePath("HBoxContainer/VBoxContainer/HitboxDropDownSection/HitboxDropDown")
+hitbox_selection = NodePath("HBoxContainer/VBoxContainer/HitboxSelection")
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 2
@@ -57,17 +58,17 @@ text = "State"
 [node name="StateDropDown" type="OptionButton" parent="HBoxContainer/VBoxContainer/StateSelection"]
 layout_mode = 2
 
-[node name="HitboxSelection" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
+[node name="HitboxDropDownSection" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HitboxSelection"]
+[node name="Label" type="Label" parent="HBoxContainer/VBoxContainer/HitboxDropDownSection"]
 layout_mode = 2
 text = "Hitboxes"
 
-[node name="HitboxDropDown" type="OptionButton" parent="HBoxContainer/VBoxContainer/HitboxSelection"]
+[node name="HitboxDropDown" type="OptionButton" parent="HBoxContainer/VBoxContainer/HitboxDropDownSection"]
 layout_mode = 2
 
-[node name="HitboxInfo" parent="HBoxContainer/VBoxContainer" instance=ExtResource("2_7kdae")]
+[node name="HitboxSelection" parent="HBoxContainer/VBoxContainer" instance=ExtResource("2_7kdae")]
 layout_mode = 2
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
@@ -99,4 +100,4 @@ text = "Add Hitbox
 "
 
 [connection signal="item_selected" from="HBoxContainer/VBoxContainer/StateSelection/StateDropDown" to="." method="_on_state_drop_down_item_selected"]
-[connection signal="item_selected" from="HBoxContainer/VBoxContainer/HitboxSelection/HitboxDropDown" to="." method="_on_hitbox_drop_down_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/VBoxContainer/HitboxDropDownSection/HitboxDropDown" to="." method="_on_hitbox_drop_down_item_selected"]
