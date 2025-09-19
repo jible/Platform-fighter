@@ -3,13 +3,15 @@
 [ext_resource type="Script" uid="uid://c8pu6xvi8p3oq" path="res://addons/hitbox_editor/ui_helpers/hitbox_selection.gd" id="1_nufph"]
 [ext_resource type="PackedScene" uid="uid://cqa5hbka73wi" path="res://addons/hitbox_editor/ui_helpers/add_remove_field.tscn" id="2_k4a0x"]
 
-[node name="HitboxInfo" type="VBoxContainer" node_paths=PackedStringArray("interpolate", "offset_info", "turn_on_frames", "turn_off_frames", "damage_value", "damage_slider", "knockback_x", "knockback_y")]
+[node name="HitboxInfo" type="VBoxContainer" node_paths=PackedStringArray("interpolate", "starting_pos_x", "starting_pos_y", "offset_info", "turn_on_frames", "turn_off_frames", "damage_value", "damage_slider", "knockback_x", "knockback_y")]
 offset_right = 143.0
 offset_bottom = 178.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
 script = ExtResource("1_nufph")
 interpolate = NodePath("Interpolate/CheckBox")
+starting_pos_x = NodePath("StartingPos/VectorHolder/X")
+starting_pos_y = NodePath("StartingPos/VectorHolder/Y")
 offset_info = NodePath("Offset/AddRemoveField")
 turn_on_frames = NodePath("TurnOnFrames/VBoxContainer/TurnOnFramesField")
 turn_off_frames = NodePath("TurnOffFrames/VBoxContainer2/TurnOffFramesField")
@@ -33,6 +35,29 @@ text = "Interpolate Pos:"
 layout_mode = 2
 button_pressed = true
 
+[node name="StartingPos" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="StartingPosLabel" type="Label" parent="StartingPos"]
+layout_mode = 2
+
+[node name="VectorHolder" type="HBoxContainer" parent="StartingPos"]
+layout_mode = 2
+
+[node name="XLabel" type="Label" parent="StartingPos/VectorHolder"]
+layout_mode = 2
+text = "x"
+
+[node name="X" type="SpinBox" parent="StartingPos/VectorHolder"]
+layout_mode = 2
+
+[node name="YLabel" type="Label" parent="StartingPos/VectorHolder"]
+layout_mode = 2
+text = "y"
+
+[node name="Y" type="SpinBox" parent="StartingPos/VectorHolder"]
+layout_mode = 2
+
 [node name="Offset" type="HBoxContainer" parent="."]
 layout_mode = 2
 
@@ -44,6 +69,7 @@ text = "Offsets:"
 
 [node name="AddRemoveField" parent="Offset" instance=ExtResource("2_k4a0x")]
 layout_mode = 2
+minimum_fields = 0
 
 [node name="TurnOnFrames" type="HBoxContainer" parent="."]
 layout_mode = 2

@@ -68,6 +68,14 @@ text = "Hitboxes"
 [node name="HitboxDropDown" type="OptionButton" parent="HBoxContainer/VBoxContainer/HitboxDropDownSection"]
 layout_mode = 2
 
+[node name="AddHitbox" type="Button" parent="HBoxContainer/VBoxContainer/HitboxDropDownSection"]
+layout_mode = 2
+text = "Add Hitbox"
+
+[node name="RemoveHitbox" type="Button" parent="HBoxContainer/VBoxContainer/HitboxDropDownSection"]
+layout_mode = 2
+text = "Remove Hitbox"
+
 [node name="HitboxSelection" parent="HBoxContainer/VBoxContainer" instance=ExtResource("2_7kdae")]
 layout_mode = 2
 
@@ -93,11 +101,6 @@ text = "<-"
 [node name="Button3" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 text = "->"
-
-[node name="Button" type="Button" parent="HBoxContainer/VBoxContainer2"]
-layout_mode = 2
-text = "Add Hitbox
-"
 
 [connection signal="item_selected" from="HBoxContainer/VBoxContainer/StateSelection/StateDropDown" to="." method="_on_state_drop_down_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/VBoxContainer/HitboxDropDownSection/HitboxDropDown" to="." method="_on_hitbox_drop_down_item_selected"]
