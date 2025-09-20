@@ -26,6 +26,9 @@ func reset():
 		_on_add_pressed()
 
 func _on_add_pressed():
+	add_field()
+
+func add_field():
 	if !field_scene:return
 	var new_field = field_scene.instantiate()
 	add_child(new_field)
@@ -37,6 +40,7 @@ func _on_add_pressed():
 	remove_button.pressed.connect(_on_remove_pressed.bind(new_field))
 	fields += 1
 	field_added.emit(field_added)
+	return new_field
 
 func _on_remove_pressed(field_to_remove):
 	remove_child(field_to_remove)

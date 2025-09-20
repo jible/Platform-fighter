@@ -18,6 +18,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qna8n")
+hitbox_script_path = "res://components/for_characters/hitbox_hurtbox/hitbox.gd"
+default_hitbox_radius = null
 character_name_label = NodePath("HBoxContainer/VBoxContainer/NameContainer/CharacterName")
 state_drop_down = NodePath("HBoxContainer/VBoxContainer/StateSelection/StateDropDown")
 hitbox_drop_down = NodePath("HBoxContainer/VBoxContainer/HitboxDropDownSection/HitboxDropDown")
@@ -78,7 +80,6 @@ text = "Remove Hitbox"
 
 [node name="HitboxSelection" parent="HBoxContainer/VBoxContainer" instance=ExtResource("2_7kdae")]
 layout_mode = 2
-hitbox_script_path = ""
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2

@@ -1,6 +1,9 @@
 @tool
 extends VBoxContainer
 
+@export var hitbox_script_path:String
+@export var default_hitbox_radius = 20
+
 @export var character_name_label: Label
 @export var state_drop_down: OptionButton
 @export var hitbox_drop_down: OptionButton
@@ -59,3 +62,21 @@ func get_hitbox_from_name(hitbox_name):
 		if hitbox.name == hitbox_name:
 			return hitbox
 	return null
+
+
+
+func add_hitbox(state_node):
+	var new_hitbox = Area2D.new()
+	new_hitbox.set_script(load(hitbox_script_path))
+	
+	var collision = CollisionShape2D.new()
+	collision.shape = CircleShape2D.new()
+	collision.shape.radius = default_hitbox_radius
+	
+	state_node.add_child(collision)
+	
+	return new_hitbox
+
+func remove_hitbox(state_node:Node, hitbox):
+	state_node.remove_child(hitbox)
+	hitbox.queue_free()
