@@ -31,9 +31,6 @@ func configure(_character_root: BaseCharacter):
 		state_drop_down.add_item(state.name)
 	_on_state_drop_down_item_selected(state_drop_down.selected)
 
-
-
-
 func _on_state_drop_down_item_selected(index):
 	var current_state_name = state_drop_down.get_item_text(index)
 	state = state_machine.find_child(current_state_name)
