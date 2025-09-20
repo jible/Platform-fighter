@@ -9,8 +9,6 @@ offset_bottom = 178.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
 script = ExtResource("1_nufph")
-hitbox_script_path = "res://components/for_characters/hitbox_hurtbox/hitbox.gd"
-default_hitbox_radius = null
 interpolate = NodePath("Interpolate/CheckBox")
 starting_pos_x = NodePath("StartingPos/VectorHolder/X")
 starting_pos_y = NodePath("StartingPos/VectorHolder/Y")
@@ -52,6 +50,8 @@ text = "x"
 
 [node name="X" type="SpinBox" parent="StartingPos/VectorHolder"]
 layout_mode = 2
+allow_greater = true
+allow_lesser = true
 
 [node name="YLabel" type="Label" parent="StartingPos/VectorHolder"]
 layout_mode = 2
@@ -59,6 +59,8 @@ text = "y"
 
 [node name="Y" type="SpinBox" parent="StartingPos/VectorHolder"]
 layout_mode = 2
+allow_greater = true
+allow_lesser = true
 
 [node name="Offset" type="HBoxContainer" parent="."]
 layout_mode = 2

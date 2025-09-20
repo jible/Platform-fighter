@@ -1,19 +1,18 @@
-[gd_scene format=3 uid="uid://cf88wknxp7vkr"]
+[gd_scene load_steps=2 format=3 uid="uid://cf88wknxp7vkr"]
+
+[ext_resource type="Script" uid="uid://78u3q0q4mnq6" path="res://addons/hitbox_editor/ui_helpers/position_animation_setter.gd" id="1_sqnoc"]
 
 [node name="PositionAnimationSetter" type="HBoxContainer"]
+script = ExtResource("1_sqnoc")
 
 [node name="FrameLabel" type="Label" parent="."]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Frame:"
 
-[node name="Frame" type="TextEdit" parent="."]
+[node name="Frame" type="SpinBox" parent="."]
 layout_mode = 2
-text = "0"
-placeholder_text = "0
-"
-scroll_fit_content_height = true
-scroll_fit_content_width = true
+rounded = true
 
 [node name="XLabel" type="Label" parent="."]
 layout_mode = 2
@@ -29,3 +28,7 @@ text = "y:"
 
 [node name="Y" type="SpinBox" parent="."]
 layout_mode = 2
+
+[connection signal="value_changed" from="Frame" to="." method="_on_frame_value_changed"]
+[connection signal="value_changed" from="X" to="." method="_on_x_value_changed"]
+[connection signal="value_changed" from="Y" to="." method="_on_y_value_changed"]

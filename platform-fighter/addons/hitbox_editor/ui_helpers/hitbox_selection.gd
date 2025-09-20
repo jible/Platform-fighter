@@ -66,10 +66,16 @@ func update_hitbox(_hitbox, _base_character, _state_node):
 func get_hitbox_position_keys():
 	for key in range(animation.track_get_key_count(hitbox_position_track)):
 		var time = animation.track_get_key_time(hitbox_position_track, key)
-		var position = animation.track_get_key_value(hitbox_position_track, key)
-		print("change pos", time, position)
+		var hitbox_position = animation.track_get_key_value(hitbox_position_track, key)
+		var frame = round(time/frame_time)
+		
 		# add keys to ui
-		offset_info.add_field()
+		var new_field = offset_info.add_field()
+		new_field.set_value('frame',frame)
+		
+		new_field.set_value('x',hitbox_position.x)
+		new_field.set_value('y',hitbox_position.y)
+		
 
 func get_hitbox_method_keys():
 	for key in range(animation.track_get_key_count(hitbox_method_track)):
@@ -78,10 +84,6 @@ func get_hitbox_method_keys():
 		elif animation.method_track_get_name(hitbox_method_track,key) == "turn_off":
 			print("turn off", animation.track_get_key_time(hitbox_method_track, key))
 
-'''
-This function gets the track number for the attributes that this tool
-handles animating
-'''
 func add_position_anim_key(frame, position):
 	#TODO Change this to properly extract framerate from anim
 	var frame_rate = 1
