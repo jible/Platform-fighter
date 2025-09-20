@@ -78,6 +78,7 @@ text = "Remove Hitbox"
 
 [node name="HitboxSelection" parent="HBoxContainer/VBoxContainer" instance=ExtResource("2_7kdae")]
 layout_mode = 2
+hitbox_script_path = ""
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2

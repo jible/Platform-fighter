@@ -8,17 +8,10 @@ offset_bottom = 40.0
 script = ExtResource("1_l6366")
 field_path = "uid://cf88wknxp7vkr"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="Add" type="Button" parent="."]
 layout_mode = 2
-
-[node name="Remove" type="Button" parent="HBoxContainer"]
-layout_mode = 2
-text = "-"
-
-[node name="Add" type="Button" parent="HBoxContainer"]
-layout_mode = 2
+size_flags_horizontal = 0
 text = "+
 "
 
-[connection signal="pressed" from="HBoxContainer/Remove" to="." method="_on_remove_pressed"]
-[connection signal="pressed" from="HBoxContainer/Add" to="." method="_on_add_pressed"]
+[connection signal="pressed" from="Add" to="." method="_on_add_pressed"]

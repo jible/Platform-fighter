@@ -5,6 +5,9 @@ extends BoxContainer
 @export var minimum_fields: int = 1
 var fields = 0
 var field_scene:PackedScene
+signal field_added(new_field:Node)
+
+
 
 func _ready():
 	if field_path:
@@ -26,13 +29,15 @@ func _on_add_pressed():
 	if !field_scene:return
 	var new_field = field_scene.instantiate()
 	add_child(new_field)
+	
+	var remove_button = Button.new()
+	remove_button.text = "X"
+	new_field.add_child(remove_button)
+	
+	remove_button.pressed.connect(_on_remove_pressed.bind(new_field))
 	fields += 1
+	field_added.emit(field_added)
 
-func _on_remove_pressed():
-	if !field_scene:return
-	var to_go = get_child(-1)
-	if !to_go or to_go.scene_file_path != field_scene.resource_path or fields <=minimum_fields:
-		return
-	remove_child(to_go)
-	to_go.queue_free()
-	fields -= 1
+func _on_remove_pressed(field_to_remove):
+	remove_child(field_to_remove)
+	field_to_remove.queue_free()
