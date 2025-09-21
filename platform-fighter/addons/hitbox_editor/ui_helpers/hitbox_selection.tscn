@@ -36,10 +36,12 @@ layout_mode = 2
 button_pressed = true
 
 [node name="StartingPos" type="HBoxContainer" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="StartingPosLabel" type="Label" parent="StartingPos"]
 layout_mode = 2
+text = "Starting Pos"
 
 [node name="VectorHolder" type="HBoxContainer" parent="StartingPos"]
 layout_mode = 2

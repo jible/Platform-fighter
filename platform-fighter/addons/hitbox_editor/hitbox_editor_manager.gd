@@ -46,7 +46,9 @@ func update_hitboxes(hitboxes):
 		hitbox_drop_down.add_item(hitbox.name)
 	if current_state_hitboxes.size() > 0: # dont select if there is no hitbox
 		_on_hitbox_drop_down_item_selected(hitbox_drop_down.selected)
-
+		hitbox_selection.show()
+	else:
+		hitbox_selection.hide()
 func _on_hitbox_drop_down_item_selected(index):
 	var new_hitbox = get_hitbox_from_name(hitbox_drop_down.get_item_text(index))
 	if new_hitbox:

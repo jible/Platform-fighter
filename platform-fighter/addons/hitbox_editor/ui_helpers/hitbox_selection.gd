@@ -34,7 +34,6 @@ var sprite_manager_path
 # Other
 var frame_time: float
 
-
 func update_hitbox(_hitbox, _base_character, _state_node):
 	
 	# Update node reference
@@ -63,7 +62,6 @@ func update_hitbox(_hitbox, _base_character, _state_node):
 	set_hitbox_position_keys()
 	get_hitbox_method_keys()
 
-
 func set_hitbox_position_keys():
 	offset_info.reset()
 	for key in range(animation.track_get_key_count(hitbox_position_track)):
@@ -72,26 +70,22 @@ func set_hitbox_position_keys():
 		var frame = time_to_frame(time)
 		
 		# add keys to ui
-		var new_field = offset_info.add_field()
-		new_field.set_value('frame',frame)
-		new_field.set_value('x',hitbox_position.x)
-		new_field.set_value('y',hitbox_position.y)
-		
+		var new_field: PositionAnimationSetter = offset_info.add_field()
+		new_field.frame_field.value = int(frame)
+		new_field.x_field.value = hitbox_position.x
+		new_field.y_field.value = hitbox_position.y
 
 func get_hitbox_method_keys():
 	for key in range(animation.track_get_key_count(hitbox_method_track)):
 		if animation.method_track_get_name(hitbox_method_track,key) == "turn_on":
 			var time = animation.track_get_key_time(hitbox_method_track, key)
 			var frame = time_to_frame(time)
-			print("turn on",frame)
 			turn_on_frames.value = frame
 		elif animation.method_track_get_name(hitbox_method_track,key) == "turn_off":
 			var time = animation.track_get_key_time(hitbox_method_track, key)
 			var frame = time_to_frame(time)
 			turn_off_frames.value = frame
-			print("turn off",frame)
-			
-	
+
 func add_position_anim_key(frame, position):
 	#TODO Change this to properly extract framerate from anim
 	var frame_rate = 1
@@ -122,6 +116,25 @@ func get_track_references():
 			if path.get_concatenated_names() == hitbox_path.get_concatenated_names(): 
 				hitbox_method_track = track
 
+func _on_interpolate_toggled(value):
+	var interpolation_type = Animation.INTERPOLATION_LINEAR if value else Animation.INTERPOLATION_NEAREST
+	animation.track_set_interpolation_type(hitbox_position_track, interpolation_type)
+
+# fires when add remove has field added
+func _on_position_added(position_animation:PositionAnimationSetter):
+	#if position_animation.frame_value
+	pass
+
+# Fires when add remove has field removed
+func _on_position_removed(position_animation:PositionAnimationSetter):
+	pass
+
+func on_position_changed(position_animation:PositionAnimationSetter):
+	pass
+
+func _on_pos_anim_value_changed(former_frame, frame, pos):
+	var key = animation.track_find_key(hitbox_position_track,frame_to_time(former_frame),Animation.FIND_MODE_NEAREST)
+	animation.track_set_key_time(hitbox_position_track , key, frame_to_time(frame))
 
 func auto_fill_tracks():
 	if hitbox_position_track == null:
@@ -146,3 +159,6 @@ func _set_track_defaults(track):
 
 func time_to_frame(time):
 	return round(time/frame_time)
+
+func frame_to_time(frame):
+	return frame * frame_time
