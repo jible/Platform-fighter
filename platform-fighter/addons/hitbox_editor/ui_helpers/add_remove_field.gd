@@ -3,7 +3,6 @@ class_name AddRemoveField
 extends BoxContainer
 
 @export_file("*.tscn") var field_path: String
-@export var minimum_fields: int = 0
 var fields = 0
 var field_scene:PackedScene
 signal field_added(field)
@@ -23,14 +22,14 @@ func reset():
 		if child.scene_file_path == field_scene.resource_path:
 			remove_child(child)
 			child.queue_free()
-	for i in range(minimum_fields):
-		add_field()
 
 func _on_add_pressed():
 	add_field()
 
-func add_field():
-	if !field_scene:return
+func internal_add_field():
+	if !field_scene:
+		push_error("No Field Scene")
+		return
 	var new_field = field_scene.instantiate()
 	add_child(new_field)
 	
@@ -40,6 +39,11 @@ func add_field():
 	
 	remove_button.pressed.connect(_on_remove_pressed.bind(new_field))
 	fields += 1
+	return new_field
+	
+
+func add_field():
+	var new_field = internal_add_field()
 	field_added.emit(new_field)
 	return new_field
 
@@ -52,12 +56,12 @@ func _on_remove_pressed(field_to_remove):
 func sort_field(field):
 	var index = 0
 	for child in get_children():
-		if child.scene_file_path != field_scene.resource_path:continue
+		if child.scene_file_path != field_scene.resource_path or child == field:continue
 		if field.get_sort_value() < child.get_sort_value():
 			move_child(field, index)
 			return
 		index += 1
-
+		move_child(field, index)
 
 func _on_sort_pressed():
 	pass # Replace with function body.

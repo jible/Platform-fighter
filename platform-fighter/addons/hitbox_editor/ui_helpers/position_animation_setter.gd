@@ -12,23 +12,26 @@ var old_frame = 0
 signal frame_changed
 signal pos_changed
 
-func first_populate(_frame, _x, _y):
+func silent_populate(_frame, _x, _y):
 	old_frame = _frame
+	set_block_signals(true)
 	frame_field.value = _frame
 	x_field.value = _x
 	y_field.value = _y
-
-func on_change_complete(new_frame):
-	old_frame = new_frame
+	set_block_signals(false)
+	
+func silent_set_frame(_frame):
+	old_frame = _frame
+	set_block_signals(true)
+	frame_field.value = _frame
+	set_block_signals(false)
 
 func _on_frame_value_changed(value):
 	if old_frame == value:
 		return
 	frame_changed.emit()
-	old_frame = value
 
 func _on_x_value_changed(value):
-	
 	pos_changed.emit()
 
 func _on_y_value_changed(value):
