@@ -1,4 +1,5 @@
 @tool 
+class_name AddRemoveField
 extends BoxContainer
 
 @export_file("*.tscn") var field_path: String
@@ -45,6 +46,7 @@ func add_field():
 func _on_remove_pressed(field_to_remove):
 	field_removed.emit(field_to_remove)
 	remove_child(field_to_remove)
+	fields -= 1
 	field_to_remove.queue_free()
 
 func sort_field(field):
@@ -55,3 +57,7 @@ func sort_field(field):
 			move_child(field, index)
 			return
 		index += 1
+
+
+func _on_sort_pressed():
+	pass # Replace with function body.

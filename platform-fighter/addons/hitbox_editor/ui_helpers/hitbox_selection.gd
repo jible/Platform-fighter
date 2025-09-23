@@ -6,7 +6,7 @@ extends VBoxContainer
 @export var interpolate: CheckBox
 @export var starting_pos_x: SpinBox
 @export var starting_pos_y: SpinBox
-@export var offset_info: VBoxContainer
+@export var offset_info: AddRemoveField
 @export var turn_on_frames: SpinBox
 @export var turn_off_frames: SpinBox
 @export var damage_value: SpinBox
@@ -71,9 +71,7 @@ func set_hitbox_position_keys():
 		
 		# add keys to ui
 		var new_field: PositionAnimationSetter = offset_info.add_field()
-		new_field.frame_field.value = int(frame)
-		new_field.x_field.value = hitbox_position.x
-		new_field.y_field.value = hitbox_position.y
+		new_field.first_populate(int(frame), hitbox_position.x, hitbox_position.y)
 
 func get_hitbox_method_keys():
 	for key in range(animation.track_get_key_count(hitbox_method_track)):
@@ -120,17 +118,31 @@ func _on_interpolate_toggled(value):
 	var interpolation_type = Animation.INTERPOLATION_LINEAR if value else Animation.INTERPOLATION_NEAREST
 	animation.track_set_interpolation_type(hitbox_position_track, interpolation_type)
 
-# fires when add remove has field added
-func _on_position_added(position_animation:PositionAnimationSetter):
-	#if position_animation.frame_value
-	pass
-
-# Fires when add remove has field removed
-func _on_position_removed(position_animation:PositionAnimationSetter):
-	pass
-
 func on_position_changed(position_animation:PositionAnimationSetter):
-	pass
+	var new_position = Vector2(position_animation.x_field.value, position_animation.y_field.value)
+	
+	var frame = position_animation.frame_field.value
+	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
+	animation.track_set_key_value(hitbox_method_track, key, new_position)
+
+func on_frame_changed(position_animation:PositionAnimationSetter):
+	var new_frame = position_animation.frame_field.value
+	var old_frame = position_animation.old_frame
+	
+	if is_valid_frame(new_frame):
+		var key = animation.track_find_key(hitbox_position_track, frame_to_time(old_frame))
+		animation.track_set_key_time(hitbox_position_track, key, frame_to_time(new_frame))
+		position_animation.on_change_complete(new_frame)
+	else:
+		position_animation.frame_field.value = old_frame
+	offset_info.sort_field(position_animation)
+
+func is_valid_frame(frame):
+	for key in range(animation.track_get_key_count(hitbox_position_track)):
+		var current_key_frame = time_to_frame(animation.track_get_key_time(hitbox_position_track, key))
+		if current_key_frame == frame:
+			return false
+	return true
 
 func _on_pos_anim_value_changed(former_frame, frame, pos):
 	var key = animation.track_find_key(hitbox_position_track,frame_to_time(former_frame),Animation.FIND_MODE_NEAREST)
@@ -162,3 +174,26 @@ func time_to_frame(time):
 
 func frame_to_time(frame):
 	return frame * frame_time
+
+
+func _on_add_remove_field_field_added(position_animation: PositionAnimationSetter):
+	#if position_animation.frame_value
+	var min_frame = 0
+	for key in range(animation.track_get_key_count(hitbox_position_track) ):
+		var current_key_frame = time_to_frame(animation.track_get_key_time(hitbox_position_track, key))
+		if  current_key_frame == min_frame:
+			min_frame += 1
+		else: break
+	position_animation.old_frame = min_frame
+	position_animation.frame_field.value = min_frame
+	var new_key = animation.track_insert_key(hitbox_position_track, frame_to_time(min_frame), Vector2(0,0))
+	
+	# Connect signals
+	position_animation.frame_changed.connect(on_frame_changed.bind(position_animation))
+	position_animation.pos_changed.connect(on_position_changed.bind(position_animation))
+
+
+func _on_add_remove_field_field_removed(position_animation :PositionAnimationSetter):
+	var frame = position_animation.frame_field.value
+	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
+	animation.track_remove_key(hitbox_position_track, key)
