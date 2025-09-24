@@ -1,3 +1,4 @@
+@tool
 class_name Hitbox
 extends Area2D
 
@@ -51,6 +52,7 @@ var successful_hit_list: Array = []
 func _ready():
 	collision_shape = get_child(0)
 	turn_off()
+	if Engine.is_editor_hint(): return
 	area_entered.connect(_on_area_entered)
 	
 	if base_character:
@@ -69,6 +71,10 @@ func _ready():
 
 
 func turn_off():
+	if Engine.is_editor_hint():
+		print("off")
+		collision_shape.visible = false
+		return
 	collision_shape.debug_color = Color(0,0)
 	collision_shape.disabled = true
 	monitoring = false
@@ -78,6 +84,9 @@ func turn_off():
 	on = false
 
 func turn_on():
+	if Engine.is_editor_hint():
+		collision_shape.visible = true
+		return
 	collision_shape.debug_color = Color(Color.RED,1)
 	collision_shape.disabled = false
 	monitoring = true
@@ -85,6 +94,7 @@ func turn_on():
 	on = true
 
 func _on_area_entered(hurtbox:Hurtbox):
+	if Engine.is_editor_hint():return
 	var other_health = hurtbox.health
 	if !other_health:
 		if hurtbox in successful_hit_list:return

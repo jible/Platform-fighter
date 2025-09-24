@@ -120,10 +120,11 @@ func _on_interpolate_toggled(value):
 	animation.track_set_interpolation_type(hitbox_position_track, interpolation_type)
 
 func on_position_changed(position_animation:PositionAnimationSetter):
+	print('changed')
 	var new_position = Vector2(position_animation.x_field.value, position_animation.y_field.value)
 	var frame = position_animation.frame_field.value
 	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
-	animation.track_set_key_value(hitbox_method_track, key, new_position)
+	animation.track_set_key_value(hitbox_position_track, key, new_position)
 
 func on_frame_changed(position_animation:PositionAnimationSetter):
 	print("Frame changed")
@@ -134,7 +135,6 @@ func on_frame_changed(position_animation:PositionAnimationSetter):
 		var key = animation.track_find_key(hitbox_position_track, frame_to_time(old_frame))
 		animation.track_set_key_time(hitbox_position_track, key, frame_to_time(new_frame))
 		position_animation.old_frame = new_frame
-		offset_info.sort_field(position_animation)
 		position_animation.old_frame = new_frame
 
 	else:

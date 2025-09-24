@@ -4,6 +4,8 @@ extends VBoxContainer
 @export var hitbox_script_path:String
 @export var default_hitbox_radius = 20
 
+@export var frame_slider: HSlider
+
 @export var character_name_label: Label
 @export var state_drop_down: OptionButton
 @export var hitbox_drop_down: OptionButton
@@ -15,14 +17,24 @@ var states = []
 var state 
 var character_root
 var state_machine
+var animation_player: AnimationPlayer
 var current_state_hitboxes = []
 
 func _ready():
 	pass
 
+func _process(delta):
+	if Engine.is_editor_hint() and character_root != null:
+		frame_slider.set_block_signals(true)
+		frame_slider.value = animation_player.current_animation_position
+		frame_slider.set_block_signals(false)
+		
+	pass
+
 func configure(_character_root: BaseCharacter):
 	character_root = _character_root
 	character_name_label.text = character_root.name
+	animation_player = character_root.animation_player
 	state_machine = character_root.state_machine
 	states = character_root.state_machine.get_children(true)
 	state_drop_down.clear()
@@ -37,6 +49,9 @@ func _on_state_drop_down_item_selected(index):
 	if !state:
 		print("state does not exist")
 		return
+	frame_slider.max_value = animation_player.get_animation(state.name).length
+	animation_player.current_animation = state.name
+	animation_player.play()
 	update_hitboxes(state.get_children())
 
 func update_hitboxes(hitboxes):
@@ -62,8 +77,6 @@ func get_hitbox_from_name(hitbox_name):
 			return hitbox
 	return null
 
-
-
 func add_hitbox(state_node):
 	var new_hitbox = Area2D.new()
 	new_hitbox.set_script(load(hitbox_script_path))
@@ -79,3 +92,18 @@ func add_hitbox(state_node):
 func remove_hitbox(state_node:Node, hitbox):
 	state_node.remove_child(hitbox)
 	hitbox.queue_free()
+
+func _on_frame_slider_value_changed(value):
+	animation_player.stop()
+	animation_player.seek(value, true)
+	
+
+func _on_play_pressed():
+	animation_player.play()
+
+func _on_frame_slider_drag_started():
+	animation_player.pause()
+
+
+func _on_pause_pressed():
+	animation_player.pause()

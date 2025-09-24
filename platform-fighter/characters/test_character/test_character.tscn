@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=15 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
@@ -152,9 +152,15 @@ tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
-"values": []
+"times": PackedFloat32Array(0.266667, 0.766667),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"turn_on"
+}, {
+"args": [],
+"method": &"turn_off"
+}]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -163,10 +169,22 @@ tracks/3/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox:position")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.1, 0.5),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [Vector2(0, 0)]
+"values": [Vector2(0, 0), Vector2(0, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox/CollisionShape2D:debug_color")
+tracks/4/interp = 0
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.166667, 0.433333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Color(7.70092e-07, 0.269352, 0.319842, 0.584314), Color(0, 0.6, 0.701961, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_m32lo"]
@@ -197,6 +215,21 @@ tracks/1/keys = {
 "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 }
 
+[sub_resource type="Animation" id="Animation_kwm21"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox/CollisionShape2D:debug_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0.6, 0.701961, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kwm21"]
 _data = {
 &"Aerial": SubResource("Animation_d86wp"),
@@ -204,6 +237,7 @@ _data = {
 &"Idle": SubResource("Animation_ey8be"),
 &"Jump": SubResource("Animation_ktjrq"),
 &"Punch": SubResource("Animation_h1f64"),
+&"RESET": SubResource("Animation_kwm21"),
 &"Walk": SubResource("Animation_m32lo")
 }
 
@@ -220,6 +254,7 @@ metadata/_custom_type_script = "uid://ujvf0lqqpayc"
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
 animation = &"Punch"
+frame = 6
 
 [node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")
@@ -239,6 +274,8 @@ metadata/_custom_type_script = "uid://db3qdsst0ai6x"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/Hitbox" index="0"]
 position = Vector2(16.5333, -2.46667)
 shape = SubResource("CircleShape2D_ojpq0")
+disabled = true
+debug_color = Color(0, 0.6, 0.701961, 0)
 
 [node name="AnimationPlayer" parent="." index="2"]
 libraries = {
