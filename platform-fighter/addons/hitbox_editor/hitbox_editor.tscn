@@ -112,6 +112,8 @@ text = "->"
 
 [connection signal="item_selected" from="HBoxContainer/VBoxContainer/StateSelection/StateDropDown" to="." method="_on_state_drop_down_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/VBoxContainer/HitboxDropDownSection/HitboxDropDown" to="." method="_on_hitbox_drop_down_item_selected"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HitboxDropDownSection/AddHitbox" to="." method="_on_add_hitbox_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/HitboxDropDownSection/RemoveHitbox" to="." method="_on_remove_hitbox_pressed"]
 [connection signal="drag_started" from="HBoxContainer/VBoxContainer2/FrameSlider" to="." method="_on_frame_slider_drag_started"]
 [connection signal="value_changed" from="HBoxContainer/VBoxContainer2/FrameSlider" to="." method="_on_frame_slider_value_changed"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer2/HBoxContainer/Play" to="." method="_on_play_pressed"]
