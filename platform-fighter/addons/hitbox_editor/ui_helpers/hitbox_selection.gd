@@ -102,8 +102,9 @@ func auto_fill_tracks():
 		_set_track_defaults(sprite_frame_track)
 	if hitbox_visibility_track == null:
 		hitbox_visibility_track = animation.add_track(Animation.TYPE_VALUE)
-		animation.track_set_path(hitbox_visibility_track, hitbox_path)
+		animation.track_set_path(hitbox_visibility_track, NodePath(String(hitbox_path) + ":visibile"))
 		_set_track_defaults(hitbox_visibility_track)
+		animation.track_insert_key(hitbox_visibility_track, 0,false)
 	if hitbox_method_track == null:
 		# TODO Add default key
 		hitbox_method_track =animation.add_track(Animation.TYPE_METHOD)
