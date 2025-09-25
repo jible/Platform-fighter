@@ -97,19 +97,30 @@ func auto_fill_tracks():
 		_set_track_defaults(hitbox_position_track)
 	if sprite_frame_track == null:
 		# TODO Add default key
-		sprite_frame_track =animation.add_track(Animation.TYPE_ANIMATION)
+		sprite_frame_track =animation.add_track(Animation.TYPE_VALUE)
 		animation.track_set_path(sprite_frame_track, NodePath(String(sprite_manager_path) + ":frame") )
 		_set_track_defaults(sprite_frame_track)
 	if hitbox_visibility_track == null:
 		hitbox_visibility_track = animation.add_track(Animation.TYPE_VALUE)
-		animation.track_set_path(hitbox_visibility_track, NodePath(String(hitbox_path) + ":visibile"))
+		animation.track_set_path(hitbox_visibility_track, NodePath(String(hitbox_path) + ":visible"))
 		_set_track_defaults(hitbox_visibility_track)
-		animation.track_insert_key(hitbox_visibility_track, 0,false)
+		var default_key = animation.track_insert_key(hitbox_visibility_track, 0,false)
 	if hitbox_method_track == null:
 		# TODO Add default key
 		hitbox_method_track =animation.add_track(Animation.TYPE_METHOD)
 		animation.track_set_path(hitbox_method_track, hitbox_path)
-		_set_track_defaults(hitbox_method_track)
+
+
+func remove_hitbox_anims():
+	var tracks = [hitbox_position_track, hitbox_visibility_track, hitbox_method_track]
+	# Itterate backwards so you don't delete one, changing the track id of another.
+	tracks.sort()
+	tracks.reverse()
+	for track in tracks:
+		animation.remove_track(track)
+	hitbox_position_track = null
+	hitbox_visibility_track = null
+	hitbox_method_track = null
 
 func _set_track_defaults(track):
 	animation.track_set_interpolation_type(track, Animation.InterpolationType.INTERPOLATION_NEAREST)
@@ -152,9 +163,15 @@ func set_hitbox_method_keys():
 			turn_off_frame.set_block_signals(false)
 			
 	if !has_turn_on:
-		animation.track_insert_key(hitbox_method_track, 0, "turn_on")
+		animation.track_insert_key(hitbox_method_track, 0, {
+			"method" : "turn_on",
+			"args":[],
+		})
 	if !has_turn_off:
-		animation.track_insert_key(hitbox_method_track, frame_to_time(1), "turn_off")
+		animation.track_insert_key(hitbox_method_track, frame_to_time(1), {
+			"method" : "turn_off",
+			"args":[],
+		})
 	
 	sync_visibility_track()
 

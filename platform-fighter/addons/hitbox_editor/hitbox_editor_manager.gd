@@ -59,39 +59,50 @@ func get_hitbox_from_name(hitbox_name):
 func add_hitbox():
 	var new_hitbox = Area2D.new()
 	new_hitbox.set_script(load(hitbox_script_path))
+	new_hitbox.name = "hitbox"
 	state.add_child(new_hitbox)
+	
 	
 	var collision = CollisionShape2D.new()
 	var shape = CircleShape2D.new()
 	collision.shape = shape
 	new_hitbox.add_child(collision)
 	
+	new_hitbox.owner = get_tree().edited_scene_root
+	collision.owner = get_tree().edited_scene_root
+	
+	hitbox_selection.update_hitbox(new_hitbox, character_root, state)
+	
 	# Add new hitbox to drop down and select it
 	hitbox_drop_down.add_item(new_hitbox.name)
 	hitbox_drop_down.select(hitbox_drop_down.item_count - 1 )
 	
-	new_hitbox.owner = get_tree().edited_scene_root
-	collision.owner = get_tree().edited_scene_root
+	hitbox_selection.show()
 	
-	hitbox_drop_down.visible = true
+	
 	return new_hitbox
 
 func remove_hitbox():
-	if !hitbox_drop_down.selected: return
-	var hitbox_name = hitbox_drop_down.get_item_text(hitbox_drop_down.selected)
+	var selected = hitbox_drop_down.selected
+	if selected == -1: return
+	var hitbox_name = hitbox_drop_down.get_item_text(selected)
 	var hitbox = state.find_child(hitbox_name)
+	
 	if !hitbox: 
 		print("couldnt find hitbox")
 		return
-	hitbox_drop_down.remove_item(hitbox_drop_down.selected)
-	if hitbox_drop_down.item_count < 0:
+	
+	hitbox_drop_down.remove_item(selected)
+	if hitbox_drop_down.item_count <= 0:
 		hitbox_selection.hide()
 	
 	for item in range(hitbox_drop_down.item_count):
 		if hitbox_drop_down.get_item_text(item) == state.name:
 			hitbox_drop_down.remove_item(item)
-	state.remove_child(hitbox)
 	
+	hitbox_selection.remove_hitbox_anims()
+	
+	state.remove_child(hitbox)
 	hitbox.queue_free()
 
 # UI Reactions--------------------------------------------------------------------------------------
@@ -131,7 +142,6 @@ func _on_pause_pressed():
 
 
 func _on_add_hitbox_pressed():
-	print("add_presesd")
 	add_hitbox()
 
 
