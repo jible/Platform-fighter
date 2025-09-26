@@ -1,12 +1,12 @@
-[gd_scene load_steps=16 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=17 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
 [ext_resource type="SpriteFrames" uid="uid://dudspqa3diyk5" path="res://assets/spriteframes/test_character.tres" id="3_6ropc"]
+[ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://characters/test_character/behaviors/dash_behavior.gd" id="3_7in2u"]
 [ext_resource type="Script" uid="uid://dd0ll38lrhwll" path="res://characters/test_character/states/punch.gd" id="3_cu1ws"]
 [ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/hitbox_hurtbox/hitbox.gd" id="4_ka262"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_d86wp"]
+[ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="7_ey8be"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ojpq0"]
 radius = 5.46829
@@ -123,38 +123,14 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_h1f64"]
 length = 0.7
-tracks/0/type = "value"
+tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteManager:animation")
-tracks/0/interp = 0
+tracks/0/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox")
+tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["Punch"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("SpriteManager:frame")
-tracks/1/interp = 0
-tracks/1/loop_wrap = false
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.1, 0.7),
+"times": PackedFloat32Array(0.2, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [],
@@ -164,29 +140,53 @@ tracks/2/keys = {
 "method": &"turn_off"
 }]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox:position")
+tracks/1/interp = 0
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.2, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox:position")
+tracks/3/path = NodePath("SpriteManager:animation")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2(0, 0)]
+"values": ["Punch"]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox:visible")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
+tracks/4/path = NodePath("SpriteManager:frame")
+tracks/4/interp = 0
+tracks/4/loop_wrap = false
 tracks/4/keys = {
-"times": PackedFloat32Array(0.1, 0.7),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [true, false]
+"values": [0, 1, 2, 3, 4, 5, 6]
 }
 
 [sub_resource type="Animation" id="Animation_kwm21"]
@@ -245,7 +245,7 @@ _data = {
 
 [node name="TestCharacter" instance=ExtResource("1_ka262")]
 
-[node name="PunchBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="3" node_paths=PackedStringArray("base_character", "state_machine")]
+[node name="PunchBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="2" node_paths=PackedStringArray("base_character", "state_machine")]
 script = ExtResource("2_ka262")
 priority = 2
 valid_states = Array[String](["Idle", "Aerial", "Walk"])
@@ -253,17 +253,18 @@ base_character = NodePath("../../..")
 state_machine = NodePath("../../../SpriteManager/StateMachine")
 metadata/_custom_type_script = "uid://ujvf0lqqpayc"
 
+[node name="DashBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="3" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("3_7in2u")
+valid_states = Array[String](["Aerial", "Idle", "Walk"])
+base_character = NodePath("../../..")
+state_machine = NodePath("../../../SpriteManager/StateMachine")
+
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
-animation = &"Idle"
+animation = &"Dash"
+frame = 1
 
-[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Idle" index="0"]
-script = ExtResource("4_ka262")
-
-[node name="@CollisionShape2D@24565" type="CollisionShape2D" parent="SpriteManager/StateMachine/Idle/hitbox" index="0"]
-shape = SubResource("CircleShape2D_d86wp")
-
-[node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
+[node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="4" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")
 base_character = NodePath("../../..")
 state_machine = NodePath("..")
@@ -281,10 +282,23 @@ metadata/_custom_type_script = "uid://db3qdsst0ai6x"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/Hitbox" index="0"]
 position = Vector2(16.5333, -2.46667)
 shape = SubResource("CircleShape2D_ojpq0")
-disabled = true
-debug_color = Color(0, 0.6, 0.701961, 0)
+debug_color = Color(0, 0.6, 0.701961, 0.72549)
+
+[node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("7_ey8be")
+input_handler = NodePath("../../../InputHandler")
+base_character = NodePath("../../..")
+state_machine = NodePath("..")
+character_body = NodePath("../../../CharacterBody")
+state_type = 1
+can_turn_around = false
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="AnimationPlayer" parent="." index="2"]
 libraries = {
 &"": SubResource("AnimationLibrary_kwm21")
 }
+
+[connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/PunchBehavior" method="_on_input_handler_button_pressed"]
+[connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/DashBehavior" method="_on_input_handler_button_pressed"]

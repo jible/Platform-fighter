@@ -1,8 +1,9 @@
 extends CharacterBehavior
 
 
-func condition():
-	return Input.is_action_just_pressed("attack")
+func _on_input_handler_button_pressed(button):
+	if button == "A" and is_active:
+		trigger()
 
 func trigger():
 	state_machine.change_state("Punch")

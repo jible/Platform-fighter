@@ -19,7 +19,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qna8n")
 hitbox_script_path = "res://components/for_characters/hitbox_hurtbox/hitbox.gd"
-default_hitbox_radius = null
 frame_slider = NodePath("HBoxContainer/VBoxContainer2/FrameSlider")
 character_name_label = NodePath("HBoxContainer/VBoxContainer/NameContainer/CharacterName")
 state_drop_down = NodePath("HBoxContainer/VBoxContainer/StateSelection/StateDropDown")

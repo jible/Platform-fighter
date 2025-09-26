@@ -10,9 +10,7 @@ extends VBoxContainer
 @export var turn_on_frame: SpinBox
 @export var turn_off_frame: SpinBox
 @export var damage_value: SpinBox
-@export var damage_slider: Slider
-@export var knockback_x: SpinBox
-@export var knockback_y: SpinBox
+@export var knockback_angle: SpinBox
 
 # Nodes
 var hitbox:Hitbox
@@ -64,6 +62,15 @@ func update_hitbox(_hitbox, _base_character, _state_node):
 	# Extracts keys from anims and populates ui with their info
 	set_hitbox_position_keys()
 	set_hitbox_method_keys()
+	
+	damage_value.set_block_signals(true)
+	damage_value.value = hitbox.damage
+	damage_value.set_block_signals(false)
+	
+	knockback_angle.set_block_signals(true)
+	knockback_angle.value = hitbox.knockback_angle
+	knockback_angle.set_block_signals(false)
+	
 
 func get_track_references():
 	hitbox_position_track = null
@@ -109,7 +116,7 @@ func auto_fill_tracks():
 		# TODO Add default key
 		hitbox_method_track =animation.add_track(Animation.TYPE_METHOD)
 		animation.track_set_path(hitbox_method_track, hitbox_path)
-
+		
 
 func remove_hitbox_anims():
 	var tracks = [hitbox_position_track, hitbox_visibility_track, hitbox_method_track]
@@ -152,14 +159,17 @@ func set_hitbox_method_keys():
 			var frame = time_to_frame(time)
 			turn_on_frame.set_block_signals(true)
 			turn_on_frame.value = frame
+			old_turn_on_frame = frame
 			turn_on_frame.set_block_signals(false)
-			
+	
+	
 		elif animation.method_track_get_name(hitbox_method_track,key) == "turn_off":
 			has_turn_off = true
 			var time = animation.track_get_key_time(hitbox_method_track, key)
 			var frame = time_to_frame(time)
 			turn_off_frame.set_block_signals(true)
 			turn_off_frame.value = frame
+			old_turn_off_frame = frame
 			turn_off_frame.set_block_signals(false)
 			
 	if !has_turn_on:
@@ -167,11 +177,16 @@ func set_hitbox_method_keys():
 			"method" : "turn_on",
 			"args":[],
 		})
+		turn_on_frame.value = animation.track_get_key_time(hitbox_method_track, 0)
+		
 	if !has_turn_off:
 		animation.track_insert_key(hitbox_method_track, frame_to_time(1), {
 			"method" : "turn_off",
 			"args":[],
 		})
+		turn_off_frame.value = animation.track_get_key_time(hitbox_method_track, 1)
+		
+	
 	
 	sync_visibility_track()
 
@@ -259,14 +274,47 @@ func _on_add_remove_field_field_removed(position_animation :PositionAnimationSet
 	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
 	animation.track_remove_key(hitbox_position_track, key)
 
+var old_turn_on_frame = null
+
 func _on_turn_on_frame_field_value_changed(value):
+	var turn_on_key
 	for key in range(animation.track_get_key_count(hitbox_method_track)):
-		if animation.method_track_get_name(hitbox_method_track, key) == "turn_on":
-			animation.track_set_key_time(hitbox_method_track, key, frame_to_time(value))
+		var method_name = animation.method_track_get_name(hitbox_method_track, key)
+		if method_name == "turn_on":
+			turn_on_key = key
+		elif method_name == "turn_off":
+			if value == time_to_frame(animation.track_get_key_time(hitbox_method_track, key)):
+				turn_on_frame.set_block_signals(true)
+				turn_on_frame.value = old_turn_on_frame
+				turn_on_frame.set_block_signals(false)
+				return
+	animation.track_set_key_time(hitbox_method_track, turn_on_key, frame_to_time(value))
+	old_turn_on_frame = value
 	sync_visibility_track()
 
+var old_turn_off_frame = null
+
 func _on_turn_off_frame_field_value_changed(value):
+	var turn_off_key
 	for key in range(animation.track_get_key_count(hitbox_method_track)):
-		if animation.method_track_get_name(hitbox_method_track, key) == "turn_off":
-			animation.track_set_key_time(hitbox_method_track, key, frame_to_time(value))
+		var method_name = animation.method_track_get_name(hitbox_method_track, key)
+		if method_name == "turn_off":
+			turn_off_key = key
+		elif method_name == "turn_on":
+			if value == time_to_frame(animation.track_get_key_time(hitbox_method_track, key)):
+				turn_off_frame.set_block_signals(true)
+				turn_off_frame.value = old_turn_off_frame
+				turn_off_frame.set_block_signals(false)
+				return
+	animation.track_set_key_time(hitbox_method_track, turn_off_key, frame_to_time(value))
+	old_turn_off_frame = value
 	sync_visibility_track()
+
+
+# Hitbox dmg and knockback signal receivers------------------------------------------------------
+func _on_spin_box_value_changed(value):
+	hitbox.damage = value
+
+func _on_angle_value_changed(value):
+	hitbox.knockback_angle = value
+	

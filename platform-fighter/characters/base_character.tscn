@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=19 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/physics_related/character_body.gd" id="2_a5pmx"]
@@ -10,10 +10,8 @@
 [ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://components/for_characters/state_helpers/behavior_manager.gd" id="8_a1fmy"]
 [ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://components/for_characters/default_states/ariel.gd" id="8_ebb2h"]
 [ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://characters/test_character/behaviors/jump_behavior.gd" id="9_6uefu"]
-[ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="10_dko73"]
 [ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://characters/test_character/behaviors/land_behavior.gd" id="11_o2sve"]
 [ext_resource type="Script" uid="uid://dh6rrb5uvquv4" path="res://components/for_characters/hitbox_hurtbox/health.gd" id="13_5ygvn"]
-[ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://characters/test_character/behaviors/dash_behavior.gd" id="14_3jy72"]
 [ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/animation_related/animation_updater.gd" id="15_2f3ic"]
 [ext_resource type="Script" uid="uid://dfn5xpobmmdm4" path="res://components/for_characters/animation_related/animation_player.gd" id="17_iht17"]
 [ext_resource type="Script" uid="uid://c5vmhdvjvsfbr" path="res://components/for_characters/input_handler.gd" id="18_cgfyo"]
@@ -67,12 +65,6 @@ valid_states = Array[String](["Aerial"])
 base_character = NodePath("../../..")
 state_machine = NodePath("../../../SpriteManager/StateMachine")
 
-[node name="DashBehavior" type="Node" parent="CharacterBody/BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
-script = ExtResource("14_3jy72")
-valid_states = Array[String](["Aerial", "Idle", "Walk"])
-base_character = NodePath("../../..")
-state_machine = NodePath("../../../SpriteManager/StateMachine")
-
 [node name="Health" type="Node" parent="CharacterBody" node_paths=PackedStringArray("base_character", "state_machine")]
 script = ExtResource("13_5ygvn")
 base_character = NodePath("../..")
@@ -111,16 +103,6 @@ script = ExtResource("6_bcibw")
 base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
-scale = Vector2(0.0666667, 0.0666667)
-script = ExtResource("10_dko73")
-input_handler = NodePath("../../../InputHandler")
-base_character = NodePath("../../..")
-state_machine = NodePath("..")
-character_body = NodePath("../../../CharacterBody")
-state_type = 1
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="Aerial" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
@@ -172,4 +154,3 @@ sprite_manager = NodePath("../SpriteManager")
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="AnimationPlayer" method="_on_state_machine_state_changed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="SpriteManager/StateMachine" method="_on_animation_player_animation_finished"]
 [connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/JumpBehavior" method="_on_input_handler_button_pressed"]
-[connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/DashBehavior" method="_on_input_handler_button_pressed"]

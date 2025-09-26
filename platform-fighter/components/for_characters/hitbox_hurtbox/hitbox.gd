@@ -36,9 +36,7 @@ var collision_shape:CollisionShape2D
 @export var base_character: BaseCharacter
 @export var damage: int = 0
 @export var knockback_magnitude: float = 0
-@export var knockback_direction: Vector2 = Vector2(0,0) :
-	set(value):
-		knockback_direction = value.normalized()
+@export var knockback_angle: float
 
 var cluster = null
 
@@ -57,7 +55,7 @@ func _ready():
 	hit_data = {
 		"damage": damage,
 		"knockback_magnitude" : knockback_magnitude,
-		"knockback_direction" : knockback_direction,
+		"knockback_angle" : knockback_angle,
 	}
 	var parent = get_parent()
 	if is_instance_of(parent, HitboxCluster):
