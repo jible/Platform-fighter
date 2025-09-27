@@ -50,11 +50,7 @@ func update_hitboxes(hitboxes):
 	else:
 		hitbox_selection.hide()
 
-func get_hitbox_from_name(hitbox_name):
-	for hitbox in current_state_hitboxes:
-		if hitbox.name == hitbox_name:
-			return hitbox
-	return null
+
 
 func add_hitbox():
 	var new_hitbox = Area2D.new()
@@ -85,9 +81,13 @@ func add_hitbox():
 func remove_hitbox():
 	var selected = hitbox_drop_down.selected
 	if selected == -1: return
-	var hitbox_name = hitbox_drop_down.get_item_text(selected)
-	var hitbox = state.find_child(hitbox_name)
 	
+	
+	
+	var hitbox_name = hitbox_drop_down.get_item_text(selected)
+	print(hitbox_name)
+	var hitbox = state.find_child(hitbox_name)
+	print(state, hitbox)
 	if !hitbox: 
 		print("couldnt find hitbox")
 		return
@@ -96,9 +96,6 @@ func remove_hitbox():
 	if hitbox_drop_down.item_count <= 0:
 		hitbox_selection.hide()
 	
-	for item in range(hitbox_drop_down.item_count):
-		if hitbox_drop_down.get_item_text(item) == state.name:
-			hitbox_drop_down.remove_item(item)
 	
 	hitbox_selection.remove_hitbox_anims()
 	
@@ -114,12 +111,13 @@ func _on_state_drop_down_item_selected(index):
 		return
 	frame_slider.max_value = animation_player.get_animation(state.name).length
 	animation_player.current_animation = state.name
-	animation_player.play()
+	animation_player.seek(0,true)
+	animation_player.pause()
 	update_hitboxes(state.get_children())
 
 
 func _on_hitbox_drop_down_item_selected(index):
-	var new_hitbox = get_hitbox_from_name(hitbox_drop_down.get_item_text(index))
+	var new_hitbox = state.find_child(hitbox_drop_down.get_item_text(index))
 	if new_hitbox:
 		hitbox_selection.update_hitbox(new_hitbox, character_root, state)
 	else:
