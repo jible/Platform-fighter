@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=17 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
@@ -7,8 +7,6 @@
 [ext_resource type="Script" uid="uid://dd0ll38lrhwll" path="res://characters/test_character/states/punch.gd" id="3_cu1ws"]
 [ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/hitbox_hurtbox/hitbox.gd" id="4_ka262"]
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="7_ey8be"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_ey8be"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ojpq0"]
 radius = 5.46829
@@ -263,13 +261,7 @@ state_machine = NodePath("../../../SpriteManager/StateMachine")
 
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
-animation = &"Aerial"
-
-[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Idle" index="0"]
-script = ExtResource("4_ka262")
-
-[node name="@CollisionShape2D@33086" type="CollisionShape2D" parent="SpriteManager/StateMachine/Idle/hitbox" index="0"]
-shape = SubResource("CircleShape2D_ey8be")
+animation = &"Idle"
 
 [node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="4" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")

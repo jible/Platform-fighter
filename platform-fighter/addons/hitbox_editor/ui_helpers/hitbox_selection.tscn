@@ -3,15 +3,13 @@
 [ext_resource type="Script" uid="uid://c8pu6xvi8p3oq" path="res://addons/hitbox_editor/ui_helpers/hitbox_selection.gd" id="1_nufph"]
 [ext_resource type="PackedScene" uid="uid://cqa5hbka73wi" path="res://addons/hitbox_editor/ui_helpers/add_remove_field.tscn" id="2_k4a0x"]
 
-[node name="HitboxSelection" type="VBoxContainer" node_paths=PackedStringArray("interpolate", "starting_pos_x", "starting_pos_y", "offset_info", "turn_on_frame", "turn_off_frame", "damage_value", "knockback_angle")]
+[node name="HitboxSelection" type="VBoxContainer" node_paths=PackedStringArray("interpolate", "offset_info", "turn_on_frame", "turn_off_frame", "damage_value", "knockback_angle")]
 offset_right = 143.0
 offset_bottom = 178.0
 size_flags_horizontal = 2
 size_flags_vertical = 2
 script = ExtResource("1_nufph")
 interpolate = NodePath("Interpolate/CheckBox")
-starting_pos_x = NodePath("StartingPos/VectorHolder/X")
-starting_pos_y = NodePath("StartingPos/VectorHolder/Y")
 offset_info = NodePath("Offset/AddRemoveField")
 turn_on_frame = NodePath("TurnOnFrames/TurnOnFrameField")
 turn_off_frame = NodePath("TurnOffFrames/TurnOffFrameField")
@@ -32,35 +30,6 @@ text = "Interpolate Pos:"
 [node name="CheckBox" type="CheckBox" parent="Interpolate"]
 layout_mode = 2
 button_pressed = true
-
-[node name="StartingPos" type="HBoxContainer" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="StartingPosLabel" type="Label" parent="StartingPos"]
-layout_mode = 2
-text = "Starting Pos"
-
-[node name="VectorHolder" type="HBoxContainer" parent="StartingPos"]
-layout_mode = 2
-
-[node name="XLabel" type="Label" parent="StartingPos/VectorHolder"]
-layout_mode = 2
-text = "x"
-
-[node name="X" type="SpinBox" parent="StartingPos/VectorHolder"]
-layout_mode = 2
-allow_greater = true
-allow_lesser = true
-
-[node name="YLabel" type="Label" parent="StartingPos/VectorHolder"]
-layout_mode = 2
-text = "y"
-
-[node name="Y" type="SpinBox" parent="StartingPos/VectorHolder"]
-layout_mode = 2
-allow_greater = true
-allow_lesser = true
 
 [node name="Offset" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -123,9 +92,22 @@ layout_mode = 2
 max_value = 360.0
 step = 0.1
 
+[node name="Size" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Size"]
+layout_mode = 2
+text = "Radius:"
+
+[node name="Radius" type="SpinBox" parent="Size"]
+layout_mode = 2
+step = 0.1
+allow_greater = true
+
 [connection signal="field_added" from="Offset/AddRemoveField" to="." method="_on_add_remove_field_field_added"]
 [connection signal="field_removed" from="Offset/AddRemoveField" to="." method="_on_add_remove_field_field_removed"]
 [connection signal="value_changed" from="TurnOnFrames/TurnOnFrameField" to="." method="_on_turn_on_frame_field_value_changed"]
 [connection signal="value_changed" from="TurnOffFrames/TurnOffFrameField" to="." method="_on_turn_off_frame_field_value_changed"]
-[connection signal="value_changed" from="Damage/Damage" to="." method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="Damage/Damage" to="." method="_on_damage_value_changed"]
 [connection signal="value_changed" from="Knockback Angle/Angle" to="." method="_on_angle_value_changed"]
+[connection signal="value_changed" from="Size/Radius" to="." method="_on_radius_value_changed"]

@@ -142,6 +142,5 @@ func _on_pause_pressed():
 func _on_add_hitbox_pressed():
 	add_hitbox()
 
-
 func _on_remove_hitbox_pressed():
 	remove_hitbox()

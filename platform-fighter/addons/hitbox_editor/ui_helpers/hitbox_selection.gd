@@ -312,9 +312,19 @@ func _on_turn_off_frame_field_value_changed(value):
 
 
 # Hitbox dmg and knockback signal receivers------------------------------------------------------
-func _on_spin_box_value_changed(value):
-	hitbox.damage = value
-
 func _on_angle_value_changed(value):
 	hitbox.knockback_angle = value
-	
+
+
+func _on_damage_value_changed(value):
+	hitbox.damage = value
+
+func _on_radius_value_changed(value):
+	var chilren = hitbox.get_children
+	var collision_area:CollisionShape2D
+	for child in chilren:
+		if child is CollisionShape2D:
+			collision_area = child
+	if !(collision_area is CollisionShape2D):
+		return
+	collision_area.shape.radius = value
