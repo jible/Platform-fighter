@@ -24,6 +24,7 @@ func reset_points():
 
 func _process(delta):
 	if !Engine.is_editor_hint(): return
+	if get_point_count() != 2: reset_points()
 	
 	var new_vector = hitbox.knockback_vector
 	if new_vector == kb_vector:return

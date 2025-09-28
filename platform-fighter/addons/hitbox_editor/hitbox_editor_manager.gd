@@ -1,7 +1,7 @@
 @tool
 extends VBoxContainer
 
-@export var hitbox_script_path:String
+var hitbox_scene = preload("uid://dosttxqhf11ww")
 @export var default_hitbox_radius:float = 20
 
 @export var frame_slider: HSlider
@@ -20,7 +20,7 @@ var current_state_hitboxes = []
 
 
 func _process(delta):
-	if Engine.is_editor_hint() and character_root != null:
+	if Engine.is_editor_hint() and character_root != null and animation_player:
 		frame_slider.set_block_signals(true)
 		frame_slider.value = animation_player.current_animation_position
 		frame_slider.set_block_signals(false)
@@ -54,20 +54,25 @@ func update_hitboxes(hitboxes):
 
 func add_hitbox():
 	#TODO change to instance hitbox instead of area 2d and attatching script
-	var new_hitbox = Area2D.new()
-	new_hitbox.set_script(load(hitbox_script_path))
+	var new_hitbox = hitbox_scene.instantiate()
 	new_hitbox.name = "hitbox"
-	state.add_child(new_hitbox)
 	
 	
 	var collision = CollisionShape2D.new()
+	new_hitbox.collision_shape = collision
+	
 	var shape = CircleShape2D.new()
 	collision.shape = shape
+	collision.debug_color = Color("2ea06c79")
 	new_hitbox.add_child(collision)
+	# Only add it to scene once everything else is ready (so obj has refrences for _ready())
 	
-	new_hitbox.collision_shape = collision
+	state.add_child(new_hitbox)
+	
 	new_hitbox.owner = get_tree().edited_scene_root
 	collision.owner = get_tree().edited_scene_root
+	
+	
 	
 	hitbox_selection.update_hitbox(new_hitbox, character_root, state)
 	
@@ -83,9 +88,6 @@ func add_hitbox():
 func remove_hitbox():
 	var selected = hitbox_drop_down.selected
 	if selected == -1: return
-	
-	
-	
 	var hitbox_name = hitbox_drop_down.get_item_text(selected)
 	print(hitbox_name)
 	var hitbox = state.find_child(hitbox_name)

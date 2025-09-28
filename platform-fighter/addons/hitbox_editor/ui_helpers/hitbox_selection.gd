@@ -10,6 +10,7 @@ extends VBoxContainer
 @export var damage_value: SpinBox
 @export var knockback_vector_x: SpinBox
 @export var knockback_vector_y: SpinBox
+@export var radius: SpinBox
 
 # Nodes
 var hitbox:Hitbox
@@ -65,7 +66,7 @@ func update_hitbox(_hitbox, _base_character, _state_node):
 	secret_set(damage_value, hitbox.damage)
 	secret_set(knockback_vector_x, hitbox.knockback_vector.x)
 	secret_set(knockback_vector_y, hitbox.knockback_vector.y)
-	
+	secret_set(radius, hitbox.collision_shape.shape.radius)
 
 # Sets value on a ui object without firing its signal
 func secret_set(obj, value):
@@ -230,6 +231,9 @@ func on_position_changed(position_animation:PositionAnimationSetter):
 	var frame = position_animation.frame_field.value
 	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
 	animation.track_set_key_value(hitbox_position_track, key, new_position)
+	animation_player.seek(frame_to_time(frame))
+	animation_player.advance(0)
+	animation_player.pause()
 
 func _on_interpolate_toggled(value):
 	var interpolation_type = Animation.INTERPOLATION_LINEAR if value else Animation.INTERPOLATION_NEAREST
@@ -297,6 +301,7 @@ var old_turn_off_frame = null
 
 func _on_turn_off_frame_field_value_changed(value):
 	var turn_off_key
+	
 	for key in range(animation.track_get_key_count(hitbox_method_track)):
 		var method_name = animation.method_track_get_name(hitbox_method_track, key)
 		if method_name == "turn_off":
@@ -319,7 +324,7 @@ func _on_damage_value_changed(value):
 	hitbox.damage = value
 
 func _on_radius_value_changed(value):
-	var chilren = hitbox.get_children
+	var chilren = hitbox.get_children()
 	var collision_area:CollisionShape2D
 	for child in chilren:
 		if child is CollisionShape2D:

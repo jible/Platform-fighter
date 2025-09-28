@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=18 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
@@ -7,6 +7,9 @@
 [ext_resource type="Script" uid="uid://dd0ll38lrhwll" path="res://characters/test_character/states/punch.gd" id="3_cu1ws"]
 [ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/hitbox_hurtbox/hitbox.gd" id="4_ka262"]
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="7_ey8be"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ey8be"]
+radius = 50.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ojpq0"]
 radius = 5.46829
@@ -91,6 +94,47 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteManager/StateMachine/Idle/hitbox:position")
+tracks/2/interp = 0
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(100, 50)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SpriteManager/StateMachine/Idle/hitbox:visible")
+tracks/3/interp = 0
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("SpriteManager/StateMachine/Idle/hitbox")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"turn_on"
+}, {
+"args": [],
+"method": &"turn_off"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_ktjrq"]
@@ -263,6 +307,19 @@ state_machine = NodePath("../../../SpriteManager/StateMachine")
 sprite_frames = ExtResource("3_6ropc")
 animation = &"Idle"
 
+[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Idle" index="0" node_paths=PackedStringArray("collision_shape")]
+position = Vector2(100, 50)
+monitoring = false
+monitorable = false
+script = ExtResource("4_ka262")
+collision_shape = NodePath("_CollisionShape2D_28696")
+
+[node name="_CollisionShape2D_28696" type="CollisionShape2D" parent="SpriteManager/StateMachine/Idle/hitbox" index="0"]
+position = Vector2(114, 65.9999)
+shape = SubResource("CircleShape2D_ey8be")
+disabled = true
+debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
+
 [node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="4" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")
 base_character = NodePath("../../..")
@@ -281,7 +338,7 @@ metadata/_custom_type_script = "uid://db3qdsst0ai6x"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/Hitbox" index="0"]
 position = Vector2(16.5333, -2.46667)
 shape = SubResource("CircleShape2D_ojpq0")
-debug_color = Color(0, 0.6, 0.701961, 0.72549)
+debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
 
 [node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
 scale = Vector2(0.0666667, 0.0666667)

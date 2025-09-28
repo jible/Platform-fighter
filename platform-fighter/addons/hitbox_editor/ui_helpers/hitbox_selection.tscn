@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://c8pu6xvi8p3oq" path="res://addons/hitbox_editor/ui_helpers/hitbox_selection.gd" id="1_nufph"]
 [ext_resource type="PackedScene" uid="uid://cqa5hbka73wi" path="res://addons/hitbox_editor/ui_helpers/add_remove_field.tscn" id="2_k4a0x"]
 
-[node name="HitboxSelection" type="VBoxContainer" node_paths=PackedStringArray("interpolate", "offset_info", "turn_on_frame", "turn_off_frame", "damage_value", "knockback_vector_x", "knockback_vector_y")]
+[node name="HitboxSelection" type="VBoxContainer" node_paths=PackedStringArray("interpolate", "offset_info", "turn_on_frame", "turn_off_frame", "damage_value", "knockback_vector_x", "knockback_vector_y", "radius")]
 offset_right = 143.0
 offset_bottom = 178.0
 size_flags_horizontal = 2
@@ -16,6 +16,7 @@ turn_off_frame = NodePath("TurnOffFrames/TurnOffFrameField")
 damage_value = NodePath("Damage/Damage")
 knockback_vector_x = NodePath("Knockback Angle/KnockbackX")
 knockback_vector_y = NodePath("Knockback Angle/KnockbackY")
+radius = NodePath("Size/Radius")
 
 [node name="SectionLabel" type="Label" parent="."]
 layout_mode = 2

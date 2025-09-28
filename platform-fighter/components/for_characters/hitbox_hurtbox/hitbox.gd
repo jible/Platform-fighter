@@ -81,7 +81,6 @@ func turn_on():
 	on = true
 
 func _on_area_entered(hurtbox:Hurtbox):
-	if Engine.is_editor_hint():return
 	var other_health = hurtbox.health
 	if !other_health:
 		if hurtbox in successful_hit_list:return
