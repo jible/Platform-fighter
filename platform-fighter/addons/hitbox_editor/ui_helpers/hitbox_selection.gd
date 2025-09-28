@@ -4,13 +4,12 @@ extends VBoxContainer
 ## Variable Declaration
 # UI Reference
 @export var interpolate: CheckBox
-@export var starting_pos_x: SpinBox
-@export var starting_pos_y: SpinBox
 @export var offset_info: AddRemoveField
 @export var turn_on_frame: SpinBox
 @export var turn_off_frame: SpinBox
 @export var damage_value: SpinBox
-@export var knockback_angle: SpinBox
+@export var knockback_vector_x: SpinBox
+@export var knockback_vector_y: SpinBox
 
 # Nodes
 var hitbox:Hitbox
@@ -63,14 +62,16 @@ func update_hitbox(_hitbox, _base_character, _state_node):
 	set_hitbox_position_keys()
 	set_hitbox_method_keys()
 	
-	damage_value.set_block_signals(true)
-	damage_value.value = hitbox.damage
-	damage_value.set_block_signals(false)
+	secret_set(damage_value, hitbox.damage)
+	secret_set(knockback_vector_x, hitbox.knockback_vector.x)
+	secret_set(knockback_vector_y, hitbox.knockback_vector.y)
 	
-	knockback_angle.set_block_signals(true)
-	knockback_angle.value = hitbox.knockback_angle
-	knockback_angle.set_block_signals(false)
-	
+
+# Sets value on a ui object without firing its signal
+func secret_set(obj, value):
+	obj.set_block_signals(true)
+	obj.value = value
+	obj.set_block_signals(false)
 
 func get_track_references():
 	hitbox_position_track = null
@@ -312,8 +313,6 @@ func _on_turn_off_frame_field_value_changed(value):
 
 
 # Hitbox dmg and knockback signal receivers------------------------------------------------------
-func _on_angle_value_changed(value):
-	hitbox.knockback_angle = value
 
 
 func _on_damage_value_changed(value):
@@ -328,3 +327,16 @@ func _on_radius_value_changed(value):
 	if !(collision_area is CollisionShape2D):
 		return
 	collision_area.shape.radius = value
+
+
+func _on_knockback_x_value_changed(value):
+	hitbox.knockback_vector.x = value 
+
+func _on_knockback_y_value_changed(value):
+	hitbox.knockback_vector.y = value
+
+
+func _on_normalize_pressed():
+	hitbox.knockback_vector = hitbox.knockback_vector.normalized()
+	knockback_vector_x.value = hitbox.knockback_vector.x
+	knockback_vector_y.value = hitbox.knockback_vector.y

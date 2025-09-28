@@ -53,6 +53,7 @@ func update_hitboxes(hitboxes):
 
 
 func add_hitbox():
+	#TODO change to instance hitbox instead of area 2d and attatching script
 	var new_hitbox = Area2D.new()
 	new_hitbox.set_script(load(hitbox_script_path))
 	new_hitbox.name = "hitbox"
@@ -64,6 +65,7 @@ func add_hitbox():
 	collision.shape = shape
 	new_hitbox.add_child(collision)
 	
+	new_hitbox.collision_shape = collision
 	new_hitbox.owner = get_tree().edited_scene_root
 	collision.owner = get_tree().edited_scene_root
 	

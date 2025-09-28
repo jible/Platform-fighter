@@ -32,11 +32,11 @@ signal landed_hit(target, hit_data)
 
 var on:bool= false
 var hit_data = {}
-var collision_shape:CollisionShape2D
+@export var collision_shape:CollisionShape2D
 @export var base_character: BaseCharacter
 @export var damage: int = 0
 @export var knockback_magnitude: float = 0
-@export var knockback_angle: float
+@export var knockback_vector: Vector2 = Vector2.ZERO
 
 var cluster = null
 
@@ -45,17 +45,17 @@ var successful_hit_list: Array = []
 
 # TODO: Needs fixing once reference server is made
 func _ready():
-	collision_shape = get_child(0)
 	turn_off()
 	area_entered.connect(_on_area_entered)
 	
 	if base_character:
 		var temp = (1 << GlobalResources.max_team_count) - 1
 		collision_mask = temp ^ ( 1<<base_character.team_number)
+	#TODO just refactor to use hitbox, not hit_data
 	hit_data = {
 		"damage": damage,
 		"knockback_magnitude" : knockback_magnitude,
-		"knockback_angle" : knockback_angle,
+		"knockback_vector" : knockback_vector,
 	}
 	var parent = get_parent()
 	if is_instance_of(parent, HitboxCluster):

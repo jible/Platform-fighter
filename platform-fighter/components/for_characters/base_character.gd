@@ -21,5 +21,3 @@ func configure(_team_number, _player_number):
 	team_number = _team_number
 	player_number = _player_number
 	configured.emit()
-
-	

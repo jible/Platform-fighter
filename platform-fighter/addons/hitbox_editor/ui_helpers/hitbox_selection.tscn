@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://c8pu6xvi8p3oq" path="res://addons/hitbox_editor/ui_helpers/hitbox_selection.gd" id="1_nufph"]
 [ext_resource type="PackedScene" uid="uid://cqa5hbka73wi" path="res://addons/hitbox_editor/ui_helpers/add_remove_field.tscn" id="2_k4a0x"]
 
-[node name="HitboxSelection" type="VBoxContainer" node_paths=PackedStringArray("interpolate", "offset_info", "turn_on_frame", "turn_off_frame", "damage_value", "knockback_angle")]
+[node name="HitboxSelection" type="VBoxContainer" node_paths=PackedStringArray("interpolate", "offset_info", "turn_on_frame", "turn_off_frame", "damage_value", "knockback_vector_x", "knockback_vector_y")]
 offset_right = 143.0
 offset_bottom = 178.0
 size_flags_horizontal = 2
@@ -14,7 +14,8 @@ offset_info = NodePath("Offset/AddRemoveField")
 turn_on_frame = NodePath("TurnOnFrames/TurnOnFrameField")
 turn_off_frame = NodePath("TurnOffFrames/TurnOffFrameField")
 damage_value = NodePath("Damage/Damage")
-knockback_angle = NodePath("Knockback Angle/Angle")
+knockback_vector_x = NodePath("Knockback Angle/KnockbackX")
+knockback_vector_y = NodePath("Knockback Angle/KnockbackY")
 
 [node name="SectionLabel" type="Label" parent="."]
 layout_mode = 2
@@ -85,12 +86,31 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Knockback Angle"]
 layout_mode = 2
-text = "Knockback angle (degrees):"
+text = "Knockback Vector:"
 
-[node name="Angle" type="SpinBox" parent="Knockback Angle"]
+[node name="XLabel" type="Label" parent="Knockback Angle"]
 layout_mode = 2
-max_value = 360.0
-step = 0.1
+text = "X:"
+
+[node name="KnockbackX" type="SpinBox" parent="Knockback Angle"]
+layout_mode = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+
+[node name="YLabel" type="Label" parent="Knockback Angle"]
+layout_mode = 2
+text = "Y:"
+
+[node name="KnockbackY" type="SpinBox" parent="Knockback Angle"]
+layout_mode = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+
+[node name="Normalize" type="Button" parent="Knockback Angle"]
+layout_mode = 2
+text = "Normalize KB Angle"
 
 [node name="Size" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -109,5 +129,7 @@ allow_greater = true
 [connection signal="value_changed" from="TurnOnFrames/TurnOnFrameField" to="." method="_on_turn_on_frame_field_value_changed"]
 [connection signal="value_changed" from="TurnOffFrames/TurnOffFrameField" to="." method="_on_turn_off_frame_field_value_changed"]
 [connection signal="value_changed" from="Damage/Damage" to="." method="_on_damage_value_changed"]
-[connection signal="value_changed" from="Knockback Angle/Angle" to="." method="_on_angle_value_changed"]
+[connection signal="value_changed" from="Knockback Angle/KnockbackX" to="." method="_on_knockback_x_value_changed"]
+[connection signal="value_changed" from="Knockback Angle/KnockbackY" to="." method="_on_knockback_y_value_changed"]
+[connection signal="pressed" from="Knockback Angle/Normalize" to="." method="_on_normalize_pressed"]
 [connection signal="value_changed" from="Size/Radius" to="." method="_on_radius_value_changed"]
