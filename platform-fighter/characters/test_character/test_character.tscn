@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=19 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
@@ -6,9 +6,10 @@
 [ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://characters/test_character/behaviors/dash_behavior.gd" id="3_7in2u"]
 [ext_resource type="Script" uid="uid://dd0ll38lrhwll" path="res://characters/test_character/states/punch.gd" id="3_cu1ws"]
 [ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/hitbox_hurtbox/hitbox.gd" id="4_ka262"]
+[ext_resource type="PackedScene" uid="uid://dosttxqhf11ww" path="res://components/for_characters/hitbox_hurtbox/hitbox.tscn" id="5_ktjrq"]
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="7_ey8be"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_ey8be"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_h1f64"]
 radius = 50.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ojpq0"]
@@ -105,7 +106,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2(100, 50)]
+"values": [Vector2(200, 0)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -307,17 +308,14 @@ state_machine = NodePath("../../../SpriteManager/StateMachine")
 sprite_frames = ExtResource("3_6ropc")
 animation = &"Idle"
 
-[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Idle" index="0" node_paths=PackedStringArray("collision_shape")]
-position = Vector2(100, 50)
-monitoring = false
-monitorable = false
+[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Idle" index="0" node_paths=PackedStringArray("collision_shape") instance=ExtResource("5_ktjrq")]
+position = Vector2(200, 0)
 script = ExtResource("4_ka262")
-collision_shape = NodePath("_CollisionShape2D_28696")
+collision_shape = NodePath("@CollisionShape2D@46536")
+knockback_vector = Vector2(1, 0)
 
-[node name="_CollisionShape2D_28696" type="CollisionShape2D" parent="SpriteManager/StateMachine/Idle/hitbox" index="0"]
-position = Vector2(114, 65.9999)
-shape = SubResource("CircleShape2D_ey8be")
-disabled = true
+[node name="@CollisionShape2D@46536" type="CollisionShape2D" parent="SpriteManager/StateMachine/Idle/hitbox" index="1"]
+shape = SubResource("CircleShape2D_h1f64")
 debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
 
 [node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="4" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
