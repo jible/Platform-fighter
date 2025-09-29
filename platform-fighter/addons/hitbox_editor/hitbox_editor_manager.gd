@@ -54,7 +54,7 @@ func update_hitboxes(hitboxes):
 
 func add_hitbox():
 	#TODO change to instance hitbox instead of area 2d and attatching script
-	var new_hitbox = hitbox_scene.instantiate()
+	var new_hitbox: Hitbox = hitbox_scene.instantiate()
 	new_hitbox.name = "hitbox"
 	
 	
@@ -66,6 +66,8 @@ func add_hitbox():
 	collision.debug_color = Color("2ea06c79")
 	new_hitbox.add_child(collision)
 	# Only add it to scene once everything else is ready (so obj has refrences for _ready())
+	new_hitbox.base_character = character_root
+	
 	
 	state.add_child(new_hitbox)
 	

@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=14 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/physics_related/character_body.gd" id="2_a5pmx"]
 [ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/animation_related/sprite_manager.gd" id="3_o2sve"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/state_helpers/character_state_machine.gd" id="4_om1db"]
 [ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://components/for_characters/state_helpers/behavior_manager.gd" id="8_a1fmy"]
+[ext_resource type="Script" uid="uid://c834v552g5fe3" path="res://components/for_characters/scale_handler.gd" id="10_retdq"]
 [ext_resource type="Script" uid="uid://dh6rrb5uvquv4" path="res://components/for_characters/hitbox_hurtbox/health.gd" id="13_5ygvn"]
 [ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/animation_related/animation_updater.gd" id="15_2f3ic"]
 [ext_resource type="Script" uid="uid://dfn5xpobmmdm4" path="res://components/for_characters/animation_related/animation_player.gd" id="17_iht17"]
@@ -82,6 +83,11 @@ health = NodePath("../../CharacterBody/Health")
 sprite_manager = NodePath("../../SpriteManager")
 animation_player = NodePath("../../AnimationPlayer")
 input_handler = NodePath("../../InputHandler")
+
+[node name="ScaleHandler" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("10_retdq")
+base_character = NodePath("../..")
+state_machine = NodePath("../../SpriteManager/StateMachine")
 
 [node name="InputHandler" type="Node" parent="." node_paths=PackedStringArray("base_character")]
 script = ExtResource("18_cgfyo")

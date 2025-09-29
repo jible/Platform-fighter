@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=23 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://characters/test_character/behaviors/dash_behavior.gd" id="3_7in2u"]
 [ext_resource type="Script" uid="uid://dd0ll38lrhwll" path="res://characters/test_character/states/punch.gd" id="3_cu1ws"]
 [ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://characters/test_character/behaviors/jump_behavior.gd" id="4_h1f64"]
-[ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/hitbox_hurtbox/hitbox.gd" id="4_ka262"]
 [ext_resource type="PackedScene" uid="uid://dosttxqhf11ww" path="res://components/for_characters/hitbox_hurtbox/hitbox.tscn" id="5_ktjrq"]
 [ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://characters/test_character/behaviors/land_behavior.gd" id="5_m32lo"]
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="7_ey8be"]
@@ -173,7 +172,7 @@ tracks/3/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:visible")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1),
+"times": PackedFloat32Array(0.4, 0.6),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
@@ -185,7 +184,7 @@ tracks/4/path = NodePath("SpriteManager/StateMachine/Punch/hitbox")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.1),
+"times": PackedFloat32Array(0.4, 0.6),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [],
@@ -279,11 +278,12 @@ character_body = NodePath("../../../CharacterBody")
 state_type = 2
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
-[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("collision_shape") instance=ExtResource("5_ktjrq")]
+[node name="hitbox" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
 position = Vector2(17, 1)
-script = ExtResource("4_ka262")
 collision_shape = NodePath("@CollisionShape2D@33277")
+base_character = NodePath("../../../..")
 damage = 5.0
+knockback_vector = Vector2(0.71, -0.71)
 
 [node name="@CollisionShape2D@33277" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox" index="1"]
 shape = SubResource("CircleShape2D_q6174")
