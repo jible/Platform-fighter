@@ -22,8 +22,8 @@ func reset_points():
 	add_point(Vector2(0,0))
 	add_point(Vector2(0,0))
 
-func _process(delta):
-	if !Engine.is_editor_hint(): return
+func _process(_delta):
+	if !Engine.is_editor_hint():return
 	if get_point_count() != 2: reset_points()
 	
 	var new_vector = hitbox.knockback_vector

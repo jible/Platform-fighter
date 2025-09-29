@@ -1,19 +1,22 @@
-[gd_scene load_steps=19 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=24 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
 [ext_resource type="SpriteFrames" uid="uid://dudspqa3diyk5" path="res://assets/spriteframes/test_character.tres" id="3_6ropc"]
 [ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://characters/test_character/behaviors/dash_behavior.gd" id="3_7in2u"]
 [ext_resource type="Script" uid="uid://dd0ll38lrhwll" path="res://characters/test_character/states/punch.gd" id="3_cu1ws"]
+[ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://characters/test_character/behaviors/jump_behavior.gd" id="4_h1f64"]
 [ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/hitbox_hurtbox/hitbox.gd" id="4_ka262"]
 [ext_resource type="PackedScene" uid="uid://dosttxqhf11ww" path="res://components/for_characters/hitbox_hurtbox/hitbox.tscn" id="5_ktjrq"]
+[ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://characters/test_character/behaviors/land_behavior.gd" id="5_m32lo"]
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="7_ey8be"]
+[ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/default_states/idle.gd" id="11_kwm21"]
+[ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://components/for_characters/default_states/jump.gd" id="12_ywsa4"]
+[ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://components/for_characters/default_states/walk.gd" id="13_n13b4"]
+[ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://components/for_characters/default_states/ariel.gd" id="14_q6174"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_h1f64"]
-radius = 50.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_ojpq0"]
-radius = 5.46829
+[sub_resource type="CircleShape2D" id="CircleShape2D_q6174"]
+radius = 7.4
 
 [sub_resource type="Animation" id="Animation_d86wp"]
 loop_mode = 1
@@ -96,47 +99,6 @@ tracks/1/keys = {
 "update": 1,
 "values": [0, 1, 2, 3]
 }
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("SpriteManager/StateMachine/Idle/hitbox:position")
-tracks/2/interp = 0
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector2(200, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("SpriteManager/StateMachine/Idle/hitbox:visible")
-tracks/3/interp = 0
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/4/type = "method"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("SpriteManager/StateMachine/Idle/hitbox")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"values": [{
-"args": [],
-"method": &"turn_on"
-}, {
-"args": [],
-"method": &"turn_off"
-}]
-}
 
 [sub_resource type="Animation" id="Animation_ktjrq"]
 length = 0.5
@@ -168,14 +130,62 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_h1f64"]
 length = 0.7
-tracks/0/type = "method"
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox")
-tracks/0/interp = 1
+tracks/0/path = NodePath("SpriteManager:animation")
+tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.2, 0.5),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["Punch"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteManager:frame")
+tracks/1/interp = 0
+tracks/1/loop_wrap = false
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:position")
+tracks/2/interp = 0
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(17, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:visible")
+tracks/3/interp = 0
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("SpriteManager/StateMachine/Punch/hitbox")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [],
@@ -185,69 +195,9 @@ tracks/0/keys = {
 "method": &"turn_off"
 }]
 }
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox:position")
-tracks/1/interp = 0
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector2(0, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox:visible")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.2, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("SpriteManager:animation")
-tracks/3/interp = 0
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["Punch"]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("SpriteManager:frame")
-tracks/4/interp = 0
-tracks/4/loop_wrap = false
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6]
-}
 
 [sub_resource type="Animation" id="Animation_kwm21"]
 length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteManager/StateMachine/Punch/Hitbox:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
 
 [sub_resource type="Animation" id="Animation_m32lo"]
 length = 2.0
@@ -290,7 +240,7 @@ _data = {
 
 [node name="TestCharacter" instance=ExtResource("1_ka262")]
 
-[node name="PunchBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="2" node_paths=PackedStringArray("base_character", "state_machine")]
+[node name="PunchBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="0" node_paths=PackedStringArray("base_character", "state_machine")]
 script = ExtResource("2_ka262")
 priority = 2
 valid_states = Array[String](["Idle", "Aerial", "Walk"])
@@ -298,27 +248,30 @@ base_character = NodePath("../../..")
 state_machine = NodePath("../../../SpriteManager/StateMachine")
 metadata/_custom_type_script = "uid://ujvf0lqqpayc"
 
-[node name="DashBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="3" node_paths=PackedStringArray("base_character", "state_machine")]
+[node name="DashBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="1" node_paths=PackedStringArray("base_character", "state_machine")]
 script = ExtResource("3_7in2u")
 valid_states = Array[String](["Aerial", "Idle", "Walk"])
 base_character = NodePath("../../..")
 state_machine = NodePath("../../../SpriteManager/StateMachine")
 
+[node name="JumpBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="2" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("4_h1f64")
+valid_states = Array[String](["Idle", "Walk", "Aerial"])
+base_character = NodePath("../../..")
+state_machine = NodePath("../../../SpriteManager/StateMachine")
+
+[node name="LandBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="3" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("5_m32lo")
+priority = 1
+valid_states = Array[String](["Aerial"])
+base_character = NodePath("../../..")
+state_machine = NodePath("../../../SpriteManager/StateMachine")
+
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
-animation = &"Idle"
+animation = &"Punch"
 
-[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Idle" index="0" node_paths=PackedStringArray("collision_shape") instance=ExtResource("5_ktjrq")]
-position = Vector2(200, 0)
-script = ExtResource("4_ka262")
-collision_shape = NodePath("@CollisionShape2D@46536")
-knockback_vector = Vector2(1, 0)
-
-[node name="@CollisionShape2D@46536" type="CollisionShape2D" parent="SpriteManager/StateMachine/Idle/hitbox" index="1"]
-shape = SubResource("CircleShape2D_h1f64")
-debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
-
-[node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="4" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
+[node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="0" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")
 base_character = NodePath("../../..")
 state_machine = NodePath("..")
@@ -326,19 +279,17 @@ character_body = NodePath("../../../CharacterBody")
 state_type = 2
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
-[node name="Hitbox" type="Area2D" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("base_character")]
-monitoring = false
-monitorable = false
+[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("collision_shape") instance=ExtResource("5_ktjrq")]
+position = Vector2(17, 1)
 script = ExtResource("4_ka262")
-base_character = NodePath("../../../..")
-metadata/_custom_type_script = "uid://db3qdsst0ai6x"
+collision_shape = NodePath("@CollisionShape2D@33277")
+damage = 5.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/Hitbox" index="0"]
-position = Vector2(16.5333, -2.46667)
-shape = SubResource("CircleShape2D_ojpq0")
+[node name="@CollisionShape2D@33277" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox" index="1"]
+shape = SubResource("CircleShape2D_q6174")
 debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
 
-[node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
+[node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" index="1" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
 scale = Vector2(0.0666667, 0.0666667)
 script = ExtResource("7_ey8be")
 input_handler = NodePath("../../../InputHandler")
@@ -349,10 +300,45 @@ state_type = 1
 can_turn_around = false
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
+[node name="Idle" type="Node2D" parent="SpriteManager/StateMachine" index="2" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("11_kwm21")
+base_character = NodePath("../../..")
+state_machine = NodePath("..")
+character_body = NodePath("../../../CharacterBody")
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="Jump" type="Node2D" parent="SpriteManager/StateMachine" index="3" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("12_ywsa4")
+base_character = NodePath("../../..")
+state_machine = NodePath("..")
+character_body = NodePath("../../../CharacterBody")
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="Walk" type="Node2D" parent="SpriteManager/StateMachine" index="4" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("13_n13b4")
+base_character = NodePath("../../..")
+state_machine = NodePath("..")
+character_body = NodePath("../../../CharacterBody")
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="Aerial" type="Node2D" parent="SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("14_q6174")
+base_character = NodePath("../../..")
+state_machine = NodePath("..")
+character_body = NodePath("../../../CharacterBody")
+can_turn_around = false
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
 [node name="AnimationPlayer" parent="." index="2"]
 libraries = {
 &"": SubResource("AnimationLibrary_kwm21")
 }
 
+[connection signal="landed" from="CharacterBody" to="CharacterBody/BehaviorManager/LandBehavior" method="_on_character_body_landed"]
 [connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/PunchBehavior" method="_on_input_handler_button_pressed"]
 [connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/DashBehavior" method="_on_input_handler_button_pressed"]
+[connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/JumpBehavior" method="_on_input_handler_button_pressed"]

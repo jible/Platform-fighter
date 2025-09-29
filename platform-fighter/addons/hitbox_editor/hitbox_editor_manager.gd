@@ -20,7 +20,7 @@ var current_state_hitboxes = []
 
 
 func _process(delta):
-	if Engine.is_editor_hint() and character_root != null and animation_player:
+	if Engine.is_editor_hint() and character_root != null and animation_player.current_animation != "":
 		frame_slider.set_block_signals(true)
 		frame_slider.value = animation_player.current_animation_position
 		frame_slider.set_block_signals(false)
@@ -33,7 +33,7 @@ func configure(_character_root: BaseCharacter):
 	state_machine = character_root.state_machine
 	states = character_root.state_machine.get_children(true)
 	state_drop_down.clear()
-
+	if states.size() <= 0:return
 	for state in states:
 		state_drop_down.add_item(state.name)
 	_on_state_drop_down_item_selected(state_drop_down.selected)

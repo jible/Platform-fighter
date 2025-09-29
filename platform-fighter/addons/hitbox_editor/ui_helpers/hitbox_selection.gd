@@ -240,7 +240,7 @@ func _on_interpolate_toggled(value):
 	animation.track_set_interpolation_type(hitbox_position_track, interpolation_type)
 
 func on_frame_changed(position_animation:PositionAnimationSetter):
-	print("Frame changed")
+
 	var new_frame = position_animation.frame_field.value
 	var old_frame = position_animation.old_frame
 	
@@ -251,7 +251,6 @@ func on_frame_changed(position_animation:PositionAnimationSetter):
 		position_animation.old_frame = new_frame
 
 	else:
-		print("silent setting")
 		position_animation.silent_set_frame(old_frame)
 
 func _on_pos_anim_value_changed(former_frame, frame, pos):
@@ -294,6 +293,9 @@ func _on_turn_on_frame_field_value_changed(value):
 				turn_on_frame.set_block_signals(false)
 				return
 	animation.track_set_key_time(hitbox_method_track, turn_on_key, frame_to_time(value))
+	animation_player.seek(frame_to_time(value))
+	animation_player.advance(0)
+	animation_player.pause()
 	old_turn_on_frame = value
 	sync_visibility_track()
 
@@ -314,6 +316,9 @@ func _on_turn_off_frame_field_value_changed(value):
 				return
 	animation.track_set_key_time(hitbox_method_track, turn_off_key, frame_to_time(value))
 	old_turn_off_frame = value
+	animation_player.seek(frame_to_time(value))
+	animation_player.advance(0)
+	animation_player.pause()
 	sync_visibility_track()
 
 

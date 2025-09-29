@@ -1,16 +1,10 @@
-[gd_scene load_steps=19 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=13 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/physics_related/character_body.gd" id="2_a5pmx"]
 [ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/animation_related/sprite_manager.gd" id="3_o2sve"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/state_helpers/character_state_machine.gd" id="4_om1db"]
-[ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/default_states/idle.gd" id="5_bcibw"]
-[ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://components/for_characters/default_states/walk.gd" id="6_bcibw"]
-[ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://components/for_characters/default_states/jump.gd" id="7_om1db"]
 [ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://components/for_characters/state_helpers/behavior_manager.gd" id="8_a1fmy"]
-[ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://components/for_characters/default_states/ariel.gd" id="8_ebb2h"]
-[ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://characters/test_character/behaviors/jump_behavior.gd" id="9_6uefu"]
-[ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://characters/test_character/behaviors/land_behavior.gd" id="11_o2sve"]
 [ext_resource type="Script" uid="uid://dh6rrb5uvquv4" path="res://components/for_characters/hitbox_hurtbox/health.gd" id="13_5ygvn"]
 [ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/animation_related/animation_updater.gd" id="15_2f3ic"]
 [ext_resource type="Script" uid="uid://dfn5xpobmmdm4" path="res://components/for_characters/animation_related/animation_player.gd" id="17_iht17"]
@@ -52,19 +46,6 @@ base_character = NodePath("../..")
 state_machine = NodePath("../../SpriteManager/StateMachine")
 character_body = NodePath("..")
 
-[node name="JumpBehavior" type="Node" parent="CharacterBody/BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
-script = ExtResource("9_6uefu")
-valid_states = Array[String](["Idle", "Walk", "Aerial"])
-base_character = NodePath("../../..")
-state_machine = NodePath("../../../SpriteManager/StateMachine")
-
-[node name="LandBehavior" type="Node" parent="CharacterBody/BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
-script = ExtResource("11_o2sve")
-priority = 1
-valid_states = Array[String](["Aerial"])
-base_character = NodePath("../../..")
-state_machine = NodePath("../../../SpriteManager/StateMachine")
-
 [node name="Health" type="Node" parent="CharacterBody" node_paths=PackedStringArray("base_character", "state_machine")]
 script = ExtResource("13_5ygvn")
 base_character = NodePath("../..")
@@ -80,39 +61,6 @@ character_body = NodePath("../CharacterBody")
 script = ExtResource("4_om1db")
 base_character = NodePath("../..")
 metadata/_custom_type_script = "uid://sukry204wfhf"
-
-[node name="Idle" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-scale = Vector2(0.0666667, 0.0666667)
-script = ExtResource("5_bcibw")
-base_character = NodePath("../../..")
-state_machine = NodePath("..")
-character_body = NodePath("../../../CharacterBody")
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Jump" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-scale = Vector2(0.0666667, 0.0666667)
-script = ExtResource("7_om1db")
-base_character = NodePath("../../..")
-state_machine = NodePath("..")
-character_body = NodePath("../../../CharacterBody")
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Walk" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-scale = Vector2(0.0666667, 0.0666667)
-script = ExtResource("6_bcibw")
-base_character = NodePath("../../..")
-state_machine = NodePath("..")
-character_body = NodePath("../../../CharacterBody")
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Aerial" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-scale = Vector2(0.0666667, 0.0666667)
-script = ExtResource("8_ebb2h")
-base_character = NodePath("../../..")
-state_machine = NodePath("..")
-character_body = NodePath("../../../CharacterBody")
-can_turn_around = false
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 script = ExtResource("17_iht17")
@@ -147,10 +95,8 @@ character_body = NodePath("../CharacterBody")
 sprite_manager = NodePath("../SpriteManager")
 
 [connection signal="landed" from="CharacterBody" to="CharacterBody" method="_on_landed"]
-[connection signal="landed" from="CharacterBody" to="CharacterBody/BehaviorManager/LandBehavior" method="_on_base_player_landed"]
 [connection signal="lock_level_changed" from="CharacterBody" to="CharacterBody/BehaviorManager" method="_on_base_player_lock_level_changed"]
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="CharacterBody" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="CharacterBody/BehaviorManager" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="AnimationPlayer" method="_on_state_machine_state_changed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="SpriteManager/StateMachine" method="_on_animation_player_animation_finished"]
-[connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/JumpBehavior" method="_on_input_handler_button_pressed"]
