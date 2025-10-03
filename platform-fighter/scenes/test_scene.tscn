@@ -17,7 +17,16 @@ script = ExtResource("1_nd71p")
 
 [node name="PlayScene" parent="." instance=ExtResource("3_qjeyg")]
 
-[node name="BaseCharacter" parent="PlayScene/CharacterHolder" index="0" node_paths=PackedStringArray("play_scene_manager") instance=ExtResource("5_qjeyg")]
+[node name="InputManager" parent="PlayScene" index="1"]
+keyboard_char_num = 1
+
+[node name="TestCharacter2" parent="PlayScene/CharacterHolder" index="0" node_paths=PackedStringArray("play_scene_manager") instance=ExtResource("5_qjeyg")]
+play_scene_manager = NodePath("../..")
+
+[node name="TestCharacter" parent="PlayScene/CharacterHolder" index="1" node_paths=PackedStringArray("play_scene_manager") instance=ExtResource("5_qjeyg")]
+position = Vector2(-1077, -52)
+team_number = 1
+player_number = 1
 play_scene_manager = NodePath("../..")
 
 [node name="stage" type="StaticBody2D" parent="PlayScene"]
@@ -35,7 +44,7 @@ scale = Vector2(6.38, 1.195)
 texture = ExtResource("1_j8ivh")
 
 [node name="Hurtbox" type="Area2D" parent="PlayScene"]
-collision_layer = 2
+collision_layer = 4
 collision_mask = 0
 script = ExtResource("4_7ddre")
 metadata/_custom_type_script = "uid://bm3an7ro8eqsd"

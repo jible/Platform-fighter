@@ -154,8 +154,6 @@ func set_capped_velocity_on_axis(new_velocity, axis):
 func set_uncapped_velocity(new_velocity):
 	velocity = new_velocity
 
-
-
 func set_lock_level(new_lock_level: CharacterState.LockLevel):
 	if lock_level != new_lock_level:
 		lock_level = new_lock_level
@@ -164,3 +162,7 @@ func set_lock_level(new_lock_level: CharacterState.LockLevel):
 
 func _on_state_machine_state_changed(new_state_node):
 	current_state_type = new_state_node.state_type
+
+
+func _on_health_knockback(kb_vector):
+	set_uncapped_velocity(kb_vector)

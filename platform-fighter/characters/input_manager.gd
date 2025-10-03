@@ -15,6 +15,9 @@ enum button_event_type{
 var drift_threshold = .1
 signal button_event(button_name: String, device: int, event_type: button_event_type, axis:Vector2)
 
+@export var keyboard_char_num: int = 0
+
+
 @onready var current_controller_states: Array[ControllerState] = [
 	ControllerState.new(),
 	ControllerState.new(),
@@ -25,6 +28,10 @@ const keyboard_controls: Dictionary = {
 	KEY_SHIFT: "B",
 	KEY_E:"A",
 	KEY_SPACE:"X",
+}
+
+#TODO Change these dicionaries from consts to support customization
+const keyboard_direction: Dictionary = {
 	KEY_W: "left_up",
 	KEY_S: "left_down",
 	KEY_A: "left_left",
@@ -85,29 +92,35 @@ func _input(event):
 				button_event_type.STICK_MOVE, 
 				current_controller_states[event.device].sticks[stick_num]
 			)
+
 	elif event is InputEventKey:
 		button = keyboard_controls.get(event.keycode, null)
+		if !button: button = keyboard_direction.get(event.keycode, null)
 		if !button:return
+		
 		var dir_keys = {
 			"left_up":Vector2.UP,
 			"left_down":Vector2.DOWN,
 			"left_left":Vector2.LEFT,
 			"left_right":Vector2.RIGHT,
 		}
-		# TODO Keyboard inputs are funky. I think the sticks get normalized differently
-		# The diagonal dash feels different now.
+		
 		if button in dir_keys.keys():
-			var dir_vector = dir_keys[button]
+			print(button)
+			
 			var stick_num = 0
-			dir_vector = dir_vector * (-1 if event.is_released() else 1)
-			dir_vector = current_controller_states[0].sticks[stick_num] + dir_vector
-			dir_vector.x = clamp(dir_vector.x, -1, 1)
-			dir_vector.y = clamp(dir_vector.y, -1, 1)
-			current_controller_states[0].sticks[stick_num] = dir_vector
+			var dir_vector = Vector2.ZERO
+			
+			
+			for dir in keyboard_direction.keys():
+				if Input.is_key_pressed(dir):
+					dir_vector += dir_keys[keyboard_direction[dir]]
+			
+			current_controller_states[keyboard_char_num].sticks[stick_num] = dir_vector
 			return
 		var event_type = button_event_type.PRESSED if event.pressed else button_event_type.RELEASED
-		button_event.emit(button,event.device, event_type, Vector2.ZERO)
-	
+		button_event.emit(button,keyboard_char_num, event_type, Vector2.ZERO)
+
 func _physics_process(_delta):
 	#current_controller_states[0] = current_controller_states[0].get_copy()
 	pass
