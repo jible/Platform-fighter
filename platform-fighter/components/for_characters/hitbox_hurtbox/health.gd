@@ -10,20 +10,22 @@ signal knockback( kb_vector :Vector2)
 
 @export var base_character: BaseCharacter
 @export var state_machine: CharacterStateMachine
-
+@export var character_body: SpecializedCharacterBody
+@export var sprite_manager: SpriteManager
 @export var starting_health: float = 10
 
 var health: float = 0
 
 func _ready():
 	health = starting_health
-	connect_hurtboxes(state_machine)
+	connect_hurtboxes(sprite_manager)
 	pass
 
 func connect_hurtboxes(base):
 	for child in base.get_children():
 		if child is Hurtbox:
-			child.hit_by.connect(hit_by)
+			child.received_hit.connect(hit_by)
+			print("connecting")
 		connect_hurtboxes(child)
 
 func hit_by(hitbox:Hitbox, _hurtbox):
@@ -41,11 +43,12 @@ func handle_kb(hitbox:Hitbox):
 	#Don't do knopckback or stun if no knockback
 	if kb_base_magnitude == 0:return 
 	
-	var impulse_velocity_vector = kb_vector * kb_base_magnitude * 1/health
+	var impulse_velocity_vector = kb_vector * kb_base_magnitude * 1/(maxf(1.0,health))
 	
 	# Originally directly caleld character body, but this is better if you make non player obj/char
 	# that reacts uniquely
+	print(impulse_velocity_vector)
 	knockback.emit(impulse_velocity_vector)
 	
-	# Maybe change this to a behavior
-	state_machine.change_state("knocback")
+	# Maybe change this to a behavior and add a hurt state
+	#state_machine.change_state("hurt")

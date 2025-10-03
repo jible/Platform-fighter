@@ -46,10 +46,13 @@ base_character = NodePath("../..")
 state_machine = NodePath("../../SpriteManager/StateMachine")
 character_body = NodePath("..")
 
-[node name="Health" type="Node" parent="CharacterBody" node_paths=PackedStringArray("base_character", "state_machine")]
+[node name="Health" type="Node" parent="CharacterBody" node_paths=PackedStringArray("base_character", "state_machine", "character_body", "sprite_manager")]
 script = ExtResource("13_5ygvn")
 base_character = NodePath("../..")
 state_machine = NodePath("../../SpriteManager/StateMachine")
+character_body = NodePath("..")
+sprite_manager = NodePath("../../SpriteManager")
+starting_health = 20.0
 metadata/_custom_type_script = "uid://dh6rrb5uvquv4"
 
 [node name="SpriteManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("base_character", "character_body")]

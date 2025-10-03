@@ -106,8 +106,6 @@ func _input(event):
 		}
 		
 		if button in dir_keys.keys():
-			print(button)
-			
 			var stick_num = 0
 			var dir_vector = Vector2.ZERO
 			

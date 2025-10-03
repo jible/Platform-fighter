@@ -166,3 +166,4 @@ func _on_state_machine_state_changed(new_state_node):
 
 func _on_health_knockback(kb_vector):
 	set_uncapped_velocity(kb_vector)
+	print("kb")
