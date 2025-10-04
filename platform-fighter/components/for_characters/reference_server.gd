@@ -18,6 +18,8 @@ This script gives all nodes with the "reference_server" property a reference to 
 @export var sprite_manager: SpriteManager
 @export var animation_player: AnimationPlayer
 @export var input_handler: InputHandler
+@export var direction_changer: DirectionChanger
+
 
 var type_to_group = {
 	Hitbox : "Hitbox"

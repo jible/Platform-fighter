@@ -10,13 +10,10 @@ func _ready():
 		return
 	collision_layer = 0
 	collision_layer += 1 << base_character.team_number
-	print(collision_layer)
-	
 	health = base_character.health
 
 
 signal received_hit (hitbox, hit_data)
 
 func hit_by(hitbox, hit_data):
-	print("ouch")
-	emit_signal("received_hit", hitbox, hit_data)
+	received_hit.emit(hitbox, hit_data)

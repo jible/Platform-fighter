@@ -166,4 +166,7 @@ func _on_state_machine_state_changed(new_state_node):
 
 func _on_health_knockback(kb_vector):
 	set_uncapped_velocity(kb_vector)
-	print("kb")
+
+func _on_base_character_configured():
+	collision_layer = 1 << base_character.player_number + 1
+	collision_mask = 1 << 0

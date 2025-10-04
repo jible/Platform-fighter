@@ -14,6 +14,7 @@ extends Node2D
 @export var sprite_manager: SpriteManager
 @export var animation_player: AnimationPlayer
 @export var input_handler: InputHandler
+@export var direction_changer: DirectionChanger
 
 signal configured
 

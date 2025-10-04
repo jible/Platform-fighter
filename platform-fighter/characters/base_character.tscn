@@ -14,7 +14,7 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
 
-[node name="BaseCharacter" type="Node2D" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player", "input_handler")]
+[node name="BaseCharacter" type="Node2D" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player", "input_handler", "direction_changer")]
 scale = Vector2(15, 15)
 script = ExtResource("1_vnujj")
 base_character = NodePath(".")
@@ -25,6 +25,7 @@ health = NodePath("CharacterBody/Health")
 sprite_manager = NodePath("SpriteManager")
 animation_player = NodePath("AnimationPlayer")
 input_handler = NodePath("InputHandler")
+direction_changer = NodePath("DirectionFlipper")
 
 [node name="CharacterBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "sprite_manager", "input_handler", "health")]
 script = ExtResource("2_a5pmx")
@@ -76,7 +77,7 @@ script = ExtResource("15_2f3ic")
 sprite_manager = NodePath("../../SpriteManager")
 animation_player = NodePath("../../AnimationPlayer")
 
-[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player", "input_handler")]
+[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player", "input_handler", "direction_changer")]
 script = ExtResource("18_hcpvk")
 base_character = NodePath("../..")
 character_body = NodePath("../../CharacterBody")
@@ -86,6 +87,7 @@ health = NodePath("../../CharacterBody/Health")
 sprite_manager = NodePath("../../SpriteManager")
 animation_player = NodePath("../../AnimationPlayer")
 input_handler = NodePath("../../InputHandler")
+direction_changer = NodePath("../../DirectionFlipper")
 
 [node name="InputHandler" type="Node" parent="." node_paths=PackedStringArray("base_character")]
 script = ExtResource("18_cgfyo")
@@ -98,6 +100,7 @@ state_machine = NodePath("../SpriteManager/StateMachine")
 character_body = NodePath("../CharacterBody")
 sprite_manager = NodePath("../SpriteManager")
 
+[connection signal="configured" from="." to="CharacterBody" method="_on_base_character_configured"]
 [connection signal="landed" from="CharacterBody" to="CharacterBody" method="_on_landed"]
 [connection signal="lock_level_changed" from="CharacterBody" to="CharacterBody/BehaviorManager" method="_on_base_player_lock_level_changed"]
 [connection signal="knockback" from="CharacterBody/Health" to="CharacterBody" method="_on_health_knockback"]
