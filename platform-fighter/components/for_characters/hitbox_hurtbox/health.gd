@@ -43,7 +43,7 @@ func handle_kb(hitbox:Hitbox):
 	#Don't do knopckback or stun if no knockback
 	if kb_base_magnitude == 0:return 
 	
-	var impulse_velocity_vector = kb_vector * kb_base_magnitude * 1/(maxf(1.0,health))
+	var impulse_velocity_vector = kb_vector * kb_base_magnitude  #* 1/(maxf(1.0,health))
 	
 	# Originally directly caleld character body, but this is better if you make non player obj/char
 	# that reacts uniquely

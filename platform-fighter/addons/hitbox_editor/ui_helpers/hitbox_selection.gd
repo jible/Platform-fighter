@@ -11,6 +11,7 @@ extends VBoxContainer
 @export var knockback_vector_x: SpinBox
 @export var knockback_vector_y: SpinBox
 @export var radius: SpinBox
+@export var knockback_magnitude: SpinBox
 
 # Nodes
 var hitbox:Hitbox
@@ -67,6 +68,8 @@ func update_hitbox(_hitbox, _base_character, _state_node):
 	secret_set(knockback_vector_x, hitbox.knockback_vector.x)
 	secret_set(knockback_vector_y, hitbox.knockback_vector.y)
 	secret_set(radius, hitbox.collision_shape.shape.radius)
+	secret_set(knockback_magnitude, hitbox.knockback_magnitude)
+	
 
 # Sets value on a ui object without firing its signal
 func secret_set(obj, value):
@@ -350,3 +353,7 @@ func _on_normalize_pressed():
 	hitbox.knockback_vector = hitbox.knockback_vector.normalized()
 	knockback_vector_x.value = hitbox.knockback_vector.x
 	knockback_vector_y.value = hitbox.knockback_vector.y
+
+
+func _on_spin_box_value_changed(value):
+	hitbox.knockback_magnitude = value

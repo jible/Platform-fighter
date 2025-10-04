@@ -286,7 +286,7 @@ position = Vector2(250, 100)
 collision_shape = NodePath("@CollisionShape2D@33277")
 base_character = NodePath("../../../..")
 damage = 5.0
-knockback_magnitude = 10000.0
+knockback_magnitude = 1000.0
 knockback_vector = Vector2(0.71, -0.71)
 
 [node name="@CollisionShape2D@33277" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox" index="1"]
