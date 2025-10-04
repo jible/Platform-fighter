@@ -48,6 +48,7 @@ func enter_state(new_state):
 	new_state.is_active = true
 
 func exit_state(old_state):
+	old_state.turn_off_hitboxes()
 	old_state.exit_state()
 	old_state.is_active = false
 

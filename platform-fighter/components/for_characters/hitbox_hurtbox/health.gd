@@ -41,9 +41,8 @@ func handle_kb(hitbox:Hitbox):
 	
 	#Don't do knopckback or stun if no knockback
 	if kb_base_magnitude == 0:return 
-	
+	# a little scuffed and dependent but probably the best way to do this for now.
 	var flipped = sign(hitbox.base_character.direction_changer.direction) == -1
-	print(flipped)
 	if flipped: kb_vector.x *= -1
 	var impulse_velocity_vector = kb_vector * kb_base_magnitude  #* 1/(maxf(1.0,health))
 	

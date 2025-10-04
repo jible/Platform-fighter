@@ -16,7 +16,7 @@ For instance, you may inherit a base state but not want to use it.'''
 
 @export var state_type:SpecializedCharacterBody.state_types = SpecializedCharacterBody.state_types.STANDARD
 @export var can_turn_around: bool = true
-
+@export var can_turn_around_before: bool = true
 
 
 
@@ -29,9 +29,12 @@ func enter_state():
 
 func exit_state():
 	pass
-	
-func on_anim_end():
+
+func turn_off_hitboxes():
 	for hitbox in get_children(true):
 		if hitbox is Hitbox or hitbox is HitboxCluster:
 			hitbox.turn_off()
+	
+func on_anim_end():
+	
 	pass

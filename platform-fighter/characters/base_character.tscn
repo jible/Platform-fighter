@@ -93,12 +93,13 @@ direction_changer = NodePath("../../DirectionFlipper")
 script = ExtResource("18_cgfyo")
 base_character = NodePath("..")
 
-[node name="DirectionFlipper" type="Node2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body", "sprite_manager")]
+[node name="DirectionFlipper" type="Node2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body", "sprite_manager", "input_handler")]
 script = ExtResource("19_cgfyo")
 base_character = NodePath("..")
 state_machine = NodePath("../SpriteManager/StateMachine")
 character_body = NodePath("../CharacterBody")
 sprite_manager = NodePath("../SpriteManager")
+input_handler = NodePath("../InputHandler")
 
 [connection signal="configured" from="." to="CharacterBody" method="_on_base_character_configured"]
 [connection signal="landed" from="CharacterBody" to="CharacterBody" method="_on_landed"]
@@ -107,4 +108,5 @@ sprite_manager = NodePath("../SpriteManager")
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="CharacterBody" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="CharacterBody/BehaviorManager" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="AnimationPlayer" method="_on_state_machine_state_changed"]
+[connection signal="state_changed" from="SpriteManager/StateMachine" to="DirectionFlipper" method="_on_state_machine_state_changed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="SpriteManager/StateMachine" method="_on_animation_player_animation_finished"]
