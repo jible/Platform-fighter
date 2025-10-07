@@ -11,14 +11,15 @@ extends Node2D
 @export var auto_flip_hitboxes: bool = true
 @export var auto_flip_hurtboxes: bool = true
 
-var hitboxes: Array[Hitbox] = []
+var hitboxes: Array = []
 var hurtboxes: Array[Hurtbox] = []
 var direction = 1
 
 '''
 This script handles mirroring hitboxes and sprites
 '''
-
+func _ready():
+	hitboxes = state_machine.find_children("", "Hitbox")
 
 func _process(_delta):
 	var current_dir = sign(character_body.velocity.x) 
@@ -37,7 +38,8 @@ func flip(dir):
 	if auto_flip_sprite:
 		sprite_manager.flip_h = dir == -1
 	if auto_flip_hitboxes:
-		state_machine.scale.x = dir * abs(state_machine.scale.x)
+		for hitbox in hitboxes:
+			hitbox.position.x *= -1
 	direction = dir
 
 
