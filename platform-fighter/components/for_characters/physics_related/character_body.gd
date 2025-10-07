@@ -53,6 +53,9 @@ var input_dir: float = 0
 var used_ariel_jumps = 0
 @onready var max_velocity_vector = Vector2(max_horizontal_velocity, max_vertical_velocity)
 
+func _ready():
+	collision_layer = 0
+	collision_mask = 1 << 0
 
 func _physics_process(delta):# State Decides the movement processes that occur each frame
 	# The default movement process is:
@@ -166,7 +169,3 @@ func _on_state_machine_state_changed(new_state_node):
 
 func _on_health_knockback(kb_vector):
 	set_uncapped_velocity(kb_vector)
-
-func _on_base_character_configured():
-	collision_layer = 1 << base_character.player_number + 1
-	collision_mask = 1 << 0

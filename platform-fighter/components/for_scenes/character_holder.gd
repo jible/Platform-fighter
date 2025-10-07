@@ -16,6 +16,6 @@ func _ready():
 	var children = get_children()
 	for child in children:
 		if !child is BaseCharacter: continue
-		child.configure(team_num, player_num)
+		child.set_team_and_player_number(team_num, player_num)
 		team_num += 1
 		player_num += 1

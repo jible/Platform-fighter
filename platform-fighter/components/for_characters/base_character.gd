@@ -18,10 +18,10 @@ var connected_to_scene = false
 @export var input_handler: InputHandler
 @export var direction_changer: DirectionChanger
 
-signal configured
+signal player_number_set
 
-func configure(_team_number, _player_number):
+func set_team_and_player_number(_team_number, _player_number):
 	team_number = _team_number
 	player_number = _player_number
 	connected_to_scene = true
-	configured.emit()
+	player_number_set.emit()
