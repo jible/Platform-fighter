@@ -38,7 +38,6 @@ var hit_data = {}
 @export var knockback_magnitude: float = 0
 @export var knockback_vector: Vector2 = Vector2.ZERO
 
-var original_position:Vector2
 var cluster = null
 
 # Array of either healths or hurtboxes
@@ -46,7 +45,6 @@ var successful_hit_list: Array = []
 
 # TODO: Needs fixing once reference server is made
 func _ready():
-	original_position = position
 	turn_off()
 	area_entered.connect(_on_area_entered)
 	

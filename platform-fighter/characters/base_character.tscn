@@ -20,8 +20,8 @@ script = ExtResource("1_vnujj")
 base_character = NodePath(".")
 character_body = NodePath("CharacterBody")
 state_machine = NodePath("SpriteManager/StateMachine")
-behavior_manager = NodePath("BehaviorManager")
-health = NodePath("Health")
+behavior_manager = NodePath("CharacterBody/BehaviorManager")
+health = NodePath("CharacterBody/Health")
 sprite_manager = NodePath("SpriteManager")
 animation_player = NodePath("AnimationPlayer")
 input_handler = NodePath("InputHandler")
@@ -33,13 +33,28 @@ base_character = NodePath("..")
 state_machine = NodePath("../SpriteManager/StateMachine")
 sprite_manager = NodePath("../SpriteManager")
 input_handler = NodePath("../InputHandler")
-health = NodePath("../Health")
+health = NodePath("Health")
 jump_vel = 2000
 max_horizontal_velocity = 910
 max_vertical_velocity = 1300
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody"]
 shape = SubResource("CircleShape2D_vnujj")
+
+[node name="BehaviorManager" type="Node" parent="CharacterBody" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
+script = ExtResource("8_a1fmy")
+base_character = NodePath("../..")
+state_machine = NodePath("../../SpriteManager/StateMachine")
+character_body = NodePath("..")
+
+[node name="Health" type="Node" parent="CharacterBody" node_paths=PackedStringArray("base_character", "state_machine", "character_body", "sprite_manager")]
+script = ExtResource("13_5ygvn")
+base_character = NodePath("../..")
+state_machine = NodePath("../../SpriteManager/StateMachine")
+character_body = NodePath("..")
+sprite_manager = NodePath("../../SpriteManager")
+starting_health = 20.0
+metadata/_custom_type_script = "uid://dh6rrb5uvquv4"
 
 [node name="SpriteManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("base_character", "character_body")]
 script = ExtResource("3_o2sve")
@@ -55,33 +70,6 @@ metadata/_custom_type_script = "uid://sukry204wfhf"
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 script = ExtResource("17_iht17")
 
-[node name="InputHandler" type="Node" parent="." node_paths=PackedStringArray("base_character")]
-script = ExtResource("18_cgfyo")
-base_character = NodePath("..")
-
-[node name="DirectionFlipper" type="Node2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body", "sprite_manager", "input_handler")]
-script = ExtResource("19_cgfyo")
-base_character = NodePath("..")
-state_machine = NodePath("../SpriteManager/StateMachine")
-character_body = NodePath("../CharacterBody")
-sprite_manager = NodePath("../SpriteManager")
-input_handler = NodePath("../InputHandler")
-
-[node name="Health" type="Node" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body", "sprite_manager")]
-script = ExtResource("13_5ygvn")
-base_character = NodePath("..")
-state_machine = NodePath("../SpriteManager/StateMachine")
-character_body = NodePath("../CharacterBody")
-sprite_manager = NodePath("../SpriteManager")
-starting_health = 20.0
-metadata/_custom_type_script = "uid://dh6rrb5uvquv4"
-
-[node name="BehaviorManager" type="Node" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-script = ExtResource("8_a1fmy")
-base_character = NodePath("..")
-state_machine = NodePath("../SpriteManager/StateMachine")
-character_body = NodePath("../CharacterBody")
-
 [node name="Tools" type="Node" parent="."]
 
 [node name="AnimationUpdater" type="Node" parent="Tools" node_paths=PackedStringArray("sprite_manager", "animation_player")]
@@ -94,19 +82,31 @@ script = ExtResource("18_hcpvk")
 base_character = NodePath("../..")
 character_body = NodePath("../../CharacterBody")
 state_machine = NodePath("../../SpriteManager/StateMachine")
-behavior_manager = NodePath("../../BehaviorManager")
-health = NodePath("../../Health")
+behavior_manager = NodePath("../../CharacterBody/BehaviorManager")
+health = NodePath("../../CharacterBody/Health")
 sprite_manager = NodePath("../../SpriteManager")
 animation_player = NodePath("../../AnimationPlayer")
 input_handler = NodePath("../../InputHandler")
 direction_changer = NodePath("../../DirectionFlipper")
 
+[node name="InputHandler" type="Node" parent="." node_paths=PackedStringArray("base_character")]
+script = ExtResource("18_cgfyo")
+base_character = NodePath("..")
+
+[node name="DirectionFlipper" type="Node2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body", "sprite_manager", "input_handler")]
+script = ExtResource("19_cgfyo")
+base_character = NodePath("..")
+state_machine = NodePath("../SpriteManager/StateMachine")
+character_body = NodePath("../CharacterBody")
+sprite_manager = NodePath("../SpriteManager")
+input_handler = NodePath("../InputHandler")
+
 [connection signal="player_number_set" from="." to="CharacterBody" method="_on_base_character_player_number_set"]
 [connection signal="landed" from="CharacterBody" to="CharacterBody" method="_on_landed"]
-[connection signal="lock_level_changed" from="CharacterBody" to="BehaviorManager" method="_on_base_player_lock_level_changed"]
+[connection signal="lock_level_changed" from="CharacterBody" to="CharacterBody/BehaviorManager" method="_on_base_player_lock_level_changed"]
+[connection signal="knockback" from="CharacterBody/Health" to="CharacterBody" method="_on_health_knockback"]
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="CharacterBody" method="_on_state_machine_state_changed"]
+[connection signal="state_changed" from="SpriteManager/StateMachine" to="CharacterBody/BehaviorManager" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="AnimationPlayer" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="DirectionFlipper" method="_on_state_machine_state_changed"]
-[connection signal="state_changed" from="SpriteManager/StateMachine" to="BehaviorManager" method="_on_state_machine_state_changed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="SpriteManager/StateMachine" method="_on_animation_player_animation_finished"]
-[connection signal="knockback" from="Health" to="CharacterBody" method="_on_health_knockback"]
