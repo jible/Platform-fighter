@@ -28,7 +28,7 @@ func _process(_delta):
 # There are cases where rather than using velocity, you just want to check 
 # for player input to decide player direction
 func try_input_turn_around():
-	var input_dir = input_handler.get_left_stick().x 
+	var input_dir = sign(input_handler.get_left_stick().x) 
 	flip(input_dir)
 
 func flip(dir):
