@@ -9,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_2lo5o")
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 2
@@ -19,234 +20,233 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="HitboxEditor" type="ScrollContainer" parent="HBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]
 clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource("1_2lo5o")
 
-[node name="Vbox" type="VBoxContainer" parent="HBoxContainer/HitboxEditor"]
+[node name="EditorContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="NameContainer" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox"]
+[node name="NameContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer"]
 layout_mode = 2
 
-[node name="Character" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/NameContainer"]
+[node name="Character" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/NameContainer"]
 layout_mode = 2
 text = "Character: "
 
-[node name="CharacterName" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/NameContainer"]
+[node name="CharacterName" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/NameContainer"]
 layout_mode = 2
 
-[node name="RefreshButton" type="Button" parent="HBoxContainer/HitboxEditor/Vbox"]
+[node name="RefreshButton" type="Button" parent="HBoxContainer/ScrollContainer/EditorContainer"]
 layout_mode = 2
 tooltip_text = "If you edit any atributes of the state, hitbox cluster, or hitbox outside of this tool, click this to make sure the ui is updated.
 "
 text = "Refresh"
 
-[node name="StateSelectContainer" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox"]
+[node name="StateSelectContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer"]
 layout_mode = 2
 
-[node name="StateLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/StateSelectContainer"]
+[node name="StateLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/StateSelectContainer"]
 layout_mode = 2
 text = "State:"
 
-[node name="StateDropDown" type="OptionButton" parent="HBoxContainer/HitboxEditor/Vbox/StateSelectContainer"]
+[node name="StateDropDown" type="OptionButton" parent="HBoxContainer/ScrollContainer/EditorContainer/StateSelectContainer"]
 layout_mode = 2
 
-[node name="ClusterSelectContainer" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox"]
+[node name="ClusterSelectContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer"]
 layout_mode = 2
 
-[node name="ClusterLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/ClusterSelectContainer"]
+[node name="ClusterLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer"]
 layout_mode = 2
 text = "Cluster:"
 
-[node name="ClusterDropDown" type="OptionButton" parent="HBoxContainer/HitboxEditor/Vbox/ClusterSelectContainer"]
+[node name="ClusterDropDown" type="OptionButton" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RemoveClusterButton" type="Button" parent="HBoxContainer/HitboxEditor/Vbox/ClusterSelectContainer"]
+[node name="RemoveClusterButton" type="Button" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer"]
 layout_mode = 2
 text = "-"
 
-[node name="AddClusterButton" type="Button" parent="HBoxContainer/HitboxEditor/Vbox/ClusterSelectContainer"]
+[node name="AddClusterButton" type="Button" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer"]
 layout_mode = 2
 text = "+"
 
-[node name="ClusterContainer" type="VBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox"]
+[node name="ClusterContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer"]
 layout_mode = 2
 
-[node name="ClusterToggleFrameContainer" type="VBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/ClusterContainer"]
+[node name="ClusterToggleFrameContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer"]
 layout_mode = 2
 
-[node name="TurnOnContainer" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/ClusterContainer/ClusterToggleFrameContainer"]
+[node name="TurnOnContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer"]
 layout_mode = 2
 
-[node name="TurnOnLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer"]
+[node name="TurnOnLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer"]
 layout_mode = 2
 text = "Turn On Frame: "
 
-[node name="TurnOnSelection" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer"]
+[node name="TurnOnSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer"]
 layout_mode = 2
 
-[node name="TurnOffContainer" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/ClusterContainer/ClusterToggleFrameContainer"]
+[node name="TurnOffContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer"]
 layout_mode = 2
 
-[node name="TurnOffLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer"]
+[node name="TurnOffLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer"]
 layout_mode = 2
 text = "Turn Off Frame: "
 
-[node name="TurnOffSelection" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer"]
+[node name="TurnOffSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer"]
 layout_mode = 2
 
-[node name="HitboxSelectContainer" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox"]
+[node name="HitboxSelectContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxSelectContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer"]
 layout_mode = 2
 text = "Hitbox:"
 
-[node name="HitboxDropDown" type="OptionButton" parent="HBoxContainer/HitboxEditor/Vbox/HitboxSelectContainer"]
+[node name="HitboxDropDown" type="OptionButton" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RemoveHitboxButton" type="Button" parent="HBoxContainer/HitboxEditor/Vbox/HitboxSelectContainer"]
+[node name="RemoveHitboxButton" type="Button" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer"]
 layout_mode = 2
 text = "-"
 
-[node name="AddHitboxButton" type="Button" parent="HBoxContainer/HitboxEditor/Vbox/HitboxSelectContainer"]
+[node name="AddHitboxButton" type="Button" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer"]
 layout_mode = 2
 text = "+"
 
-[node name="HitboxContainer" type="VBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox"]
+[node name="HitboxContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer"]
 layout_mode = 2
 
-[node name="HitboxToggleFrameContainer" type="VBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer"]
+[node name="HitboxToggleFrameContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
 layout_mode = 2
 
-[node name="TurnOnContainer" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/HitboxToggleFrameContainer"]
+[node name="TurnOnContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer"]
 layout_mode = 2
 
-[node name="TurnOnLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer"]
+[node name="TurnOnLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer"]
 layout_mode = 2
 text = "Turn On Frame: "
 
-[node name="TurnOnSelection" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer"]
+[node name="TurnOnSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer"]
 layout_mode = 2
 
-[node name="TurnOffContainer" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/HitboxToggleFrameContainer"]
+[node name="TurnOffContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer"]
 layout_mode = 2
 
-[node name="TurnOffLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer"]
+[node name="TurnOffLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer"]
 layout_mode = 2
 text = "Turn Off Frame: "
 
-[node name="TurnOffSelection" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer"]
+[node name="TurnOffSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer"]
 layout_mode = 2
 
-[node name="Offset" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer"]
+[node name="Offset" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/Offset"]
+[node name="Label" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "Offsets:"
 
-[node name="AddRemoveField" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/Offset" instance=ExtResource("2_aex0b")]
+[node name="AddRemoveField" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset" instance=ExtResource("2_aex0b")]
 layout_mode = 2
 
-[node name="DamageContainer" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer"]
+[node name="DamageContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
 layout_mode = 2
 
-[node name="DamageLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/DamageContainer"]
+[node name="DamageLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/DamageContainer"]
 layout_mode = 2
 text = "Damage: "
 
-[node name="DamageSelection" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/DamageContainer"]
+[node name="DamageSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/DamageContainer"]
 layout_mode = 2
 
-[node name="KnockbackAngle" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer"]
+[node name="KnockbackAngle" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/KnockbackAngle"]
+[node name="Label" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle"]
 layout_mode = 2
 text = "Knockback Vector:"
 
-[node name="XLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/KnockbackAngle"]
+[node name="XLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle"]
 layout_mode = 2
 text = "X:"
 
-[node name="KnockbackX" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/KnockbackAngle"]
+[node name="KnockbackX" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle"]
 layout_mode = 2
 min_value = -1.0
 max_value = 1.0
 step = 0.01
 
-[node name="YLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/KnockbackAngle"]
+[node name="YLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle"]
 layout_mode = 2
 text = "Y:"
 
-[node name="KnockbackY" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/KnockbackAngle"]
+[node name="KnockbackY" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle"]
 layout_mode = 2
 min_value = -1.0
 max_value = 1.0
 step = 0.01
 
-[node name="Normalize" type="Button" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/KnockbackAngle"]
+[node name="Normalize" type="Button" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle"]
 layout_mode = 2
 text = "Normalize KB Angle"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
 layout_mode = 2
 
-[node name="KnockbackMagnitude" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer"]
+[node name="KnockbackMagnitude" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/KnockbackMagnitude"]
+[node name="Label" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackMagnitude"]
 layout_mode = 2
 text = "Knockback Magnitude:"
 
-[node name="Knockback Magnitude Value" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/KnockbackMagnitude"]
+[node name="Knockback Magnitude Value" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackMagnitude"]
 layout_mode = 2
 max_value = 9000.0
 allow_greater = true
 allow_lesser = true
 
-[node name="CapsuleContainer" type="VBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer"]
+[node name="CapsuleContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer"]
 layout_mode = 2
 text = "Hitbox Shape:"
 
-[node name="CapsuleInfo" type="HBoxContainer" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer"]
+[node name="CapsuleInfo" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer"]
 layout_mode = 2
 
-[node name="RadiusLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer/CapsuleInfo"]
+[node name="RadiusLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
 text = "Radius:"
 
-[node name="RadiusSelection" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer/CapsuleInfo"]
+[node name="RadiusSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
 tooltip_text = "The distance from the center to the side"
 
-[node name="HeightLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer/CapsuleInfo"]
+[node name="HeightLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
 text = "Height:"
 
-[node name="HeightSelection" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer/CapsuleInfo"]
+[node name="HeightSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
 tooltip_text = "The full height from top to bottom of the capsule"
 
-[node name="RotationLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer/CapsuleInfo"]
+[node name="RotationLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
 text = "Rotation:"
 
-[node name="RotationSelection" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer/CapsuleInfo"]
+[node name="RotationSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
 
 [node name="AnimationContent" type="VBoxContainer" parent="HBoxContainer"]
@@ -277,6 +277,6 @@ text = "<-"
 layout_mode = 2
 text = "->"
 
-[connection signal="pressed" from="HBoxContainer/HitboxEditor/Vbox/RefreshButton" to="HBoxContainer/HitboxEditor" method="_on_refresh_button_pressed"]
-[connection signal="item_selected" from="HBoxContainer/HitboxEditor/Vbox/StateSelectContainer/StateDropDown" to="HBoxContainer/HitboxEditor" method="_on_state_drop_down_item_selected"]
-[connection signal="item_selected" from="HBoxContainer/HitboxEditor/Vbox/HitboxSelectContainer/HitboxDropDown" to="HBoxContainer/HitboxEditor" method="_on_hitbox_drop_down_item_selected"]
+[connection signal="pressed" from="HBoxContainer/ScrollContainer/EditorContainer/RefreshButton" to="." method="_on_refresh_button_pressed"]
+[connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/StateSelectContainer/StateDropDown" to="." method="_on_state_drop_down_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown" to="." method="_on_hitbox_drop_down_item_selected"]
