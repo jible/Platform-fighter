@@ -53,6 +53,7 @@ var hitbox_visibility_track
 
 var frame_time: float
 
+# INITILIZATION ------------------------------------------------------------------------------------
 
 func configure(_character_root: BaseCharacter):
 	base_character = _character_root
@@ -134,9 +135,7 @@ func get_track_references():
 		elif track_type == Animation.TrackType.TYPE_METHOD:
 			if path.get_concatenated_names() == hitbox_path.get_concatenated_names(): 
 				hitbox_method_track = track
-
-
-
+# Animation Extraction and Sync---------------------------------------------------------------------
 func auto_fill_tracks():
 	if hitbox_position_track == null:
 		hitbox_position_track = animation.add_track(Animation.TYPE_VALUE)
@@ -237,10 +236,21 @@ func _set_track_defaults(track):
 	animation.track_set_interpolation_type(track, Animation.InterpolationType.INTERPOLATION_NEAREST)
 	animation.value_track_set_update_mode(track, Animation.UpdateMode.UPDATE_DISCRETE)
 
+# Animation Editing Helpers-------------------------------------------------------------------------
 
 func time_to_frame(time):
 	return round(time/frame_time)
+	
+func frame_to_time(frame):
+	return frame * frame_time
 
+func is_valid_frame(frame):
+	for key in range(animation.track_get_key_count(hitbox_position_track)):
+		var current_key_frame = time_to_frame(animation.track_get_key_time(hitbox_position_track, key))
+		if current_key_frame == frame:
+			return false
+	return true
+# UI Signal Handlers--------------------------------------------------------------------------------
 
 func on_frame_changed(position_animation:PositionAnimationSetter):
 
@@ -334,15 +344,7 @@ func on_position_changed(position_animation:PositionAnimationSetter):
 	animation_player.advance(0)
 	animation_player.pause()
 
-func frame_to_time(frame):
-	return frame * frame_time
 
-func is_valid_frame(frame):
-	for key in range(animation.track_get_key_count(hitbox_position_track)):
-		var current_key_frame = time_to_frame(animation.track_get_key_time(hitbox_position_track, key))
-		if current_key_frame == frame:
-			return false
-	return true
 
 # Signal Handlers ----------------------------------------------------------------------------------
 func _on_state_drop_down_item_selected(index):
