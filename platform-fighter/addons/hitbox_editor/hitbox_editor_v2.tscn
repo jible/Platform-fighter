@@ -236,11 +236,11 @@ tooltip_text = "The distance from the center to the side"
 
 [node name="HeightLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
-tooltip_text = "The full height from top to bottom of the capsule"
 text = "Height:"
 
 [node name="HeightSelection" type="SpinBox" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
+tooltip_text = "The full height from top to bottom of the capsule"
 
 [node name="RotationLabel" type="Label" parent="HBoxContainer/HitboxEditor/Vbox/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
