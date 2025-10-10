@@ -3,13 +3,34 @@
 [ext_resource type="Script" uid="uid://b2xm02thch4dd" path="res://addons/hitbox_editor/hitbox_editor_v_2.gd" id="1_2lo5o"]
 [ext_resource type="PackedScene" uid="uid://cqa5hbka73wi" path="res://addons/hitbox_editor/ui_helpers/add_remove_field.tscn" id="2_aex0b"]
 
-[node name="HitboxEditor" type="VBoxContainer"]
+[node name="HitboxEditor" type="VBoxContainer" node_paths=PackedStringArray("character_name_label", "state_drop_down", "cluster_drop_down", "add_cluster", "remove_cluster", "cluster_turn_on_frame_field", "cluster_turn_off_frame_field", "hitbox_turn_on_frame_field", "hitbox_turn_off_frame_field", "hitbox_drop_down", "add_hitbox_button", "remove_hitbox_button", "offset_info", "damage_value", "knockback_vector_x", "knockback_vector_y", "height_selection", "radius_selection", "rotation_selection", "knockback_magnitude", "frame_slider")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2lo5o")
+character_name_label = NodePath("HBoxContainer/ScrollContainer/EditorContainer/NameContainer/CharacterName")
+state_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/StateSelectContainer/StateDropDown")
+cluster_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/ClusterDropDown")
+add_cluster = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/AddClusterButton")
+remove_cluster = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/RemoveClusterButton")
+cluster_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer/TurnOnSelection")
+cluster_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer/TurnOffSelection")
+hitbox_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer/TurnOnSelection")
+hitbox_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer/TurnOffSelection")
+hitbox_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown")
+add_hitbox_button = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/AddHitboxButton")
+remove_hitbox_button = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/RemoveHitboxButton")
+offset_info = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset/AddRemoveField")
+damage_value = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/DamageContainer/DamageSelection")
+knockback_vector_x = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle/KnockbackX")
+knockback_vector_y = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle/KnockbackY")
+height_selection = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo/HeightSelection")
+radius_selection = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo/RadiusSelection")
+rotation_selection = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo/RotationSelection")
+knockback_magnitude = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackMagnitude/Knockback Magnitude Value")
+frame_slider = NodePath("HBoxContainer/AnimationContent/FrameSlider")
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 2
@@ -279,4 +300,5 @@ text = "->"
 
 [connection signal="pressed" from="HBoxContainer/ScrollContainer/EditorContainer/RefreshButton" to="." method="_on_refresh_button_pressed"]
 [connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/StateSelectContainer/StateDropDown" to="." method="_on_state_drop_down_item_selected"]
+[connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/ClusterDropDown" to="." method="_on_cluster_drop_down_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown" to="." method="_on_hitbox_drop_down_item_selected"]
