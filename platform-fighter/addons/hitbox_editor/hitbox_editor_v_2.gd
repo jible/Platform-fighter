@@ -385,34 +385,42 @@ func _on_cluster_turn_off_selection_value_changed(value):
 	for child_vis_track in cluster_child_visibility_tracks:
 		sync_visibility_track(cluster_method_track, child_vis_track)
 
-
+# Non-anim ui signal responses----------------------------------------------------------------------
 func _on_radius_selection_value_changed(value):
-	pass # Replace with function body.
+	var chilren = hitbox.get_children()
+	var collision_area:CollisionShape2D
+	for child in chilren:
+		if child is CollisionShape2D:
+			collision_area = child
+	if !(collision_area is CollisionShape2D):
+		return
+	collision_area.shape.radius = value
 
 
 func _on_height_selection_value_changed(value):
-	pass # Replace with function body.
-
+	var chilren = hitbox.get_children()
+	var collision_area:CollisionShape2D
+	for child in chilren:
+		if child is CollisionShape2D:
+			collision_area = child
+	if !(collision_area is CollisionShape2D):
+		return
+	collision_area.shape.height = value
 
 func _on_rotation_selection_value_changed(value):
-	pass # Replace with function body.
-
+	hitbox.rotation_degrees = value
 
 func _on_knockback_magnitude_value_value_changed(value):
-	pass # Replace with function body.
-
+	hitbox.knockback_magnitude = value
 
 func _on_knockback_x_value_changed(value):
-	pass # Replace with function body.
-
+	hitbox.knockback_vector.x = value
 
 func _on_knockback_y_value_changed(value):
-	pass # Replace with function body.
-
+	hitbox.knockback_vector.y = value
 
 func _on_normalize_pressed():
-	pass # Replace with function body.
-
+	hitbox.knockback_vector = hitbox.knockback_vector.normalized()
 
 func _on_damage_selection_value_changed(value):
-	pass # Replace with function body.
+	hitbox.damage = value
