@@ -15,8 +15,8 @@ state_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/StateS
 cluster_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/ClusterDropDown")
 add_cluster = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/AddClusterButton")
 remove_cluster = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/RemoveClusterButton")
-cluster_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer/TurnOnSelection")
-cluster_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer/TurnOffSelection")
+cluster_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer/ClusterTurnOnSelection")
+cluster_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer/ClusterTurnOffSelection")
 hitbox_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer/TurnOnSelection")
 hitbox_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer/TurnOffSelection")
 hitbox_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown")
@@ -110,7 +110,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Turn On Frame: "
 
-[node name="TurnOnSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer"]
+[node name="ClusterTurnOnSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer"]
 layout_mode = 2
 
 [node name="TurnOffContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer"]
@@ -120,7 +120,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Turn Off Frame: "
 
-[node name="TurnOffSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer"]
+[node name="ClusterTurnOffSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer"]
 layout_mode = 2
 
 [node name="HitboxSelectContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer"]
@@ -221,9 +221,6 @@ step = 0.01
 layout_mode = 2
 text = "Normalize KB Angle"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
-layout_mode = 2
-
 [node name="KnockbackMagnitude" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
 layout_mode = 2
 
@@ -301,4 +298,14 @@ text = "->"
 [connection signal="pressed" from="HBoxContainer/ScrollContainer/EditorContainer/RefreshButton" to="." method="_on_refresh_button_pressed"]
 [connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/StateSelectContainer/StateDropDown" to="." method="_on_state_drop_down_item_selected"]
 [connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/ClusterDropDown" to="." method="_on_cluster_drop_down_item_selected"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer/ClusterTurnOnSelection" to="." method="_on_cluster_turn_on_selection_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer/ClusterTurnOffSelection" to="." method="_on_cluster_turn_off_selection_value_changed"]
 [connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown" to="." method="_on_hitbox_drop_down_item_selected"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/DamageContainer/DamageSelection" to="." method="_on_damage_selection_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle/KnockbackX" to="." method="_on_knockback_x_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle/KnockbackY" to="." method="_on_knockback_y_value_changed"]
+[connection signal="pressed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle/Normalize" to="." method="_on_normalize_pressed"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackMagnitude/Knockback Magnitude Value" to="." method="_on_knockback_magnitude_value_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo/RadiusSelection" to="." method="_on_radius_selection_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo/HeightSelection" to="." method="_on_height_selection_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo/RotationSelection" to="." method="_on_rotation_selection_value_changed"]
