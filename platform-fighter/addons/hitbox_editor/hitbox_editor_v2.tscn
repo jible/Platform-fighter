@@ -22,7 +22,7 @@ hitbox_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorCont
 hitbox_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown")
 add_hitbox_button = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/AddHitboxButton")
 remove_hitbox_button = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/RemoveHitboxButton")
-offset_info = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset/AddRemoveField")
+offset_info = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset/OffsetAddRemoveField")
 damage_value = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/DamageContainer/DamageSelection")
 knockback_vector_x = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle/KnockbackX")
 knockback_vector_y = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle/KnockbackY")
@@ -177,7 +177,7 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "Offsets:"
 
-[node name="AddRemoveField" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset" instance=ExtResource("2_aex0b")]
+[node name="OffsetAddRemoveField" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset" instance=ExtResource("2_aex0b")]
 layout_mode = 2
 
 [node name="DamageContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
@@ -301,6 +301,8 @@ text = "->"
 [connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer/ClusterTurnOnSelection" to="." method="_on_cluster_turn_on_selection_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer/ClusterTurnOffSelection" to="." method="_on_cluster_turn_off_selection_value_changed"]
 [connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown" to="." method="_on_hitbox_drop_down_item_selected"]
+[connection signal="field_added" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset/OffsetAddRemoveField" to="." method="_on_offset_add_remove_field_field_added"]
+[connection signal="field_removed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset/OffsetAddRemoveField" to="." method="_on_offset_add_remove_field_field_removed"]
 [connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/DamageContainer/DamageSelection" to="." method="_on_damage_selection_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle/KnockbackX" to="." method="_on_knockback_x_value_changed"]
 [connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/KnockbackAngle/KnockbackY" to="." method="_on_knockback_y_value_changed"]
