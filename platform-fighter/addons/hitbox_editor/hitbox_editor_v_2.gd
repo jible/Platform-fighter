@@ -120,12 +120,8 @@ func set_new_hitbox(new_hitbox):
 	if hitbox_method_track == null:
 		hitbox_method_track = create_track( Animation.TYPE_METHOD, hitbox_path)
 	
-	var turn_on_off_fields = [
-		hitbox_turn_on_frame_field,
-		hitbox_turn_off_frame_field
-	]
-	for i in turn_on_off_fields:
-		i.visibility = (cluster == null)
+	hitbox_turn_on_frame_field.visibility  = (cluster == null)
+	hitbox_turn_off_frame_field.visibility = (cluster == null)
 	# Extracts keys from anims and populates ui with their info
 	set_hitbox_position_keys()
 	set_hitbox_toggle_keys()
@@ -151,13 +147,6 @@ func create_track( anim_type, node_path, attribute = null, default_value = null,
 		animation.track_set_interpolation_type(new_track, interpolation_type)
 		animation.value_track_set_update_mode(new_track, update_mode)
 	return new_track
-
-func secret_set(obj, value):
-	obj.set_block_signals(true)
-	obj.value = value
-	obj.set_block_signals(false)
-
-
 
 
 # Slightly expensive aproach to extracting paths, but the code is so much cleaner to use
@@ -185,9 +174,6 @@ func set_hitbox_position_keys():
 		new_field.silent_populate(int(frame), hitbox_position.x, hitbox_position.y)
 		new_field.frame_changed.connect(on_hitbox_offset_frame_changed.bind(new_field))
 		new_field.pos_changed.connect(on_hitbox_offset_position_changed.bind(new_field))
-
-
-
 
 func set_hitbox_toggle_keys():
 	var method_frames = extract_and_correct_on_off_time(hitbox_method_track)
