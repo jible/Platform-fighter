@@ -18,6 +18,7 @@ var animation: Animation
 
 
 # Cluster
+var no_cluster_selected_name: String = "None"
 var clusters: Array[HitboxCluster] = []
 @export var cluster_drop_down: OptionButton
 @export var add_cluster: Button
@@ -91,6 +92,9 @@ func _on_state_drop_down_item_selected(index):
 	animation = animation_library.get_animation(state.name)
 	
 	var sprite_manager = base_character.sprite_manager
+	if !sprite_manager:
+		push_error("Sprite manager reference not set on base character. Run the reference server")
+		return
 	sprite_manager_path = animation_player.owner.get_path_to(sprite_manager)
 	
 	sprite_frame_track = get_track_reference( Animation.TrackType.TYPE_VALUE, sprite_manager_path.get_concatenated_names(), "frame")
@@ -115,7 +119,7 @@ func reconfigure():configure(base_character)
 func update_clusters():
 	cluster_drop_down.clear()
 	# As of right now, this will break if you name a cluster none
-	cluster_drop_down.add_item("None")
+	cluster_drop_down.add_item(no_cluster_selected_name)
 	get_clusters()
 	for _cluster in clusters:
 		cluster_drop_down.add_item(_cluster.name)
@@ -128,7 +132,7 @@ func _on_cluster_drop_down_item_selected(index):
 	var selected_name = cluster_drop_down.get_item_text(index)
 	cluster = null
 	cluster_path = ""
-	if selected_name != "none":
+	if selected_name != no_cluster_selected_name:
 		cluster = state.find_child(selected_name, false)
 		cluster_path = animation_player.owner.get_path_to(cluster)
 	cluster_toggle_fields.visible = (cluster != null)
@@ -213,6 +217,9 @@ func populate_and_get_hitbox_track_reference():
 # Helper function for making tracks and optionally adding a default key
 # Does not automatically populate with key if default value is set to null
 func create_track( anim_type, node_path, attribute = null, default_value = null, interpolation_type = Animation.InterpolationType.INTERPOLATION_NEAREST, update_mode = Animation.UpdateMode.UPDATE_DISCRETE):
+	if !node_path:
+		push_error("Node Path null. Cannont construct path")
+		return
 	var new_track = animation.add_track(Animation.TYPE_VALUE)
 	var track_path = NodePath(String(node_path) +  (":" +attribute) if attribute else "" )
 	animation.track_set_path(new_track,  track_path)
