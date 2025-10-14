@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://b2xm02thch4dd" path="res://addons/hitbox_editor/hitbox_editor_v_2.gd" id="1_2lo5o"]
 [ext_resource type="PackedScene" uid="uid://cqa5hbka73wi" path="res://addons/hitbox_editor/ui_helpers/add_remove_field.tscn" id="2_aex0b"]
 
-[node name="HitboxEditor" type="VBoxContainer" node_paths=PackedStringArray("character_name_label", "state_drop_down", "cluster_drop_down", "add_cluster", "remove_cluster", "cluster_turn_on_frame_field", "cluster_turn_off_frame_field", "hitbox_turn_on_frame_field", "hitbox_turn_off_frame_field", "hitbox_drop_down", "add_hitbox_button", "remove_hitbox_button", "offset_info", "damage_value", "knockback_vector_x", "knockback_vector_y", "height_selection", "radius_selection", "rotation_selection", "knockback_magnitude", "frame_slider")]
+[node name="HitboxEditor" type="VBoxContainer" node_paths=PackedStringArray("character_name_label", "state_drop_down", "cluster_drop_down", "add_cluster", "remove_cluster", "cluster_turn_on_frame_field", "cluster_turn_off_frame_field", "full_hitbox_ui_container", "hitbox_turn_on_frame_field", "hitbox_turn_off_frame_field", "hitbox_drop_down", "add_hitbox_button", "remove_hitbox_button", "offset_info", "damage_value", "knockback_vector_x", "knockback_vector_y", "height_selection", "radius_selection", "rotation_selection", "knockback_magnitude", "frame_slider")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,6 +17,7 @@ add_cluster = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSel
 remove_cluster = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/RemoveClusterButton")
 cluster_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer/ClusterTurnOnSelection")
 cluster_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer/ClusterTurnOffSelection")
+full_hitbox_ui_container = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer")
 hitbox_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer/TurnOnSelection")
 hitbox_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer/TurnOffSelection")
 hitbox_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown")

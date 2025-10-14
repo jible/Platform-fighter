@@ -3,7 +3,7 @@ extends EditorPlugin
 
 var hitbox_editor: Control
 var in_bottom_panel: bool = false
-const editor_scene: String = "res://addons/hitbox_editor/hitbox_editor.tscn"
+const editor_scene: String = "res://addons/hitbox_editor/hitbox_editor_v2.tscn"
 func _enter_tree():
 	hitbox_editor = preload(editor_scene).instantiate()
 	scene_changed.connect(configure_editor)
