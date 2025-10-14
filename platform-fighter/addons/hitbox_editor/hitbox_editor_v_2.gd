@@ -341,7 +341,6 @@ func on_hitbox_offset_frame_changed(position_animation:PositionAnimationSetter):
 		var key = animation.track_find_key(hitbox_position_track, frame_to_time(old_frame))
 		animation.track_set_key_time(hitbox_position_track, key, frame_to_time(new_frame))
 		position_animation.old_frame = new_frame
-		position_animation.old_frame = new_frame
 
 	else:
 		position_animation.silent_set_frame(old_frame)
@@ -432,18 +431,15 @@ func _on_knockback_y_value_changed(value):
 
 func _on_normalize_pressed():
 	hitbox.knockback_vector = hitbox.knockback_vector.normalized()
+	knockback_vector_x.value = hitbox.knockback_vector.x
+	knockback_vector_y.value = hitbox.knockback_vector.y
+	
 
 func _on_damage_selection_value_changed(value):
 	hitbox.damage = value
 
 # HITBOX POSITION ANIMATION MODIFICATIONS
 func _on_offset_add_remove_field_field_added(field):
-	var frame = field.frame_field.value
-	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
-	animation.track_remove_key(hitbox_position_track, key)
-
-
-func _on_offset_add_remove_field_field_removed(field):
 	var min_frame = 0
 	for key in range(animation.track_get_key_count(hitbox_position_track) ):
 		var current_key_frame = time_to_frame(animation.track_get_key_time(hitbox_position_track, key))
@@ -456,6 +452,14 @@ func _on_offset_add_remove_field_field_removed(field):
 	# Connect signals
 	field.frame_changed.connect(on_hitbox_pos_frame_changed.bind(field))
 	field.pos_changed.connect(on_position_anim_position_changed.bind(field))
+	
+	
+
+
+func _on_offset_add_remove_field_field_removed(field):
+	var frame = field.frame_field.value
+	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
+	animation.track_remove_key(hitbox_position_track, key)
 
 func on_hitbox_pos_frame_changed(position_animation:PositionAnimationSetter):
 	var new_frame = position_animation.frame_field.value
@@ -477,3 +481,11 @@ func on_position_anim_position_changed(position_animation:PositionAnimationSette
 	animation_player.seek(frame_to_time(frame))
 	animation_player.advance(0)
 	animation_player.pause()
+
+
+func _on_add_cluster_button_pressed():
+	pass # Replace with function body.
+
+
+func _on_remove_cluster_button_pressed():
+	pass # Replace with function body.

@@ -164,10 +164,10 @@ tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:position")
 tracks/2/interp = 0
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2(0, 0), Vector2(0, 0)]
+"values": [Vector2(0, 0)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -273,7 +273,7 @@ state_machine = NodePath("../../../SpriteManager/StateMachine")
 
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
-animation = &"Aerial"
+animation = &"Punch"
 
 [node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="0" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")
@@ -285,12 +285,11 @@ can_turn_around = false
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="hitbox" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
-position = Vector2(250, 100)
 collision_shape = NodePath("@CollisionShape2D@33277")
 base_character = NodePath("../../../..")
 damage = 5.0
 knockback_magnitude = 1000.0
-knockback_vector = Vector2(0.71, -0.71)
+knockback_vector = Vector2(0.815383, -0.578922)
 
 [node name="@CollisionShape2D@33277" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox" index="1"]
 shape = SubResource("CapsuleShape2D_q6174")
