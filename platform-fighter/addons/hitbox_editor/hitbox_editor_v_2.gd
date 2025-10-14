@@ -19,7 +19,7 @@ var animation: Animation
 
 # Cluster
 var no_cluster_selected_name: String = "None"
-var clusters: Array[HitboxCluster] = []
+var clusters: Array[Node] = []
 @export var cluster_drop_down: OptionButton
 @export var add_cluster: Button
 @export var remove_cluster: Button
@@ -145,8 +145,9 @@ func _on_cluster_drop_down_item_selected(index):
 func populate_and_get_cluster_track_references():
 	cluster_method_track = get_track_reference(Animation.TrackType.TYPE_METHOD, cluster_path.get_concatenated_names())
 	if !cluster_method_track: 
-		cluster_method_track = create_track(Animation.TrackType.TYPE_METHOD, cluster_path.get_concatenated_names())
-	
+		cluster_method_track = animation.add_track(Animation.TrackType.TYPE_METHOD)
+		animation.track_set_path(cluster_method_track,cluster_path)
+	print(cluster_method_track)
 	
 	cluster_child_visibility_tracks = []
 	for cluster_child in hitboxes:
@@ -161,10 +162,10 @@ func populate_and_get_cluster_track_references():
 
 func set_cluster_toggle_keys():
 	var method_frames = extract_and_correct_on_off_time(cluster_method_track)
-	cluster_turn_on_frame_field.value = method_frames["turn_on"]
-	cluster_turn_off_frame_field.value = method_frames["turn_off"]
+	cluster_turn_on_frame_field.set_value_no_signal( method_frames["turn_on"])
+	cluster_turn_off_frame_field.set_value_no_signal(method_frames["turn_off"])
 	
-	for child_vis_track in range(cluster_child_visibility_tracks):
+	for child_vis_track in cluster_child_visibility_tracks:
 		sync_visibility_track(cluster_method_track, child_vis_track)
 
 # Populates hitbox ui. Call when new state is selected
@@ -228,7 +229,7 @@ func create_track( anim_type, node_path, attribute = null, default_value = null,
 	if !node_path:
 		push_error("Node Path null. Cannont construct path")
 		return
-	var new_track = animation.add_track(Animation.TYPE_VALUE)
+	var new_track = animation.add_track(anim_type)
 	var track_path = NodePath(String(node_path) +  (":" +attribute) if attribute else "" )
 	animation.track_set_path(new_track,  track_path)
 	if default_value:
@@ -325,7 +326,7 @@ func get_hitboxes():
 
 func get_clusters():
 	clusters = []
-	var clusters = state.find_children("", "HitboxCluster" , false)
+	clusters = state.find_children("", "HitboxCluster" , false)
 
 # Animation Editing Helpers-------------------------------------------------------------------------
 func time_to_frame(time):
@@ -498,17 +499,26 @@ func _on_add_cluster_button_pressed():
 	
 	state.add_child(new_cluster)
 	new_cluster.owner = base_character
-	new_cluster.name = "Cluster"
+	new_cluster.name = make_cluster_name()
 	cluster_drop_down.add_item(new_cluster.name)
 	cluster_drop_down.select(cluster_drop_down.item_count  - 1)
 	_on_cluster_drop_down_item_selected(cluster_drop_down.selected)
 
+func make_cluster_name()-> String:
+	var cluster_count= state.find_children("", "HitboxCluster").size()
+	return "Cluster%d" % cluster_count
+
 func _on_remove_cluster_button_pressed():
+	if !cluster: return
 	cluster_drop_down.remove_item(cluster_drop_down.selected)
+	
+	animation.remove_track(cluster_method_track)
+	
 	state.remove_child(cluster)
 	cluster.queue_free()
 	cluster = null
 	cluster_drop_down.select(0)
+	
 	_on_cluster_drop_down_item_selected(cluster_drop_down.selected)
 	
 
