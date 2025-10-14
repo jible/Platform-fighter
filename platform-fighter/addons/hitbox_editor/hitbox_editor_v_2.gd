@@ -135,11 +135,10 @@ func _on_cluster_drop_down_item_selected(index):
 	if selected_name != no_cluster_selected_name:
 		cluster = state.find_child(selected_name, false)
 		cluster_path = animation_player.owner.get_path_to(cluster)
-	cluster_toggle_fields.visible = (cluster != null)
-	
-	if cluster: 
+		hitboxes = cluster.find_children("", "Hitbox", false)
 		populate_and_get_cluster_track_references()
-		sync_visibility_track(cluster_method_track, hitbox_visibility_track)
+	else: hitboxes = null
+	cluster_toggle_fields.visible = (cluster != null)
 	update_hitboxes()
 
 
@@ -158,7 +157,15 @@ func populate_and_get_cluster_track_references():
 			continue
 		var new_track = create_track(Animation.TrackType.TYPE_VALUE, cluster_child_path, "visible")
 		cluster_child_visibility_tracks.append(new_track)
+	set_cluster_toggle_keys()
 
+func set_cluster_toggle_keys():
+	var method_frames = extract_and_correct_on_off_time(cluster_method_track)
+	cluster_turn_on_frame_field.value = method_frames["turn_on"]
+	cluster_turn_off_frame_field.value = method_frames["turn_off"]
+	
+	for child_vis_track in range(cluster_child_visibility_tracks):
+		sync_visibility_track(cluster_method_track, child_vis_track)
 
 # Populates hitbox ui. Call when new state is selected
 # Automatically selects the first hitbox
@@ -177,6 +184,7 @@ func update_hitboxes():
 # populate the ui
 func _on_hitbox_drop_down_item_selected(index):
 	if index == -1:
+		hitbox = null
 		full_hitbox_ui_container.hide()
 		return
 	full_hitbox_ui_container.show()
@@ -255,6 +263,8 @@ func set_hitbox_position_keys():
 		new_field.silent_populate(int(frame), hitbox_position.x, hitbox_position.y)
 		new_field.frame_changed.connect(on_hitbox_offset_frame_changed.bind(new_field))
 		new_field.pos_changed.connect(on_hitbox_offset_position_changed.bind(new_field))
+
+
 
 func set_hitbox_toggle_keys():
 	var method_frames = extract_and_correct_on_off_time(hitbox_method_track)
@@ -485,12 +495,13 @@ func on_position_anim_position_changed(position_animation:PositionAnimationSette
 
 func _on_add_cluster_button_pressed():
 	var new_cluster = HitboxCluster.new()
-	new_cluster.name = "Cluster"
+	
 	state.add_child(new_cluster)
+	new_cluster.owner = base_character
+	new_cluster.name = "Cluster"
 	cluster_drop_down.add_item(new_cluster.name)
-	#should emit the signal
 	cluster_drop_down.select(cluster_drop_down.item_count  - 1)
-
+	_on_cluster_drop_down_item_selected(cluster_drop_down.selected)
 
 func _on_remove_cluster_button_pressed():
 	cluster_drop_down.remove_item(cluster_drop_down.selected)
@@ -498,6 +509,8 @@ func _on_remove_cluster_button_pressed():
 	cluster.queue_free()
 	cluster = null
 	cluster_drop_down.select(0)
+	_on_cluster_drop_down_item_selected(cluster_drop_down.selected)
+	
 
 func _on_remove_hitbox_button_pressed():
 	pass # Replace with function body.

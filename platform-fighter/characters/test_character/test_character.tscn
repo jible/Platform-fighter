@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=26 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dosttxqhf11ww" path="res://components/for_characters/hitbox_hurtbox/hitbox.tscn" id="5_ktjrq"]
 [ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://characters/test_character/behaviors/land_behavior.gd" id="5_m32lo"]
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="7_ey8be"]
+[ext_resource type="Script" uid="uid://djdwup4upxnxi" path="res://components/for_characters/hitbox_hurtbox/hitbox_cluster.gd" id="9_lo27l"]
 [ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/default_states/idle.gd" id="11_kwm21"]
 [ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://components/for_characters/default_states/jump.gd" id="12_ywsa4"]
 [ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://components/for_characters/default_states/walk.gd" id="13_n13b4"]
@@ -169,25 +170,13 @@ tracks/2/keys = {
 "update": 1,
 "values": [Vector2(0, 0)]
 }
-tracks/3/type = "value"
+tracks/3/type = "method"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:visible")
-tracks/3/interp = 0
+tracks/3/path = NodePath("SpriteManager/StateMachine/Punch/hitbox")
+tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0.4, 0.6),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/4/type = "method"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("SpriteManager/StateMachine/Punch/hitbox")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
 "times": PackedFloat32Array(0.4, 0.6),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
@@ -294,6 +283,9 @@ knockback_vector = Vector2(0.815383, -0.578922)
 [node name="@CollisionShape2D@33277" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox" index="1"]
 shape = SubResource("CapsuleShape2D_q6174")
 debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
+
+[node name="Cluster2" type="Node2D" parent="SpriteManager/StateMachine/Punch" index="2"]
+script = ExtResource("9_lo27l")
 
 [node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" index="1" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
 script = ExtResource("7_ey8be")
