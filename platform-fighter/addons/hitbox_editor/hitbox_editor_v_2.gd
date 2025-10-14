@@ -23,6 +23,7 @@ var clusters: Array[HitboxCluster] = []
 @export var add_cluster: Button
 @export var remove_cluster: Button
 var cluster: HitboxCluster
+@export var cluster_toggle_fields: VBoxContainer
 @export var cluster_turn_on_frame_field: SpinBox
 @export var cluster_turn_off_frame_field: SpinBox
 var hitboxes = []
@@ -34,6 +35,7 @@ var hitboxes = []
 @export var hitbox_drop_down: OptionButton
 @export var add_hitbox_button: Button
 @export var remove_hitbox_button: Button
+@export var hitbox_toggle_fields: VBoxContainer
 var hitbox: Hitbox
 
 @export var offset_info: AddRemoveField
@@ -69,6 +71,7 @@ func configure(_character_root: BaseCharacter):
 	base_character = _character_root
 	character_name_label.text = base_character.name
 	animation_player = base_character.animation_player
+	
 	state_machine = base_character.state_machine
 	states = state_machine.get_children(true)
 	state_drop_down.clear()
@@ -84,15 +87,19 @@ func _on_state_drop_down_item_selected(index):
 	if !state:
 		print("state does not exist")
 		return
-		
 	animation_library = animation_player.get_animation_library("")
 	animation = animation_library.get_animation(state.name)
+	
+	var sprite_manager = base_character.sprite_manager
+	sprite_manager_path = animation_player.owner.get_path_to(sprite_manager)
+	
 	sprite_frame_track = get_track_reference( Animation.TrackType.TYPE_VALUE, sprite_manager_path.get_concatenated_names(), "frame")
+	
+	
 	if !sprite_frame_track:
 		print("SpriteFrame does not have anim track. Use animation updater to add the anim track then click 'Refresh'")
 		return
-	var sprite_manager = base_character.sprite_manager
-	sprite_manager_path = animation_player.owner.get_path_to(sprite_manager)
+	
 	
 	frame_time = animation.track_get_key_time(sprite_frame_track, 1)
 	
@@ -124,13 +131,11 @@ func _on_cluster_drop_down_item_selected(index):
 	if selected_name != "none":
 		cluster = state.find_child(selected_name, false)
 		cluster_path = animation_player.owner.get_path_to(cluster)
-	cluster_turn_off_frame_field.visible = (cluster != null)
-	cluster_turn_on_frame_field.visible = (cluster != null)
+	cluster_toggle_fields.visible = (cluster != null)
 	
-	hitboxes = cluster.find_children("", "HitboxCluster", false)
-	
-	populate_and_get_cluster_track_references()
-	sync_visibility_track(hitbox_method_track, hitbox_visibility_track)
+	if cluster: 
+		populate_and_get_cluster_track_references()
+		sync_visibility_track(cluster_method_track, hitbox_visibility_track)
 	update_hitboxes()
 
 
@@ -171,16 +176,15 @@ func _on_hitbox_drop_down_item_selected(index):
 		full_hitbox_ui_container.hide()
 		return
 	full_hitbox_ui_container.show()
-	var new_hitbox = state.find_child(hitbox_drop_down.get_item_text(index))
-	if !new_hitbox:
+	hitbox = (cluster if cluster else state).find_child(hitbox_drop_down.get_item_text(index), false)
+	if !hitbox:
 		push_error("Could not find hitbox")
 		return
 	hitbox_path = animation_player.owner.get_path_to(hitbox)
 
 	populate_and_get_hitbox_track_reference()
 	
-	hitbox_turn_on_frame_field.visibility  = (cluster == null)
-	hitbox_turn_off_frame_field.visibility = (cluster == null)
+	hitbox_toggle_fields.visible = (cluster == null)
 	# Extracts keys from anims and populates ui with their info
 	set_hitbox_position_keys()
 	set_hitbox_toggle_keys()

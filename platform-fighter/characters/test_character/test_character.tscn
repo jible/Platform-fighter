@@ -15,8 +15,9 @@
 [ext_resource type="Script" uid="uid://bm3an7ro8eqsd" path="res://components/for_characters/hitbox_hurtbox/hurtbox.gd" id="14_lo27l"]
 [ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://components/for_characters/default_states/ariel.gd" id="14_q6174"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_q6174"]
-radius = 100.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q6174"]
+radius = 86.8
+height = 263.2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fecar"]
 
@@ -292,7 +293,7 @@ knockback_magnitude = 1000.0
 knockback_vector = Vector2(0.71, -0.71)
 
 [node name="@CollisionShape2D@33277" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox" index="1"]
-shape = SubResource("CircleShape2D_q6174")
+shape = SubResource("CapsuleShape2D_q6174")
 debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
 
 [node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" index="1" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
