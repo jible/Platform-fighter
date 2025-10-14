@@ -484,8 +484,24 @@ func on_position_anim_position_changed(position_animation:PositionAnimationSette
 
 
 func _on_add_cluster_button_pressed():
-	pass # Replace with function body.
+	var new_cluster = HitboxCluster.new()
+	new_cluster.name = "Cluster"
+	state.add_child(new_cluster)
+	cluster_drop_down.add_item(new_cluster.name)
+	#should emit the signal
+	cluster_drop_down.select(cluster_drop_down.item_count  - 1)
 
 
 func _on_remove_cluster_button_pressed():
+	cluster_drop_down.remove_item(cluster_drop_down.selected)
+	state.remove_child(cluster)
+	cluster.queue_free()
+	cluster = null
+	cluster_drop_down.select(0)
+
+func _on_remove_hitbox_button_pressed():
+	pass # Replace with function body.
+
+
+func _on_add_hitbox_button_pressed():
 	pass # Replace with function body.
