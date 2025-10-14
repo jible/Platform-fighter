@@ -398,9 +398,9 @@ func _on_cluster_turn_off_selection_value_changed(value):
 			turn_off_key = key
 		elif method_name == "turn_on":
 			if value == time_to_frame(animation.track_get_key_time(cluster_method_track, key)):
-				cluster_turn_on_frame_field.set_value_no_signal(value + 1)
-	animation.track_set_key_time(cluster_method_track, turn_off_key, frame_to_time(cluster_turn_on_frame_field.value))
-	animation_player.seek(frame_to_time(cluster_turn_on_frame_field.value))
+				cluster_turn_off_frame_field.set_value_no_signal(value + 1)
+	animation.track_set_key_time(cluster_method_track, turn_off_key, frame_to_time(cluster_turn_off_frame_field.value))
+	animation_player.seek(frame_to_time(cluster_turn_off_frame_field.value))
 	animation_player.advance(0)
 	animation_player.pause()
 	for child_vis_track in cluster_child_visibility_tracks:

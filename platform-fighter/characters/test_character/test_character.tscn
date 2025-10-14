@@ -199,6 +199,20 @@ tracks/4/keys = {
 "update": 1,
 "values": [true, false]
 }
+tracks/5/type = "method"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("SpriteManager/StateMachine/Punch/Cluster1")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.4),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"turn_off"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_kwm21"]
 length = 0.001
@@ -275,6 +289,7 @@ state_machine = NodePath("../../../SpriteManager/StateMachine")
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
 animation = &"Punch"
+frame = 4
 
 [node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="0" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")
@@ -296,7 +311,7 @@ knockback_vector = Vector2(0.815383, -0.578922)
 shape = SubResource("CapsuleShape2D_q6174")
 debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
 
-[node name="Cluster2" type="Node2D" parent="SpriteManager/StateMachine/Punch" index="1"]
+[node name="Cluster1" type="Node2D" parent="SpriteManager/StateMachine/Punch" index="1"]
 script = ExtResource("9_lo27l")
 
 [node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" index="1" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
