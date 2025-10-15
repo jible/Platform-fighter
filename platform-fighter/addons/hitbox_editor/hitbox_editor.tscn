@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cq55gwn8bibb6"]
 
-[ext_resource type="Script" uid="uid://b2xm02thch4dd" path="res://addons/hitbox_editor/hitbox_editor_v_2.gd" id="1_2lo5o"]
+[ext_resource type="Script" uid="uid://b2xm02thch4dd" path="res://addons/hitbox_editor/hitbox_editor.gd" id="1_2lo5o"]
 [ext_resource type="PackedScene" uid="uid://cqa5hbka73wi" path="res://addons/hitbox_editor/ui_helpers/add_remove_field.tscn" id="2_aex0b"]
 
 [node name="HitboxEditor" type="VBoxContainer" node_paths=PackedStringArray("character_name_label", "state_drop_down", "cluster_drop_down", "add_cluster", "remove_cluster", "full_hitbox_ui_container", "hitbox_turn_on_frame_field", "hitbox_turn_off_frame_field", "hitbox_drop_down", "add_hitbox_button", "remove_hitbox_button", "hitbox_toggle_fields", "offset_info", "damage_value", "knockback_vector_x", "knockback_vector_y", "height_selection", "radius_selection", "rotation_selection", "knockback_magnitude", "frame_slider")]
