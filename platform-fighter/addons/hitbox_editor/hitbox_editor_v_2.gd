@@ -143,23 +143,7 @@ func _on_cluster_drop_down_item_selected(index):
 	update_hitboxes()
 
 
-func populate_and_get_cluster_track_references():
-	cluster_method_track = get_track_reference(Animation.TrackType.TYPE_METHOD, cluster_path.get_concatenated_names())
-	if !cluster_method_track: 
-		cluster_method_track = animation.add_track(Animation.TrackType.TYPE_METHOD)
-		animation.track_set_path(cluster_method_track,cluster_path)
-	print(cluster_method_track)
-	
-	cluster_child_visibility_tracks = []
-	for cluster_child in hitboxes:
-		var cluster_child_path = animation_player.owner.get_path_to(cluster_child)
-		var track = get_track_reference( Animation.TrackType.TYPE_VALUE, cluster_child_path.get_concatenated_names(), "visible")
-		if track:
-			cluster_child_visibility_tracks.append(track)
-			continue
-		var new_track = create_track(Animation.TrackType.TYPE_VALUE, cluster_child_path, "visible")
-		cluster_child_visibility_tracks.append(new_track)
-	set_cluster_toggle_keys()
+
 
 func set_cluster_toggle_keys():
 	var method_frames = extract_and_correct_on_off_time(cluster_method_track)
@@ -211,6 +195,25 @@ func _on_hitbox_drop_down_item_selected(index):
 	height_selection.set_value_no_signal(hitbox.collision_shape.shape.height)
 	rotation_selection.set_value_no_signal(hitbox.rotation_degrees)
 	
+func populate_and_get_cluster_track_references():
+	cluster_method_track = get_track_reference(Animation.TrackType.TYPE_METHOD, cluster_path.get_concatenated_names())
+	if !cluster_method_track: 
+		cluster_method_track = animation.add_track(Animation.TrackType.TYPE_METHOD)
+		animation.track_set_path(cluster_method_track,cluster_path)
+	print(cluster_method_track)
+	
+	cluster_child_visibility_tracks = []
+	for cluster_child in hitboxes:
+		var cluster_child_path = animation_player.owner.get_path_to(cluster_child)
+		var track = get_track_reference( Animation.TrackType.TYPE_VALUE, cluster_child_path.get_concatenated_names(), "visible")
+		if track:
+			cluster_child_visibility_tracks.append(track)
+			continue
+		var new_track = animation.add_track(Animation.TrackType.TYPE_VALUE)
+		animation.track_set_path(new_track,  NodePath(String(cluster_child_path) +  ":visible")) 
+		create_track(Animation.TrackType.TYPE_VALUE, cluster_child_path, "visible")
+		cluster_child_visibility_tracks.append(new_track)
+	set_cluster_toggle_keys()
 
 func populate_and_get_hitbox_track_reference():
 	hitbox_method_track = get_track_reference( Animation.TrackType.TYPE_METHOD, hitbox_path.get_concatenated_names())
@@ -218,24 +221,31 @@ func populate_and_get_hitbox_track_reference():
 	hitbox_visibility_track = get_track_reference( Animation.TrackType.TYPE_VALUE, hitbox_path.get_concatenated_names(), "visible")
 	# If there is a null track reference, create it 
 	if hitbox_position_track == null:
-		hitbox_position_track = create_track( Animation.TYPE_VALUE, hitbox_path, "position", hitbox.position)
+		hitbox_position_track = create_track( Animation.TrackType.TYPE_VALUE, hitbox_path, "position")
 	if hitbox_visibility_track == null:
-		hitbox_visibility_track = create_track( Animation.TYPE_VALUE, hitbox_path, "visible")
+		hitbox_visibility_track = create_track( Animation.TrackType.TYPE_VALUE, hitbox_path, "visible")
 	if hitbox_method_track == null:
-		hitbox_method_track = create_track( Animation.TYPE_METHOD, hitbox_path)
-
+		hitbox_method_track = create_track( Animation.TrackType.TYPE_METHOD, hitbox_path)
+	
+	if animation.track_get_key_count(hitbox_position_track) < 1:
+		animation.track_insert_key(hitbox_position_track, 0, hitbox.position)
 # Helper function for making tracks and optionally adding a default key
 # Does not automatically populate with key if default value is set to null
-func create_track( anim_type, node_path, attribute = null, default_value = null, interpolation_type = Animation.InterpolationType.INTERPOLATION_NEAREST, update_mode = Animation.UpdateMode.UPDATE_DISCRETE):
+
+
+func create_track( anim_type, node_path: NodePath, attribute = null):
 	if !node_path:
 		push_error("Node Path null. Cannont construct path")
 		return
+	
 	var new_track = animation.add_track(anim_type)
-	var track_path = NodePath(String(node_path) +  (":" +attribute) if attribute else "" )
+	var track_path = ( NodePath(String(node_path) +  ":" +attribute) if attribute else node_path )
 	animation.track_set_path(new_track,  track_path)
-	if default_value:
-		animation.track_insert_key(new_track,0,default_value)
+	
 	if anim_type != Animation.TYPE_METHOD:
+		var interpolation_type = Animation.InterpolationType.INTERPOLATION_NEAREST
+		var update_mode = Animation.UpdateMode.UPDATE_DISCRETE
+		
 		animation.track_set_interpolation_type(new_track, interpolation_type)
 		animation.value_track_set_update_mode(new_track, update_mode)
 	return new_track
@@ -548,7 +558,7 @@ func remove_hitbox_anims():
 func _on_add_hitbox_button_pressed():
 	#TODO change to instance hitbox instead of area 2d and attatching script
 	var new_hitbox: Hitbox = hitbox_scene.instantiate()
-	new_hitbox.name = "hitbox"
+	
 	
 	
 	var collision = CollisionShape2D.new()
@@ -563,7 +573,8 @@ func _on_add_hitbox_button_pressed():
 	
 	var parent = cluster if cluster else state
 	parent.add_child(new_hitbox)
-	
+	new_hitbox.name = "hitbox"
+	collision.name = "collision"
 	new_hitbox.owner = get_tree().edited_scene_root
 	collision.owner = get_tree().edited_scene_root
 
