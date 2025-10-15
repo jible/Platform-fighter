@@ -24,9 +24,6 @@ var clusters: Array[Node] = []
 @export var add_cluster: Button
 @export var remove_cluster: Button
 var cluster: HitboxCluster
-@export var cluster_toggle_fields: VBoxContainer
-@export var cluster_turn_on_frame_field: SpinBox
-@export var cluster_turn_off_frame_field: SpinBox
 var hitboxes = []
 
 # Hitboxes
@@ -55,10 +52,6 @@ var hitbox: Hitbox
 @export var frame_slider: HSlider
 var sprite_manager_path: NodePath
 var hitbox_path: NodePath
-var cluster_path: NodePath
-
-var cluster_method_track
-var cluster_child_visibility_tracks = []
 
 
 var sprite_frame_track
@@ -132,26 +125,12 @@ func update_clusters():
 func _on_cluster_drop_down_item_selected(index):
 	var selected_name = cluster_drop_down.get_item_text(index)
 	cluster = null
-	cluster_path = ""
 	if selected_name != no_cluster_selected_name:
 		cluster = state.find_child(selected_name, false)
-		cluster_path = animation_player.owner.get_path_to(cluster)
 		hitboxes = cluster.find_children("", "Hitbox", false)
-		populate_and_get_cluster_track_references()
 	else: hitboxes = null
-	cluster_toggle_fields.visible = (cluster != null)
 	update_hitboxes()
 
-
-
-
-func set_cluster_toggle_keys():
-	var method_frames = extract_and_correct_on_off_time(cluster_method_track)
-	cluster_turn_on_frame_field.set_value_no_signal( method_frames["turn_on"])
-	cluster_turn_off_frame_field.set_value_no_signal(method_frames["turn_off"])
-	
-	for child_vis_track in cluster_child_visibility_tracks:
-		sync_visibility_track(cluster_method_track, child_vis_track)
 
 # Populates hitbox ui. Call when new state is selected
 # Automatically selects the first hitbox
@@ -181,8 +160,6 @@ func _on_hitbox_drop_down_item_selected(index):
 	hitbox_path = animation_player.owner.get_path_to(hitbox)
 
 	populate_and_get_hitbox_track_reference()
-	
-	hitbox_toggle_fields.visible = (cluster == null)
 	# Extracts keys from anims and populates ui with their info
 	set_hitbox_position_keys()
 	set_hitbox_toggle_keys()
@@ -194,26 +171,6 @@ func _on_hitbox_drop_down_item_selected(index):
 	radius_selection.set_value_no_signal(hitbox.collision_shape.shape.radius)
 	height_selection.set_value_no_signal(hitbox.collision_shape.shape.height)
 	rotation_selection.set_value_no_signal(hitbox.rotation_degrees)
-	
-func populate_and_get_cluster_track_references():
-	cluster_method_track = get_track_reference(Animation.TrackType.TYPE_METHOD, cluster_path.get_concatenated_names())
-	if !cluster_method_track: 
-		cluster_method_track = animation.add_track(Animation.TrackType.TYPE_METHOD)
-		animation.track_set_path(cluster_method_track,cluster_path)
-	print(cluster_method_track)
-	
-	cluster_child_visibility_tracks = []
-	for cluster_child in hitboxes:
-		var cluster_child_path = animation_player.owner.get_path_to(cluster_child)
-		var track = get_track_reference( Animation.TrackType.TYPE_VALUE, cluster_child_path.get_concatenated_names(), "visible")
-		if track:
-			cluster_child_visibility_tracks.append(track)
-			continue
-		var new_track = animation.add_track(Animation.TrackType.TYPE_VALUE)
-		animation.track_set_path(new_track,  NodePath(String(cluster_child_path) +  ":visible")) 
-		create_track(Animation.TrackType.TYPE_VALUE, cluster_child_path, "visible")
-		cluster_child_visibility_tracks.append(new_track)
-	set_cluster_toggle_keys()
 
 func populate_and_get_hitbox_track_reference():
 	hitbox_method_track = get_track_reference( Animation.TrackType.TYPE_METHOD, hitbox_path.get_concatenated_names())
@@ -229,6 +186,8 @@ func populate_and_get_hitbox_track_reference():
 	
 	if animation.track_get_key_count(hitbox_position_track) < 1:
 		animation.track_insert_key(hitbox_position_track, 0, hitbox.position)
+	if animation.track_get_key_count(hitbox_visibility_track) < 1:
+		animation.track_insert_key(hitbox_visibility_track, 0, true)
 # Helper function for making tracks and optionally adding a default key
 # Does not automatically populate with key if default value is set to null
 
@@ -384,39 +343,6 @@ func on_hitbox_offset_position_changed(position_animation:PositionAnimationSette
 func _on_refresh_button_pressed(): reconfigure()
 
 
-func _on_cluster_turn_on_selection_value_changed(value):
-	var turn_on_key
-	for key in range(animation.track_get_key_count(cluster_method_track)):
-		var method_name = animation.method_track_get_name(cluster_method_track, key)
-		if method_name == "turn_on":
-			turn_on_key = key
-		elif method_name == "turn_off":
-			if value == time_to_frame(animation.track_get_key_time(cluster_method_track, key)):
-				cluster_turn_on_frame_field.set_value_no_signal(value + 1)
-	animation.track_set_key_time(cluster_method_track, turn_on_key, frame_to_time(cluster_turn_on_frame_field.value))
-	animation_player.seek(frame_to_time(cluster_turn_on_frame_field.value))
-	animation_player.advance(0)
-	animation_player.pause()
-	for child_vis_track in cluster_child_visibility_tracks:
-		sync_visibility_track(cluster_method_track, child_vis_track)
-
-
-func _on_cluster_turn_off_selection_value_changed(value):
-	var turn_off_key
-	for key in range(animation.track_get_key_count(cluster_method_track)):
-		var method_name = animation.method_track_get_name(cluster_method_track, key)
-		if method_name == "turn_off":
-			turn_off_key = key
-		elif method_name == "turn_on":
-			if value == time_to_frame(animation.track_get_key_time(cluster_method_track, key)):
-				cluster_turn_off_frame_field.set_value_no_signal(value + 1)
-	animation.track_set_key_time(cluster_method_track, turn_off_key, frame_to_time(cluster_turn_off_frame_field.value))
-	animation_player.seek(frame_to_time(cluster_turn_off_frame_field.value))
-	animation_player.advance(0)
-	animation_player.pause()
-	for child_vis_track in cluster_child_visibility_tracks:
-		sync_visibility_track(cluster_method_track, child_vis_track)
-
 # Non-anim ui signal responses----------------------------------------------------------------------
 func _on_radius_selection_value_changed(value):
 	var chilren = hitbox.get_children()
@@ -523,8 +449,14 @@ func _on_remove_cluster_button_pressed():
 	if !cluster: return
 	cluster_drop_down.remove_item(cluster_drop_down.selected)
 	
-	animation.remove_track(cluster_method_track)
-	
+	#this shadows another variable
+	var relevant_paths = []
+	for hitbox in hitboxes:
+		relevant_paths.append(animation_player.owner.get_path_to(hitbox).get_concatenated_names())
+	for track in range(animation.get_track_count() -1 , -1, -1):
+		if animation.track_get_path(track).get_concatenated_names() in relevant_paths:
+			animation.remove_track(track)
+		
 	state.remove_child(cluster)
 	cluster.queue_free()
 	cluster = null

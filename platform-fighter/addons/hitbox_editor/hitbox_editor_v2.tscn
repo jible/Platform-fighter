@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://b2xm02thch4dd" path="res://addons/hitbox_editor/hitbox_editor_v_2.gd" id="1_2lo5o"]
 [ext_resource type="PackedScene" uid="uid://cqa5hbka73wi" path="res://addons/hitbox_editor/ui_helpers/add_remove_field.tscn" id="2_aex0b"]
 
-[node name="HitboxEditor" type="VBoxContainer" node_paths=PackedStringArray("character_name_label", "state_drop_down", "cluster_drop_down", "add_cluster", "remove_cluster", "cluster_toggle_fields", "cluster_turn_on_frame_field", "cluster_turn_off_frame_field", "full_hitbox_ui_container", "hitbox_turn_on_frame_field", "hitbox_turn_off_frame_field", "hitbox_drop_down", "add_hitbox_button", "remove_hitbox_button", "hitbox_toggle_fields", "offset_info", "damage_value", "knockback_vector_x", "knockback_vector_y", "height_selection", "radius_selection", "rotation_selection", "knockback_magnitude", "frame_slider")]
+[node name="HitboxEditor" type="VBoxContainer" node_paths=PackedStringArray("character_name_label", "state_drop_down", "cluster_drop_down", "add_cluster", "remove_cluster", "full_hitbox_ui_container", "hitbox_turn_on_frame_field", "hitbox_turn_off_frame_field", "hitbox_drop_down", "add_hitbox_button", "remove_hitbox_button", "hitbox_toggle_fields", "offset_info", "damage_value", "knockback_vector_x", "knockback_vector_y", "height_selection", "radius_selection", "rotation_selection", "knockback_magnitude", "frame_slider")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -15,9 +15,6 @@ state_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/StateS
 cluster_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/ClusterDropDown")
 add_cluster = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/AddClusterButton")
 remove_cluster = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/RemoveClusterButton")
-cluster_toggle_fields = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer")
-cluster_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer/ClusterTurnOnSelection")
-cluster_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer/ClusterTurnOffSelection")
 full_hitbox_ui_container = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer")
 hitbox_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer/HitboxTurnOnSelection")
 hitbox_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer/HitboxTurnOffSelection")
@@ -98,32 +95,6 @@ text = "-"
 [node name="AddClusterButton" type="Button" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer"]
 layout_mode = 2
 text = "+"
-
-[node name="ClusterContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer"]
-layout_mode = 2
-
-[node name="ClusterToggleFrameContainer" type="VBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer"]
-layout_mode = 2
-
-[node name="TurnOnContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer"]
-layout_mode = 2
-
-[node name="TurnOnLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer"]
-layout_mode = 2
-text = "Turn On Frame: "
-
-[node name="ClusterTurnOnSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer"]
-layout_mode = 2
-
-[node name="TurnOffContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer"]
-layout_mode = 2
-
-[node name="TurnOffLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer"]
-layout_mode = 2
-text = "Turn Off Frame: "
-
-[node name="ClusterTurnOffSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer"]
-layout_mode = 2
 
 [node name="HitboxSelectContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer"]
 layout_mode = 2
@@ -253,6 +224,8 @@ text = "Radius:"
 [node name="RadiusSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
 tooltip_text = "The distance from the center to the side"
+step = 0.1
+allow_greater = true
 
 [node name="HeightLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
@@ -261,6 +234,8 @@ text = "Height:"
 [node name="HeightSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
 tooltip_text = "The full height from top to bottom of the capsule"
+step = 0.1
+allow_greater = true
 
 [node name="RotationLabel" type="Label" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
@@ -268,6 +243,8 @@ text = "Rotation:"
 
 [node name="RotationSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/CapsuleContainer/CapsuleInfo"]
 layout_mode = 2
+step = 0.1
+allow_greater = true
 
 [node name="AnimationContent" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
@@ -302,8 +279,6 @@ text = "->"
 [connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/ClusterDropDown" to="." method="_on_cluster_drop_down_item_selected"]
 [connection signal="pressed" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/RemoveClusterButton" to="." method="_on_remove_cluster_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterSelectContainer/AddClusterButton" to="." method="_on_add_cluster_button_pressed"]
-[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer/ClusterTurnOnSelection" to="." method="_on_cluster_turn_on_selection_value_changed"]
-[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer/ClusterTurnOffSelection" to="." method="_on_cluster_turn_off_selection_value_changed"]
 [connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown" to="." method="_on_hitbox_drop_down_item_selected"]
 [connection signal="pressed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/RemoveHitboxButton" to="." method="_on_remove_hitbox_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/AddHitboxButton" to="." method="_on_add_hitbox_button_pressed"]

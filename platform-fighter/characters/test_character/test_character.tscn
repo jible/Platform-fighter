@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=26 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
@@ -9,8 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dosttxqhf11ww" path="res://components/for_characters/hitbox_hurtbox/hitbox.tscn" id="5_ktjrq"]
 [ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://characters/test_character/behaviors/land_behavior.gd" id="5_m32lo"]
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="7_ey8be"]
-[ext_resource type="Script" uid="uid://djdwup4upxnxi" path="res://components/for_characters/hitbox_hurtbox/hitbox_cluster.gd" id="9_lo27l"]
-[ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/hitbox_hurtbox/hitbox.gd" id="10_fecar"]
+[ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/hitbox_hurtbox/hitbox.gd" id="9_lo27l"]
 [ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/default_states/idle.gd" id="11_kwm21"]
 [ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://components/for_characters/default_states/jump.gd" id="12_ywsa4"]
 [ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://components/for_characters/default_states/walk.gd" id="13_n13b4"]
@@ -18,10 +17,8 @@
 [ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://components/for_characters/default_states/ariel.gd" id="14_q6174"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fecar"]
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_oyhxr"]
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_37onh"]
+radius = 100.0
+height = 250.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fecar"]
 
@@ -161,136 +158,37 @@ tracks/1/keys = {
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5, 6]
 }
-tracks/2/type = "method"
+tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/Cluster1")
-tracks/2/interp = 1
+tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:position")
+tracks/2/interp = 0
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"values": [{
-"args": [],
-"method": &"turn_on"
-}, {
-"args": [],
-"method": &"turn_off"
-}]
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(150, 80)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:position")
+tracks/3/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:visible")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [Vector2(0, 0)]
+"values": [true, false]
 }
-tracks/4/type = "value"
+tracks/4/type = "method"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:visible")
-tracks/4/interp = 0
+tracks/4/path = NodePath("SpriteManager/StateMachine/Punch/hitbox")
+tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/5/type = "method"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("SpriteManager/StateMachine/Punch/hitbox")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"values": [{
-"args": [],
-"method": &"turn_on"
-}, {
-"args": [],
-"method": &"turn_off"
-}]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("SpriteManager/StateMachine/Punch/hitbox2:position")
-tracks/6/interp = 0
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector2(0, 0)]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("SpriteManager/StateMachine/Punch/hitbox2:visible")
-tracks/7/interp = 0
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/8/type = "method"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("SpriteManager/StateMachine/Punch/hitbox2")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"values": [{
-"args": [],
-"method": &"turn_on"
-}, {
-"args": [],
-"method": &"turn_off"
-}]
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("SpriteManager/StateMachine/Punch/Cluster1/hitbox:position")
-tracks/9/interp = 0
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector2(0, 0)]
-}
-tracks/10/type = "value"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("SpriteManager/StateMachine/Punch/Cluster1/hitbox:visible")
-tracks/10/interp = 0
-tracks/10/loop_wrap = true
-tracks/10/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/11/type = "method"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("SpriteManager/StateMachine/Punch/Cluster1/hitbox")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/keys = {
 "times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
@@ -377,7 +275,6 @@ state_machine = NodePath("../../../SpriteManager/StateMachine")
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
 animation = &"Punch"
-frame = 6
 
 [node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="0" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")
@@ -388,37 +285,16 @@ state_type = 2
 can_turn_around = false
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
-[node name="Cluster1" type="Node2D" parent="SpriteManager/StateMachine/Punch" index="0"]
+[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
+position = Vector2(150, 80)
 script = ExtResource("9_lo27l")
+collision_shape = NodePath("collision")
+base_character = NodePath("../../../..")
+knockback_magnitude = 1000.0
+knockback_vector = Vector2(0.71, -0.71)
 
-[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Punch/Cluster1" index="0" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
-visible = false
-script = ExtResource("10_fecar")
-collision_shape = NodePath("@CollisionShape2D@25861")
-base_character = NodePath("../../../../..")
-
-[node name="@CollisionShape2D@25861" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/Cluster1/hitbox" index="1"]
+[node name="collision" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox" index="1"]
 shape = SubResource("CapsuleShape2D_fecar")
-debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
-
-[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Punch" index="1" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
-visible = false
-script = ExtResource("10_fecar")
-collision_shape = NodePath("@CollisionShape2D@25558")
-base_character = NodePath("../../../..")
-
-[node name="@CollisionShape2D@25558" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox" index="1"]
-shape = SubResource("CapsuleShape2D_oyhxr")
-debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
-
-[node name="hitbox2" type="Area2D" parent="SpriteManager/StateMachine/Punch" index="2" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
-visible = false
-script = ExtResource("10_fecar")
-collision_shape = NodePath("@CollisionShape2D@25695")
-base_character = NodePath("../../../..")
-
-[node name="@CollisionShape2D@25695" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox2" index="1"]
-shape = SubResource("CapsuleShape2D_37onh")
 debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
 
 [node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" index="1" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
