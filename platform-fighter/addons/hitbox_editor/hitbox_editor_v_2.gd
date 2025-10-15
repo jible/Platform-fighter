@@ -139,6 +139,7 @@ func update_hitboxes():
 	hitbox_drop_down.clear()
 	for _hitbox in hitboxes:
 		hitbox_drop_down.add_item(_hitbox.name)
+	hitbox_drop_down.select(-1)
 	_on_hitbox_drop_down_item_selected(hitbox_drop_down.selected)
 
 # RESPONSE TO HITBOX SELECTION----------------------------------------------------------------------
