@@ -110,7 +110,7 @@ func _on_state_drop_down_item_selected(index):
 func reconfigure():configure(base_character)
 
 # Updates cluster ui and selects first option
-func update_clusters():
+func update_clusters(cluster_index = 0):
 	cluster_drop_down.clear()
 	# As of right now, this will break if you name a cluster none
 	cluster_drop_down.add_item(no_cluster_selected_name)
@@ -118,7 +118,7 @@ func update_clusters():
 	for _cluster in clusters:
 		cluster_drop_down.add_item(_cluster.name)
 	# Not sure if this emits the signal or not
-	cluster_drop_down.select(0)
+	cluster_drop_down.select(cluster_index)
 	_on_cluster_drop_down_item_selected(cluster_drop_down.selected)
 
 # RESPONSE TO CLUSTER SELECTION---------------------------------------------------------------------
@@ -327,7 +327,6 @@ func on_hitbox_offset_frame_changed(position_animation:PositionAnimationSetter):
 		position_animation.silent_set_frame(old_frame)
 
 func on_hitbox_offset_position_changed(position_animation:PositionAnimationSetter):
-	print('changed')
 	var new_position = Vector2(position_animation.x_field.value, position_animation.y_field.value)
 	var frame = position_animation.frame_field.value
 	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
@@ -454,7 +453,8 @@ func _on_remove_cluster_button_pressed():
 	for hitbox in hitboxes:
 		relevant_paths.append(animation_player.owner.get_path_to(hitbox).get_concatenated_names())
 	for track in range(animation.get_track_count() -1 , -1, -1):
-		if animation.track_get_path(track).get_concatenated_names() in relevant_paths:
+		var track_path = animation.track_get_path(track).get_concatenated_names()
+		if relevant_paths.find(track_path) != -1:
 			animation.remove_track(track)
 		
 	state.remove_child(cluster)
@@ -472,9 +472,9 @@ func _on_remove_hitbox_button_pressed():
 	parent.remove_child(hitbox)
 	hitbox.queue_free()
 	hitbox_drop_down.remove_item(hitbox_drop_down.selected)
-	# Reselect the cluster, instead of the hitbox, so it automatically reconfigues is hitbox array 
-	# and other related variables
-	_on_cluster_drop_down_item_selected(cluster_drop_down.selected)
+	# Reselect the cluster, so it automatically reconfigues is hitbox array 
+	# and other related variables. It will automatically select a new hitbox or tab to none
+	update_clusters(cluster_drop_down.selected)
 
 func remove_hitbox_anims():
 	var tracks = [hitbox_position_track, hitbox_visibility_track, hitbox_method_track]
@@ -512,7 +512,8 @@ func _on_add_hitbox_button_pressed():
 
 	hitbox_drop_down.add_item(new_hitbox.name)
 	hitbox_drop_down.select(hitbox_drop_down.item_count - 1)
-
+	
+	get_hitboxes()
 	_on_hitbox_drop_down_item_selected(hitbox_drop_down.selected)
 
 
