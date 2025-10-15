@@ -32,9 +32,11 @@ func exit_state():
 
 func turn_off_hitboxes():
 	for hitbox in get_children(true):
-		if hitbox is Hitbox or hitbox is HitboxCluster:
+		if hitbox is Hitbox:
 			hitbox.turn_off()
-	
+		if hitbox is HitboxCluster:
+			hitbox.clear_hit_list()
+			
 func on_anim_end():
 	
 	pass
