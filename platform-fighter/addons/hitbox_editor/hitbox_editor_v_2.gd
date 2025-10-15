@@ -30,6 +30,7 @@ var cluster: HitboxCluster
 var hitboxes = []
 
 # Hitboxes
+var hitbox_scene = preload("uid://dosttxqhf11ww")
 @export var full_hitbox_ui_container: VBoxContainer
 @export var hitbox_turn_on_frame_field: SpinBox
 @export var hitbox_turn_off_frame_field: SpinBox
@@ -523,8 +524,85 @@ func _on_remove_cluster_button_pressed():
 	
 
 func _on_remove_hitbox_button_pressed():
-	pass # Replace with function body.
+	if !hitbox: return
+	remove_hitbox_anims()
+	var parent = cluster if cluster else state
+	parent.remove_child(hitbox)
+	hitbox.queue_free()
+	hitbox_drop_down.remove_item(hitbox_drop_down.selected)
+	# Reselect the cluster, instead of the hitbox, so it automatically reconfigues is hitbox array 
+	# and other related variables
+	_on_cluster_drop_down_item_selected(cluster_drop_down.selected)
 
+func remove_hitbox_anims():
+	var tracks = [hitbox_position_track, hitbox_visibility_track, hitbox_method_track]
+	# Itterate backwards so you don't delete one, changing the track id of another.
+	tracks.sort()
+	tracks.reverse()
+	for track in tracks:
+		animation.remove_track(track)
+	hitbox_position_track = null
+	hitbox_visibility_track = null
+	hitbox_method_track = null
 
 func _on_add_hitbox_button_pressed():
-	pass # Replace with function body.
+	#TODO change to instance hitbox instead of area 2d and attatching script
+	var new_hitbox: Hitbox = hitbox_scene.instantiate()
+	new_hitbox.name = "hitbox"
+	
+	
+	var collision = CollisionShape2D.new()
+	new_hitbox.collision_shape = collision
+	
+	var shape = CapsuleShape2D.new()
+	collision.shape = shape
+	collision.debug_color = Color("2ea06c79")
+	new_hitbox.add_child(collision)
+	# Only add it to scene once everything else is ready (so obj has refrences for _ready())
+	new_hitbox.base_character = base_character
+	
+	var parent = cluster if cluster else state
+	parent.add_child(new_hitbox)
+	
+	new_hitbox.owner = get_tree().edited_scene_root
+	collision.owner = get_tree().edited_scene_root
+
+	hitbox_drop_down.add_item(new_hitbox.name)
+	hitbox_drop_down.select(hitbox_drop_down.item_count - 1)
+
+	_on_hitbox_drop_down_item_selected(hitbox_drop_down.selected)
+
+
+
+
+
+func _on_hitbox_turn_off_selection_value_changed(value):
+	var turn_off_key
+	for key in range(animation.track_get_key_count(hitbox_method_track)):
+		var method_name = animation.method_track_get_name(hitbox_method_track, key)
+		if method_name == "turn_off":
+			turn_off_key = key
+		elif method_name == "turn_on":
+			if value == time_to_frame(animation.track_get_key_time(hitbox_method_track, key)):
+				hitbox_turn_off_frame_field.set_value_no_signal(value + 1)
+	animation.track_set_key_time(hitbox_method_track, turn_off_key, frame_to_time(hitbox_turn_off_frame_field.value))
+	animation_player.seek(frame_to_time(hitbox_turn_off_frame_field.value))
+	animation_player.advance(0)
+	animation_player.pause()
+	sync_visibility_track(hitbox_method_track, hitbox_visibility_track)
+
+
+func _on_hitbox_turn_on_selection_value_changed(value):
+	var turn_on_key
+	for key in range(animation.track_get_key_count(hitbox_method_track)):
+		var method_name = animation.method_track_get_name(hitbox_method_track, key)
+		if method_name == "turn_on":
+			turn_on_key = key
+		elif method_name == "turn_off":
+			if value == time_to_frame(animation.track_get_key_time(hitbox_method_track, key)):
+				hitbox_turn_on_frame_field.set_value_no_signal(value + 1)
+	animation.track_set_key_time(hitbox_method_track, turn_on_key, frame_to_time(hitbox_turn_on_frame_field.value))
+	animation_player.seek(frame_to_time(hitbox_turn_on_frame_field.value))
+	animation_player.advance(0)
+	animation_player.pause()
+	sync_visibility_track(hitbox_method_track, hitbox_visibility_track)

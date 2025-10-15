@@ -19,8 +19,8 @@ cluster_toggle_fields = NodePath("HBoxContainer/ScrollContainer/EditorContainer/
 cluster_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOnContainer/ClusterTurnOnSelection")
 cluster_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/ClusterContainer/ClusterToggleFrameContainer/TurnOffContainer/ClusterTurnOffSelection")
 full_hitbox_ui_container = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer")
-hitbox_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer/TurnOnSelection")
-hitbox_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer/TurnOffSelection")
+hitbox_turn_on_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer/HitboxTurnOnSelection")
+hitbox_turn_off_frame_field = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer/HitboxTurnOffSelection")
 hitbox_drop_down = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown")
 add_hitbox_button = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/AddHitboxButton")
 remove_hitbox_button = NodePath("HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/RemoveHitboxButton")
@@ -157,7 +157,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Turn On Frame: "
 
-[node name="TurnOnSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer"]
+[node name="HitboxTurnOnSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer"]
 layout_mode = 2
 
 [node name="TurnOffContainer" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer"]
@@ -167,7 +167,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Turn Off Frame: "
 
-[node name="TurnOffSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer"]
+[node name="HitboxTurnOffSelection" type="SpinBox" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer"]
 layout_mode = 2
 
 [node name="Offset" type="HBoxContainer" parent="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer"]
@@ -307,6 +307,8 @@ text = "->"
 [connection signal="item_selected" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/HitboxDropDown" to="." method="_on_hitbox_drop_down_item_selected"]
 [connection signal="pressed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/RemoveHitboxButton" to="." method="_on_remove_hitbox_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxSelectContainer/AddHitboxButton" to="." method="_on_add_hitbox_button_pressed"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOnContainer/HitboxTurnOnSelection" to="." method="_on_hitbox_turn_on_selection_value_changed"]
+[connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/HitboxToggleFrameContainer/TurnOffContainer/HitboxTurnOffSelection" to="." method="_on_hitbox_turn_off_selection_value_changed"]
 [connection signal="field_added" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset/OffsetAddRemoveField" to="." method="_on_offset_add_remove_field_field_added"]
 [connection signal="field_removed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/Offset/OffsetAddRemoveField" to="." method="_on_offset_add_remove_field_field_removed"]
 [connection signal="value_changed" from="HBoxContainer/ScrollContainer/EditorContainer/HitboxContainer/DamageContainer/DamageSelection" to="." method="_on_damage_selection_value_changed"]
