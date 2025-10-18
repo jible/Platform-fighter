@@ -228,7 +228,7 @@ func set_hitbox_position_keys():
 	for key in range(animation.track_get_key_count(hitbox_position_track)):
 		var time = animation.track_get_key_time(hitbox_position_track, key)
 		var hitbox_position = animation.track_get_key_value(hitbox_position_track, key)
-		var frame = time_to_frame(time)
+		var frame = time
 		
 		# add keys to ui
 		var new_field: PositionAnimationSetter = offset_info.internal_add_field()
@@ -256,7 +256,7 @@ func extract_and_correct_on_off_time(track):
 	var default_key_frame = 0
 	for key in range(animation.track_get_key_count(track) -1, -1, -1):
 		var time = animation.track_get_key_time(track, key)
-		var frame = time_to_frame(time)
+		var frame = time
 		var method_name =  animation.method_track_get_name(track,key)
 		if method_name == "turn_on" or method_name == "turn_off":
 			if method_frames[method_name] != null:
@@ -267,7 +267,7 @@ func extract_and_correct_on_off_time(track):
 	
 	for key in method_frames.keys():
 		if method_frames[key] == null:
-			animation.track_insert_key(track, frame_to_time(default_key_frame), {
+			animation.track_insert_key(track, float(default_key_frame), {
 				"method" : key,
 				"args":[],
 			})
@@ -300,15 +300,11 @@ func get_clusters():
 	clusters = state.find_children("", "HitboxCluster" , false)
 
 # Animation Editing Helpers-------------------------------------------------------------------------
-func time_to_frame(time):
-	return round(time/frame_time)
-	
-func frame_to_time(frame):
-	return frame * frame_time
+
 
 func is_valid_frame(frame):
 	for key in range(animation.track_get_key_count(hitbox_position_track)):
-		var current_key_frame = time_to_frame(animation.track_get_key_time(hitbox_position_track, key))
+		var current_key_frame =animation.track_get_key_time(hitbox_position_track, key)
 		if current_key_frame == frame:
 			return false
 	return true
@@ -320,8 +316,8 @@ func on_hitbox_offset_frame_changed(position_animation:PositionAnimationSetter):
 	var old_frame = position_animation.old_frame
 	
 	if is_valid_frame(new_frame):
-		var key = animation.track_find_key(hitbox_position_track, frame_to_time(old_frame))
-		animation.track_set_key_time(hitbox_position_track, key, frame_to_time(new_frame))
+		var key = animation.track_find_key(hitbox_position_track, old_frame)
+		animation.track_set_key_time(hitbox_position_track, key, new_frame)
 		position_animation.old_frame = new_frame
 
 	else:
@@ -330,9 +326,9 @@ func on_hitbox_offset_frame_changed(position_animation:PositionAnimationSetter):
 func on_hitbox_offset_position_changed(position_animation:PositionAnimationSetter):
 	var new_position = Vector2(position_animation.x_field.value, position_animation.y_field.value)
 	var frame = position_animation.frame_field.value
-	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
+	var key = animation.track_find_key(hitbox_position_track, frame)
 	animation.track_set_key_value(hitbox_position_track, key, new_position)
-	animation_player.seek(frame_to_time(frame))
+	animation_player.seek(frame)
 	animation_player.advance(0)
 	animation_player.pause()
 
@@ -390,12 +386,12 @@ func _on_damage_selection_value_changed(value):
 func _on_offset_add_remove_field_field_added(field):
 	var min_frame = 0
 	for key in range(animation.track_get_key_count(hitbox_position_track) ):
-		var current_key_frame = time_to_frame(animation.track_get_key_time(hitbox_position_track, key))
+		var current_key_frame = animation.track_get_key_time(hitbox_position_track, key)
 		if  current_key_frame == min_frame:
 			min_frame += 1
 		else: break
 	field.silent_set_frame(min_frame)
-	var new_key = animation.track_insert_key(hitbox_position_track, frame_to_time(min_frame), Vector2(0,0))
+	var new_key = animation.track_insert_key(hitbox_position_track, min_frame, Vector2(0,0))
 	
 	# Connect signals
 	field.frame_changed.connect(on_hitbox_pos_frame_changed.bind(field))
@@ -406,7 +402,7 @@ func _on_offset_add_remove_field_field_added(field):
 
 func _on_offset_add_remove_field_field_removed(field):
 	var frame = field.frame_field.value
-	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
+	var key = animation.track_find_key(hitbox_position_track, frame)
 	animation.track_remove_key(hitbox_position_track, key)
 
 func on_hitbox_pos_frame_changed(position_animation:PositionAnimationSetter):
@@ -414,8 +410,8 @@ func on_hitbox_pos_frame_changed(position_animation:PositionAnimationSetter):
 	var old_frame = position_animation.old_frame
 	
 	if is_valid_frame(new_frame):
-		var key = animation.track_find_key(hitbox_position_track, frame_to_time(old_frame))
-		animation.track_set_key_time(hitbox_position_track, key, frame_to_time(new_frame))
+		var key = animation.track_find_key(hitbox_position_track,old_frame)
+		animation.track_set_key_time(hitbox_position_track, key, new_frame)
 		position_animation.old_frame = new_frame
 		position_animation.old_frame = new_frame
 	else:
@@ -424,9 +420,9 @@ func on_hitbox_pos_frame_changed(position_animation:PositionAnimationSetter):
 func on_position_anim_position_changed(position_animation:PositionAnimationSetter):
 	var new_position = Vector2(position_animation.x_field.value, position_animation.y_field.value)
 	var frame = position_animation.frame_field.value
-	var key = animation.track_find_key(hitbox_position_track, frame_to_time(frame))
+	var key = animation.track_find_key(hitbox_position_track, frame)
 	animation.track_set_key_value(hitbox_position_track, key, new_position)
-	animation_player.seek(frame_to_time(frame))
+	animation_player.seek(frame)
 	animation_player.advance(0)
 	animation_player.pause()
 
@@ -528,10 +524,10 @@ func _on_hitbox_turn_off_selection_value_changed(value):
 		if method_name == "turn_off":
 			turn_off_key = key
 		elif method_name == "turn_on":
-			if value == time_to_frame(animation.track_get_key_time(hitbox_method_track, key)):
+			if value == animation.track_get_key_time(hitbox_method_track, key):
 				hitbox_turn_off_frame_field.set_value_no_signal(value + 1)
-	animation.track_set_key_time(hitbox_method_track, turn_off_key, frame_to_time(hitbox_turn_off_frame_field.value))
-	animation_player.seek(frame_to_time(hitbox_turn_off_frame_field.value))
+	animation.track_set_key_time(hitbox_method_track, turn_off_key, hitbox_turn_off_frame_field.value)
+	animation_player.seek(hitbox_turn_off_frame_field.value)
 	animation_player.advance(0)
 	animation_player.pause()
 	sync_visibility_track(hitbox_method_track, hitbox_visibility_track)
@@ -544,10 +540,10 @@ func _on_hitbox_turn_on_selection_value_changed(value):
 		if method_name == "turn_on":
 			turn_on_key = key
 		elif method_name == "turn_off":
-			if value == time_to_frame(animation.track_get_key_time(hitbox_method_track, key)):
+			if value == animation.track_get_key_time(hitbox_method_track, key):
 				hitbox_turn_on_frame_field.set_value_no_signal(value + 1)
-	animation.track_set_key_time(hitbox_method_track, turn_on_key, frame_to_time(hitbox_turn_on_frame_field.value))
-	animation_player.seek(frame_to_time(hitbox_turn_on_frame_field.value))
+	animation.track_set_key_time(hitbox_method_track, turn_on_key, hitbox_turn_on_frame_field.value)
+	animation_player.seek(hitbox_turn_on_frame_field.value)
 	animation_player.advance(0)
 	animation_player.pause()
 	sync_visibility_track(hitbox_method_track, hitbox_visibility_track)

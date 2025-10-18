@@ -24,7 +24,6 @@ func update_player():
 	var anim_names = Array(sprite_manager.sprite_frames.get_animation_names())
 	for anim_name in anim_names:
 		# Extract anim info from sprite manager
-		var speed = sprite_manager.sprite_frames.get_animation_speed(anim_name)
 		var frame_count =  sprite_manager.sprite_frames.get_frame_count(anim_name)
 		var loop = sprite_manager.sprite_frames.get_animation_loop(anim_name)
 		# Add animation or update animation
@@ -36,7 +35,7 @@ func update_player():
 			anim.loop_mode = Animation.LOOP_LINEAR
 		else:
 			anim.loop_mode = Animation.LOOP_NONE
-		anim.length = (frame_count) / speed
+		anim.length = (frame_count)
 		
 		# TODO: Maybe remove all other anim tracks!
 		for i in range(anim.get_track_count() - 1, -1, -1):
@@ -62,7 +61,4 @@ func update_player():
 		anim.track_set_path(sprite_frame_track, "%s:frame" %sprite_manager.name)
 		
 		for key in range(frame_count):
-			anim.track_insert_key(sprite_frame_track,float(key) / float(speed), key)
-			pass
-		continue
-		
+			anim.track_insert_key(sprite_frame_track,float(key), key)

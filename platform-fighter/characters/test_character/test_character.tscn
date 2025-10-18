@@ -22,6 +22,7 @@ height = 250.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_fecar"]
 
 [sub_resource type="Animation" id="Animation_d86wp"]
+length = 5.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -42,14 +43,14 @@ tracks/1/path = NodePath("SpriteManager:frame")
 tracks/1/interp = 0
 tracks/1/loop_wrap = false
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"times": PackedFloat32Array(0, 1, 2, 3, 4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4]
 }
 
 [sub_resource type="Animation" id="Animation_7in2u"]
-length = 0.25
+length = 5.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -69,14 +70,14 @@ tracks/1/path = NodePath("SpriteManager:frame")
 tracks/1/interp = 0
 tracks/1/loop_wrap = false
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2),
+"times": PackedFloat32Array(0, 1, 2, 3, 4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4]
 }
 
 [sub_resource type="Animation" id="Animation_ey8be"]
-length = 0.8
+length = 4.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -97,14 +98,14 @@ tracks/1/path = NodePath("SpriteManager:frame")
 tracks/1/interp = 0
 tracks/1/loop_wrap = false
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"times": PackedFloat32Array(0, 1, 2, 3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3]
 }
 
 [sub_resource type="Animation" id="Animation_ktjrq"]
-length = 0.5
+length = 4.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -125,70 +126,46 @@ tracks/1/path = NodePath("SpriteManager:frame")
 tracks/1/interp = 0
 tracks/1/loop_wrap = false
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.125, 0.25, 0.375),
+"times": PackedFloat32Array(0, 1, 2, 3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3]
 }
 
 [sub_resource type="Animation" id="Animation_h1f64"]
-length = 0.7
+length = 7.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteManager:animation")
+tracks/0/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:position")
 tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": ["Punch"]
+"values": [Vector2(150, 80)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("SpriteManager:frame")
+tracks/1/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:visible")
 tracks/1/interp = 0
-tracks/1/loop_wrap = false
+tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:position")
-tracks/2/interp = 0
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector2(150, 80)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:visible")
-tracks/3/interp = 0
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1),
+"times": PackedFloat32Array(3, 5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
 }
-tracks/4/type = "method"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("SpriteManager/StateMachine/Punch/hitbox")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.1),
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/hitbox")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(3, 5),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [],
@@ -198,13 +175,38 @@ tracks/4/keys = {
 "method": &"turn_off"
 }]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SpriteManager:animation")
+tracks/3/interp = 0
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["Punch"]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("SpriteManager:frame")
+tracks/4/interp = 0
+tracks/4/loop_wrap = false
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1, 2, 3, 4, 5, 6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6]
+}
 
 [sub_resource type="Animation" id="Animation_kwm21"]
 length = 0.001
 
 [sub_resource type="Animation" id="Animation_m32lo"]
-length = 2.0
+length = 8.0
 loop_mode = 1
+step = 0.0166667
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -224,10 +226,10 @@ tracks/1/path = NodePath("SpriteManager:frame")
 tracks/1/interp = 0
 tracks/1/loop_wrap = false
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 1.875),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 1, 2, 3, 4, 5, 6, 7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kwm21"]
@@ -273,7 +275,7 @@ state_machine = NodePath("../../../SpriteManager/StateMachine")
 
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
-animation = &"Punch"
+animation = &"Dash"
 
 [node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="0" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")
@@ -282,6 +284,7 @@ state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
 state_type = 2
 can_turn_around = false
+anim_target_frame_rate = 5.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="hitbox" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
@@ -303,6 +306,7 @@ state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
 state_type = 1
 can_turn_around = false
+anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="Idle" type="Node2D" parent="SpriteManager/StateMachine" index="2" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
@@ -310,6 +314,8 @@ script = ExtResource("11_kwm21")
 base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
+loop = true
+anim_target_frame_rate = 5.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="Jump" type="Node2D" parent="SpriteManager/StateMachine" index="3" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
@@ -318,6 +324,7 @@ base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
 can_turn_around = false
+anim_target_frame_rate = 5.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="Walk" type="Node2D" parent="SpriteManager/StateMachine" index="4" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
@@ -333,6 +340,7 @@ base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
 can_turn_around = false
+anim_target_frame_rate = 5.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="Hurtbox" type="Area2D" parent="SpriteManager" index="1" node_paths=PackedStringArray("base_character", "character_body")]
@@ -347,10 +355,11 @@ metadata/_custom_type_script = "uid://bm3an7ro8eqsd"
 shape = SubResource("CircleShape2D_fecar")
 debug_color = Color(0.78017, 0.368825, 0.61371, 0.42)
 
-[node name="AnimationPlayer" parent="." index="2"]
+[node name="AnimationPlayer" parent="." index="2" node_paths=PackedStringArray("state_machine")]
 libraries = {
 &"": SubResource("AnimationLibrary_kwm21")
 }
+state_machine = NodePath("../SpriteManager/StateMachine")
 
 [connection signal="landed" from="CharacterBody" to="CharacterBody/BehaviorManager/LandBehavior" method="_on_character_body_landed"]
 [connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/PunchBehavior" method="_on_input_handler_button_pressed"]
