@@ -51,7 +51,6 @@ func _physics_process(_delta):
 				if state_machine.current_state_node.loop:
 					rb_play_from_start(current_animation)
 				emit_signal("animation_finished", current_animation)
-				print("im done")
 				return
 			else:
 				rb_set_frame(current_anim_frame)
