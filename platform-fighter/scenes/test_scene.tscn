@@ -1,16 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://bu3j6k8wggx17"]
+[gd_scene load_steps=6 format=3 uid="uid://bu3j6k8wggx17"]
 
 [ext_resource type="Texture2D" uid="uid://dtk1g11hitpmo" path="res://assets/images/icon.svg" id="1_j8ivh"]
 [ext_resource type="Script" uid="uid://cg5i8bu2gpf66" path="res://scenes/test_scene.gd" id="1_nd71p"]
 [ext_resource type="PackedScene" uid="uid://mbd7hr8paxe0" path="res://scenes/play_scene.tscn" id="3_qjeyg"]
-[ext_resource type="Script" uid="uid://bm3an7ro8eqsd" path="res://components/for_characters/hitbox_hurtbox/hurtbox.gd" id="4_7ddre"]
 [ext_resource type="PackedScene" uid="uid://dy4tuhm6pr8b3" path="res://characters/test_character/test_character.tscn" id="5_qjeyg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7ddre"]
 size = Vector2(123, 120)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_qjeyg"]
-radius = 561.97
 
 [node name="TestScene" type="Node2D"]
 script = ExtResource("1_nd71p")
@@ -21,9 +17,15 @@ script = ExtResource("1_nd71p")
 keyboard_char_num = 1
 
 [node name="TestCharacter" parent="PlayScene/CharacterHolder" index="0" node_paths=PackedStringArray("play_scene_manager") instance=ExtResource("5_qjeyg")]
-position = Vector2(-1077, -52)
+position = Vector2(-401.505, -52)
 team_number = 1
 player_number = 1
+play_scene_manager = NodePath("../..")
+
+[node name="TestCharacter2" parent="PlayScene/CharacterHolder" index="1" node_paths=PackedStringArray("play_scene_manager") instance=ExtResource("5_qjeyg")]
+position = Vector2(-1077, -52)
+team_number = 2
+player_number = 2
 play_scene_manager = NodePath("../..")
 
 [node name="stage" type="StaticBody2D" parent="PlayScene"]
@@ -40,14 +42,7 @@ position = Vector2(31.32, 85.48)
 scale = Vector2(6.38, 1.195)
 texture = ExtResource("1_j8ivh")
 
-[node name="Hurtbox" type="Area2D" parent="PlayScene"]
-collision_layer = 4
-collision_mask = 0
-script = ExtResource("4_7ddre")
-metadata/_custom_type_script = "uid://bm3an7ro8eqsd"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayScene/Hurtbox"]
-position = Vector2(1040, -355)
-shape = SubResource("CircleShape2D_qjeyg")
+[connection signal="player_number_set" from="PlayScene/CharacterHolder/TestCharacter" to="PlayScene/CharacterHolder/TestCharacter/CharacterBody" method="_on_base_character_player_number_set"]
+[connection signal="player_number_set" from="PlayScene/CharacterHolder/TestCharacter2" to="PlayScene/CharacterHolder/TestCharacter2/CharacterBody" method="_on_base_character_player_number_set"]
 
 [editable path="PlayScene"]

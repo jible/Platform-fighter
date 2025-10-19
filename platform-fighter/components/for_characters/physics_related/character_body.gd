@@ -38,13 +38,13 @@ var current_state_type: state_types = state_types.NO_PROCESS
 var input_dir: float = 0
 @export var jump_vel = 800
 @export var jump_horizontal_impulse = 5000
-@export var grounded_acceleration = 1500
-@export var aeriel_acceleration = 900
-@export var gravity_force = 4500
+@export var grounded_acceleration = 25
+@export var aeriel_acceleration = 15
+@export var gravity_force = 75
 
 # fraction of velocity removed each second
-@export var grounded_drag = 20
-@export var aeriel_drag = 2
+@export var grounded_drag = .3
+@export var aeriel_drag = .03
 @export var max_horizontal_velocity = 500
 @export var max_vertical_velocity = 800
 @export var velocity_threshold = .5
@@ -57,13 +57,13 @@ func _ready():
 	collision_layer = 0
 	collision_mask = 1 << 0
 
-func _physics_process(delta):# State Decides the movement processes that occur each frame
+func _physics_process(_delta):# State Decides the movement processes that occur each frame
 	# The default movement process is:
 	# Normal movmenet process
 	input_dir = input_handler.get_left_stick().x
 
 	for process in state_processes[current_state_type]:
-		process.call(delta)
+		process.call()
 	move_and_slide()
 	
 	grounded = is_on_floor()
@@ -72,37 +72,37 @@ func _physics_process(delta):# State Decides the movement processes that occur e
 		grounded = true
 
 
-func standard_movement_process(delta):
+func standard_movement_process():
 	var acceleration = grounded_acceleration if is_on_floor() else aeriel_acceleration
 	# If the player attempts to accelerate in the direction they are already traveling 
 	if sign(input_dir) == sign(velocity.x):
 		# If they are below the max velocity, increase the velocity and cap it.
 		if abs(velocity.x) < max_horizontal_velocity:
-			velocity.x += acceleration * input_dir * delta
+			velocity.x += acceleration * input_dir
 			velocity.x = clamp(velocity.x, -max_horizontal_velocity, max_horizontal_velocity)
 	else:
 		# If they are trying to turn around, give them a kick
-		velocity.x += acceleration * input_dir * delta * 5
+		velocity.x += acceleration * input_dir * 5
 	
-func standard_drag_process(delta):
+func standard_drag_process():
 	# If there is no input, apply drag
 	if input_dir == 0 or abs(velocity.x) > max_horizontal_velocity:
 		var drag = grounded_drag if is_on_floor() else aeriel_drag
-		velocity.x -= velocity.x * delta * drag
+		velocity.x -= velocity.x * drag
 		if abs(velocity.x) < velocity_threshold:
 			velocity.x = 0
 
-func no_control_drag_process(delta):
+func no_control_drag_process():
 	# If there is no input, apply drag
 	var drag = grounded_drag if is_on_floor() else aeriel_drag
-	velocity.x -= velocity.x * delta * drag
+	velocity.x -= velocity.x * drag
 	if abs(velocity.x) < velocity_threshold:
 		velocity.x = 0
 
-func standard_gravity_process(delta):
+func standard_gravity_process():
 	if grounded:
 		return
-	velocity.y += gravity_force * delta
+	velocity.y += gravity_force
 	if velocity.y > max_vertical_velocity:
 		velocity.y = max_vertical_velocity
 
@@ -118,9 +118,6 @@ func jump():
 		add_capped_velocity_impulse(Vector2(jump_horizontal_impulse * sign(input_dir), 0) )
 	else:
 		return
-	
-
-
 
 
 func _on_landed():

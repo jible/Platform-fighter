@@ -275,7 +275,7 @@ state_machine = NodePath("../../../SpriteManager/StateMachine")
 
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
-animation = &"Dash"
+animation = &"Punch"
 
 [node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="0" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")
@@ -284,7 +284,7 @@ state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
 state_type = 2
 can_turn_around = false
-anim_target_frame_rate = 5.0
+anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="hitbox" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
@@ -315,7 +315,7 @@ base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
 loop = true
-anim_target_frame_rate = 5.0
+anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="Jump" type="Node2D" parent="SpriteManager/StateMachine" index="3" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
@@ -324,7 +324,7 @@ base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
 can_turn_around = false
-anim_target_frame_rate = 5.0
+anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="Walk" type="Node2D" parent="SpriteManager/StateMachine" index="4" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
@@ -332,6 +332,7 @@ script = ExtResource("13_n13b4")
 base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
+anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="Aerial" type="Node2D" parent="SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
@@ -340,7 +341,8 @@ base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")
 can_turn_around = false
-anim_target_frame_rate = 5.0
+loop = true
+anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
 [node name="Hurtbox" type="Area2D" parent="SpriteManager" index="1" node_paths=PackedStringArray("base_character", "character_body")]

@@ -101,7 +101,6 @@ character_body = NodePath("../CharacterBody")
 sprite_manager = NodePath("../SpriteManager")
 input_handler = NodePath("../InputHandler")
 
-[connection signal="player_number_set" from="." to="CharacterBody" method="_on_base_character_player_number_set"]
 [connection signal="landed" from="CharacterBody" to="CharacterBody" method="_on_landed"]
 [connection signal="lock_level_changed" from="CharacterBody" to="CharacterBody/BehaviorManager" method="_on_base_player_lock_level_changed"]
 [connection signal="knockback" from="CharacterBody/Health" to="CharacterBody" method="_on_health_knockback"]

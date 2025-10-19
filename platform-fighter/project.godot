@@ -22,6 +22,7 @@ GlobalResources="*res://globals/global_resources.gd"
 [display]
 
 window/stretch/aspect="expand"
+window/vsync/vsync_mode=0
 
 [dotnet]
 
