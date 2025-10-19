@@ -357,11 +357,10 @@ metadata/_custom_type_script = "uid://bm3an7ro8eqsd"
 shape = SubResource("CircleShape2D_fecar")
 debug_color = Color(0.78017, 0.368825, 0.61371, 0.42)
 
-[node name="AnimationPlayer" parent="." index="2" node_paths=PackedStringArray("state_machine")]
+[node name="AnimationPlayer" parent="." index="2"]
 libraries = {
 &"": SubResource("AnimationLibrary_kwm21")
 }
-state_machine = NodePath("../SpriteManager/StateMachine")
 
 [connection signal="landed" from="CharacterBody" to="CharacterBody/BehaviorManager/LandBehavior" method="_on_character_body_landed"]
 [connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/PunchBehavior" method="_on_input_handler_button_pressed"]

@@ -1,16 +1,38 @@
-[gd_scene load_steps=13 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=19 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/physics_related/character_body.gd" id="2_a5pmx"]
 [ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/animation_related/sprite_manager.gd" id="3_o2sve"]
+[ext_resource type="Script" uid="uid://lerobm5nkm4h" path="res://components/for_characters/node_state_serializer.gd" id="3_v625f"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/state_helpers/character_state_machine.gd" id="4_om1db"]
 [ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://components/for_characters/state_helpers/behavior_manager.gd" id="8_a1fmy"]
+[ext_resource type="Script" uid="uid://c2nimhkephjlf" path="res://components/for_characters/character_state_seralizer.gd" id="12_retdq"]
 [ext_resource type="Script" uid="uid://dh6rrb5uvquv4" path="res://components/for_characters/hitbox_hurtbox/health.gd" id="13_5ygvn"]
 [ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/animation_related/animation_updater.gd" id="15_2f3ic"]
 [ext_resource type="Script" uid="uid://dfn5xpobmmdm4" path="res://components/for_characters/animation_related/animation_player.gd" id="17_iht17"]
 [ext_resource type="Script" uid="uid://c5vmhdvjvsfbr" path="res://components/for_characters/input_handler.gd" id="18_cgfyo"]
 [ext_resource type="Script" uid="uid://l3olgavpcsgr" path="res://components/for_characters/reference_server.gd" id="18_hcpvk"]
 [ext_resource type="Script" uid="uid://bkusxx76ru2an" path="res://components/for_characters/direction_flipper.gd" id="19_cgfyo"]
+
+[sub_resource type="Resource" id="Resource_flllm"]
+script = ExtResource("3_v625f")
+property_name = "position"
+metadata/_custom_type_script = "uid://lerobm5nkm4h"
+
+[sub_resource type="Resource" id="Resource_dsqd8"]
+script = ExtResource("3_v625f")
+property_name = "velocity"
+metadata/_custom_type_script = "uid://lerobm5nkm4h"
+
+[sub_resource type="Resource" id="Resource_v625f"]
+script = ExtResource("3_v625f")
+property_name = "used_ariel_jumps"
+metadata/_custom_type_script = "uid://lerobm5nkm4h"
+
+[sub_resource type="Resource" id="Resource_keiky"]
+script = ExtResource("3_v625f")
+property_name = "grounded"
+metadata/_custom_type_script = "uid://lerobm5nkm4h"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnujj"]
 
@@ -34,6 +56,7 @@ state_machine = NodePath("../SpriteManager/StateMachine")
 sprite_manager = NodePath("../SpriteManager")
 input_handler = NodePath("../InputHandler")
 health = NodePath("Health")
+node_state_serializers = Array[ExtResource("3_v625f")]([SubResource("Resource_flllm"), SubResource("Resource_dsqd8"), SubResource("Resource_v625f"), SubResource("Resource_keiky")])
 jump_vel = 2000
 max_horizontal_velocity = 910
 max_vertical_velocity = 1300
@@ -67,8 +90,9 @@ script = ExtResource("4_om1db")
 base_character = NodePath("../..")
 metadata/_custom_type_script = "uid://sukry204wfhf"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." node_paths=PackedStringArray("state_machine")]
 script = ExtResource("17_iht17")
+state_machine = NodePath("../SpriteManager/StateMachine")
 
 [node name="Tools" type="Node" parent="."]
 
@@ -100,6 +124,10 @@ state_machine = NodePath("../SpriteManager/StateMachine")
 character_body = NodePath("../CharacterBody")
 sprite_manager = NodePath("../SpriteManager")
 input_handler = NodePath("../InputHandler")
+
+[node name="StateSerializer" type="Node" parent="." node_paths=PackedStringArray("base_character")]
+script = ExtResource("12_retdq")
+base_character = NodePath("..")
 
 [connection signal="landed" from="CharacterBody" to="CharacterBody" method="_on_landed"]
 [connection signal="lock_level_changed" from="CharacterBody" to="CharacterBody/BehaviorManager" method="_on_base_player_lock_level_changed"]

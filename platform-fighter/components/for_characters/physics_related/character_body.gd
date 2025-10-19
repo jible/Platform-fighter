@@ -9,7 +9,7 @@ var lock_level: CharacterState.LockLevel
 @export var sprite_manager: SpriteManager
 @export var input_handler: InputHandler
 @export var health: Health
-
+@export var node_state_serializers: Array[NodeStateSerializer]
 var grounded:bool = false
 
 signal landed
