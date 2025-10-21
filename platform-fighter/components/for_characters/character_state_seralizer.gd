@@ -20,8 +20,8 @@ each node state is an array of the values of the properties that belong to the g
 var all_states: Array = []
 
 var nodes_with_state = []
-var v = []
-func _ready():
+
+func configure():
 	get_serializable_nodes(base_character)
 	all_states.resize(max_rollback)
 	for i in range(max_rollback):

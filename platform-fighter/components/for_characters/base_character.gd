@@ -4,6 +4,8 @@ extends Node2D
 @export_range(0,3, 1) var team_number = 0
 @export_range(0, 3, 1) var player_number = 0
 
+var configured: bool = false
+
 var connected_to_scene = false
 
 @export var play_scene_manager: PlaySceneManager
@@ -18,10 +20,12 @@ var connected_to_scene = false
 @export var input_handler: InputHandler
 @export var direction_changer: DirectionChanger
 
-signal player_number_set
+var all_decendants : Array[Node]
 
-func set_team_and_player_number(_team_number, _player_number):
+func configure_player(_team_number, _player_number):
 	team_number = _team_number
 	player_number = _player_number
-	connected_to_scene = true
-	player_number_set.emit()
+	all_decendants = find_children("")
+	for child in all_decendants:
+		if child.has_method("configure"): child.configure()
+	configured = true

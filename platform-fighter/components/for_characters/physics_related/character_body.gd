@@ -53,7 +53,7 @@ var input_dir: float = 0
 var used_ariel_jumps = 0
 @onready var max_velocity_vector = Vector2(max_horizontal_velocity, max_vertical_velocity)
 
-func _ready():
+func configure():
 	collision_layer = 0
 	collision_mask = 1 << 0
 

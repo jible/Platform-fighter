@@ -15,7 +15,7 @@ signal state_changed(new_state_node: CharacterState)
 
 @export var DEBUG_PRINT_STATE_CHANGE: bool = false
 
-func _ready():
+func configure():
 	for child in get_children():
 		states[child.name] = child
 	change_state(starting_state)

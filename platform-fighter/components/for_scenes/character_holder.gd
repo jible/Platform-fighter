@@ -3,19 +3,14 @@ extends Node2D
 
 
 @export var play_scene_manager: PlaySceneManager
-
-'''
-In the future, the character holder will be responsible for parsing the 
-info sent from the character select scene and spawning the correct player
-with the correct team number.
-'''
-
-func _ready():
-	var team_num = 0
-	var player_num = 0
-	var children = get_children()
-	for child in children:
-		if !child is BaseCharacter: continue
-		child.set_team_and_player_number(team_num, player_num)
-		team_num += 1
-		player_num += 1
+@export var characters_to_instance: Array[CharacterSpawnPackage]
+var players: Array[BaseCharacter] = []
+func instance_players():
+	for character_spawn_package in characters_to_instance:
+		var character_profile = character_spawn_package.character_profile
+		var scene = load(character_profile.scene_path)
+		var instance: BaseCharacter = scene.instantiate()
+		add_child(instance)
+		players.append(instance)
+		instance.name = "Player" + str(character_spawn_package.player_number)
+		instance.configure_player(character_spawn_package.team_number, character_spawn_package.player_number)

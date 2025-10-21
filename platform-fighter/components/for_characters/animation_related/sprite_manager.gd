@@ -7,7 +7,7 @@ extends AnimatedSprite2D
 @export var snap: bool = true
 var current_state: String = ""
 
-func _ready():
+func configure():
 	character_body.position = (character_body.position/scale).round() * scale
 
 func _process(_delta):

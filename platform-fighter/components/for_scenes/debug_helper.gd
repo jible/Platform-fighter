@@ -1,4 +1,5 @@
-extends Node2D
+extends Node
+
 
 @export var slow_speed: float = .05
 

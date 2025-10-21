@@ -14,7 +14,7 @@ signal button_pressed(button)
 signal button_released(button)
 
 
-func _ready():
+func configure():
 	player_number = base_character.player_number 
 	if base_character and base_character.play_scene_manager:
 		input_manager = base_character.play_scene_manager.input_manager
