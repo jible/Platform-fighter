@@ -34,10 +34,12 @@ func serve_references():
 	propogate_references(base_character)
 	return
 
-func propogate_references(parent):
+func propogate_references(parent: Node):
 	if parent == null:
 		return
-
+	
+	
+	
 	for prop in get_property_list():
 		if not (prop.usage & PROPERTY_USAGE_EDITOR):
 			continue
@@ -47,8 +49,7 @@ func propogate_references(parent):
 			continue
 		if reference_name in parent and not parent[reference_name] and self[reference_name]:
 			parent[reference_name] = self[reference_name]
-
+	
 	var children = parent.get_children(true)
 	for child in children:
-		
 		propogate_references(child)
