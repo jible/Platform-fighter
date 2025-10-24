@@ -1,7 +1,7 @@
 class_name InputManager
 extends Node
 
-
+@export var play_scene_manager: PlaySceneManager
 """
 This script parses inputs and feeds them to the player
 
@@ -63,6 +63,8 @@ const axis_default_controls: Dictionary[int, String] = {
 
 
 func _input(event):
+	if play_scene_manager.connection_mode == play_scene_manager.ConnectionMode.ONLINE:
+		pass
 	var button
 	if event is InputEventJoypadButton:
 		button = button_default_controls.get(event.button_index, null)

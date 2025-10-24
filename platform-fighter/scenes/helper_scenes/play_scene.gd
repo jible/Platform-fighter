@@ -22,3 +22,7 @@ func _ready():
 func instance_scene():
 	stage_holder.instance_stage()
 	character_holder.instance_players()
+
+
+func start_play():
+	character_holder.start_players()

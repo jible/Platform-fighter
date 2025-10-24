@@ -6,6 +6,12 @@ const MAXCLIENTS:=  2
 var current_lobby_size: int = 0
 var target_lobby_size: int = 2
 
+var rollback_port: int
+var rollback_ip: String
+
+var host_rollback_ip = null
+var host_rollback_port = null
+
 var host_ip = null
 var host_port = null
 '''
@@ -48,6 +54,8 @@ func start_game(port):
 	multiplayer.multiplayer_peer = peer
 	connection_type = ConnectionType.HOST
 	print("Hosting on port %d" % port)
+	host_rollback_port = PORT + 1
+	host_rollback_ip = get_safe_ip()
 	print_lobby_status()
 	
 
@@ -98,13 +106,22 @@ func get_host_info():
 func give_host_connection_properties():
 	var requester_id = multiplayer.get_remote_sender_id()
 	if connection_type!= ConnectionType.HOST: return
-	rpc_id(requester_id, "receive_host_connection_properties", TARGET_IP, PORT)
+	rpc_id(requester_id, "receive_host_connection_properties", TARGET_IP, PORT, host_rollback_ip, host_rollback_port)
 
 signal received_host_connection_properties()
 
 @rpc("any_peer")
-func receive_host_connection_properties(ip_address, port):
+func receive_host_connection_properties(ip_address, port, rollback_address, rollback_port):
 	host_ip = ip_address
 	host_port = port
+	host_rollback_ip = rollback_address
+	host_rollback_port = rollback_port
 	
 	received_host_connection_properties.emit()
+
+
+func get_safe_ip():
+	var ips = IP.get_local_addresses()
+	for address in ips:
+		if address.begins_with("192."):
+			return address
