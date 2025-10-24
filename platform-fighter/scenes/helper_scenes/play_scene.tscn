@@ -41,8 +41,9 @@ script = ExtResource("3_que2y")
 play_scene_manager = NodePath("..")
 characters_to_instance = Array[ExtResource("4_0nyru")]([SubResource("Resource_k2aac"), SubResource("Resource_fq1qp")])
 
-[node name="InputManager" type="Node" parent="."]
+[node name="InputManager" type="Node" parent="." node_paths=PackedStringArray("play_scene_manager")]
 script = ExtResource("1_m1edv")
+play_scene_manager = NodePath("..")
 keyboard_char_num = 1
 
 [node name="DebugHelper" type="Node" parent="."]

@@ -22,7 +22,7 @@ var client_latency = []
 func start_connection():
 	match NetworkManager.connection_type:
 		NetworkManager.ConnectionType.HOST:
-			start_host_rollback(NetworkManager.host_rollback_port, NetworkManager.host_rollback_port)
+			start_host_rollback(NetworkManager.host_rollback_port, NetworkManager.host_rollback_ip)
 		NetworkManager.ConnectionType.CLIENT:
 			prepare_to_join_rollback()
 
@@ -51,7 +51,7 @@ func connect_to_host():
 	print("got host connection proprerties")
 	var ip = NetworkManager.get_safe_ip()
 	print("Connecting to:", ip)
-	udp.connect_to_host(ip, NetworkManager.host_port + 1)
+	udp.connect_to_host(NetworkManager.host_rollback_ip, NetworkManager.host_rollback_port)
 	notify_host_of_connection()
 	
 
@@ -86,31 +86,23 @@ func handle_client_connection():
 		"address":  udp.get_packet_ip(),
 	}
 	# Add new client data
-	client_data.push(new_client_data)
-	
+	client_data.append(new_client_data)
 	for client_index in range(client_data.size()):
-		# Populate new client's client data with all other client data
-		send_client_connection_data(client_index, client_data.size() - 1)
-		# Populate all clients (including new client) with new client data 
-		send_client_connection_data(client_data.size() - 1, client_index)
+		send_all_client_data(client_index)
+	
 	poll_round_trip_ticks()
 
-
-func send_client_connection_data(client_data_index, target_client_index):
+func send_all_client_data(target_client_index):
 	var buffer = StreamPeerBuffer.new()
 	buffer.put_u8(PacketType.CLIENT_DATA)
-	
-	# Buffer:
-	# [Type, length of address, address 1, address 2,..., buffer]
-	
-	var current_client_data = client_data[client_data_index]
-	var address_in_bytes = current_client_data.address.to_utf8_buffer()
-	buffer.put_u8(address_in_bytes.size())
-	buffer.put_data(address_in_bytes) 
-	buffer.put_u16(current_client_data.port)
-	
-	
+	buffer.put_u8(client_data.size())
+	for c in client_data:
+		var address_bytes = c.address.to_utf8_buffer()
+		buffer.put_8(address_bytes.size())
+		buffer.put_data(address_bytes) 
+		buffer.put_u16(c.port)
 	send_data_to_client(buffer.get_data_array(), target_client_index)
+	print(client_data)
 	
 func send_data_to_client(data, target_client_index):
 	var target_client_data = client_data[target_client_index]
@@ -122,11 +114,13 @@ func receive_client_connection_data(packet):
 	parse_buffer.set_data_array(packet)
 	# Set cursor to key of address length
 	parse_buffer.seek(1)
-	var length_of_address = parse_buffer.get_u8()
-	var address = parse_buffer.get_string(length_of_address)
-	var port = parse_buffer.get_u16()
-	
-	client_data.append({"address": address, "port": port})
+	var client_count = parse_buffer.get_u8()
+	client_data.clear()
+	for i in client_count:
+		var length_of_address = parse_buffer.get_u8()
+		var address = parse_buffer.get_string(length_of_address)
+		var port = parse_buffer.get_u16()
+		client_data.append({"address": address, "port": port})
 	
 
 func notify_host_of_connection():
@@ -149,5 +143,5 @@ func receive_round_trip_ticks(start_time: int):
 		
 	@warning_ignore("integer_division")
 	latency = round_trip_ticks/2
-	client_latency.push(latency)
+	client_latency.append(latency)
 	

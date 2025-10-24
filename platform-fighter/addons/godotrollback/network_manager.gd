@@ -106,7 +106,7 @@ func get_host_info():
 func give_host_connection_properties():
 	var requester_id = multiplayer.get_remote_sender_id()
 	if connection_type!= ConnectionType.HOST: return
-	rpc_id(requester_id, "receive_host_connection_properties", TARGET_IP, PORT, host_rollback_ip, host_rollback_port)
+	rpc_id(requester_id, "receive_host_connection_properties", host_ip, host_port, host_rollback_ip, host_rollback_port)
 
 signal received_host_connection_properties()
 
@@ -123,5 +123,6 @@ func receive_host_connection_properties(ip_address, port, rollback_address, roll
 func get_safe_ip():
 	var ips = IP.get_local_addresses()
 	for address in ips:
-		if address.begins_with("192."):
+		if address.begins_with("192.") or address.begins_with("10."):
 			return address
+	return "127.0.0.1"
