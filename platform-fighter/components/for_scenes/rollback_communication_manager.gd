@@ -8,6 +8,7 @@ enum PacketType {
 	POLL_ROUND_TRIP_TICKS,
 	ANSWER_ROUND_TRIP_TICKS,
 	CLIENT_DATA,
+	MESSAGE,
 	INPUT,
 }
 
@@ -59,7 +60,11 @@ func _process(_delta):
 	if udp and udp.get_available_packet_count():
 		var packet = udp.get_packet()
 		handle_packet(packet)
-
+	if Input.is_action_just_pressed("attack"):
+		if NetworkManager.connection_type == NetworkManager.ConnectionType.HOST:
+			send_message("hello from host")
+		else:
+			print("not host")
 func handle_packet(packet: PackedByteArray):
 	if packet.size() < 1:
 		# Packet dropped bytes
@@ -79,7 +84,8 @@ func handle_packet(packet: PackedByteArray):
 			handle_client_connection()
 		PacketType.CLIENT_DATA:
 			receive_client_connection_data(packet)
-
+		PacketType.MESSAGE:
+			receive_message(packet)
 func handle_client_connection():
 	var new_client_data = {
 		"port": udp.get_packet_port(),
@@ -122,6 +128,19 @@ func receive_client_connection_data(packet):
 		var port = parse_buffer.get_u16()
 		client_data.append({"address": address, "port": port})
 	
+func send_message(message: String):
+	var b = StreamPeerBuffer.new()
+	b.put_8(PacketType.MESSAGE)
+	b.put_string(message)
+	send_data_to_client( b.get_data_array(), 0)
+
+func receive_message(data):
+	var b = StreamPeerBuffer.new()
+	b.set_data_array(data)
+	b.seek(1)
+	print("received message")
+	print(b.get_string())
+	return
 
 func notify_host_of_connection():
 	print("notifying host")
@@ -144,4 +163,3 @@ func receive_round_trip_ticks(start_time: int):
 	@warning_ignore("integer_division")
 	latency = round_trip_ticks/2
 	client_latency.append(latency)
-	
