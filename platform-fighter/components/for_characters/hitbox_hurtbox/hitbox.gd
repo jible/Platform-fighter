@@ -47,6 +47,8 @@ var successful_hit_list: Array = []
 func _ready():
 	turn_off()
 	area_entered.connect(_on_area_entered)
+
+func configure():
 	
 	if base_character:
 		var temp = (1 << GlobalResources.max_team_count) - 1

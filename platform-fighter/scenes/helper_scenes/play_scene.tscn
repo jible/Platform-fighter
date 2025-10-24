@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://mbd7hr8paxe0"]
+[gd_scene load_steps=11 format=3 uid="uid://mbd7hr8paxe0"]
 
 [ext_resource type="Script" uid="uid://b1g2yvibmsn5v" path="res://characters/input_manager.gd" id="1_m1edv"]
 [ext_resource type="Script" uid="uid://dr5leuuafn8o0" path="res://scenes/helper_scenes/play_scene.gd" id="1_wklqy"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://cts8w1ybgwjit" path="res://components/for_scenes/character_spawn_package.gd" id="4_0nyru"]
 [ext_resource type="Script" uid="uid://cm66823utepqk" path="res://components/for_scenes/debug_helper.gd" id="4_kdvgv"]
 [ext_resource type="Resource" uid="uid://wmqfm5khqbjm" path="res://characters/character_profiles/test_character_profile.tres" id="5_0fodh"]
+[ext_resource type="Script" uid="uid://b1b5vrtqnk0ck" path="res://components/for_scenes/rollback_communication_manager.gd" id="8_0fodh"]
 
 [sub_resource type="Resource" id="Resource_k2aac"]
 script = ExtResource("4_0nyru")
@@ -20,12 +21,14 @@ player_number = 1
 team_number = 1
 metadata/_custom_type_script = "uid://cts8w1ybgwjit"
 
-[node name="PlaySceneManager" type="Node2D" node_paths=PackedStringArray("camera", "input_manager", "stage_holder", "character_holder")]
+[node name="PlaySceneManager" type="Node2D" node_paths=PackedStringArray("camera", "input_manager", "stage_holder", "character_holder", "rollback_communication_manager")]
 script = ExtResource("1_wklqy")
 camera = NodePath("Camera2D")
 input_manager = NodePath("InputManager")
 stage_holder = NodePath("StageHolder")
 character_holder = NodePath("CharacterHolder")
+rollback_communication_manager = NodePath("RollbackCommunicationManager")
+connection_mode = 1
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.31, 0.31)
@@ -44,3 +47,6 @@ keyboard_char_num = 1
 
 [node name="DebugHelper" type="Node" parent="."]
 script = ExtResource("4_kdvgv")
+
+[node name="RollbackCommunicationManager" type="Node" parent="."]
+script = ExtResource("8_0fodh")

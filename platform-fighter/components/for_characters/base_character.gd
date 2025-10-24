@@ -24,7 +24,6 @@ var connected_to_scene = false
 
 func _ready():
 	get_all_children()
-	print(all_decendants)
 	for decendant in all_decendants:
 		decendant.process_mode = Node.PROCESS_MODE_DISABLED
 		decendant.set_physics_process(false)
