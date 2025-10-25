@@ -35,7 +35,6 @@ func start_host_rollback(port, ip_address):
 		return
 	host_data["port"] = port
 	host_data["address"] = ip_address
-	
 
 func prepare_to_join_rollback():
 	udp = PacketPeerUDP.new()
@@ -86,6 +85,7 @@ func handle_packet(packet: PackedByteArray):
 			receive_client_connection_data(packet)
 		PacketType.MESSAGE:
 			receive_message(packet)
+
 func handle_client_connection():
 	var new_client_data = {
 		"port": udp.get_packet_port(),

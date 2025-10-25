@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="CharacterProfile" load_steps=2 format=3 uid="uid://bhk8l7kscf5a1"]
+
+[ext_resource type="Script" uid="uid://8wse53qq7l01" path="res://components/for_characters/character_profile.gd" id="1_8l30r"]
+
+[resource]
+script = ExtResource("1_8l30r")
+name = "Knighty"
+scene_path = "res://characters/knighty/knighty.tscn"
+metadata/_custom_type_script = "uid://8wse53qq7l01"

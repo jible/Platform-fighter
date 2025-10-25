@@ -18,7 +18,8 @@ func _ready():
 	instance_scene()
 	if connection_mode == ConnectionMode.ONLINE:
 		rollback_communication_manager.start_connection()
-
+	else:
+		start_play()
 func instance_scene():
 	stage_holder.instance_stage()
 	character_holder.instance_players()

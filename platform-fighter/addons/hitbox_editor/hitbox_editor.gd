@@ -64,6 +64,7 @@ var frame_time: float
 # INITILIZATION ------------------------------------------------------------------------------------
 func configure(_character_root: BaseCharacter):
 	base_character = _character_root
+	if base_character.name == "BaseCharacter": return
 	character_name_label.text = base_character.name
 	animation_player = base_character.animation_player
 	
@@ -82,9 +83,13 @@ func _on_state_drop_down_item_selected(index):
 	if !state:
 		print("state does not exist")
 		return
-	animation_library = animation_player.get_animation_library("")
+	var anim_lib_list = animation_player.get_animation_library_list()
+	for anim_lib_name in anim_lib_list:
+		if anim_lib_name =="":
+			animation_library = animation_player.get_animation_library("")
+	if !animation_library: return
 	animation = animation_library.get_animation(state.name)
-	
+	if !animation: return
 	var sprite_manager = base_character.sprite_manager
 	if !sprite_manager:
 		push_error("Sprite manager reference not set on base character. Run the reference server")

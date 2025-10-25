@@ -1,19 +1,12 @@
-[gd_scene load_steps=25 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=18 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
 [ext_resource type="SpriteFrames" uid="uid://dudspqa3diyk5" path="res://assets/spriteframes/test_character.tres" id="3_6ropc"]
-[ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://characters/test_character/behaviors/dash_behavior.gd" id="3_7in2u"]
 [ext_resource type="Script" uid="uid://dd0ll38lrhwll" path="res://characters/test_character/states/punch.gd" id="3_cu1ws"]
-[ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://characters/test_character/behaviors/jump_behavior.gd" id="4_h1f64"]
 [ext_resource type="PackedScene" uid="uid://dosttxqhf11ww" path="res://components/for_characters/hitbox_hurtbox/hitbox.tscn" id="5_ktjrq"]
-[ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://characters/test_character/behaviors/land_behavior.gd" id="5_m32lo"]
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="7_ey8be"]
-[ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/default_states/idle.gd" id="11_kwm21"]
-[ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://components/for_characters/default_states/jump.gd" id="12_ywsa4"]
-[ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://components/for_characters/default_states/walk.gd" id="13_n13b4"]
 [ext_resource type="Script" uid="uid://bm3an7ro8eqsd" path="res://components/for_characters/hitbox_hurtbox/hurtbox.gd" id="14_lo27l"]
-[ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://components/for_characters/default_states/ariel.gd" id="14_q6174"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fecar"]
 radius = 100.0
@@ -244,6 +237,7 @@ _data = {
 }
 
 [node name="TestCharacter" instance=ExtResource("1_ka262")]
+scale = Vector2(15, 15)
 
 [node name="PunchBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="0" node_paths=PackedStringArray("base_character", "state_machine")]
 script = ExtResource("2_ka262")
@@ -252,26 +246,6 @@ valid_states = Array[String](["Idle", "Aerial", "Walk"])
 base_character = NodePath("../../..")
 state_machine = NodePath("../../../SpriteManager/StateMachine")
 metadata/_custom_type_script = "uid://ujvf0lqqpayc"
-
-[node name="DashBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="1" node_paths=PackedStringArray("base_character", "state_machine")]
-script = ExtResource("3_7in2u")
-valid_states = Array[String](["Aerial", "Idle", "Walk"])
-base_character = NodePath("../../..")
-state_machine = NodePath("../../../SpriteManager/StateMachine")
-
-[node name="JumpBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="2" node_paths=PackedStringArray("character_body", "base_character", "state_machine")]
-script = ExtResource("4_h1f64")
-character_body = NodePath("../..")
-valid_states = Array[String](["Idle", "Walk", "Aerial"])
-base_character = NodePath("../../..")
-state_machine = NodePath("../../../SpriteManager/StateMachine")
-
-[node name="LandBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="3" node_paths=PackedStringArray("base_character", "state_machine")]
-script = ExtResource("5_m32lo")
-priority = 1
-valid_states = Array[String](["Aerial"])
-base_character = NodePath("../../..")
-state_machine = NodePath("../../../SpriteManager/StateMachine")
 
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
@@ -309,42 +283,6 @@ can_turn_around = false
 anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
-[node name="Idle" type="Node2D" parent="SpriteManager/StateMachine" index="2" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-script = ExtResource("11_kwm21")
-base_character = NodePath("../../..")
-state_machine = NodePath("..")
-character_body = NodePath("../../../CharacterBody")
-loop = true
-anim_target_frame_rate = 12.0
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Jump" type="Node2D" parent="SpriteManager/StateMachine" index="3" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-script = ExtResource("12_ywsa4")
-base_character = NodePath("../../..")
-state_machine = NodePath("..")
-character_body = NodePath("../../../CharacterBody")
-can_turn_around = false
-anim_target_frame_rate = 12.0
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Walk" type="Node2D" parent="SpriteManager/StateMachine" index="4" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-script = ExtResource("13_n13b4")
-base_character = NodePath("../../..")
-state_machine = NodePath("..")
-character_body = NodePath("../../../CharacterBody")
-anim_target_frame_rate = 12.0
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
-[node name="Aerial" type="Node2D" parent="SpriteManager/StateMachine" index="5" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-script = ExtResource("14_q6174")
-base_character = NodePath("../../..")
-state_machine = NodePath("..")
-character_body = NodePath("../../../CharacterBody")
-can_turn_around = false
-loop = true
-anim_target_frame_rate = 12.0
-metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
-
 [node name="Hurtbox" type="Area2D" parent="SpriteManager" index="1" node_paths=PackedStringArray("base_character", "character_body")]
 position = Vector2(-0.69, 2.365)
 scale = Vector2(0.585, 0.585)
@@ -362,7 +300,4 @@ libraries = {
 &"": SubResource("AnimationLibrary_kwm21")
 }
 
-[connection signal="landed" from="CharacterBody" to="CharacterBody/BehaviorManager/LandBehavior" method="_on_character_body_landed"]
 [connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/PunchBehavior" method="_on_input_handler_button_pressed"]
-[connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/DashBehavior" method="_on_input_handler_button_pressed"]
-[connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/JumpBehavior" method="_on_input_handler_button_pressed"]

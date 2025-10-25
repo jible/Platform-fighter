@@ -18,3 +18,5 @@ func _process(_delta):
 				position = snapped(character_body.position, scale)
 		else:
 			position = snapped(character_body.position, scale)
+			
+	else: position = character_body.position

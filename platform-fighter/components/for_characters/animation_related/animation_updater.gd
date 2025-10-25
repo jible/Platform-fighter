@@ -11,24 +11,34 @@ extends Node
 # References
 @export var sprite_manager: SpriteManager
 @export var animation_player: AnimationPlayer
-
+@export var state_machine: CharacterStateMachine
 
 
 func update_player(): 
 	# Leave "" blank! This is the name of the default library which is unqiue to eacch animation player
 	var anim_library = animation_player.get_animation_library("")
-	if !anim_library:
+	if anim_library == null:
 		anim_library = AnimationLibrary.new()
 		animation_player.add_animation_library("", anim_library)
 	
 	var anim_names = Array(sprite_manager.sprite_frames.get_animation_names())
 	for anim_name in anim_names:
+		# Add state nodes
+		var current_state = state_machine.find_child(anim_name, false)
+		if current_state == null:
+			var new_state = CharacterState.new()
+			state_machine.add_child(new_state)
+			new_state.name = anim_name
+			new_state.owner = owner
+		
 		# Extract anim info from sprite manager
 		var frame_count =  sprite_manager.sprite_frames.get_frame_count(anim_name)
 		var loop = sprite_manager.sprite_frames.get_animation_loop(anim_name)
 		# Add animation or update animation
-		var anim = anim_library.get_animation(anim_name)
-		if !anim:
+		var anim
+		if anim_library.has_animation(anim_name):
+			anim = anim_library.get_animation(anim_name)
+		else:
 			anim = Animation.new()
 			anim_library.add_animation(anim_name, anim)
 		if loop:
