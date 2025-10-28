@@ -11,10 +11,11 @@ enum PacketType {
 	MESSAGE,
 	INPUT,
 }
+@export var play_scene_manager: PlaySceneManager
+@export var input_manager: InputManager
 
 var udp: PacketPeerUDP
 var game_time: int = 0 
-var packet_queue: Array[PackedByteArray] = []
 var round_trip_ticks: int
 var latency
 var host_data = {}
@@ -45,6 +46,11 @@ func prepare_to_join_rollback():
 	NetworkManager.received_host_connection_properties.connect(connect_to_host)
 	NetworkManager.get_host_info()
 
+func send_encoded_input_packet(encoded_packet):
+	var buffer = StreamPeerBuffer.new()
+	buffer.put_8(PacketType.INPUT)
+	buffer.put_data(encoded_packet)
+	
 
 
 func connect_to_host():
@@ -53,9 +59,9 @@ func connect_to_host():
 	print("Connecting to:", ip)
 	udp.connect_to_host(NetworkManager.host_rollback_ip, NetworkManager.host_rollback_port)
 	notify_host_of_connection()
-	
 
 func _process(_delta):
+	if play_scene_manager.connection_mode == play_scene_manager.ConnectionMode.LOCAL: return
 	if udp and udp.get_available_packet_count():
 		var packet = udp.get_packet()
 		handle_packet(packet)
@@ -85,6 +91,8 @@ func handle_packet(packet: PackedByteArray):
 			receive_client_connection_data(packet)
 		PacketType.MESSAGE:
 			receive_message(packet)
+		PacketType.INPUT:
+			input_manager.receive_network_input(packet)
 
 func handle_client_connection():
 	var new_client_data = {

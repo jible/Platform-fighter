@@ -144,8 +144,9 @@ loop = true
 anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
-[node name="Walk" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
+[node name="Walk" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
 script = ExtResource("10_keiky")
+input_handler = NodePath("../../../InputHandler")
 base_character = NodePath("../../..")
 state_machine = NodePath("..")
 character_body = NodePath("../../../CharacterBody")

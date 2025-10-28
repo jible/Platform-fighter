@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://jcsxl6gsxp3b"]
+
+[ext_resource type="Script" uid="uid://divhvnlugjv0d" path="res://scenes/helper_scenes/match_select.gd" id="1_gjghi"]
+
+[node name="MatchSelect" type="Node2D"]
+script = ExtResource("1_gjghi")

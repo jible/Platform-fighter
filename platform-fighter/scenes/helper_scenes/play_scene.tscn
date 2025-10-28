@@ -1,26 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://mbd7hr8paxe0"]
+[gd_scene load_steps=7 format=3 uid="uid://mbd7hr8paxe0"]
 
 [ext_resource type="Script" uid="uid://b1g2yvibmsn5v" path="res://characters/input_manager.gd" id="1_m1edv"]
 [ext_resource type="Script" uid="uid://dr5leuuafn8o0" path="res://scenes/helper_scenes/play_scene.gd" id="1_wklqy"]
 [ext_resource type="Script" uid="uid://bu4xmull0njfa" path="res://components/for_scenes/stage_holder.gd" id="2_tk78d"]
 [ext_resource type="Script" uid="uid://bu7dkeodqc58x" path="res://components/for_scenes/character_holder.gd" id="3_que2y"]
-[ext_resource type="Script" uid="uid://cts8w1ybgwjit" path="res://components/for_scenes/character_spawn_package.gd" id="4_0nyru"]
 [ext_resource type="Script" uid="uid://cm66823utepqk" path="res://components/for_scenes/debug_helper.gd" id="4_kdvgv"]
-[ext_resource type="Resource" uid="uid://wmqfm5khqbjm" path="res://characters/character_profiles/test_character_profile.tres" id="5_0fodh"]
-[ext_resource type="Resource" uid="uid://bhk8l7kscf5a1" path="res://characters/character_profiles/knighty_profile.tres" id="6_k2aac"]
 [ext_resource type="Script" uid="uid://b1b5vrtqnk0ck" path="res://components/for_scenes/rollback_communication_manager.gd" id="8_0fodh"]
-
-[sub_resource type="Resource" id="Resource_k2aac"]
-script = ExtResource("4_0nyru")
-character_profile = ExtResource("5_0fodh")
-metadata/_custom_type_script = "uid://cts8w1ybgwjit"
-
-[sub_resource type="Resource" id="Resource_fq1qp"]
-script = ExtResource("4_0nyru")
-character_profile = ExtResource("6_k2aac")
-player_number = 1
-team_number = 1
-metadata/_custom_type_script = "uid://cts8w1ybgwjit"
 
 [node name="PlaySceneManager" type="Node2D" node_paths=PackedStringArray("camera", "input_manager", "stage_holder", "character_holder", "rollback_communication_manager")]
 script = ExtResource("1_wklqy")
@@ -29,6 +14,7 @@ input_manager = NodePath("InputManager")
 stage_holder = NodePath("StageHolder")
 character_holder = NodePath("CharacterHolder")
 rollback_communication_manager = NodePath("RollbackCommunicationManager")
+connection_mode = null
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.31, 0.31)
@@ -39,7 +25,6 @@ script = ExtResource("2_tk78d")
 [node name="CharacterHolder" type="Node2D" parent="." node_paths=PackedStringArray("play_scene_manager")]
 script = ExtResource("3_que2y")
 play_scene_manager = NodePath("..")
-characters_to_instance = Array[ExtResource("4_0nyru")]([SubResource("Resource_k2aac"), SubResource("Resource_fq1qp")])
 
 [node name="InputManager" type="Node" parent="." node_paths=PackedStringArray("play_scene_manager")]
 script = ExtResource("1_m1edv")
@@ -49,5 +34,7 @@ keyboard_char_num = 1
 [node name="DebugHelper" type="Node" parent="."]
 script = ExtResource("4_kdvgv")
 
-[node name="RollbackCommunicationManager" type="Node" parent="."]
+[node name="RollbackCommunicationManager" type="Node" parent="." node_paths=PackedStringArray("play_scene_manager", "input_manager")]
 script = ExtResource("8_0fodh")
+play_scene_manager = NodePath("..")
+input_manager = NodePath("../InputManager")

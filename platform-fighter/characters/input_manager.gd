@@ -13,16 +13,14 @@ enum button_event_type{
 	STICK_MOVE,
 }
 var drift_threshold = .1
-signal button_event(button_name: String, device: int, event_type: button_event_type, axis:Vector2)
+signal button_event(button_name: String, player_num: int, event_type: button_event_type, axis:Vector2)
 
+@export var max_controller_buffer_size: int = 50
 @export var keyboard_char_num: int = 0
 
-
-@onready var current_controller_states: Array[ControllerState] = [
-	ControllerState.new(),
-	ControllerState.new(),
-	ControllerState.new(),
-]
+@onready var current_controller_states: Array[ControllerState] = []
+# Rolling array of array of controller states
+var all_controller_states: Array[Array]
 
 const keyboard_controls: Dictionary = {
 	KEY_SHIFT: "B",
@@ -60,19 +58,33 @@ const axis_default_controls: Dictionary[int, String] = {
 	5: "ZR",
 }
 
+func _ready():
+	for i in max_controller_buffer_size:
+		pass
+	for player in PlayerManager.all_players:
+		current_controller_states.append(ControllerState.new())
 
 
 func _input(event):
-	if play_scene_manager.connection_mode == play_scene_manager.ConnectionMode.ONLINE:
-		pass
 	var button
+	var controller_type: PlayerProfile.ControllerType
+	if event is InputEventKey:
+		controller_type = PlayerProfile.ControllerType.KEYBOARD
+	elif event is InputEventJoypadButton or event is InputEventJoypadMotion:
+		controller_type = PlayerProfile.ControllerType.CONTROLLER
+	if controller_type == null: return
+	var player_number = PlayerManager.get_player_num_from_input(event.device, controller_type)
+	if player_number == null: return
 	if event is InputEventJoypadButton:
+		controller_type = PlayerProfile.ControllerType.CONTROLLER
 		button = button_default_controls.get(event.button_index, null)
 		if !button: return
 		current_controller_states[event.device].buttons[button] = event.pressed
 		var event_type = button_event_type.PRESSED if event.pressed else button_event_type.RELEASED
-		button_event.emit(button,event.device, event_type, Vector2.ZERO)
+		button_event.emit(button, player_number, event_type, Vector2.ZERO)
 	elif event is InputEventJoypadMotion:
+		controller_type = PlayerProfile.ControllerType.CONTROLLER
+		
 		var axis_value = event.axis_value
 		if abs(axis_value) < drift_threshold:
 			axis_value = 0
@@ -81,8 +93,7 @@ func _input(event):
 		if button == "ZL" or button == "ZR":
 			var pressed = true if axis_value > .9 else false
 			current_controller_states[event.device].buttons[button] = pressed
-			var event_type = button_event_type.PRESSED if pressed else button_event_type.RELEASED
-			button_event.emit(button,event.device, event_type, Vector2.ZERO)
+			button_event.emit(button,player_number, Vector2.ZERO)
 		
 		else: 
 			var stick_num = floor(event.axis/2)
@@ -90,12 +101,14 @@ func _input(event):
 			current_controller_states[event.device].sticks[stick_num][axis] = axis_value
 			button_event.emit(
 				button,
-				event.device, 
+				player_number,
 				button_event_type.STICK_MOVE, 
 				current_controller_states[event.device].sticks[stick_num]
 			)
 
 	elif event is InputEventKey:
+		controller_type = PlayerProfile.ControllerType.KEYBOARD
+		
 		button = keyboard_controls.get(event.keycode, null)
 		if !button: button = keyboard_direction.get(event.keycode, null)
 		if !button:return
@@ -116,12 +129,12 @@ func _input(event):
 				if Input.is_key_pressed(dir):
 					dir_vector += dir_keys[keyboard_direction[dir]]
 			
-			current_controller_states[keyboard_char_num].sticks[stick_num] = dir_vector
+			current_controller_states[player_number].sticks[stick_num] = dir_vector
 			return
 		var event_type = button_event_type.PRESSED if event.pressed else button_event_type.RELEASED
-		button_event.emit(button,keyboard_char_num, event_type, Vector2.ZERO)
+		button_event.emit(button,player_number, event_type, Vector2.ZERO)
 
 func _physics_process(_delta):
-	#current_controller_states[0] = current_controller_states[0].get_copy()
-	pass
-	
+	#var current_frame = play_scene_manager.get_current_play_frame()
+	for controller in current_controller_states:
+		controller = controller.get_copy()
