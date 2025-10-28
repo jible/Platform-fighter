@@ -8,17 +8,13 @@ extends Node2D
 @export var character_holder: CharacterHolder
 @export var rollback_communication_manager: RollbackCommunicationManager
 
-enum ConnectionMode {
-	LOCAL,
-	ONLINE
-}
-@export var connection_mode: ConnectionMode = ConnectionMode.LOCAL
+
 
 var local_start_frame: int
 
 func _ready():
 	instance_scene()
-	if connection_mode == ConnectionMode.ONLINE:
+	if GlobalResources.connection_mode == GlobalResources.ConnectionMode.ONLINE:
 		rollback_communication_manager.start_connection()
 	else:
 		start_play()

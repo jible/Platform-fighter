@@ -61,7 +61,7 @@ func connect_to_host():
 	notify_host_of_connection()
 
 func _process(_delta):
-	if play_scene_manager.connection_mode == play_scene_manager.ConnectionMode.LOCAL: return
+	if GlobalResources.connection_mode == GlobalResources.ConnectionMode.LOCAL: return
 	if udp and udp.get_available_packet_count():
 		var packet = udp.get_packet()
 		handle_packet(packet)

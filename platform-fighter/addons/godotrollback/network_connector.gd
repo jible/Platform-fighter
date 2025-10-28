@@ -3,6 +3,7 @@ extends Node2D
 var play_scene_path = "res://scenes/helper_scenes/play_scene.tscn"
 
 func _ready():
+	GlobalResources.connection_mode = GlobalResources.ConnectionMode.ONLINE
 	print("press h to host or j to join")
 	NetworkManager.multiplayer.connected_to_server.connect(print_ready_message)
 	NetworkManager.multiplayer.peer_connected.connect(print_ready_message)
