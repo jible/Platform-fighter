@@ -21,16 +21,14 @@ func configure():
 	else: return
 	input_manager.button_event.connect(pass_button_signal)
 	
-func pass_button_signal(button_name: String, _player_number: int, event_type: InputManager.button_event_type, _axis:Vector2):
+func pass_button_signal(button_name: String, _player_number: int, pressed: bool):
+	
 	if player_number != _player_number: return
-	match event_type:
-		InputManager.button_event_type.PRESSED:
-			button_pressed.emit(button_name)
-		InputManager.button_event_type.RELEASED:
-			button_released.emit(button_name)
-		_:
-			return
-
+	if pressed:
+		button_pressed.emit(button_name)
+	else:
+		button_released.emit(button_name)
+		
 func get_left_stick() -> Vector2:
 	return input_manager.current_controller_states[player_number].sticks[0]
 

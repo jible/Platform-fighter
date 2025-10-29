@@ -11,7 +11,7 @@ func _ready():
 		all_players.append(null)
 
 func attempt_add_player(new_player_device: int, controller_type: PlayerProfile.ControllerType, new_player_peer_id: int):
-	if get_player_num_from_input(new_player_device, controller_type) != null: return
+	if get_player_num_from_input(new_player_device, controller_type) != -1: return
 	
 	var new_player_profile = PlayerProfile.new()
 	var new_player_num
@@ -27,13 +27,14 @@ func attempt_add_player(new_player_device: int, controller_type: PlayerProfile.C
 
 func attempt_remove_player(target_device_num, controller_type: PlayerProfile.ControllerType , _peer_id):
 	var player_num = get_player_num_from_input(target_device_num, controller_type)
-	if player_num == null: return
+	if player_num == -1: return
 	all_players[player_num] = null
 	removed_player.emit(player_num)
 
-func get_player_num_from_input(target_device_num: int, controller_type : PlayerProfile.ControllerType):
+# Outputs -1 if no such player exists
+func get_player_num_from_input(target_device_num: int, controller_type : PlayerProfile.ControllerType) -> int:
 	for i in range(all_players.size()):
 		var player = all_players[i]
 		if player and target_device_num == player.input_device_number and player.controller_type == controller_type:
 			return i
-	return null
+	return -1

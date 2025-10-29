@@ -3,6 +3,7 @@ extends Node2D
 
 @export_range(0,3, 1) var team_number = 0
 @export_range(0, 3, 1) var player_number = 0
+var player_tag: PlayerTag
 
 var configured: bool = false
 var started: bool = false
@@ -31,9 +32,10 @@ func _ready():
 		
 	
 var all_decendants : Array[Node]
-func configure_player(_team_number, _player_number):
+func configure_player(_team_number, _player_number, _player_tag):
 	team_number = _team_number
 	player_number = _player_number
+	player_tag =_player_tag
 	var player_holder = get_parent()
 	play_scene_manager = player_holder.play_scene_manager
 	for child in all_decendants:

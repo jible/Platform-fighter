@@ -23,6 +23,8 @@ enum ControllerType{
 @export var controller_type: ControllerType
 # The selected character
 @export var selected_character: CharacterProfile =preload("res://characters/character_profiles/test_character_profile.tres")
+# Player tag
+@export var player_tag: PlayerTag = preload("res://player_tags/default_player_tag.tres")
 
 func configure(_player_number, _local_peer_number, _input_device_number, _controller_type):
 	player_number = _player_number
@@ -31,3 +33,4 @@ func configure(_player_number, _local_peer_number, _input_device_number, _contro
 	local_peer_number = _local_peer_number
 	input_device_number = _input_device_number
 	controller_type = _controller_type
+	player_tag.configure()

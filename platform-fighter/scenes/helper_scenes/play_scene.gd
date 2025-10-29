@@ -32,4 +32,6 @@ func get_current_play_frame():
 	var current_frame = Engine.get_physics_frames() - local_start_frame
 	if current_frame < 0: 
 		current_frame += (1 << 64)
+	return current_frame
+
 	

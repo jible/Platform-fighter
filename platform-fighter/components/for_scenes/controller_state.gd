@@ -3,18 +3,15 @@ extends Resource
 
 
 var buttons: Dictionary[String, bool] = {
-	"B" : false,
-	"A" : false,
+	"special" : false,
+	"light" : false,
 	"Y" : false,
-	"X" : false,
-	"L" : false,
-	"R" : false,
-	"d_up" : false,
-	"d_down" : false,
-	"d_left" : false,
-	"d_right" : false,
-	"ZL": false,
-	"ZR" : false,
+	"jump" : false,
+	"grab" : false,
+	"left_up" : false,
+	"left_down" : false,
+	"left_left" : false,
+	"left_right" : false,
 }
 
 var sticks = {

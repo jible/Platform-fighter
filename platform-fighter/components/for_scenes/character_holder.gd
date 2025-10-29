@@ -17,7 +17,7 @@ func instance_players():
 		add_child(instance)
 		players.append(instance)
 		instance.name = "Player" + str(player.player_number)
-		instance.configure_player(player.team_number, player.player_number)
+		instance.configure_player(player.team_number, player.player_number, player.player_tag)
 
 # Allow players to animate and receive inputs
 func start_players():
