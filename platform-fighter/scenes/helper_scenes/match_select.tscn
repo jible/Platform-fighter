@@ -2,5 +2,11 @@
 
 [ext_resource type="Script" uid="uid://divhvnlugjv0d" path="res://scenes/helper_scenes/match_select.gd" id="1_gjghi"]
 
-[node name="MatchSelect" type="Node2D"]
+[node name="MatchSelect" type="Node2D" node_paths=PackedStringArray("label_container")]
 script = ExtResource("1_gjghi")
+label_container = NodePath("HBoxContainer")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_vertical = 3

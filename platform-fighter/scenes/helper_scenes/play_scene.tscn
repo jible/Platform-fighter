@@ -14,7 +14,6 @@ input_manager = NodePath("InputManager")
 stage_holder = NodePath("StageHolder")
 character_holder = NodePath("CharacterHolder")
 rollback_communication_manager = NodePath("RollbackCommunicationManager")
-connection_mode = null
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.31, 0.31)

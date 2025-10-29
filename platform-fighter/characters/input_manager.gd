@@ -92,18 +92,18 @@ func _input(event):
 		if !button: return
 		if button == "ZL" or button == "ZR":
 			var pressed = true if axis_value > .9 else false
-			current_controller_states[event.device].buttons[button] = pressed
+			current_controller_states[player_number].buttons[button] = pressed
 			button_event.emit(button,player_number, Vector2.ZERO)
 		
 		else: 
 			var stick_num = floor(event.axis/2)
 			var axis = 'x' if event.axis%2 == 0 else 'y'
-			current_controller_states[event.device].sticks[stick_num][axis] = axis_value
+			current_controller_states[player_number].sticks[stick_num][axis] = axis_value
 			button_event.emit(
 				button,
 				player_number,
 				button_event_type.STICK_MOVE, 
-				current_controller_states[event.device].sticks[stick_num]
+				current_controller_states[player_number].sticks[stick_num]
 			)
 
 	elif event is InputEventKey:

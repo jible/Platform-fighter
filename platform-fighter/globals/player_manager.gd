@@ -3,6 +3,7 @@ extends Node
 var all_players: Array[PlayerProfile]
 
 signal added_player
+signal removed_player
 var max_player_count = 4
 
 func _ready():
@@ -26,8 +27,9 @@ func attempt_add_player(new_player_device: int, controller_type: PlayerProfile.C
 
 func attempt_remove_player(target_device_num, controller_type: PlayerProfile.ControllerType , _peer_id):
 	var player_num = get_player_num_from_input(target_device_num, controller_type)
-	if !player_num: return
+	if player_num == null: return
 	all_players[player_num] = null
+	removed_player.emit(player_num)
 
 func get_player_num_from_input(target_device_num: int, controller_type : PlayerProfile.ControllerType):
 	for i in range(all_players.size()):
