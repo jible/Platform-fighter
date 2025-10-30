@@ -33,6 +33,12 @@ func get_copy()->ControllerState:
 	return new
 
 
+func set_button(button, value: bool):
+	button_states[button] = value
+
+func get_button(button: Button_Types):
+	return button_states.get(button)
+
 func get_encoded():
 	var buffer = StreamPeerBuffer.new()
 	var button_binary = 0
@@ -40,12 +46,15 @@ func get_encoded():
 		var new_value = button_states[button]
 		button_binary += new_value << button
 	buffer.put_16(button_binary)
-	
-func set_button(button, value: bool):
-	button_states[button] = value
+	for stick in sticks:
+		for axis in ['x','y']:
+			buffer.put_float(stick[axis])
 
-func get_button(button: Button_Types):
-	return button_states.get(button)
 
-#func config_from_encoded(encoded):
-	#pass
+func config_from_encoded(encoded: StreamPeerBuffer):
+	var button_binary = encoded.get_16()
+	for button in range(button_states.size()):
+		button_states[button] = (1<< button) & button_binary
+	for stick in sticks:
+		for axis in ['x','y']:
+			stick[axis] = encoded.get_float()
