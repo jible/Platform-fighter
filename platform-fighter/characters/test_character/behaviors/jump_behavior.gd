@@ -9,5 +9,5 @@ func trigger():
 
 
 func _on_input_handler_button_pressed(button):
-	if button == "jump" and character_body.can_jump() and is_active:
+	if button == ControllerState.Button_Types.JUMP and character_body.can_jump() and is_active:
 		trigger()

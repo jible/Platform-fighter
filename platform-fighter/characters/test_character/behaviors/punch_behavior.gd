@@ -2,7 +2,7 @@ extends CharacterBehavior
 
 
 func _on_input_handler_button_pressed(button):
-	if button == "light" and is_active:
+	if button == ControllerState.Button_Types.LIGHT and is_active:
 		trigger()
 
 func trigger():

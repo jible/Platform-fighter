@@ -3,15 +3,15 @@ extends Node
 
 
 """
-This node takes input signals from the play scene and vets them for 
+This node takes input signals from the play scene and clean them up for 
 nodes on the player
 """
 
 @export var base_character: BaseCharacter
 var input_manager: InputManager
 var player_number: int
-signal button_pressed(button)
-signal button_released(button)
+signal button_pressed(button: ControllerState.Button_Types)
+signal button_released(button: ControllerState.Button_Types)
 
 
 func configure():
@@ -21,7 +21,7 @@ func configure():
 	else: return
 	input_manager.button_event.connect(pass_button_signal)
 	
-func pass_button_signal(button_name: String, _player_number: int, pressed: bool):
+func pass_button_signal(button_name: ControllerState.Button_Types, _player_number: int, pressed: bool):
 	
 	if player_number != _player_number: return
 	if pressed:
@@ -30,7 +30,7 @@ func pass_button_signal(button_name: String, _player_number: int, pressed: bool)
 		button_released.emit(button_name)
 		
 func get_left_stick() -> Vector2:
-	return input_manager.current_controller_states[player_number].sticks[0]
+	return input_manager.get_finalized_stick(player_number, 0)
 
 func get_right_stick() -> Vector2:
-	return input_manager.current_controller_states[player_number].sticks[1]
+	return input_manager.get_finalized_stick(player_number, 1)
