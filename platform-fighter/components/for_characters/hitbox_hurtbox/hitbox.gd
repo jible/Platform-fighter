@@ -51,14 +51,9 @@ func _ready():
 func configure():
 	
 	if base_character:
-		# Fill all bits with true
 		var temp = (1 << GlobalResources.max_team_count) - 1
-		# Flip the bit of the team the player is on (so they can hit everyone but their own team)
-		temp = temp ^ ( 1<<base_character.team_number)
-		# The first bit of the teams start on bit 5, so bit shift, so shift it by 5 bits
-		collision_mask = temp << GlobalResources.team_one_collision_bit
-		collision_layer = 0
-	#TODO just refactor to use hitbox, not hit_data. Its probably cheaper to send a pointer
+		collision_mask = temp ^ ( 1<<base_character.team_number)
+	#TODO just refactor to use hitbox, not hit_data
 	hit_data = {
 		"damage": damage,
 		"knockback_magnitude" : knockback_magnitude,
