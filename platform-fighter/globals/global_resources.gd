@@ -4,7 +4,7 @@ extends Node
 var max_team_count = 4
 var ticks_per_sec: int
 var tick_length: float
-
+var team_one_collision_bit: int = 5
 
 enum ConnectionMode {
 	LOCAL,
