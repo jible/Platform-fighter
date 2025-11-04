@@ -1,11 +1,10 @@
-[gd_scene load_steps=19 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene load_steps=18 format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
 [ext_resource type="SpriteFrames" uid="uid://dudspqa3diyk5" path="res://assets/spriteframes/test_character.tres" id="3_6ropc"]
 [ext_resource type="Script" uid="uid://dd0ll38lrhwll" path="res://characters/test_character/states/punch.gd" id="3_cu1ws"]
 [ext_resource type="PackedScene" uid="uid://dosttxqhf11ww" path="res://components/for_characters/hitbox_hurtbox/hitbox.tscn" id="5_ktjrq"]
-[ext_resource type="Script" uid="uid://db3qdsst0ai6x" path="res://components/for_characters/hitbox_hurtbox/hitbox.gd" id="6_ktjrq"]
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="7_ey8be"]
 [ext_resource type="Script" uid="uid://bm3an7ro8eqsd" path="res://components/for_characters/hitbox_hurtbox/hurtbox.gd" id="14_lo27l"]
 
@@ -238,6 +237,7 @@ _data = {
 }
 
 [node name="TestCharacter" instance=ExtResource("1_ka262")]
+position = Vector2(10000, 0)
 scale = Vector2(15, 15)
 
 [node name="PunchBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="0" node_paths=PackedStringArray("base_character", "state_machine")]
@@ -262,9 +262,8 @@ can_turn_around = false
 anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
-[node name="hitbox" type="Area2D" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
+[node name="hitbox" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
 position = Vector2(150, 50)
-script = ExtResource("6_ktjrq")
 collision_shape = NodePath("collision")
 base_character = NodePath("../../../..")
 knockback_magnitude = 500.0
