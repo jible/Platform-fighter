@@ -237,7 +237,6 @@ _data = {
 }
 
 [node name="TestCharacter" instance=ExtResource("1_ka262")]
-position = Vector2(10000, 0)
 scale = Vector2(15, 15)
 
 [node name="PunchBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="0" node_paths=PackedStringArray("base_character", "state_machine")]

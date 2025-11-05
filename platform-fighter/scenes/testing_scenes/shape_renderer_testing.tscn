@@ -2,14 +2,13 @@
 
 [ext_resource type="Script" uid="uid://6f0ndyit1bll" path="res://addons/deterministic_physics/dp_shape_render_server.gd" id="1_1sklv"]
 [ext_resource type="Script" uid="uid://c18r0m4q47ukg" path="res://addons/deterministic_physics/shape_renderer_2d.gd" id="2_22k50"]
-[ext_resource type="Script" uid="uid://lqai1mti1scb" path="res://addons/deterministic_physics/shapes/dp_sphere.gd" id="3_yoshb"]
+[ext_resource type="Script" uid="uid://sufya06u2u2d" path="res://addons/deterministic_physics/shapes/dp_rectangle.gd" id="3_1sklv"]
 
 [node name="Node2D" type="Node2D"]
 
 [node name="DP_ShapeRenderServer" type="Node" parent="." node_paths=PackedStringArray("shape_renderer", "search_root")]
 script = ExtResource("1_1sklv")
 shape_renderer = NodePath("../ShapeRenderer2D")
-show_shapes = false
 search_root = NodePath("..")
 metadata/_custom_type_script = "uid://6f0ndyit1bll"
 
@@ -18,6 +17,6 @@ script = ExtResource("2_22k50")
 shape_render_server = NodePath("../DP_ShapeRenderServer")
 metadata/_custom_type_script = "uid://c18r0m4q47ukg"
 
-[node name="DP_Sphere" type="Node" parent="."]
-script = ExtResource("3_yoshb")
-metadata/_custom_type_script = "uid://lqai1mti1scb"
+[node name="DP_Rectangle" type="Node" parent="."]
+script = ExtResource("3_1sklv")
+metadata/_custom_type_script = "uid://sufya06u2u2d"
