@@ -1,3 +1,4 @@
+extends Resource
 class_name DM_Decimal
 
 ''' 
@@ -6,10 +7,9 @@ This number exists in [-2^16, 2^16]
 
 '''
 
-
 const SHIFT: int = 16
 const SCALE: int = 1<< SHIFT
-var raw: int
+var raw: int = 0
 
 func to_int():
 	return raw >> SHIFT
@@ -34,6 +34,15 @@ static func from_str(s: String):
 
 func to_string()->String:
 	return str(to_int()) + "." + str(int((raw & (SCALE -1 ) ) * 10000/ SCALE))
+
+func to_float()->float:
+	return float(raw)/float(SCALE) 
+
+static func from_floats_dangerous(f)-> DM_Decimal:
+	var d = DM_Decimal.new()
+	var shifted = f * SCALE
+	d.raw = int(shifted)
+	return d
 
 func copy():
 	var d = DM_Decimal.new()

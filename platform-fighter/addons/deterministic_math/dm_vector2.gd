@@ -1,7 +1,7 @@
 class_name DM_Vector2
 
-var x:DM_Decimal
-var y:DM_Decimal
+var x:DM_Decimal= DM_Decimal.from_int(0)
+var y:DM_Decimal= DM_Decimal.from_int(0)
 
 
 func _init():
@@ -13,6 +13,18 @@ static func from_ints(_x: DM_Decimal, _y: DM_Decimal):
 	v.x = _x
 	v.y = _y
 	return v
+
+static func from_floats_dangerous(_x: float, _y: float):
+	var v = DM_Vector2.new()
+	v.x = DM_Decimal.from_floats_dangerous(_x)
+	v.y = DM_Decimal.from_floats_dangerous(_y)
+	return v
+
+func to_standard_vector():
+	var output = Vector2.ZERO
+	output.x = x.to_float()
+	output.y = y.to_float()
+	return output
 
 func add(other: DM_Vector2):
 	var v = DM_Vector2.new()

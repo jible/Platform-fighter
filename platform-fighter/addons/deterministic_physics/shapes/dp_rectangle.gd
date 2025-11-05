@@ -1,7 +1,7 @@
-extends DP_Shape
+@tool
+extends DP_Collision_Shape
 class_name DP_Rectangle
 
-var x1 = 0
-var x2 = 0
-var y1 = 0
-var y2 = 0
+
+var height:DM_Decimal = DM_Decimal.from_int(0)
+var width:DM_Decimal = DM_Decimal.from_int(0)
