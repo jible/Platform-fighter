@@ -9,4 +9,42 @@ func _init():
 	y = DM_Decimal.from_int(0)
 	
 static func from_ints(_x: DM_Decimal, _y: DM_Decimal):
-	var v = DMV
+	var v = DM_Vector2.new()
+	v.x = _x
+	v.y = _y
+	return v
+
+func add(other: DM_Vector2):
+	var v = DM_Vector2.new()
+	v.x = x.add(other.x)
+	v.y = y.add(other.y)
+	return v
+
+
+func sub(other: DM_Vector2):
+	var v = DM_Vector2.new()
+	v.x = x.sub(other.x)
+	v.y = y.sub(other.y)
+	return v
+
+
+func mult(coefficient: DM_Decimal):
+	var v = DM_Vector2.new()
+	v.x = x.mult(coefficient)
+	v.y = y.mult(coefficient)
+	return v
+
+func div(divisor: DM_Decimal):
+	var v = DM_Vector2.new()
+	v.x = x.div(divisor)
+	v.y = y.div(divisor)
+	return v
+
+func get_magnitude():
+	var magnitude = ( (x.power(2)).add( y.power(2)) ).square_root()
+	return magnitude
+
+func normalize():
+	var magnitude = get_magnitude()
+	if magnitude == 0: return DM_Vector2.new()
+	return div(magnitude)
