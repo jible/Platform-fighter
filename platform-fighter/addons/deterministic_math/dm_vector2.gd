@@ -8,10 +8,10 @@ func _init():
 	x = DM_Decimal.from_int(0)
 	y = DM_Decimal.from_int(0)
 	
-static func from_ints(_x: DM_Decimal, _y: DM_Decimal):
+static func from_ints(_x: int, _y: int):
 	var v = DM_Vector2.new()
-	v.x = _x
-	v.y = _y
+	v.x = DM_Decimal.from_int(_x)
+	v.y = DM_Decimal.from_int(_y)
 	return v
 
 static func from_floats_dangerous(_x: float, _y: float):
