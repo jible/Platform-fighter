@@ -19,4 +19,5 @@ metadata/_custom_type_script = "uid://c18r0m4q47ukg"
 
 [node name="DP_Rectangle" type="Node" parent="."]
 script = ExtResource("3_1sklv")
+editor_pos = Vector2(0, 0)
 metadata/_custom_type_script = "uid://sufya06u2u2d"

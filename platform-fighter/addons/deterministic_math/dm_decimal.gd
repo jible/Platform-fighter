@@ -1,10 +1,8 @@
-extends Resource
 class_name DM_Decimal
 
 ''' 
 This is a custom number data type which is the base of the deterministic math system
 This number exists in [-2^16, 2^16]
-
 '''
 
 const SHIFT: int = 16
@@ -19,21 +17,31 @@ static func from_int(i: int):
 	d.raw = i << SHIFT 
 	return d
 
-static func from_str(s: String):
-	var d = DM_Decimal.new()
+
+#Incorrect!
+static func str_to_raw(s:String):
 	var seperated = s.split(".")
-	var whole = seperated[0]
-	d.raw += whole * SCALE
+	var whole = int(seperated[0])
+	var output = whole * SCALE
 	
 	if seperated.size() > 1:
 		var f_str = seperated[1]
 		var frac_val = int(f_str)
-		var frac_scale = pow(10, f_str.length()) 
-		d.raw += int((frac_val >> SHIFT) / frac_scale)
+		var frac_scale = pow(10.0, f_str.length()) 
+		output += int(float(frac_val)  / frac_scale * SCALE)
+	return output
+
+static func from_str(s: String):
+	var d = new()
+	d.raw = str_to_raw(s)
 	return d
 
-func to_string()->String:
-	return str(to_int()) + "." + str(int((raw & (SCALE -1 ) ) * 10000/ SCALE))
+func val_to_string()->String:
+	var whole = to_int()
+	var frac = abs(raw & (SCALE - 1))
+	var frac_val = int(float(frac) / SCALE * 10000.0)
+	return "%d.%04d" % [whole, frac_val]
+	
 
 func to_float()->float:
 	return float(raw)/float(SCALE) 
