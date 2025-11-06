@@ -6,6 +6,10 @@ var ticks_per_sec: int
 var tick_length: float
 var team_one_collision_bit: int = 5
 
+# change this to suit rollback later
+func get_current_match_frame():
+	return Engine.get_physics_frames()
+
 enum ConnectionMode {
 	LOCAL,
 	ONLINE

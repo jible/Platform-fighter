@@ -110,3 +110,12 @@ func square_root():
 	var d = DM_Decimal.new()
 	d. raw = _root_helper(shifted)
 	return d
+
+func is_greater_than(other: DM_Decimal):
+	return raw > other.raw
+
+func greater_than_or_equal(other:DM_Decimal):
+	return raw >= other.raw
+
+func is_equal(other:DM_Decimal):
+	return raw == other.raw

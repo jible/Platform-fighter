@@ -9,10 +9,26 @@ class_name  DP_Collision_Shape
 
 var position: DM_Vector2 = DM_Vector2.from_ints(0,0)
 var rotation: DM_Decimal = DM_Decimal.from_int(0)
+static var max_overlap_queue_size: int = 50
+var overlaps: Array[Dictionary] = []
 
+static func get_overlap_key(frame: int):
+	return frame % max_overlap_queue_size
+
+func _ready():
+	overlaps.resize(max_overlap_queue_size)
+	overlaps.fill({})
 
 @export var editor_pos: Vector2 = position.to_standard_vector():
 	get():
 		return position.to_standard_vector()
 	set(value):
 		position = DM_Vector2.from_floats_dangerous(value.x, value.y)
+
+
+func check_overlap(other: DP_Collision_Shape) -> bool:
+	push_error("collision handling not configured on this shape")
+	return false
+
+func populate_current_frame():
+	overlaps[GlobalResources.get_current_match_frame()] = {}

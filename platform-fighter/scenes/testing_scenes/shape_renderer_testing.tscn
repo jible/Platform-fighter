@@ -1,21 +1,22 @@
 [gd_scene load_steps=4 format=3 uid="uid://bti1yk3ci2288"]
 
-[ext_resource type="Script" uid="uid://6f0ndyit1bll" path="res://addons/deterministic_physics/dp_shape_render_server.gd" id="1_1sklv"]
 [ext_resource type="Script" uid="uid://c18r0m4q47ukg" path="res://addons/deterministic_physics/shape_renderer_2d.gd" id="2_22k50"]
 [ext_resource type="Script" uid="uid://sufya06u2u2d" path="res://addons/deterministic_physics/shapes/dp_rectangle.gd" id="3_1sklv"]
+[ext_resource type="Script" uid="uid://b8aktnlabj2ww" path="res://addons/deterministic_physics/dp_physics_server.gd" id="4_22k50"]
 
 [node name="Node2D" type="Node2D"]
 
-[node name="DP_ShapeRenderServer" type="Node" parent="." node_paths=PackedStringArray("shape_renderer", "search_root")]
-script = ExtResource("1_1sklv")
-shape_renderer = NodePath("../ShapeRenderer2D")
-search_root = NodePath("..")
-metadata/_custom_type_script = "uid://6f0ndyit1bll"
-
-[node name="ShapeRenderer2D" type="Node2D" parent="." node_paths=PackedStringArray("shape_render_server")]
+[node name="ShapeRenderer2D" type="Node2D" parent="." node_paths=PackedStringArray("dp_physics_server")]
 script = ExtResource("2_22k50")
-shape_render_server = NodePath("../DP_ShapeRenderServer")
+dp_physics_server = NodePath("../DP_PhysicsServer")
+render_shapes_in_editor = false
+render_shapes_in_play = false
 metadata/_custom_type_script = "uid://c18r0m4q47ukg"
+
+[node name="DP_PhysicsServer" type="Node" parent="." node_paths=PackedStringArray("search_root")]
+script = ExtResource("4_22k50")
+search_root = NodePath("..")
+metadata/_custom_type_script = "uid://b8aktnlabj2ww"
 
 [node name="DP_Rectangle" type="Node" parent="."]
 script = ExtResource("3_1sklv")

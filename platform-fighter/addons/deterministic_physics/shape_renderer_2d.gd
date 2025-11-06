@@ -3,18 +3,21 @@ class_name ShapeRenderer2D
 extends Node2D
 
 var standard_color = Color(0.0, 0.631, 0.0, 1.0)
-@export var shape_render_server: DP_ShapeRenderServer
+@export var dp_physics_server: DP_PhysicsServer
+@export var render_shapes_in_editor: bool = true
+@export var render_shapes_in_play: bool = true
 
+func _process(delta):
+	if (Engine.is_editor_hint() and render_shapes_in_editor) or (!Engine.is_editor_hint() and render_shapes_in_play):
+		queue_redraw()
 
 func _draw():
-	if !shape_render_server: return
-	for shape in shape_render_server.all_shapes:
-		
+	if !dp_physics_server: return
+	
+	for shape in dp_physics_server.all_shapes:
 		if shape == null:
 			continue
-			#shape_render_server.all_shapes.erase(shape)
 		if shape is DP_Sphere:
-			
 			draw_collision_sphere(shape)
 		if shape is DP_Rectangle:
 				draw_collision_rectangle(shape)

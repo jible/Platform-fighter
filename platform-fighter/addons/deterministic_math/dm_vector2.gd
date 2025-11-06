@@ -1,3 +1,4 @@
+extends RefCounted
 class_name DM_Vector2
 
 var x:DM_Decimal= DM_Decimal.from_int(0)
