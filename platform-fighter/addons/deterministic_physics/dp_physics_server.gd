@@ -13,13 +13,20 @@ func _ready():
 	get_tree().node_removed.connect(_on_node_removed)
 	all_shapes = []
 	get_all_shapes(search_root)
-	
+
+
+
 	
 ''' Call this function every time a frame passes!
 It handles all deterministic physics interactions between DP shapes
 '''
+func _physics_process(_delta):
+	if !Engine.is_editor_hint():
+		handle_collisions()
+
 func handle_collisions():
 	for a in all_shapes:
+		var a_prev_overlaps = a.overlaps[DP_Collision_Shape.get_current_overlap_key()]
 		for b in all_shapes:
 			if a == b:continue
 			if !(a.collision_mask & b.collision_layer): continue
@@ -28,7 +35,9 @@ func handle_collisions():
 			var currently_overlaps = a.check_overlap(b)
 			if a.is_trigger and currently_overlaps:
 				a.overlaps[GlobalResources.get_current_match_frame()][b] = true
-			var previously_overlaped = a.overlaps[GlobalResources.get_current_match_frame()].has(b)
+			
+			var previously_overlaped = false
+			if a_prev_overlaps != null: previously_overlaped = a_prev_overlaps.has(b)
 			if currently_overlaps and !previously_overlaped:
 				pass
 				# Emit enter

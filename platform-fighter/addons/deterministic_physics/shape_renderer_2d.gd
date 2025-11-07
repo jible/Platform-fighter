@@ -29,7 +29,7 @@ func draw_collision_sphere(sphere: DP_Sphere):
 
 func draw_collision_rectangle(rectangle: DP_Rectangle):
 	var shape = Rect2(rectangle.position.to_standard_vector(),Vector2(rectangle.width.to_float(), rectangle.height.to_float()))
-	draw_rect(shape,standard_color)
+	draw_rect(shape,rectangle.debug_color)
 	
 func draw_collision_capsule(capsule: DP_Capsule):
 	var pos = capsule.position.to_standard_vector()

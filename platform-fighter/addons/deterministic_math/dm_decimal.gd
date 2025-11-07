@@ -1,3 +1,4 @@
+extends RefCounted
 class_name DM_Decimal
 
 ''' 
@@ -113,6 +114,11 @@ func square_root():
 
 func is_greater_than(other: DM_Decimal):
 	return raw > other.raw
+func is_less_than(other:DM_Decimal):
+	return raw < other.raw
+
+func is_in_range(a,b):
+	return (a.raw<raw and raw < b.raw ) or (b.raw < raw and raw < a.raw)
 
 func greater_than_or_equal(other:DM_Decimal):
 	return raw >= other.raw

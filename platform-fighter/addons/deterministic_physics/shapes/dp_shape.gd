@@ -6,11 +6,14 @@ class_name  DP_Collision_Shape
 @export var collision_mask: int
 @export var is_trigger: bool
 @export var is_static: bool = false
-
+@export var debug_color: Color = Color(0.0, 0.529, 0.0, 1.0)
 var position: DM_Vector2 = DM_Vector2.from_ints(0,0)
 var rotation: DM_Decimal = DM_Decimal.from_int(0)
 static var max_overlap_queue_size: int = 50
 var overlaps: Array[Dictionary] = []
+
+static func get_current_overlap_key():
+	return get_overlap_key(GlobalResources.get_current_match_frame())
 
 static func get_overlap_key(frame: int):
 	return frame % max_overlap_queue_size
