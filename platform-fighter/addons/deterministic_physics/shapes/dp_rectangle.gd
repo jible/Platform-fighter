@@ -3,10 +3,20 @@ extends DP_Collision_Shape
 class_name DP_Rectangle
 
 
+
 var height:DM_Decimal = DM_Decimal.from_int(50)
 var width:DM_Decimal = DM_Decimal.from_int(50)
 
-
+@export var editor_height: int = height.to_int():
+	get():
+		return height.to_int()
+	set(value):
+		height = DM_Decimal.from_int(value)
+@export var editor_wdith: int = width.to_int():
+	get():
+		return width.to_int()
+	set(value):
+		width = DM_Decimal.from_int(value)
 
 
 func check_overlap(other: DP_Collision_Shape):
