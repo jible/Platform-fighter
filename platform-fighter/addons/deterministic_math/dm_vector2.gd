@@ -14,11 +14,23 @@ static func from_ints(_x: int, _y: int):
 	v.x = DM_Decimal.from_int(_x)
 	v.y = DM_Decimal.from_int(_y)
 	return v
+	
+static func from_dm_decimals(_x:DM_Decimal,_y:DM_Decimal):
+	var v = DM_Vector2.new()
+	v.x = _x.copy()
+	v.y = _y.copy()
+	return v
 
 static func from_floats_dangerous(_x: float, _y: float):
 	var v = DM_Vector2.new()
 	v.x = DM_Decimal.from_floats_dangerous(_x)
 	v.y = DM_Decimal.from_floats_dangerous(_y)
+	return v
+
+func get_copy() -> DM_Vector2:
+	var v = DM_Vector2.new()
+	v.x = x
+	v.y = y
 	return v
 
 func to_standard_vector():
@@ -51,6 +63,12 @@ func div(divisor: DM_Decimal):
 	var v = DM_Vector2.new()
 	v.x = x.div(divisor)
 	v.y = y.div(divisor)
+	return v
+
+func div_other_vec(divisor: DM_Vector2):
+	var v = DM_Vector2.new()
+	v.x = x.div(divisor.x)
+	v.y = y.div(divisor.y)
 	return v
 
 func get_magnitude():

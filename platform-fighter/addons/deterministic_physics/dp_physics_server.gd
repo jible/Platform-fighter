@@ -27,11 +27,15 @@ func _physics_process(_delta):
 func handle_collisions():
 	for a in all_shapes:
 		var a_prev_overlaps = a.overlaps[DP_Collision_Shape.get_current_overlap_key()]
+		if a.is_static:continue
 		for b in all_shapes:
+			
 			if a == b:continue
 			if !(a.collision_mask & b.collision_layer): continue
 			# If the other object is a trigger, it will receive the trigger
+			
 			if (b.is_trigger): continue
+			
 			var currently_overlaps = a.check_overlap(b)
 			if a.is_trigger and currently_overlaps:
 				a.overlaps[GlobalResources.get_current_match_frame()][b] = true
@@ -44,7 +48,8 @@ func handle_collisions():
 			elif !currently_overlaps and previously_overlaped:
 				pass
 				# emit exited
-
+		# After handling collisions, cache position and overlaps 
+	
 
 # All shaper holder helpers
 func get_all_shapes(parent):

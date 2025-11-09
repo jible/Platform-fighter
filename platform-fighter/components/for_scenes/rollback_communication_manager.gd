@@ -65,11 +65,12 @@ func _process(_delta):
 	if udp and udp.get_available_packet_count():
 		var packet = udp.get_packet()
 		handle_packet(packet)
-	if Input.is_action_just_pressed("attack"):
+	if Input.is_action_just_pressed("debug_action"):
 		if NetworkManager.connection_type == NetworkManager.ConnectionType.HOST:
 			send_message("hello from host")
 		else:
 			print("not host")
+
 func handle_packet(packet: PackedByteArray):
 	if packet.size() < 1:
 		# Packet dropped bytes

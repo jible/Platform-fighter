@@ -23,15 +23,17 @@ metadata/_custom_type_script = "uid://b8aktnlabj2ww"
 script = ExtResource("3_1sklv")
 editor_height = 100
 editor_wdith = 160
-collision_layer = 1
-debug_color = Color(0.67800915, 0.26341346, 0.44969773, 1)
-editor_pos = Vector2(4.1399994, 0)
+collision_mask = 1
+debug_color = Color(0.6784314, 0.2627451, 0.4509804, 0.24313726)
+editor_pos = Vector2(-55.14, 0)
 metadata/_custom_type_script = "uid://sufya06u2u2d"
 
 [node name="DP_Rectangle2" type="Node" parent="."]
 script = ExtResource("3_1sklv")
 editor_height = 165
 editor_wdith = 40
-collision_mask = 1
-editor_pos = Vector2(114.675, 77.67999)
+collision_layer = 1
+is_static = true
+debug_color = Color(0, 0.5294118, 0, 0.3764706)
+editor_pos = Vector2(175.515, 138.545)
 metadata/_custom_type_script = "uid://sufya06u2u2d"

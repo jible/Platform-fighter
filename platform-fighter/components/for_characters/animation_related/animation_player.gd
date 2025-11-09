@@ -12,7 +12,6 @@ var current_anim_frame_count = 0
 
 func _on_state_machine_state_changed(new_state_node):
 	if Engine.is_editor_hint():return
-
 	rb_play_from_start(new_state_node.name)
 
 '''

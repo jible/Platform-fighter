@@ -42,7 +42,12 @@ func val_to_string()->String:
 	var frac = abs(raw & (SCALE - 1))
 	var frac_val = int(float(frac) / SCALE * 10000.0)
 	return "%d.%04d" % [whole, frac_val]
+
+func max(other):
+	return self.copy() if raw > other.raw else other.copy()
 	
+func min(other):
+	return self.copy() if raw < other.raw else other.copy()
 
 func to_float()->float:
 	return float(raw)/float(SCALE) 
@@ -78,6 +83,8 @@ func div(other: DM_Decimal):
 	@warning_ignore("integer_division")
 	d.raw = (raw << SHIFT) / other.raw
 	return d
+
+
 
 func power(exponent:int):
 	var d = DM_Decimal.new()
