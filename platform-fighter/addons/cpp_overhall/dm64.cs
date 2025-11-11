@@ -1,37 +1,38 @@
 using Godot;
 using System;
-public partial class Fix64: Godot.RefCounted
+public partial class DM64: Godot.RefCounted
 {
 	// 1 sign bit 31 bits of in and 32 bits of decimal
 	static int SHIFT = 32;
 	static long SCALE = 1L << SHIFT;
-	// static long int_bits = 0b0111_1111_1111_1111_0000_0000_0000_0000L;
-	static long decimal_bits =0x00000000FFFFFFFF;
+
 
 	public long raw = 0;
 
 	// Constructors
-	public Fix64()
+	public DM64()
 	{
 		raw = 0;
 	}
 
-	public Fix64(int value)
+	public DM64(int value)
 	{
 		raw = (long)value << SHIFT;
 	}
-	public Fix64(long value)
+	public DM64(long value)
 	{
 		raw = value << SHIFT;
 	}
-	public Fix64(float value)
+	public DM64(float value)
 	{
 		raw = (long)(value * (float)SCALE);
 	}
 
-	public Fix64 copy()
+	public DM64 copy()
 	{
-		return new Fix64(raw);
+		DM64 o = new DM64();
+		o.raw = raw;
+		return o;
 	}
 
 	// Extractors
@@ -47,25 +48,25 @@ public partial class Fix64: Godot.RefCounted
 	}
 
 	// Basic Math overwrites
-	public static Fix64 operator +(Fix64 a, Fix64 b)
+	public static DM64 operator +(DM64 a, DM64 b)
     {
-        Fix64 o = new Fix64();
+        DM64 o = new DM64();
         o.raw = a.raw + b.raw;
         return o;
     }
-	public static Fix64 operator -(Fix64 a, Fix64 b) {
-        Fix64 o = new Fix64();
+	public static DM64 operator -(DM64 a, DM64 b) {
+        DM64 o = new DM64();
         o.raw = a.raw - b.raw;
         return o;
     }
-	public static Fix64 operator *(Fix64 a, Fix64 b)
+	public static DM64 operator *(DM64 a, DM64 b)
 	{
-		Fix64 f = new Fix64();
+		DM64 f = new DM64();
 		f.raw = (a.raw * b.raw) >> SHIFT;
 		return f;
 	}
 	 
-	public static Fix64 operator /(Fix64 a, Fix64 b)
+	public static DM64 operator /(DM64 a, DM64 b)
 	{
 		
         if (b.raw == 0)
@@ -91,7 +92,7 @@ public partial class Fix64: Godot.RefCounted
             q = -q;
         }
         int final_shift = bit_diff - SHIFT;
-        Fix64 f = new Fix64(0);
+        DM64 f = new DM64(0);
         if (final_shift > 0){
             f.raw = q >> final_shift;
         }else
@@ -102,51 +103,70 @@ public partial class Fix64: Godot.RefCounted
 	}
 
 	// Supporting math with ints
-	public static Fix64 operator +(Fix64 a, int b) => new Fix64(a.raw + ((long)b << SHIFT));
-	public static Fix64 operator -(Fix64 a, int b) => new Fix64(a.raw - ((long)b << SHIFT));
-	public static Fix64 operator *(Fix64 a, int b) => a * new Fix64(b);
-	public static Fix64 operator /(Fix64 a, int b) => a / new Fix64(b);
+	public static DM64 operator +(DM64 a, int b) => new DM64(a.raw + ((long)b << SHIFT));
+	public static DM64 operator -(DM64 a, int b) => new DM64(a.raw - ((long)b << SHIFT));
+	public static DM64 operator *(DM64 a, int b) => a * new DM64(b);
+	public static DM64 operator /(DM64 a, int b) => a / new DM64(b);
 
-	public static Fix64 operator +(int a, Fix64 b) => new Fix64(((long)a << SHIFT) + b.raw);
-	public static Fix64 operator -(int a, Fix64 b) => new Fix64(((long)a << SHIFT) - b.raw);
-	public static Fix64 operator *(int a, Fix64 b) => new Fix64(a) * b;
-	public static Fix64 operator /(int a, Fix64 b) => new Fix64(a) / b;
+	public static DM64 operator +(int a, DM64 b) => new DM64(((long)a << SHIFT) + b.raw);
+	public static DM64 operator -(int a, DM64 b) => new DM64(((long)a << SHIFT) - b.raw);
+	public static DM64 operator *(int a, DM64 b) => new DM64(a) * b;
+	public static DM64 operator /(int a, DM64 b) => new DM64(a) / b;
+
+	// Comparison operators
+	public static bool operator > (DM64 a, int b) => a.raw > ((long)b << SHIFT);
+	public static bool operator < (DM64 a, int b) => a.raw < ((long)b << SHIFT);
+	public static bool operator >= (DM64 a, int b) => a.raw >= ((long)b << SHIFT);
+	public static bool operator <=(DM64 a, int b) => a.raw <= ((long)b << SHIFT);
+	public static bool operator ==(DM64 a, int b) => a.raw == ((long)b << SHIFT);
+	public static bool operator !=(DM64 a, int b) => a.raw != ((long)b << SHIFT);
+
+
+	
+	public static bool operator > (DM64 a, DM64 b) => a.raw > b.raw;
+	public static bool operator < (DM64 a, DM64 b) => a.raw < b.raw;
+	public static bool operator >= (DM64 a, DM64 b) => a.raw >= b.raw;
+	public static bool operator <=(DM64 a, DM64 b) => a.raw <= b.raw;
+	public static bool operator ==(DM64 a, DM64 b) => a.raw == b.raw;
+	public static bool operator !=(DM64 a, DM64 b) => a.raw != b.raw;
+	
+	
+
 
 // Powers
-	public static Fix64 Pow(Fix64 a, Fix64 b)
+	public DM64 Pow(DM64 b)
 	{
-		Fix64 c = new Fix64(1);
+		DM64 c = new DM64(1);
 		long ib = b.to_long();
 		for (int i = 0; i < ib; i++)
 		{
-			c = c * a;
+			c = c * this;
 		}
 		return c;
 	}
-	public static Fix64 Pow(Fix64 a, int b)
+	public DM64 Pow(int b)
 	{
-		Fix64 c = new Fix64(1);
+		DM64 c = new DM64(1);
 		for (int i = 0; i < b; i++)
 		{
-			c = c * a;
+			c = c * this;
 		}
 		return c;
 	}
 
-
 // Squre root
-	public Fix64 Sqrt()
+	public DM64 Sqrt()
 	{
 		if (raw <= 0)
 		{
-			return new Fix64(0);
+			return new DM64(0);
 		}
 
 		int precision = 5;
         // Guess something with about half the leading bits of the radicand
         int guessBits = GetLeadingBitNum((ulong)to_long()) / 2;
 
-        Fix64 output = new Fix64(1 << guessBits);
+        DM64 output = new DM64(1 << guessBits);
         GD.Print(((this/output).ToFloat() , output.ToFloat(), ((this/output) + output).ToFloat() ));
 		// Use the Raphson Newton method
 		for (int i = 0; i < precision; i++)
