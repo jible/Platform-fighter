@@ -26,6 +26,12 @@ public partial class DM_Vector2 : RefCounted
         y = new DM64(_y);
     }
 
+    public DM_Vector2(Vector2 a)
+    {
+        x = new DM64(a.X);
+        y = new DM64(a.Y);
+    }
+
     public DM_Vector2 copy()
     {
         return new DM_Vector2(x.copy(), y.copy());
@@ -66,6 +72,23 @@ public partial class DM_Vector2 : RefCounted
         {
             return new DM_Vector2(0, 0);
         }
-        return this / magnitude;        
+        return this / magnitude;
+    }
+    
+
+    static public void UnitTest()
+    {
+        DM64 a = new DM64(1024);
+
+		DM64 b = new DM64(32);
+
+		// GD.Print((a / b).ToFloat());
+		// GD.Print( a.Sqrt().ToFloat() );
+		DM_Vector2 c = new DM_Vector2(a, b);
+		GD.Print("Expected: ", new Vector2(1024, 32), " Received: ", c.ToStandardVector());
+
+		GD.Print("Expected: ", new Vector2(1024, 32).Normalized(), " Received: ", c.ToStandardVector().Normalized());
+
+		
     }
 }

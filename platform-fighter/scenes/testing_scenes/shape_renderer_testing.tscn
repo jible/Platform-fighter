@@ -1,39 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://bti1yk3ci2288"]
+[gd_scene load_steps=4 format=3 uid="uid://bti1yk3ci2288"]
 
 [ext_resource type="Script" uid="uid://l7xm6rja2hk1" path="res://scenes/testing_scenes/dummy_test_scripts/new_script.gd" id="1_22k50"]
 [ext_resource type="Script" uid="uid://c18r0m4q47ukg" path="res://addons/deterministic_physics/shape_renderer_2d.gd" id="2_22k50"]
-[ext_resource type="Script" uid="uid://sufya06u2u2d" path="res://addons/deterministic_physics/shapes/dp_rectangle.gd" id="3_1sklv"]
 [ext_resource type="Script" uid="uid://b8aktnlabj2ww" path="res://addons/deterministic_physics/dp_physics_server.gd" id="4_22k50"]
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("rect")]
+[node name="Node2D" type="Node2D"]
 script = ExtResource("1_22k50")
-rect = NodePath("DP_Rectangle")
 
-[node name="ShapeRenderer2D" type="Node2D" parent="." node_paths=PackedStringArray("dp_physics_server")]
+[node name="ShapeRenderer2D" type="Node2D" parent="."]
 script = ExtResource("2_22k50")
-dp_physics_server = NodePath("../DP_PhysicsServer")
 metadata/_custom_type_script = "uid://c18r0m4q47ukg"
 
-[node name="DP_PhysicsServer" type="Node" parent="." node_paths=PackedStringArray("search_root")]
+[node name="DP_PhysicsServer" type="Node" parent="."]
 script = ExtResource("4_22k50")
-search_root = NodePath("..")
 metadata/_custom_type_script = "uid://b8aktnlabj2ww"
-
-[node name="DP_Rectangle" type="Node" parent="."]
-script = ExtResource("3_1sklv")
-editor_height = 100
-editor_wdith = 160
-collision_mask = 1
-debug_color = Color(0.6784314, 0.2627451, 0.4509804, 0.24313726)
-editor_pos = Vector2(-55.14, 0)
-metadata/_custom_type_script = "uid://sufya06u2u2d"
-
-[node name="DP_Rectangle2" type="Node" parent="."]
-script = ExtResource("3_1sklv")
-editor_height = 165
-editor_wdith = 40
-collision_layer = 1
-is_static = true
-debug_color = Color(0, 0.5294118, 0, 0.3764706)
-editor_pos = Vector2(175.515, 138.545)
-metadata/_custom_type_script = "uid://sufya06u2u2d"
