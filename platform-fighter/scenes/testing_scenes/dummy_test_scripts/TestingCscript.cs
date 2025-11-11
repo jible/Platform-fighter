@@ -6,9 +6,12 @@ public partial class TestingCscript : Node2D
 {
 	public override void _Ready()
 	{
-		Fix64 a = new Fix64(99.9999f);
+		Fix64 a = new Fix64(1024);
 
-		Fix64 b = new Fix64(516.561f);
-		GD.Print((a).Sqrt());
+		Fix64 b = new Fix64(32);
+
+		// GD.Print((a / b).ToFloat());
+		GD.Print( a.Sqrt().ToFloat() );
+		
 	}
 }

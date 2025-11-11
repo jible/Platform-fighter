@@ -47,8 +47,17 @@ public partial class Fix64: Godot.RefCounted
 	}
 
 	// Basic Math overwrites
-	public static Fix64 operator +(Fix64 a, Fix64 b) => new Fix64(a.raw + b.raw);
-	public static Fix64 operator -(Fix64 a, Fix64 b) => new Fix64(a.raw - b.raw);
+	public static Fix64 operator +(Fix64 a, Fix64 b)
+    {
+        Fix64 o = new Fix64();
+        o.raw = a.raw + b.raw;
+        return o;
+    }
+	public static Fix64 operator -(Fix64 a, Fix64 b) {
+        Fix64 o = new Fix64();
+        o.raw = a.raw - b.raw;
+        return o;
+    }
 	public static Fix64 operator *(Fix64 a, Fix64 b)
 	{
 		Fix64 f = new Fix64();
@@ -59,7 +68,11 @@ public partial class Fix64: Godot.RefCounted
 	public static Fix64 operator /(Fix64 a, Fix64 b)
 	{
 		
-
+        if (b.raw == 0)
+        {
+            GD.Print("0 div");
+            throw new DivideByZeroException();
+        }
 		ulong n = (ulong)(a.raw < 0? -a.raw: a.raw);
         ulong d = (ulong)(b.raw < 0? -b.raw: b.raw);
         bool negative = (a.raw < 0) ^ (b.raw < 0);
@@ -89,13 +102,13 @@ public partial class Fix64: Godot.RefCounted
 	}
 
 	// Supporting math with ints
-	public static Fix64 operator +(Fix64 a, int b) => new Fix64(a.raw + (b << SHIFT));
-	public static Fix64 operator -(Fix64 a, int b) => new Fix64(a.raw - (b << SHIFT));
+	public static Fix64 operator +(Fix64 a, int b) => new Fix64(a.raw + ((long)b << SHIFT));
+	public static Fix64 operator -(Fix64 a, int b) => new Fix64(a.raw - ((long)b << SHIFT));
 	public static Fix64 operator *(Fix64 a, int b) => a * new Fix64(b);
 	public static Fix64 operator /(Fix64 a, int b) => a / new Fix64(b);
 
-	public static Fix64 operator +(int a, Fix64 b) => new Fix64((a << SHIFT) + b.raw);
-	public static Fix64 operator -(int a, Fix64 b) => new Fix64((a << SHIFT) - b.raw);
+	public static Fix64 operator +(int a, Fix64 b) => new Fix64(((long)a << SHIFT) + b.raw);
+	public static Fix64 operator -(int a, Fix64 b) => new Fix64(((long)a << SHIFT) - b.raw);
 	public static Fix64 operator *(int a, Fix64 b) => new Fix64(a) * b;
 	public static Fix64 operator /(int a, Fix64 b) => new Fix64(a) / b;
 
@@ -124,22 +137,23 @@ public partial class Fix64: Godot.RefCounted
 // Squre root
 	public Fix64 Sqrt()
 	{
-		GD.Print(raw);
 		if (raw <= 0)
 		{
 			return new Fix64(0);
 		}
 
 		int precision = 5;
-		// Guess something with about half the leading bits of the radicand
-		int guessBits = GetLeadingBitNum((ulong)raw) / 2;
-		Fix64 output = new Fix64(0);
-		output.raw = 1 <<(guessBits + (SHIFT /2 ) -1 );
+        // Guess something with about half the leading bits of the radicand
+        int guessBits = GetLeadingBitNum((ulong)to_long()) / 2;
+
+        Fix64 output = new Fix64(1 << guessBits);
+        GD.Print(((this/output).ToFloat() , output.ToFloat(), ((this/output) + output).ToFloat() ));
 		// Use the Raphson Newton method
 		for (int i = 0; i < precision; i++)
-		{
-			GD.Print(output.raw, " ", output + (this / output));
-			output = (output + (this/output))/ 2;
+        {
+            
+            // GD.Print("guess ", i, ": ", output.ToFloat());
+            output = (output + (this / output)) / 2;
 		}
 		return output;
 	}
