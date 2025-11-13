@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 public partial class dp_object : Node
 {
     // Rollback Data
-    Dictionary<String, Object>[] RollbackData = [];
+    Dictionary<String, Object>[] RollbackData;
 
     // Collision Data
     [Export]public bool is_active = true;
@@ -30,7 +30,7 @@ public partial class dp_object : Node
     [Export]public int mask_collision = 0;
     [Export]public bool is_trigger = false;
     [Export]public bool is_static = false;
-    [Export]public Color color = new Color();
+    [Export]public Color color = new Color((float)0.188, (float)0.569, (float)0.341, (float)0.773);
 
     // Trigger overlap handling
     Dictionary<dp_object, bool>[] overlaps = [];
@@ -56,8 +56,8 @@ public partial class dp_object : Node
     public override void _Ready()
     {
         // Fill overlaps and position buffer with 
-        System.Array.Resize(ref overlaps, MaxDataBufferSize);
-        System.Array.Resize(ref RollbackData, MaxDataBufferSize);
+        overlaps = new Dictionary<dp_object, bool>[MaxDataBufferSize];
+        RollbackData = new Dictionary<String, Object>[MaxDataBufferSize];
         for (int i = 0; i < MaxDataBufferSize; i++)
         {
             RollbackData[i] = new Dictionary<string, object>();

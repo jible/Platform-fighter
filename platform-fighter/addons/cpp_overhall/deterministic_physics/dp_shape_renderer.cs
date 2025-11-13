@@ -6,8 +6,8 @@ using System;
 public partial class dp_shape_renderer : Node2D
 {
     [Export] public dp_physics_server PhysicsServer;
-    [Export] public bool RenderShapesInEditor = true;
-    [Export] public bool RenderShapesInPlay = true;
+    [Export] public bool RenderShapesInEditor;
+    [Export] public bool RenderShapesInPlay;
 
     public override void _PhysicsProcess(double delta)
     {
@@ -23,16 +23,17 @@ public partial class dp_shape_renderer : Node2D
         if (PhysicsServer == null) { return; }
         foreach (dp_object PhysicsObject in PhysicsServer.AllShapes)
         {
+            
             dp_shape Shape = PhysicsObject.Shape;
             if (PhysicsObject == null) { continue; }
             if (Shape is dp_circle) { draw_collision_circle((dp_circle)Shape); }
             if (Shape is dp_rectangle) { draw_collision_rectangle((dp_rectangle)Shape); }
-
         }
     }
 
     public void draw_collision_circle(dp_circle circle)
     {
+        GD.Print("drawing circle", circle.Position.ToStandardVector(), circle.radius.ToFloat(), circle.PhysicsObject.color);
         DrawCircle(circle.Position.ToStandardVector(), circle.radius.ToFloat(), circle.PhysicsObject.color);
     }
     public void draw_collision_rectangle(dp_rectangle rectangle)

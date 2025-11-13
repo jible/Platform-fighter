@@ -8,7 +8,7 @@
 
 [sub_resource type="Resource" id="Resource_x2bey"]
 script = ExtResource("5_yoshb")
-editor_radius = 21.775
+editor_radius = 50.0
 metadata/_custom_type_script = "uid://btu6jtv82ie0t"
 
 [node name="Node2D" type="Node2D"]
@@ -17,11 +17,13 @@ script = ExtResource("1_22k50")
 [node name="dp_shape_renderer" type="Node2D" parent="." node_paths=PackedStringArray("PhysicsServer")]
 script = ExtResource("3_22k50")
 PhysicsServer = NodePath("../dp_physics_server")
+RenderShapesInEditor = true
 metadata/_custom_type_script = "uid://baentdytebcpr"
 
 [node name="dp_object" type="Node" parent="."]
 script = ExtResource("4_22k50")
 Shape = SubResource("Resource_x2bey")
+color = Color(0.1882353, 0.5686275, 0.34117648, 0.77254903)
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 
 [node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]

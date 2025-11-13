@@ -4,13 +4,11 @@ using System.Collections.Generic;
 
 // This is a tool cause it prevents errors in the editor when it is exported
 [Tool]
-[GlobalClass]
 public partial class dp_shape : Resource
 {
     // World Space
     public DM_Vector2 Position = new DM_Vector2();
-    [Export]
-    public Vector2 editor_position
+    [Export]public Vector2 editor_position
     {
         get { return Position.ToStandardVector(); }
         set { Position = new DM_Vector2(value); }

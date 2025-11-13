@@ -1,6 +1,7 @@
 using Godot;
 using System;
-public partial class DM64: Godot.RefCounted
+[GlobalClass]
+public partial class DM64: RefCounted
 {
 	// 1 sign bit 31 bits of in and 32 bits of decimal
 	static int SHIFT = 32;

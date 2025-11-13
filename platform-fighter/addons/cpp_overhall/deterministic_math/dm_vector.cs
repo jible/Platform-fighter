@@ -1,6 +1,7 @@
 using Godot;
 using System;
 
+[GlobalClass]
 public partial class DM_Vector2 : RefCounted
 {
     public DM64 x;
@@ -41,7 +42,7 @@ public partial class DM_Vector2 : RefCounted
     public Vector2 ToStandardVector()
     {
         // NOT SURE IF THIS SHOULD OUTPOUT TO LONGS OR FLOATS. 
-        // TEST CASES FOR CONVERTING TO VECTOR AND NEEDING DETERMINSM
+        // TODO: TEST CASES FOR CONVERTING TO VECTOR AND NEEDING DETERMINSM
         
         return new Vector2(x.ToFloat(), y.ToFloat());
     }

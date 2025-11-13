@@ -7,18 +7,39 @@ using System.Linq;
 [Tool]
 public partial class dp_physics_server : Node
 {
-    public List<dp_object> AllShapes = [];
+    public List<dp_object> AllShapes = new List<dp_object>();
     [Export]Node SearchRoot;
 
     // This is how you connect signals!
     public override void _Ready()
     {
-        GetTree().NodeAdded += _on_node_added;
-        GetTree().NodeRemoved += _on_node_removed;
-        AllShapes = [];
-        if (SearchRoot == null){return;}
-        GetAllShapes(SearchRoot);
+        var tree = GetTree();
+
+        GD.Print("started");
+
+        tree.NodeAdded += _on_node_added;
+        tree.NodeRemoved += _on_node_removed;
+        AllShapes = new List<dp_object>();
+        if (SearchRoot != null)
+        {
+            GetAllShapes(SearchRoot);
+            GD.Print(AllShapes.Count);
+            GD.Print("finished");
+        }
+       
+
     }
+
+    // public override void _ExitTree()
+    // {
+    //     var tree = GetTree();
+    //     if (tree != null)
+    //     {
+    //         tree.NodeAdded -= _on_node_added;
+    //         tree.NodeRemoved -= _on_node_removed;
+    //     }
+    // }
+
 
 
     public override void _PhysicsProcess(double delta)
@@ -35,21 +56,22 @@ public partial class dp_physics_server : Node
     public void GetAllShapes(Node Parent)
     {
         if (Parent == null) { return; }
-        if (Parent is dp_object) { AllShapes.Append(Parent); }
+        if (Parent is dp_object) { AllShapes.Add((dp_object)Parent); }
         foreach (var ChildNode in Parent.GetChildren())
         {
             GetAllShapes(ChildNode);
+            GD.Print(ChildNode is dp_object);
         }
     }
-    public void _on_node_added(Node NewNode)
+    private void _on_node_added(Node node)
     {
-        if (NewNode is dp_object)
+        if (node is dp_object CastedNode)
         {
-            AllShapes.Append(NewNode);
+            AllShapes.Add(CastedNode);
         }
     }
 
-    public void _on_node_removed(Node node)
+    private void _on_node_removed(Node node)
     {
         if (node is dp_object)
         {
