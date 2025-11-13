@@ -15,7 +15,6 @@ public partial class dp_physics_server : Node
     {
         var tree = GetTree();
 
-        GD.Print("started");
 
         tree.NodeAdded += _on_node_added;
         tree.NodeRemoved += _on_node_removed;
@@ -23,8 +22,6 @@ public partial class dp_physics_server : Node
         if (SearchRoot != null)
         {
             GetAllShapes(SearchRoot);
-            GD.Print(AllShapes.Count);
-            GD.Print("finished");
         }
        
 
@@ -60,7 +57,6 @@ public partial class dp_physics_server : Node
         foreach (var ChildNode in Parent.GetChildren())
         {
             GetAllShapes(ChildNode);
-            GD.Print(ChildNode is dp_object);
         }
     }
     private void _on_node_added(Node node)

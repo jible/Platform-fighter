@@ -8,7 +8,7 @@
 
 [sub_resource type="Resource" id="Resource_x2bey"]
 script = ExtResource("5_yoshb")
-editor_radius = 50.0
+editor_radius = 48.73
 metadata/_custom_type_script = "uid://btu6jtv82ie0t"
 
 [node name="Node2D" type="Node2D"]

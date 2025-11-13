@@ -33,7 +33,7 @@ public partial class dp_shape_renderer : Node2D
 
     public void draw_collision_circle(dp_circle circle)
     {
-        GD.Print("drawing circle", circle.Position.ToStandardVector(), circle.radius.ToFloat(), circle.PhysicsObject.color);
+        // GD.Print("drawing circle", circle.Position.ToStandardVector(), circle.radius.ToFloat(), circle.PhysicsObject.color);
         DrawCircle(circle.Position.ToStandardVector(), circle.radius.ToFloat(), circle.PhysicsObject.color);
     }
     public void draw_collision_rectangle(dp_rectangle rectangle)

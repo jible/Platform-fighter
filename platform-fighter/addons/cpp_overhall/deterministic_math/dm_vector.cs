@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-[GlobalClass]
+// [GlobalClass]
 public partial class DM_Vector2 : RefCounted
 {
     public DM64 x;
