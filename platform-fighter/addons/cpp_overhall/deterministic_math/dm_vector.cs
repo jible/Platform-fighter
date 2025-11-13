@@ -3,8 +3,8 @@ using System;
 
 public partial class DM_Vector2 : RefCounted
 {
-    DM64 x;
-    DM64 y;
+    public DM64 x;
+    public DM64 y;
 
     // Constructors
     public DM_Vector2()

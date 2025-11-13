@@ -1,16 +1,30 @@
-[gd_scene load_steps=4 format=3 uid="uid://bti1yk3ci2288"]
+[gd_scene load_steps=7 format=3 uid="uid://bti1yk3ci2288"]
 
 [ext_resource type="Script" uid="uid://l7xm6rja2hk1" path="res://scenes/testing_scenes/dummy_test_scripts/new_script.gd" id="1_22k50"]
-[ext_resource type="Script" uid="uid://c18r0m4q47ukg" path="res://addons/deterministic_physics/shape_renderer_2d.gd" id="2_22k50"]
-[ext_resource type="Script" uid="uid://b8aktnlabj2ww" path="res://addons/deterministic_physics/dp_physics_server.gd" id="4_22k50"]
+[ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/cpp_overhall/deterministic_physics/dp_physics_server.cs" id="2_1sklv"]
+[ext_resource type="Script" uid="uid://baentdytebcpr" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer.cs" id="3_22k50"]
+[ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/cpp_overhall/deterministic_physics/dp_object.cs" id="4_22k50"]
+[ext_resource type="Script" uid="uid://btu6jtv82ie0t" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_circle.cs" id="5_yoshb"]
+
+[sub_resource type="Resource" id="Resource_x2bey"]
+script = ExtResource("5_yoshb")
+editor_radius = 21.775
+metadata/_custom_type_script = "uid://btu6jtv82ie0t"
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_22k50")
 
-[node name="ShapeRenderer2D" type="Node2D" parent="."]
-script = ExtResource("2_22k50")
-metadata/_custom_type_script = "uid://c18r0m4q47ukg"
+[node name="dp_shape_renderer" type="Node2D" parent="." node_paths=PackedStringArray("PhysicsServer")]
+script = ExtResource("3_22k50")
+PhysicsServer = NodePath("../dp_physics_server")
+metadata/_custom_type_script = "uid://baentdytebcpr"
 
-[node name="DP_PhysicsServer" type="Node" parent="."]
+[node name="dp_object" type="Node" parent="."]
 script = ExtResource("4_22k50")
-metadata/_custom_type_script = "uid://b8aktnlabj2ww"
+Shape = SubResource("Resource_x2bey")
+metadata/_custom_type_script = "uid://c4qq7jgy73oan"
+
+[node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]
+script = ExtResource("2_1sklv")
+SearchRoot = NodePath("..")
+metadata/_custom_type_script = "uid://b70u38nhjjbh8"

@@ -129,7 +129,21 @@ public partial class DM64: Godot.RefCounted
 	public static bool operator <=(DM64 a, DM64 b) => a.raw <= b.raw;
 	public static bool operator ==(DM64 a, DM64 b) => a.raw == b.raw;
 	public static bool operator !=(DM64 a, DM64 b) => a.raw != b.raw;
+
+	public override bool Equals(object obj)
+	{
+		if (obj is DM64 other)
+		{
+			return this.raw == other.raw;
+		}
+		return false;
+	}
 	
+    public override int GetHashCode()
+    {
+        return raw.GetHashCode();
+    }
+
 	
 
 
