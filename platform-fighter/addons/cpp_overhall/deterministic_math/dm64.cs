@@ -1,13 +1,10 @@
 using Godot;
 using System;
-[GlobalClass]
-public partial class DM64: RefCounted
+public struct DM64
 {
 	// 1 sign bit 31 bits of in and 32 bits of decimal
 	static int SHIFT = 32;
 	static long SCALE = 1L << SHIFT;
-
-
 	public long raw = 0;
 
 	// Constructors

@@ -2,11 +2,11 @@ using Godot;
 using System;
 
 // [GlobalClass]
-public partial class DM_Vector2 : RefCounted
+public struct DM_Vector2
 {
     public DM64 x;
     public DM64 y;
-
+    //  
     // Constructors
     public DM_Vector2()
     {
@@ -41,7 +41,7 @@ public partial class DM_Vector2 : RefCounted
     // Extractors:
     public Vector2 ToStandardVector()
     {
-        // NOT SURE IF THIS SHOULD OUTPOUT TO LONGS OR FLOATS. 
+        // NOT SURE IF THIS SHOULD OUTPUT TO LONGS OR FLOATS. 
         // TODO: TEST CASES FOR CONVERTING TO VECTOR AND NEEDING DETERMINSM
         
         return new Vector2(x.ToFloat(), y.ToFloat());

@@ -56,6 +56,7 @@ public partial class dp_object : Node
     public override void _Ready()
     {
         // Fill overlaps and position buffer with 
+        if (Engine.IsEditorHint()) {return;}
         overlaps = new Dictionary<dp_object, bool>[MaxDataBufferSize];
         RollbackData = new Dictionary<String, Object>[MaxDataBufferSize];
         for (int i = 0; i < MaxDataBufferSize; i++)
