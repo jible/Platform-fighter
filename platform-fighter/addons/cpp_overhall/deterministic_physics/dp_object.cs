@@ -164,37 +164,45 @@ public partial class dp_object : Node
                 DM_Vector2 PrevPos = (DM_Vector2)PrevPosFromDict; 
                 DM_Vector2 vel = Shape.Position - PrevPos;
                 if (vel.x == new DM64(0) && vel.y == new DM64(0)){ 
-                    GD.Print("Still need to handle case with no velocity");
+                    // GD.Print("Still need to handle case with no velocity");
 
                     return;
                 }
-                DM_Vector2 other_expanded_min = otherRectangle.Position - thisRectangle.size;
-                DM_Vector2 other_expanded_max = otherRectangle.Position + otherRectangle.size;
 
-                DM64? enter = null;
-                DM64? exit = null;
 
-                if (vel.y != 0)
-                {
-                    enter = (other_expanded_min.y - PrevPos.y)/vel.y;
-                    exit = (other_expanded_max.y - PrevPos.y)/vel.y;
-                    if (vel.y < 0){ (enter, exit) = (exit, enter); }
-                }
-                if (vel.x != 0)
-                {   
-                    DM64 TempEnter = (other_expanded_min.x - PrevPos.x)/vel.x;
-                    DM64 TempExit = (other_expanded_max.x - PrevPos.x)/vel.x;
-                    if (vel.x < 0) { (enter, exit) = (exit, enter); }
-                    if (enter == null || enter < TempEnter){ enter = TempEnter;}
-                    if (exit == null || exit > TempExit){ exit = TempExit;}
-                }
+                DM_Vector2 ThisHalfSize = thisRectangle.size / 2;
+                DM_Vector2 OtherHalfSize = otherRectangle.size / 2;
+
+                DM_Vector2 other_expanded_min = otherRectangle.Position - OtherHalfSize - ThisHalfSize;
+                DM_Vector2 other_expanded_max = otherRectangle.Position + OtherHalfSize + ThisHalfSize;
+
+             
 
                 
+                DM64 enterX;
+                if ((vel.x == 0) &&  (thisRectangle.Position.x <other_expanded_min.x || thisRectangle.Position.x > other_expanded_max.x)) return;
+                if (vel.x == 0){enterX = new DM64(0);
+                } else
+                {enterX = (other_expanded_min.x - PrevPos.x)/vel.x;}
+                DM64 exitX;
+                if (vel.x == 0){ exitX = new DM64(1);} else
+                {exitX = (other_expanded_max.x - PrevPos.x)/vel.x;}
+                if (vel.x < 0){ (enterX, exitX) = (exitX, enterX); }
                 
+                DM64 enterY;
+                if ((vel.y == 0) && (thisRectangle.Position.y <other_expanded_min.y || thisRectangle.Position.y > other_expanded_max.y)) return;
+                if (vel.y == 0){ enterY = new DM64(0);} else
+                {enterY = (other_expanded_min.y - PrevPos.y)/vel.y;}
+                DM64 exitY;
+                if (vel.y == 0){ exitY = new DM64(1);} else
+                {exitY = (other_expanded_max.y - PrevPos.y)/vel.y;}
+                if (vel.y < 0){ (enterY, exitY) = (exitY, enterY); }
+                
+                DM64 enter = enterX > enterY? enterX: enterY;
+                DM64 exit = exitX < exitY? exitX: exitY;
 
-                if ((DM64)enter > (DM64)exit ||(DM64)enter > 1 || (DM64)enter < 0) {return;}
-                GD.Print("made it to end");
-                thisRectangle.Position = PrevPos + (vel * (DM64)enter);
+                if (enter > exit ||enter > 1 || enter < 0) {return;}
+                thisRectangle.Position = PrevPos + (vel * enter);
 
                 break;
         }

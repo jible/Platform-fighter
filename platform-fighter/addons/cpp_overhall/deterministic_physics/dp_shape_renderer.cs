@@ -38,7 +38,7 @@ public partial class dp_shape_renderer : Node2D
     }
     public void draw_collision_rectangle(dp_rectangle rectangle)
     {
-        Rect2 DrawShape = new Rect2((rectangle.Position- rectangle.size).ToStandardVector(), ( rectangle.size* 2).ToStandardVector());
+        Rect2 DrawShape = new Rect2((rectangle.Position- (rectangle.size/2)).ToStandardVector(), ( rectangle.size).ToStandardVector());
         DrawRect(DrawShape, rectangle.PhysicsObject.color);
     }
 
