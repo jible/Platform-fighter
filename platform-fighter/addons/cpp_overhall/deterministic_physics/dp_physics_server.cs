@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 
 [GlobalClass]
 [Tool]
@@ -17,7 +18,6 @@ public partial class dp_physics_server : Node
     {
         var tree = GetTree();
 
-
         tree.NodeAdded += _on_node_added;
         tree.NodeRemoved += _on_node_removed;
         AllShapes = new List<dp_object>();
@@ -25,32 +25,50 @@ public partial class dp_physics_server : Node
         {
             GetAllShapes(SearchRoot);
         }
-       
-
     }
 
-    // public override void _ExitTree()
-    // {
-    //     var tree = GetTree();
-    //     if (tree != null)
-    //     {
-    //         tree.NodeAdded -= _on_node_added;
-    //         tree.NodeRemoved -= _on_node_removed;
-    //     }
-    // }
 
 
 
     public override void _PhysicsProcess(double delta)
     {
         if (Engine.IsEditorHint()) { return; }
-        HandleCollision();
+        HandleInteractions();
     }
 
-    public void HandleCollision()
+    public void HandleInteractions()
     {
-        return;
+        foreach (dp_object ObjA in AllShapes)
+        {
+            if (!ObjA.is_active){continue;} 
+
+            foreach (dp_object ObjB in AllShapes)
+            {
+                if (ObjA == ObjB) continue;
+                if (ObjA.is_static) continue;
+                if (!ObjB.is_active){continue;} 
+                if ((ObjA.mask_collision & ObjB.layer_collision) == 0){continue;}
+                if (!ObjB.is_active){continue;} 
+                if (ObjA.is_trigger)
+                {
+                    // Search for overlaps
+                    ObjA.CheckOverlap(ObjB);
+                    continue;
+                }
+                if (ObjB.is_trigger){ continue;}
+                
+                // Final case where Obj A and B are collision objects
+                ObjA.CheckCollision(ObjB);         
+            }   
+            ObjA.PopulateCurrentFrame();
+        }
+
+
     }
+
+
+
+
 
     public void GetAllShapes(Node Parent)
     {

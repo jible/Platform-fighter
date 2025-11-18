@@ -18,7 +18,6 @@ public struct DM_Vector2
     {
         x = _x.copy();
         y = _y.copy();
-        GD.Print(x.ToFloat(), y.ToFloat());
     }
 
     public DM_Vector2(int _x, int _y)
@@ -51,8 +50,19 @@ public struct DM_Vector2
     // Basic math operator overloads
     public static DM_Vector2 operator +(DM_Vector2 a, DM_Vector2 b) => new DM_Vector2(a.x + b.x, a.y + b.y);
     public static DM_Vector2 operator -(DM_Vector2 a, DM_Vector2 b) => new DM_Vector2(a.x - b.x, a.y - b.y);
+    public static DM_Vector2 operator *(DM_Vector2 a, DM_Vector2 b) => new DM_Vector2(a.x * b.x, a.y * b.y);
+    public static DM_Vector2 operator /(DM_Vector2 a, DM_Vector2 b) => new DM_Vector2(a.x / b.x, a.y / b.y);
+
     public static DM_Vector2 operator *(DM_Vector2 a, DM64 b) => new DM_Vector2(a.x * b, a.y * b);
     public static DM_Vector2 operator /(DM_Vector2 a, DM64 b) => new DM_Vector2(a.x / b, a.y / b);
+
+    // Helper that just returns 0 for 0 division
+    public DM_Vector2 CheckedDiv( DM_Vector2 b) {
+        DM_Vector2 output = new DM_Vector2();
+        output.x =  b.x == 0? new DM64(0) : x/ b.x; 
+        output.y =  b.y == 0? new DM64(0) : y/ b.y; 
+        return output;
+    }
 
     public static DM_Vector2 operator *(DM64 a, DM_Vector2 b) => new DM_Vector2(a * b.x, a * b.y);
     public static DM_Vector2 operator /(DM64 a, DM_Vector2 b) => new DM_Vector2(a / b.x, a / b.y);

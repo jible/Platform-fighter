@@ -10,7 +10,7 @@ public partial class dp_circle : dp_shape
         get { return radius.ToFloat(); }
         set { radius = new DM64(value); }
     }
-    public DM64 radius = new DM64();
+    public DM64 radius = new DM64(50);
     
     
 }

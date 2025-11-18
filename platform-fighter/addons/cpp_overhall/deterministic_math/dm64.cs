@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Numerics;
 public struct DM64
 {
 	// 1 sign bit 31 bits of in and 32 bits of decimal
@@ -60,13 +61,12 @@ public struct DM64
 	public static DM64 operator *(DM64 a, DM64 b)
 	{
 		DM64 f = new DM64();
-		f.raw = (a.raw * b.raw) >> SHIFT;
+		f.raw = (long)(((BigInteger)a.raw * (BigInteger)b.raw) >> SHIFT);
 		return f;
 	}
 	 
 	public static DM64 operator /(DM64 a, DM64 b)
 	{
-		
         if (b.raw == 0)
         {
             GD.Print("0 div");
@@ -101,14 +101,17 @@ public struct DM64
 	}
 
 	// Supporting math with ints
-	public static DM64 operator +(DM64 a, int b) => new DM64(a.raw + ((long)b << SHIFT));
-	public static DM64 operator -(DM64 a, int b) => new DM64(a.raw - ((long)b << SHIFT));
-	public static DM64 operator *(DM64 a, int b) => a * new DM64(b);
+	public static DM64 operator +(DM64 a, int b) => a + new DM64(b);
+	public static DM64 operator -(DM64 a, int b) => a - new DM64(b);
+	public static DM64 operator *(DM64 a, int b)
+    {
+		return a * new DM64(b);
+    }
 	public static DM64 operator /(DM64 a, int b) => a / new DM64(b);
 
-	public static DM64 operator +(int a, DM64 b) => new DM64(((long)a << SHIFT) + b.raw);
-	public static DM64 operator -(int a, DM64 b) => new DM64(((long)a << SHIFT) - b.raw);
-	public static DM64 operator *(int a, DM64 b) => new DM64(a) * b;
+	public static DM64 operator +(int a, DM64 b) => b + a;
+	public static DM64 operator -(int a, DM64 b) => b - a;
+	public static DM64 operator *(int a, DM64 b) => b * a;
 	public static DM64 operator /(int a, DM64 b) => new DM64(a) / b;
 
 	// Comparison operators
@@ -179,12 +182,9 @@ public struct DM64
         int guessBits = GetLeadingBitNum((ulong)to_long()) / 2;
 
         DM64 output = new DM64(1 << guessBits);
-        GD.Print(((this/output).ToFloat() , output.ToFloat(), ((this/output) + output).ToFloat() ));
 		// Use the Raphson Newton method
 		for (int i = 0; i < precision; i++)
         {
-            
-            // GD.Print("guess ", i, ": ", output.ToFloat());
             output = (output + (this / output)) / 2;
 		}
 		return output;
@@ -204,4 +204,14 @@ public struct DM64
 		}
 		return bit;
 	}
+
+	public static void UnitTest()
+    {
+        GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + new DM64(5)).ToFloat());
+        GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + 5).ToFloat());
+        GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + new DM64(5)).ToFloat());
+        GD.Print("Expected ", 4 * 5, " output ", (new DM64(4) * 5). ToFloat());
+        GD.Print("Expected ", 2 * 50, " output ", (new DM64(2) * 50). ToFloat());
+
+    } 
 }

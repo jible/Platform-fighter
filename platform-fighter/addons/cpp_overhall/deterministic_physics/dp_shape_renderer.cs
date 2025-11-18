@@ -38,8 +38,16 @@ public partial class dp_shape_renderer : Node2D
     }
     public void draw_collision_rectangle(dp_rectangle rectangle)
     {
-        return;
+        Rect2 DrawShape = new Rect2((rectangle.Position- rectangle.size).ToStandardVector(), ( rectangle.size* 2).ToStandardVector());
+        DrawRect(DrawShape, rectangle.PhysicsObject.color);
     }
 
 }
 
+
+    // public void draw_collision_rectangle(dp_rectangle rectangle)
+    // {
+    //     GD.Print(rectangle.Position.ToStandardVector(), rectangle.size.ToStandardVector());
+    //     Rect2 DrawShape = new Rect2((rectangle.Position- rectangle.size).ToStandardVector(), ( rectangle.size* 2).ToStandardVector());
+    //     DrawRect(DrawShape, rectangle.PhysicsObject.color);
+    // }

@@ -7,5 +7,6 @@ public partial class TestingCscript : Node2D
 	public override void _Ready()
 	{
 		DM_Vector2.UnitTest();
+		DM64.UnitTest();
 	}
 }

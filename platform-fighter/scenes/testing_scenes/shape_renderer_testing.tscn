@@ -1,29 +1,39 @@
-[gd_scene load_steps=7 format=3 uid="uid://bti1yk3ci2288"]
+[gd_scene load_steps=8 format=3 uid="uid://bti1yk3ci2288"]
 
-[ext_resource type="Script" uid="uid://l7xm6rja2hk1" path="res://scenes/testing_scenes/dummy_test_scripts/new_script.gd" id="1_22k50"]
+[ext_resource type="Script" uid="uid://ckefqjwson1th" path="res://scenes/testing_scenes/dummy_test_scripts/ShapeRendererTesting.cs" id="1_yoshb"]
 [ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/cpp_overhall/deterministic_physics/dp_physics_server.cs" id="2_1sklv"]
 [ext_resource type="Script" uid="uid://baentdytebcpr" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer.cs" id="3_22k50"]
 [ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/cpp_overhall/deterministic_physics/dp_object.cs" id="4_22k50"]
-[ext_resource type="Script" uid="uid://btu6jtv82ie0t" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_circle.cs" id="5_yoshb"]
+[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_rectangle.cs" id="4_yoshb"]
+
+[sub_resource type="Resource" id="Resource_yoshb"]
+script = ExtResource("4_yoshb")
+editor_size = Vector2(50, 50)
+editor_position = Vector2(9.32, 2.36)
+metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="Resource" id="Resource_x2bey"]
-script = ExtResource("5_yoshb")
-editor_radius = 26.395
-editor_position = Vector2(4.67, 0)
-metadata/_custom_type_script = "uid://btu6jtv82ie0t"
+script = ExtResource("4_yoshb")
+editor_size = Vector2(50, 50)
+editor_position = Vector2(200, 500)
+metadata/_custom_type_script = "uid://0smx527v6br4"
 
-[node name="Node2D" type="Node2D"]
-script = ExtResource("1_22k50")
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("shape")]
+script = ExtResource("1_yoshb")
+shape = NodePath("dp_object")
 
 [node name="dp_shape_renderer" type="Node2D" parent="." node_paths=PackedStringArray("PhysicsServer")]
 script = ExtResource("3_22k50")
 PhysicsServer = NodePath("../dp_physics_server")
 RenderShapesInEditor = true
+RenderShapesInPlay = true
 metadata/_custom_type_script = "uid://baentdytebcpr"
 
 [node name="dp_object" type="Node" parent="."]
 script = ExtResource("4_22k50")
-Shape = SubResource("Resource_x2bey")
+Shape = SubResource("Resource_yoshb")
+layer_collision = 1
+mask_collision = 1
 color = Color(0.1882353, 0.5686275, 0.34117648, 0.77254903)
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 
@@ -31,3 +41,12 @@ metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 script = ExtResource("2_1sklv")
 SearchRoot = NodePath("..")
 metadata/_custom_type_script = "uid://b70u38nhjjbh8"
+
+[node name="dp_object2" type="Node" parent="."]
+script = ExtResource("4_22k50")
+Shape = SubResource("Resource_x2bey")
+layer_collision = 1
+mask_collision = 1
+is_static = true
+color = Color(0.8039216, 0.1764706, 0.6, 0.32941177)
+metadata/_custom_type_script = "uid://c4qq7jgy73oan"
