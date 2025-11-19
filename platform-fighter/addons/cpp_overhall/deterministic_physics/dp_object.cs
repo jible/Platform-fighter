@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 [Tool]
@@ -36,23 +37,11 @@ public partial class dp_object : Node
 
     // Trigger overlap handling
     Dictionary<dp_object, bool>[] overlaps = [];
-
-
-    public Dictionary<String, Object> GetFrameData(ulong frame)
-    {
-        return RollbackData[GetBufferPositionAt(frame)];
-        
-    }
-
-    public void PopulateCurrentFrame()
-    {
-        RollbackData[GetCurrentBufferPosition()] = Shape.ExtractData();
-    }
-
-    
     
     // Helper for getting key of position and overlap
     public static ulong GetCurrentBufferPosition() { return GetBufferPositionAt(Godot.Engine.GetPhysicsFrames()); }
+    public static ulong GetPrevBufferPosition() { return GetBufferPositionAt(Godot.Engine.GetPhysicsFrames() - 1); }
+
     public static ulong GetBufferPositionAt(ulong frame) { return frame % (ulong)MaxDataBufferSize; }
     
         // Position buffer
@@ -60,6 +49,10 @@ public partial class dp_object : Node
     static int MaxDataBufferSize = max_physics_rollback + 1;
     DM_Vector2[] position_buffer = [];
 
+
+    [Signal] public delegate void ObjectEnteredEventHandler(dp_object other);
+    [Signal] public delegate void ObjectExitedEventHandler(dp_object other);
+    [Signal] public delegate void ObjectCollidedEventHandler(dp_object other);
 
     public override void _Ready()
     {
@@ -69,24 +62,36 @@ public partial class dp_object : Node
         RollbackData = new Dictionary<String, Object>[MaxDataBufferSize];
         for (int i = 0; i < MaxDataBufferSize; i++)
         {
-            RollbackData[i] = new Dictionary<string, object>();
-            overlaps[i] = new Dictionary<dp_object, bool>();
+            RollbackData[i] = [];
+            overlaps[i] = [];
         }
     }
 
     // Overlap Detection
     public bool CheckOverlap(dp_object other)
     {
+        bool is_overlapping = false;
+
         switch (Shape)
         {
             case dp_circle:
-                detect_circle_overlap(other);
+                is_overlapping = detect_circle_overlap(other);
                 break;
             default:
                 detect_rect_overlap(other);
                 break;
         }
-        return false;
+        if (is_overlapping && !overlaps[GetPrevBufferPosition()].ContainsKey(other))
+        {
+            EmitSignal(SignalName.ObjectEntered, other);
+        }
+        if (!is_overlapping && overlaps[GetPrevBufferPosition()].ContainsKey(other))
+        {
+            EmitSignal(SignalName.ObjectExited, other);
+        }
+        if (is_overlapping){ overlaps[GetCurrentBufferPosition()][other] = true;}
+
+        return is_overlapping;
     }
 
     public bool detect_circle_overlap(dp_object other)
@@ -135,19 +140,25 @@ public partial class dp_object : Node
     // Collision Detection and handling.
     public void CheckCollision(dp_object other)
     {
+        bool collided = false;
         switch (other.Shape)
         {
             case dp_circle:
                 break;
             case dp_rectangle:
-                HandleRectCollision(other);
+                collided = HandleRectCollision(other);
                 break;
+        }
+        if (collided)
+        {
+            EmitSignal(SignalName.ObjectCollided, other);
+            
         }
         return;
     }
     
 
-    public void HandleRectCollision(dp_object other)
+    public bool HandleRectCollision(dp_object other)
     {
         switch (other.Shape)
         {
@@ -159,14 +170,14 @@ public partial class dp_object : Node
 
                 if (!FrameData.TryGetValue("position", out PrevPosFromDict))
                 {
-                    return;
+                    return false;
                 }
                 DM_Vector2 PrevPos = (DM_Vector2)PrevPosFromDict; 
                 DM_Vector2 vel = Shape.Position - PrevPos;
                 if (vel.x == new DM64(0) && vel.y == new DM64(0)){ 
                     // GD.Print("Still need to handle case with no velocity");
 
-                    return;
+                    return false;
                 }
 
 
@@ -180,17 +191,24 @@ public partial class dp_object : Node
 
                 
                 DM64 enterX;
-                if ((vel.x == 0) &&  (thisRectangle.Position.x <other_expanded_min.x || thisRectangle.Position.x > other_expanded_max.x)) return;
+                if ((vel.x == 0) &&  
+                (thisRectangle.Position.x <other_expanded_min.x || 
+                thisRectangle.Position.x > other_expanded_max.x)) return false;
+
                 if (vel.x == 0){enterX = new DM64(0);
                 } else
                 {enterX = (other_expanded_min.x - PrevPos.x)/vel.x;}
+
                 DM64 exitX;
                 if (vel.x == 0){ exitX = new DM64(1);} else
                 {exitX = (other_expanded_max.x - PrevPos.x)/vel.x;}
                 if (vel.x < 0){ (enterX, exitX) = (exitX, enterX); }
                 
                 DM64 enterY;
-                if ((vel.y == 0) && (thisRectangle.Position.y <other_expanded_min.y || thisRectangle.Position.y > other_expanded_max.y)) return;
+                if ((vel.y == 0) && 
+                (thisRectangle.Position.y <other_expanded_min.y || 
+                thisRectangle.Position.y > other_expanded_max.y)) return false;
+
                 if (vel.y == 0){ enterY = new DM64(0);} else
                 {enterY = (other_expanded_min.y - PrevPos.y)/vel.y;}
                 DM64 exitY;
@@ -198,16 +216,32 @@ public partial class dp_object : Node
                 {exitY = (other_expanded_max.y - PrevPos.y)/vel.y;}
                 if (vel.y < 0){ (enterY, exitY) = (exitY, enterY); }
                 
+                // Todo:  Case for sliding
+
+
+
+                // Case for returning object to exactly where it entered:
                 DM64 enter = enterX > enterY? enterX: enterY;
                 DM64 exit = exitX < exitY? exitX: exitY;
 
-                if (enter > exit ||enter > 1 || enter < 0) {return;}
+                if (enter > exit ||enter > 1 || enter < 0) {return false;}
                 thisRectangle.Position = PrevPos + (vel * enter);
-
-                break;
+                return true;
         }
+        return false;
+    }
+    
+    public Dictionary<String, Object> GetFrameData(ulong frame)
+    {
+        return RollbackData[GetBufferPositionAt(frame)];
+        
     }
 
+    public void PopulateCurrentFrame()
+    {
+        Dictionary<String, Object> Data = Shape.ExtractData();
+        RollbackData[GetCurrentBufferPosition()] = Data;
+    }
 }
 
 

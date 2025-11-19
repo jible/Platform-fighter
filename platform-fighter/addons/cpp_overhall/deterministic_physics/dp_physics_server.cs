@@ -9,11 +9,9 @@ using System.Security.AccessControl;
 public partial class dp_physics_server : Node
 {
     public List<dp_object> AllShapes = new List<dp_object>();
-    [Export]Node SearchRoot;
-    //Testing! agaom
+    [Export] Node SearchRoot;
     //  
 
-    // This is how you connect signals!
     public override void _Ready()
     {
         var tree = GetTree();

@@ -23,7 +23,6 @@ public partial class dp_shape_renderer : Node2D
         if (PhysicsServer == null) { return; }
         foreach (dp_object PhysicsObject in PhysicsServer.AllShapes)
         {
-            
             dp_shape Shape = PhysicsObject.Shape;
             if (PhysicsObject == null) { continue; }
             if (Shape is dp_circle) { draw_collision_circle((dp_circle)Shape); }
