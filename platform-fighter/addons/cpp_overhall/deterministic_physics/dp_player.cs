@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.ComponentModel;
 
+[GlobalClass]
 public partial class dp_player : dp_object
 {
     DM_Vector2 Velocity = new();

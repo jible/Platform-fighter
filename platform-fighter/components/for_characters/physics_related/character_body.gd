@@ -1,8 +1,9 @@
 class_name SpecializedCharacterBody
-extends CharacterBody2D
+extends Node
 
 var prev_grounded: bool = false
 var lock_level: CharacterState.LockLevel
+
 
 @export var base_character : BaseCharacter
 @export var state_machine: CharacterStateMachine
@@ -10,6 +11,7 @@ var lock_level: CharacterState.LockLevel
 @export var input_handler: InputHandler
 @export var health: Health
 @export var node_state_serializers: Array[NodeStateSerializer]
+@export var player_body: dp_player
 var grounded:bool = false
 
 signal landed
@@ -54,8 +56,8 @@ var used_ariel_jumps = 0
 @onready var max_velocity_vector = Vector2(max_horizontal_velocity, max_vertical_velocity)
 
 func configure():
-	collision_layer = 0
-	collision_mask = 1 << 0
+	player_body.layer_collision = 0
+	player_body.mask_collision = 1 << 0
 
 func _physics_process(_delta):# State Decides the movement processes that occur each frame
 	# The default movement process is:
@@ -64,9 +66,8 @@ func _physics_process(_delta):# State Decides the movement processes that occur 
 
 	for process in state_processes[current_state_type]:
 		process.call()
-	move_and_slide()
 	
-	grounded = is_on_floor()
+	#grounded = is_on_floor()
 	if !prev_grounded and grounded:
 		emit_signal("landed")
 		grounded = true
