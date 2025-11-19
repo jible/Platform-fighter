@@ -1,7 +1,8 @@
 using Godot;
 using System;
 using System.Numerics;
-public struct DM64
+[GlobalClass]
+public partial class DM64: Resource 
 {
 	// 1 sign bit 31 bits of in and 32 bits of decimal
 	static int SHIFT = 32;

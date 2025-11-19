@@ -1,8 +1,8 @@
 using Godot;
 using System;
 
-// [GlobalClass]
-public struct DM_Vector2
+[GlobalClass]
+public partial class DM_Vector2: Resource
 {
     public DM64 x;
     public DM64 y;

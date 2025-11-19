@@ -67,6 +67,11 @@ public partial class dp_object : Node
         }
     }
 
+    public virtual void PhysicsStep()
+    {
+        
+    }
+
     // Overlap Detection
     public bool CheckOverlap(dp_object other)
     {
