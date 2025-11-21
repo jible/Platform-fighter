@@ -41,21 +41,23 @@ func load_tick():
 	pass
 
 func simulate_tick():
-	var state_key = get_state_key(current_tick)
+	var current_state_key = get_state_key(current_tick)
+	# Some calls require the previous state's info too
+	var prev_state_key = get_state_key(current_tick - 1)
 	
 	# Serialize World State
 	serialize_tick()
 	
 	# Collect Inputs
-	game_states[state_key].inputs = input_manager.serialize_current_controller_state()
+	game_states[current_state_key].inputs = input_manager.serialize_current_controller_state()
 	
 	# Emit input
-	input_manager.dispatch_controller_states_for_tick
-	
+	# Get previous and current inputs states and pass them to input manager to disbatch
+	input_manager.dispatch_controller_states(game_states[prev_state_key].inputs, game_states[current_state_key].inputs)
 	
 	# Process Physics
-	
-	# Physics signals emit
+	# Call the physics engine to progress
+	# Physics signals emit - probably built into the engine
 	
 	# Not sure if i progress tick at start or end of a frame...
 	current_tick = current_tick + 1
