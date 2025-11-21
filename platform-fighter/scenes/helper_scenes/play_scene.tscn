@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://mbd7hr8paxe0"]
+[gd_scene load_steps=8 format=3 uid="uid://mbd7hr8paxe0"]
 
 [ext_resource type="Script" uid="uid://b1g2yvibmsn5v" path="res://characters/input_manager.gd" id="1_m1edv"]
 [ext_resource type="Script" uid="uid://dr5leuuafn8o0" path="res://scenes/helper_scenes/play_scene.gd" id="1_wklqy"]
 [ext_resource type="Script" uid="uid://bu4xmull0njfa" path="res://components/for_scenes/stage_holder.gd" id="2_tk78d"]
 [ext_resource type="Script" uid="uid://bu7dkeodqc58x" path="res://components/for_scenes/character_holder.gd" id="3_que2y"]
 [ext_resource type="Script" uid="uid://cm66823utepqk" path="res://components/for_scenes/debug_helper.gd" id="4_kdvgv"]
+[ext_resource type="Script" uid="uid://c7tlwcqf5nv4y" path="res://scenes/helper_scenes/tick_manager.gd" id="7_0nyru"]
 [ext_resource type="Script" uid="uid://b1b5vrtqnk0ck" path="res://components/for_scenes/rollback_communication_manager.gd" id="8_0fodh"]
 
 [node name="PlaySceneManager" type="Node2D" node_paths=PackedStringArray("camera", "input_manager", "stage_holder", "character_holder", "rollback_communication_manager")]
@@ -37,3 +38,6 @@ script = ExtResource("4_kdvgv")
 script = ExtResource("8_0fodh")
 play_scene_manager = NodePath("..")
 input_manager = NodePath("../InputManager")
+
+[node name="TickManager" type="Node" parent="."]
+script = ExtResource("7_0nyru")

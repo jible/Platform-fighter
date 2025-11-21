@@ -83,11 +83,6 @@ metadata/_custom_type_script = "uid://dv4wbls0vl316"
 
 [node name="CharacterBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "sprite_manager", "input_handler", "health")]
 script = ExtResource("2_a5pmx")
-base_character = NodePath("..")
-state_machine = NodePath("../SpriteManager/StateMachine")
-sprite_manager = NodePath("../SpriteManager")
-input_handler = NodePath("../InputHandler")
-health = NodePath("Health")
 node_state_serializers = Array[ExtResource("3_v625f")]([SubResource("Resource_flllm"), SubResource("Resource_dsqd8"), SubResource("Resource_v625f"), SubResource("Resource_keiky")])
 jump_vel = 2000
 jump_horizontal_impulse = null
@@ -100,6 +95,11 @@ max_horizontal_velocity = 910
 max_vertical_velocity = 1300
 velocity_threshold = null
 max_ariel_jumps = null
+base_character = NodePath("..")
+state_machine = NodePath("../SpriteManager/StateMachine")
+sprite_manager = NodePath("../SpriteManager")
+input_handler = NodePath("../InputHandler")
+health = NodePath("Health")
 
 [node name="BehaviorManager" type="Node" parent="CharacterBody" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("8_a1fmy")
@@ -233,9 +233,6 @@ input_handler = NodePath("../InputHandler")
 script = ExtResource("12_retdq")
 base_character = NodePath("..")
 
-[connection signal="landed" from="CharacterBody" to="CharacterBody" method="_on_landed"]
-[connection signal="landed" from="CharacterBody" to="CharacterBody/BehaviorManager/LandBehavior" method="_on_character_body_landed"]
-[connection signal="lock_level_changed" from="CharacterBody" to="CharacterBody/BehaviorManager" method="_on_base_player_lock_level_changed"]
 [connection signal="knockback" from="CharacterBody/Health" to="CharacterBody" method="_on_health_knockback"]
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="CharacterBody" method="_on_state_machine_state_changed"]
 [connection signal="state_changed" from="SpriteManager/StateMachine" to="CharacterBody/BehaviorManager" method="_on_state_machine_state_changed"]

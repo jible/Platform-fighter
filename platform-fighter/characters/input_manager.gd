@@ -15,7 +15,6 @@ enum button_event_type{
 var drift_threshold = .1
 signal button_event(button: ControllerState.Button_Types, player_num: int, pressed: bool)
 
-@export var max_controller_buffer_size: int = 50
 @export var keyboard_char_num: int = 0
 
 @onready var current_controller_states: Array[ControllerState] = []
@@ -25,12 +24,6 @@ var finalized_controller_state = []
 var all_controller_states: Array[Array] = []
 func _ready():
 	all_controller_states= []
-
-	for i in range(max_controller_buffer_size):
-		var empty = []
-		for player in PlayerManager.all_players:
-			empty.append(ControllerState.new())
-		all_controller_states.append(empty)
 	for player in PlayerManager.all_players:
 		current_controller_states.append(ControllerState.new())
 		finalized_controller_state.append(ControllerState.new())
@@ -97,25 +90,21 @@ func _input(event):
 				return
 			current_controller_states[player_number].set_button(button,event.pressed)
 
+# This is not synced with the new system yet!!
 func get_finalized_stick(player_num: int, stick_num: int):
 	return finalized_controller_state[player_num].sticks[stick_num]
 
-func _physics_process(_delta):
-	# Extract all current input data to the array
-	var current_frame = play_scene_manager.get_current_play_frame()
-	
+func serialize_current_controller_state():
 	finalized_controller_state = []
 	for i in current_controller_states:
 		finalized_controller_state.append(i.get_copy())
+	return finalized_controller_state
 	
-	all_controller_states[current_frame % max_controller_buffer_size] = finalized_controller_state
-	var previous_frame_index = (current_frame - 1) % max_controller_buffer_size
-	var previous_frame_finalized_state = all_controller_states[previous_frame_index]
-	
+func dispatch_controller_states(previous_tick_state, current_tick_state):
 	for player_number in range(finalized_controller_state.size()):
-		var current_frame_player_controller = finalized_controller_state[player_number]
+		var current_frame_player_controller = current_tick_state[player_number]
 		if current_frame_player_controller == null: continue
-		var previous_frame_player_controller = previous_frame_finalized_state[player_number]
+		var previous_frame_player_controller = previous_tick_state[player_number]
 		for button in ControllerState.Button_Types.values():
 			var current_button_value = current_frame_player_controller.get_button(button)
 			var previous_button_value = previous_frame_player_controller.get_button(button)

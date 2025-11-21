@@ -38,11 +38,6 @@ public partial class dp_physics_server : Node
     {
         foreach (dp_object ObjA in AllShapes)
         {
-            if (!ObjA.is_active){continue;}
-            ObjA.PhysicsStep(); 
-        }
-        foreach (dp_object ObjA in AllShapes)
-        {
             if (!ObjA.is_active){continue;} 
 
             foreach (dp_object ObjB in AllShapes)

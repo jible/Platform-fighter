@@ -11,7 +11,7 @@ var lock_level: CharacterState.LockLevel
 @export var input_handler: InputHandler
 @export var health: Health
 @export var node_state_serializers: Array[NodeStateSerializer]
-@export var player_body: dp_player
+@export var player_body: dp_player_body
 var grounded:bool = false
 
 signal landed
