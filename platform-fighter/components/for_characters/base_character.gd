@@ -48,6 +48,11 @@ func start_character():
 		child.set_physics_process(true)
 	started = true
 
+func tick_character():
+	for child in all_decendants:
+		if child.has_method("process_tick"):
+			child.process_tick()
+
 func get_all_children(parent = self):
 	if parent == null: return
 	if parent == self:

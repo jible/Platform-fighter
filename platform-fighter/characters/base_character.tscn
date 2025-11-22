@@ -1,12 +1,11 @@
-[gd_scene load_steps=29 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=27 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/physics_related/character_body.gd" id="2_a5pmx"]
-[ext_resource type="Script" uid="uid://dv4wbls0vl316" path="res://addons/cpp_overhall/deterministic_physics/dp_player.cs" id="3_2h6bo"]
+[ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/cpp_overhall/deterministic_physics/dp_player_body.cs" id="3_mymr4"]
 [ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/animation_related/sprite_manager.gd" id="3_o2sve"]
 [ext_resource type="Script" uid="uid://lerobm5nkm4h" path="res://components/for_characters/node_state_serializer.gd" id="3_v625f"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/state_helpers/character_state_machine.gd" id="4_om1db"]
-[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_rectangle.cs" id="4_wkdl6"]
 [ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://characters/test_character/behaviors/jump_behavior.gd" id="5_hcpvk"]
 [ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://characters/test_character/behaviors/land_behavior.gd" id="6_cgfyo"]
 [ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://characters/test_character/behaviors/dash_behavior.gd" id="7_nf1us"]
@@ -23,11 +22,6 @@
 [ext_resource type="Script" uid="uid://c5vmhdvjvsfbr" path="res://components/for_characters/input_handler.gd" id="18_cgfyo"]
 [ext_resource type="Script" uid="uid://l3olgavpcsgr" path="res://components/for_characters/reference_server.gd" id="18_hcpvk"]
 [ext_resource type="Script" uid="uid://bkusxx76ru2an" path="res://components/for_characters/direction_flipper.gd" id="19_cgfyo"]
-
-[sub_resource type="Resource" id="Resource_ykd4p"]
-script = ExtResource("4_wkdl6")
-editor_size = Vector2(50.625, 50)
-metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="Resource" id="Resource_flllm"]
 script = ExtResource("3_v625f")
@@ -77,9 +71,7 @@ velocity_threshold = null
 max_ariel_jumps = null
 
 [node name="dp_player" type="Node" parent="PhysicsCharacterBody"]
-script = ExtResource("3_2h6bo")
-Shape = SubResource("Resource_ykd4p")
-metadata/_custom_type_script = "uid://dv4wbls0vl316"
+script = ExtResource("3_mymr4")
 
 [node name="CharacterBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "sprite_manager", "input_handler", "health")]
 script = ExtResource("2_a5pmx")

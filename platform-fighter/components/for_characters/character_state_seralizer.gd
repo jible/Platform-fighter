@@ -28,11 +28,9 @@ func configure():
 		all_states[i] = []
 
 
-func _physics_process(_delta):
-	if Input.is_action_just_pressed("debug_print"):
-		print('e', all_states)
-	if Input.is_action_just_pressed("debug_action"):
-		rollback_to_tick(Engine.get_physics_frames() - 30)
+func process_tick():
+	#if Input.is_action_just_pressed("debug_action"):
+		#rollback_to_tick(Engine.get_physics_frames() - 30)
 	var current_character_state = []
 	var current_tick = Engine.get_physics_frames()
 	var state_index = get_tick_index(current_tick)
@@ -42,7 +40,18 @@ func _physics_process(_delta):
 			current_node_states.append(node_state_extractor.extract_state(node))
 		current_character_state.append(current_node_states)
 	all_states[state_index] = current_character_state
-	
+
+
+# Currently unsued, but this is what will give the rollback manager the characters state.
+func get_serialized_state():
+	var current_character_state = []
+	for node in nodes_with_state:
+			var current_node_states = []
+			for node_state_extractor in node.node_state_serializers:
+				current_node_states.append(node_state_extractor.extract_state(node))
+			current_character_state.append(current_node_states)
+	return current_character_state
+
 
 func get_tick_index(tick):
 	return tick % max_rollback
@@ -61,7 +70,18 @@ func rollback_to_tick(tick):
 	if !target_character_state:
 		push_error("Rollingback to null state") 
 		return
-	
+	for node_index in range(nodes_with_state.size()):
+		var node = nodes_with_state[node_index]
+		var target_node_properties = target_character_state[node_index]
+		for property_index in range(node.node_state_serializers.size()):
+			node.node_state_serializers[property_index].imbue_state(node, target_node_properties[property_index])
+
+
+func rollback_to_state(target_character_state):
+	if !target_character_state:
+		push_error("Rollingback to null state") 
+		return
+
 	for node_index in range(nodes_with_state.size()):
 		var node = nodes_with_state[node_index]
 		var target_node_properties = target_character_state[node_index]

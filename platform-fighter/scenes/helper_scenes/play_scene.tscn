@@ -39,5 +39,7 @@ script = ExtResource("8_0fodh")
 play_scene_manager = NodePath("..")
 input_manager = NodePath("../InputManager")
 
-[node name="TickManager" type="Node" parent="."]
+[node name="TickManager" type="Node" parent="." node_paths=PackedStringArray("input_manager", "character_holder")]
 script = ExtResource("7_0nyru")
+input_manager = NodePath("../InputManager")
+character_holder = NodePath("../CharacterHolder")

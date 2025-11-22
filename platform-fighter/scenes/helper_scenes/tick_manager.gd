@@ -12,7 +12,7 @@ var sample_state: Dictionary = {
 }
 
 @export var input_manager: InputManager
-
+@export var character_holder: CharacterHolder
 var continue_play: bool = true
 
 func _ready():
@@ -51,9 +51,18 @@ func simulate_tick():
 	# Collect Inputs
 	game_states[current_state_key].inputs = input_manager.serialize_current_controller_state()
 	
+	# Progress stage tick
+	#for char in character_holder.players:
+		
+	
 	# Emit input
 	# Get previous and current inputs states and pass them to input manager to disbatch
 	input_manager.dispatch_controller_states(game_states[prev_state_key].inputs, game_states[current_state_key].inputs)
+	
+	# Progress character anim tick and state
+	for character in character_holder.players:
+		character.tick_character()
+	
 	
 	# Process Physics
 	# Call the physics engine to progress

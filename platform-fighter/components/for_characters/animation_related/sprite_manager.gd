@@ -10,7 +10,7 @@ var current_state: String = ""
 func configure():
 	character_body.position = (character_body.position/scale).round() * scale
 
-func _process(_delta):
+func process_tick():
 	if snap:
 		if character_body.velocity.x != 0 and character_body.velocity.y != 0:
 			var projected_pos = (character_body.position/scale).round() * scale

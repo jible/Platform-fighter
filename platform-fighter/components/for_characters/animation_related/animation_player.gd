@@ -40,7 +40,7 @@ func rb_play_from_start(anim_name: String):
 	rb_set_frame(0)
 	rb_playing = true
 	
-func _physics_process(_delta):
+func process_tick():
 	if rb_playing:
 		current_tick += 1
 		var next_anim_frame = floor(current_tick/ state_machine.current_state_node.ticks_per_frame)

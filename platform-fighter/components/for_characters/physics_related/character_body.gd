@@ -59,7 +59,7 @@ func configure():
 	player_body.layer_collision = 0
 	player_body.mask_collision = 1 << 0
 
-func _physics_process(_delta):# State Decides the movement processes that occur each frame
+func process_tick():# State Decides the movement processes that occur each frame
 	# The default movement process is:
 	# Normal movmenet process
 	input_dir = input_handler.get_left_stick().x

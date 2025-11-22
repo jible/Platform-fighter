@@ -24,7 +24,7 @@ func get_active_behaviors():
 			behavior.is_active = false
 
 
-func _physics_process(_delta):
+func process_tick():
 	for behavior in active_behaviors:
 		if behavior.condition():
 			behavior.trigger()
