@@ -5,12 +5,8 @@ using System;
 [GlobalClass]
 public partial class dp_circle : dp_shape
 {
-    [Export]public float editor_radius
-    {
-        get { return radius.ToFloat(); }
-        set { radius = new DM64(value); }
-    }
-    public DM64 radius = new DM64(50);
+    [Export]public dm64_editor_wrapper editor_radius;
+    public dm64 radius = new dm64(50);
     
     
 }

@@ -9,7 +9,6 @@
 [sub_resource type="Resource" id="Resource_yoshb"]
 script = ExtResource("4_yoshb")
 editor_size = Vector2(50, 50)
-editor_position = Vector2(9.32, 2.36)
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="Resource" id="Resource_x2bey"]

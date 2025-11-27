@@ -1,8 +1,9 @@
-[gd_scene load_steps=27 format=3 uid="uid://e6cxo5jrheb1"]
+[gd_scene load_steps=29 format=3 uid="uid://e6cxo5jrheb1"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_vnujj"]
 [ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/physics_related/character_body.gd" id="2_a5pmx"]
-[ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/cpp_overhall/deterministic_physics/dp_player_body.cs" id="3_mymr4"]
+[ext_resource type="Script" uid="uid://bkduoy8uueo0h" path="res://addons/cpp_overhall/deterministic_math/dm64.cs" id="3_2h6bo"]
+[ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/cpp_overhall/deterministic_physics/dp_char_physics_body.cs" id="3_mymr4"]
 [ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/animation_related/sprite_manager.gd" id="3_o2sve"]
 [ext_resource type="Script" uid="uid://lerobm5nkm4h" path="res://components/for_characters/node_state_serializer.gd" id="3_v625f"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/state_helpers/character_state_machine.gd" id="4_om1db"]
@@ -22,6 +23,10 @@
 [ext_resource type="Script" uid="uid://c5vmhdvjvsfbr" path="res://components/for_characters/input_handler.gd" id="18_cgfyo"]
 [ext_resource type="Script" uid="uid://l3olgavpcsgr" path="res://components/for_characters/reference_server.gd" id="18_hcpvk"]
 [ext_resource type="Script" uid="uid://bkusxx76ru2an" path="res://components/for_characters/direction_flipper.gd" id="19_cgfyo"]
+
+[sub_resource type="Resource" id="Resource_wkdl6"]
+script = ExtResource("3_2h6bo")
+metadata/_custom_type_script = "uid://bkduoy8uueo0h"
 
 [sub_resource type="Resource" id="Resource_flllm"]
 script = ExtResource("3_v625f")
@@ -55,43 +60,23 @@ animation_player = NodePath("AnimationPlayer")
 input_handler = NodePath("InputHandler")
 direction_changer = NodePath("DirectionFlipper")
 
-[node name="PhysicsCharacterBody" type="Node" parent="."]
+[node name="CharacterController" type="Node" parent="."]
 script = ExtResource("2_a5pmx")
-node_state_serializers = null
-jump_vel = null
-jump_horizontal_impulse = null
-grounded_acceleration = null
-aeriel_acceleration = null
-gravity_force = null
-grounded_drag = null
-aeriel_drag = null
-max_horizontal_velocity = null
-max_vertical_velocity = null
-velocity_threshold = null
-max_ariel_jumps = null
+jump_vel = SubResource("Resource_wkdl6")
 
-[node name="dp_player" type="Node" parent="PhysicsCharacterBody"]
+[node name="dp_char_physics_body" type="Node" parent="CharacterController"]
 script = ExtResource("3_mymr4")
 
 [node name="CharacterBody" type="CharacterBody2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "sprite_manager", "input_handler", "health")]
 script = ExtResource("2_a5pmx")
-node_state_serializers = Array[ExtResource("3_v625f")]([SubResource("Resource_flllm"), SubResource("Resource_dsqd8"), SubResource("Resource_v625f"), SubResource("Resource_keiky")])
-jump_vel = 2000
-jump_horizontal_impulse = null
-grounded_acceleration = null
-aeriel_acceleration = null
-gravity_force = null
-grounded_drag = null
-aeriel_drag = null
-max_horizontal_velocity = 910
-max_vertical_velocity = 1300
-velocity_threshold = null
-max_ariel_jumps = null
 base_character = NodePath("..")
 state_machine = NodePath("../SpriteManager/StateMachine")
 sprite_manager = NodePath("../SpriteManager")
 input_handler = NodePath("../InputHandler")
 health = NodePath("Health")
+node_state_serializers = Array[ExtResource("3_v625f")]([SubResource("Resource_flllm"), SubResource("Resource_dsqd8"), SubResource("Resource_v625f"), SubResource("Resource_keiky")])
+max_horizontal_velocity = 910
+max_vertical_velocity = 1300
 
 [node name="BehaviorManager" type="Node" parent="CharacterBody" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("8_a1fmy")

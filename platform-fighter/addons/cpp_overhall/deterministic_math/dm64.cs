@@ -1,36 +1,48 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
-[GlobalClass]
-public partial class DM64: Resource 
+public struct dm64
 {
 	// 1 sign bit 31 bits of in and 32 bits of decimal
 	static int SHIFT = 32;
 	static long SCALE = 1L << SHIFT;
 	public long raw = 0;
 
+	[Export]
+    public float EditorValue
+    {
+        get {return ToFloat();}
+        set {raw = (long)(value * SCALE);}
+    }
+
+
 	// Constructors
-	public DM64()
+	public dm64()
 	{
 		raw = 0;
 	}
+	public dm64(dm64_editor_wrapper value)
+    {
+		raw = value.raw;
+    }
 
-	public DM64(int value)
+	public dm64(int value)
 	{
 		raw = (long)value << SHIFT;
 	}
-	public DM64(long value)
+	public dm64(long value)
 	{
 		raw = value << SHIFT;
 	}
-	public DM64(float value)
+	public dm64(float value)
 	{
 		raw = (long)(value * (float)SCALE);
 	}
 
-	public DM64 copy()
+	public dm64 copy()
 	{
-		DM64 o = new DM64();
+		dm64 o = new dm64();
 		o.raw = raw;
 		return o;
 	}
@@ -48,25 +60,25 @@ public partial class DM64: Resource
 	}
 
 	// Basic Math overwrites
-	public static DM64 operator +(DM64 a, DM64 b)
+	public static dm64 operator +(dm64 a, dm64 b)
     {
-        DM64 o = new DM64();
+        dm64 o = new dm64();
         o.raw = a.raw + b.raw;
         return o;
     }
-	public static DM64 operator -(DM64 a, DM64 b) {
-        DM64 o = new DM64();
+	public static dm64 operator -(dm64 a, dm64 b) {
+        dm64 o = new dm64();
         o.raw = a.raw - b.raw;
         return o;
     }
-	public static DM64 operator *(DM64 a, DM64 b)
+	public static dm64 operator *(dm64 a, dm64 b)
 	{
-		DM64 f = new DM64();
+		dm64 f = new dm64();
 		f.raw = (long)(((BigInteger)a.raw * (BigInteger)b.raw) >> SHIFT);
 		return f;
 	}
 	 
-	public static DM64 operator /(DM64 a, DM64 b)
+	public static dm64 operator /(dm64 a, dm64 b)
 	{
         if (b.raw == 0)
         {
@@ -91,7 +103,7 @@ public partial class DM64: Resource
             q = -q;
         }
         int final_shift = bit_diff - SHIFT;
-        DM64 f = new DM64(0);
+        dm64 f = new dm64(0);
         if (final_shift > 0){
             f.raw = q >> final_shift;
         }else
@@ -102,39 +114,39 @@ public partial class DM64: Resource
 	}
 
 	// Supporting math with ints
-	public static DM64 operator +(DM64 a, int b) => a + new DM64(b);
-	public static DM64 operator -(DM64 a, int b) => a - new DM64(b);
-	public static DM64 operator *(DM64 a, int b)
+	public static dm64 operator +(dm64 a, int b) => a + new dm64(b);
+	public static dm64 operator -(dm64 a, int b) => a - new dm64(b);
+	public static dm64 operator *(dm64 a, int b)
     {
-		return a * new DM64(b);
+		return a * new dm64(b);
     }
-	public static DM64 operator /(DM64 a, int b) => a / new DM64(b);
+	public static dm64 operator /(dm64 a, int b) => a / new dm64(b);
 
-	public static DM64 operator +(int a, DM64 b) => b + a;
-	public static DM64 operator -(int a, DM64 b) => b - a;
-	public static DM64 operator *(int a, DM64 b) => b * a;
-	public static DM64 operator /(int a, DM64 b) => new DM64(a) / b;
+	public static dm64 operator +(int a, dm64 b) => b + a;
+	public static dm64 operator -(int a, dm64 b) => b - a;
+	public static dm64 operator *(int a, dm64 b) => b * a;
+	public static dm64 operator /(int a, dm64 b) => new dm64(a) / b;
 
 	// Comparison operators
-	public static bool operator > (DM64 a, int b) => a.raw > ((long)b << SHIFT);
-	public static bool operator < (DM64 a, int b) => a.raw < ((long)b << SHIFT);
-	public static bool operator >= (DM64 a, int b) => a.raw >= ((long)b << SHIFT);
-	public static bool operator <=(DM64 a, int b) => a.raw <= ((long)b << SHIFT);
-	public static bool operator ==(DM64 a, int b) => a.raw == ((long)b << SHIFT);
-	public static bool operator !=(DM64 a, int b) => a.raw != ((long)b << SHIFT);
+	public static bool operator > (dm64 a, int b) => a.raw > ((long)b << SHIFT);
+	public static bool operator < (dm64 a, int b) => a.raw < ((long)b << SHIFT);
+	public static bool operator >= (dm64 a, int b) => a.raw >= ((long)b << SHIFT);
+	public static bool operator <=(dm64 a, int b) => a.raw <= ((long)b << SHIFT);
+	public static bool operator ==(dm64 a, int b) => a.raw == ((long)b << SHIFT);
+	public static bool operator !=(dm64 a, int b) => a.raw != ((long)b << SHIFT);
 
 
 	
-	public static bool operator > (DM64 a, DM64 b) => a.raw > b.raw;
-	public static bool operator < (DM64 a, DM64 b) => a.raw < b.raw;
-	public static bool operator >= (DM64 a, DM64 b) => a.raw >= b.raw;
-	public static bool operator <=(DM64 a, DM64 b) => a.raw <= b.raw;
-	public static bool operator ==(DM64 a, DM64 b) => a.raw == b.raw;
-	public static bool operator !=(DM64 a, DM64 b) => a.raw != b.raw;
+	public static bool operator > (dm64 a, dm64 b) => a.raw > b.raw;
+	public static bool operator < (dm64 a, dm64 b) => a.raw < b.raw;
+	public static bool operator >= (dm64 a, dm64 b) => a.raw >= b.raw;
+	public static bool operator <=(dm64 a, dm64 b) => a.raw <= b.raw;
+	public static bool operator ==(dm64 a, dm64 b) => a.raw == b.raw;
+	public static bool operator !=(dm64 a, dm64 b) => a.raw != b.raw;
 
 	public override bool Equals(object obj)
 	{
-		if (obj is DM64 other)
+		if (obj is dm64 other)
 		{
 			return this.raw == other.raw;
 		}
@@ -146,13 +158,17 @@ public partial class DM64: Resource
         return raw.GetHashCode();
     }
 
-	
+	public int Sign()
+    {
+        return Math.Sign(raw);
+    }
+    
 
 
 // Powers
-	public DM64 Pow(DM64 b)
+	public dm64 Pow(dm64 b)
 	{
-		DM64 c = new DM64(1);
+		dm64 c = new dm64(1);
 		long ib = b.to_long();
 		for (int i = 0; i < ib; i++)
 		{
@@ -160,29 +176,35 @@ public partial class DM64: Resource
 		}
 		return c;
 	}
-	public DM64 Pow(int b)
+	public dm64 Pow(int b)
 	{
-		DM64 c = new DM64(1);
+		dm64 c = new dm64(1);
 		for (int i = 0; i < b; i++)
 		{
 			c = c * this;
 		}
 		return c;
 	}
+	public dm64 Abs()
+    {
+		dm64 output = new();
+		output.raw = Math.Abs(raw);
+		return output;
+    }
 
 // Squre root
-	public DM64 Sqrt()
+	public dm64 Sqrt()
 	{
 		if (raw <= 0)
 		{
-			return new DM64(0);
+			return new dm64(0);
 		}
 
 		int precision = 5;
         // Guess something with about half the leading bits of the radicand
         int guessBits = GetLeadingBitNum((ulong)to_long()) / 2;
 
-        DM64 output = new DM64(1 << guessBits);
+        dm64 output = new dm64(1 << guessBits);
 		// Use the Raphson Newton method
 		for (int i = 0; i < precision; i++)
         {
@@ -208,11 +230,11 @@ public partial class DM64: Resource
 
 	public static void UnitTest()
     {
-        GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + new DM64(5)).ToFloat());
-        GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + 5).ToFloat());
-        GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + new DM64(5)).ToFloat());
-        GD.Print("Expected ", 4 * 5, " output ", (new DM64(4) * 5). ToFloat());
-        GD.Print("Expected ", 2 * 50, " output ", (new DM64(2) * 50). ToFloat());
+        GD.Print("Expected ", 4 + 5, " output ", (new dm64(4) + new dm64(5)).ToFloat());
+        GD.Print("Expected ", 4 + 5, " output ", (new dm64(4) + 5).ToFloat());
+        GD.Print("Expected ", 4 + 5, " output ", (new dm64(4) + new dm64(5)).ToFloat());
+        GD.Print("Expected ", 4 * 5, " output ", (new dm64(4) * 5). ToFloat());
+        GD.Print("Expected ", 2 * 50, " output ", (new dm64(2) * 50). ToFloat());
 
     } 
 }
