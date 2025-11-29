@@ -8,8 +8,12 @@ public partial class dp_shape : Resource
 {
     // World Space
     public DM_Vector2 Position = new DM_Vector2();
+    [Export]public Vector2 editor_position
+    {
+        get { return Position.ToStandardVector(); }
+        set { Position = new DM_Vector2(value); }
+    }
 
-    [Export] public dm_vector_editor_wrapper editor_position;
     // Owner
     public dp_object PhysicsObject;
     // Extend this method in extension classes and add to this array if you need to add more properties.

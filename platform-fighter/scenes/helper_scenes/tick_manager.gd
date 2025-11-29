@@ -13,7 +13,7 @@ var sample_state: Dictionary = {
 
 @export var input_manager: InputManager
 @export var character_holder: CharacterHolder
-var continue_play: bool = false
+var continue_play: bool = true
 
 func _ready():
 	# Fill the states buffer with empty states
@@ -25,7 +25,6 @@ func get_state_key(tick) ->int:
 
 # Starts the game
 func start():
-	continue_play = true
 	pass
 
 func _physics_process(_delta):

@@ -99,8 +99,8 @@ public partial class dp_object : Node
 		switch (other.Shape)
 		{
 			case dp_circle otherCircle when Shape is dp_circle thisCircle:
-				dm64 max_distance = thisCircle.radius + otherCircle.radius;
-				dm64 distance = (Shape.Position - other.Shape.Position).GetMagnitude(); 
+				DM64 max_distance = thisCircle.radius + otherCircle.radius;
+				DM64 distance = (Shape.Position - other.Shape.Position).GetMagnitude(); 
 				return distance < max_distance;
 			case dp_rectangle:
 				GD.Print("circle rect overlap not programmed");
@@ -117,15 +117,15 @@ public partial class dp_object : Node
 				GD.Print("circle rect overlap not programmed");
 				break;
 			case dp_rectangle otherRectangle when Shape is dp_rectangle thisRectangle:
-				dm64 AL = thisRectangle.Position.x;
-				dm64 AR = thisRectangle.Position.x + thisRectangle.size.x;
-				dm64 AB = thisRectangle.Position.y;
-				dm64 AT = thisRectangle.Position.y + thisRectangle.size.y;  
+				DM64 AL = thisRectangle.Position.x;
+				DM64 AR = thisRectangle.Position.x + thisRectangle.size.x;
+				DM64 AB = thisRectangle.Position.y;
+				DM64 AT = thisRectangle.Position.y + thisRectangle.size.y;  
 
-				dm64 BL = otherRectangle.Position.x;
-				dm64 BR = otherRectangle.Position.x + otherRectangle.size.x;
-				dm64 BB = otherRectangle.Position.y;
-				dm64 BT = otherRectangle.Position.y + thisRectangle.size.y; 
+				DM64 BL = otherRectangle.Position.x;
+				DM64 BR = otherRectangle.Position.x + otherRectangle.size.x;
+				DM64 BB = otherRectangle.Position.y;
+				DM64 BT = otherRectangle.Position.y + thisRectangle.size.y; 
 
 				return (
 					(AL < BR ) &&
@@ -174,7 +174,7 @@ public partial class dp_object : Node
 				}
 				DM_Vector2 PrevPos = (DM_Vector2)PrevPosFromDict; 
 				DM_Vector2 vel = Shape.Position - PrevPos;
-				if (vel.x == new dm64(0) && vel.y == new dm64(0)){ 
+				if (vel.x == new DM64(0) && vel.y == new DM64(0)){ 
 					// GD.Print("Still need to handle case with no velocity");
 
 					return false;
@@ -190,29 +190,29 @@ public partial class dp_object : Node
 			 
 
 				
-				dm64 enterX;
+				DM64 enterX;
 				if ((vel.x == 0) &&  
 				(thisRectangle.Position.x <other_expanded_min.x || 
 				thisRectangle.Position.x > other_expanded_max.x)) return false;
 
-				if (vel.x == 0){enterX = new dm64(0);
+				if (vel.x == 0){enterX = new DM64(0);
 				} else
 				{enterX = (other_expanded_min.x - PrevPos.x)/vel.x;}
 
-				dm64 exitX;
-				if (vel.x == 0){ exitX = new dm64(1);} else
+				DM64 exitX;
+				if (vel.x == 0){ exitX = new DM64(1);} else
 				{exitX = (other_expanded_max.x - PrevPos.x)/vel.x;}
 				if (vel.x < 0){ (enterX, exitX) = (exitX, enterX); }
 				
-				dm64 enterY;
+				DM64 enterY;
 				if ((vel.y == 0) && 
 				(thisRectangle.Position.y <other_expanded_min.y || 
 				thisRectangle.Position.y > other_expanded_max.y)) return false;
 
-				if (vel.y == 0){ enterY = new dm64(0);} else
+				if (vel.y == 0){ enterY = new DM64(0);} else
 				{enterY = (other_expanded_min.y - PrevPos.y)/vel.y;}
-				dm64 exitY;
-				if (vel.y == 0){ exitY = new dm64(1);} else
+				DM64 exitY;
+				if (vel.y == 0){ exitY = new DM64(1);} else
 				{exitY = (other_expanded_max.y - PrevPos.y)/vel.y;}
 				if (vel.y < 0){ (enterY, exitY) = (exitY, enterY); }
 				
@@ -221,8 +221,8 @@ public partial class dp_object : Node
 
 
 				// Case for returning object to exactly where it entered:
-				dm64 enter = enterX > enterY? enterX: enterY;
-				dm64 exit = exitX < exitY? exitX: exitY;
+				DM64 enter = enterX > enterY? enterX: enterY;
+				DM64 exit = exitX < exitY? exitX: exitY;
 
 				if (enter > exit ||enter > 1 || enter < 0) {return false;}
 				thisRectangle.Position = PrevPos + (vel * enter);

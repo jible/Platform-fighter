@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel;
 
 [GlobalClass]
-public partial class dp_char_physics_body : dp_object
+public partial class dp_player_body : dp_object
 {
 	DM_Vector2 Velocity = new();
 	// Shadow these properties so they aren't exported to the editor
@@ -19,10 +19,5 @@ public partial class dp_char_physics_body : dp_object
 	public void PhysicsStep()
 	{
 		Shape.Position += Velocity;
-	}
-	// NEEDS ATTEntion!!! 
-	public bool IsGrounded()
-	{
-		return false;
 	}
 }
