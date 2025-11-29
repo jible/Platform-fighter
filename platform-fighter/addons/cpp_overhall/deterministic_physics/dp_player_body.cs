@@ -20,4 +20,10 @@ public partial class dp_player_body : dp_object
 	{
 		Shape.Position += Velocity;
 	}
+
+	public bool IsGrounded()
+    {
+		
+        return true;
+    }
 }

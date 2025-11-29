@@ -19,6 +19,21 @@ public partial class DM64: Resource
 	{
 		raw = (long)value << SHIFT;
 	}
+
+	public DM64( int va, int vb)
+    {
+		int vb_size = 0;
+		for (int i =0; i < 32; i++)
+        {
+            if (vb >> i > 0)
+            {
+                vb_size = i;
+            } else{break;}
+        }
+        raw = (long)va << SHIFT;
+		raw += (long) vb << SHIFT - 1 - vb_size;
+    }
+
 	public DM64(long value)
 	{
 		raw = value << SHIFT;

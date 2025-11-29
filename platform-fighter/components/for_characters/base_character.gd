@@ -22,15 +22,12 @@ var connected_to_scene = false
 @export var input_handler: InputHandler
 @export var direction_changer: DirectionChanger
 
-
-
 func _ready():
 	get_all_children()
 	for decendant in all_decendants:
 		decendant.process_mode = Node.PROCESS_MODE_DISABLED
 		decendant.set_physics_process(false)
-		
-	
+
 var all_decendants : Array[Node]
 func configure_player(_team_number, _player_number, _player_tag):
 	team_number = _team_number
