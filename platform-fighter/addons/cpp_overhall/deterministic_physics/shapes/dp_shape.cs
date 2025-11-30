@@ -7,12 +7,7 @@ using System.Collections.Generic;
 public partial class dp_shape : Resource
 {
     // World Space
-    public DM_Vector2 Position = new DM_Vector2();
-    [Export]public Vector2 editor_position
-    {
-        get { return Position.ToStandardVector(); }
-        set { Position = new DM_Vector2(value); }
-    }
+    [Export] public DM_Vector2 Position = new DM_Vector2();
 
     // Owner
     public dp_object PhysicsObject;

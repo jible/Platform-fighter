@@ -4,9 +4,10 @@ using System;
 [GlobalClass]
 public partial class DM_Vector2: Resource
 {
-    public DM64 x;
-    public DM64 y;
-    //  
+    [Export] public DM64 x;
+    [Export] public DM64 y;
+    
+
     // Constructors
     public DM_Vector2()
     {

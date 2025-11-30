@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bti1yk3ci2288"]
+[gd_scene load_steps=16 format=3 uid="uid://bti1yk3ci2288"]
 
 [ext_resource type="Script" uid="uid://ckefqjwson1th" path="res://scenes/testing_scenes/dummy_test_scripts/ShapeRendererTesting.cs" id="1_yoshb"]
 [ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/cpp_overhall/deterministic_physics/dp_object.cs" id="4_22k50"]
@@ -6,18 +6,49 @@
 [ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_rectangle.cs" id="4_yoshb"]
 [ext_resource type="Script" uid="uid://baentdytebcpr" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer.cs" id="5_dd50p"]
 
+[sub_resource type="CSharpScript" id="CSharpScript_yoshb"]
+
+[sub_resource type="CSharpScript" id="CSharpScript_x2bey"]
+
+[sub_resource type="Resource" id="Resource_dd50p"]
+script = SubResource("CSharpScript_x2bey")
+editor_value = "0"
+
+[sub_resource type="Resource" id="Resource_nd7ph"]
+resource_local_to_scene = true
+script = SubResource("CSharpScript_x2bey")
+editor_value = "0"
+
+[sub_resource type="Resource" id="Resource_sq2vi"]
+script = SubResource("CSharpScript_yoshb")
+x = SubResource("Resource_dd50p")
+y = SubResource("Resource_nd7ph")
+
 [sub_resource type="Resource" id="Resource_yoshb"]
 resource_local_to_scene = true
 script = ExtResource("4_yoshb")
-editor_size = Vector2(50, 50)
-editor_position = Vector2(9.32, 2.36)
+editor_size = Vector2(82.345, 60.46)
+Position = SubResource("Resource_sq2vi")
 metadata/_custom_type_script = "uid://0smx527v6br4"
+
+[sub_resource type="Resource" id="Resource_hprql"]
+script = SubResource("CSharpScript_x2bey")
+editor_value = "0"
+
+[sub_resource type="Resource" id="Resource_5lhi4"]
+script = SubResource("CSharpScript_x2bey")
+editor_value = "0"
+
+[sub_resource type="Resource" id="Resource_5xgnj"]
+script = SubResource("CSharpScript_yoshb")
+x = SubResource("Resource_hprql")
+y = SubResource("Resource_5lhi4")
 
 [sub_resource type="Resource" id="Resource_x2bey"]
 resource_local_to_scene = true
 script = ExtResource("4_yoshb")
 editor_size = Vector2(50, 50)
-editor_position = Vector2(200, 500)
+Position = SubResource("Resource_5xgnj")
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [node name="Node2D" type="Node2D" node_paths=PackedStringArray("shape")]

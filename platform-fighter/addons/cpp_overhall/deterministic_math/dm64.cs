@@ -8,6 +8,21 @@ public partial class DM64: Resource
 	static int SHIFT = 32;
 	static long SCALE = 1L << SHIFT;
 	public long raw = 0;
+	public long whole_bits = 0x0FFFFFFF00000000;
+	public long decimal_bits = 0x0000000FFFFFFFF;
+
+	// Exports with getter and setter
+	[Export] public string editor_value
+    {
+        get
+        {
+            return ToFloat().ToString();
+        }
+        set
+        {
+            SetRawFromString(value);
+        }
+    }
 
 	// Constructors
 	public DM64()
@@ -19,19 +34,54 @@ public partial class DM64: Resource
 	{
 		raw = (long)value << SHIFT;
 	}
+	
 
-	public DM64( int va, int vb)
+	public DM64 (string value)
+    {
+        SetRawFromString(value);
+		return;
+    }
+	
+	public void SetRawFromString(String value)
+    {
+        bool is_negative = false;
+		String unsigned = value;
+		if (value [0] == '-')
+        {
+            is_negative = true;
+			unsigned = value[1..];
+        }
+
+		String[] parts = unsigned.Split('.');
+
+		uint a = (uint)parts[0].ToInt();
+		uint b = (uint)parts[1].ToInt();
+
+		SetRawFromWholeAndDecimal(a, b, is_negative);
+    }
+
+
+	public void SetRawFromWholeAndDecimal( uint a, uint b, bool is_negative = false)
     {
 		int vb_size = 0;
-		for (int i =0; i < 32; i++)
+		uint walker = b;
+
+		
+        raw = (long)a << SHIFT;
+
+		if (b == 0) return;
+		while (walker> 0)
         {
-            if (vb >> i > 0)
-            {
-                vb_size = i;
-            } else{break;}
+            walker /= 10;
+			vb_size ++;
         }
-        raw = (long)va << SHIFT;
-		raw += (long) vb << SHIFT - 1 - vb_size;
+
+		long divisor = 1;
+		for (int i = 0; i < vb_size; i++)
+        {divisor *= 10;}
+
+		raw += ((long) b << SHIFT) / divisor;
+		if (is_negative){ raw *= -1;}
     }
 
 	public DM64(long value)
