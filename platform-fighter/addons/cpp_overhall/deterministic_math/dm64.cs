@@ -44,18 +44,38 @@ public partial class DM64: Resource
 	
 	public void SetRawFromString(String value)
     {
-        bool is_negative = false;
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+		value = value.Trim();
+
+		bool is_negative = false;
 		String unsigned = value;
+
+
 		if (value [0] == '-')
         {
             is_negative = true;
 			unsigned = value[1..];
+			if (value.Length == 0)
+            {
+                raw = 0;
+				return;
+            }
         }
 
 		String[] parts = unsigned.Split('.');
 
 		uint a = (uint)parts[0].ToInt();
-		uint b = (uint)parts[1].ToInt();
+		uint b;
+		if (unsigned.Length > 1)
+        {
+           b = (uint)parts[1].ToInt();
+        } else
+        {
+            b = 0;
+        }
 
 		SetRawFromWholeAndDecimal(a, b, is_negative);
     }
