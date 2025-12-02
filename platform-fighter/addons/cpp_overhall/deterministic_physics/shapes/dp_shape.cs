@@ -4,10 +4,12 @@ using System.Collections.Generic;
 
 // This is a tool cause it prevents errors in the editor when it is exported
 [Tool]
+[GlobalClass]
 public partial class dp_shape : Resource
 {
     // World Space
-    [Export] public DM_Vector2 Position = new DM_Vector2();
+    [Export] public Vector2 EditorPosition = new Vector2();
+    public DM_Vector2 Position = new DM_Vector2();
 
     // Owner
     public dp_object PhysicsObject;

@@ -22,8 +22,8 @@ public partial class dp_player_body : dp_object
 	}
 
 	public bool IsGrounded()
-    {
+	{
 		
-        return true;
-    }
+		return true;
+	}
 }

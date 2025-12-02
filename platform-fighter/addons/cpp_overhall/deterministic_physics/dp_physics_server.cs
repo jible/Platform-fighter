@@ -25,9 +25,6 @@ public partial class dp_physics_server : Node
         }
     }
 
-
-
-
     public override void _PhysicsProcess(double delta)
     {
         if (Engine.IsEditorHint()) { return; }
@@ -39,7 +36,7 @@ public partial class dp_physics_server : Node
         foreach (dp_object ObjA in AllShapes)
         {
             if (!ObjA.is_active){continue;} 
-
+            if (ObjA.Shape ==null){continue;}
             foreach (dp_object ObjB in AllShapes)
             {
                 if (ObjA == ObjB) continue;

@@ -1,8 +1,8 @@
 using Godot;
 using System;
 using System.Numerics;
-[GlobalClass]
-public partial class DM64: Resource 
+
+public partial class DM64: Godot.GodotObject
 {
 	// 1 sign bit 31 bits of in and 32 bits of decimal
 	static int SHIFT = 32;
@@ -11,18 +11,18 @@ public partial class DM64: Resource
 	public long whole_bits = 0x0FFFFFFF00000000;
 	public long decimal_bits = 0x0000000FFFFFFFF;
 
-	// Exports with getter and setter
-	[Export] public string editor_value
-    {
-        get
-        {
-            return ToFloat().ToString();
-        }
-        set
-        {
-            SetRawFromString(value);
-        }
-    }
+	// // Exports with getter and setter
+	// [Export] public string editor_value
+    // {
+    //     get
+    //     {
+    //         return ToFloat().ToString();
+    //     }
+    //     set
+    //     {
+    //         SetRawFromString(value);
+    //     }
+    // }
 
 	// Constructors
 	public DM64()
@@ -58,7 +58,7 @@ public partial class DM64: Resource
         {
             is_negative = true;
 			unsigned = value[1..];
-			if (value.Length == 0)
+			if (unsigned.Length == 0)
             {
                 raw = 0;
 				return;
@@ -69,7 +69,7 @@ public partial class DM64: Resource
 
 		uint a = (uint)parts[0].ToInt();
 		uint b;
-		if (unsigned.Length > 1)
+		if (parts.Length > 1)
         {
            b = (uint)parts[1].ToInt();
         } else
@@ -217,7 +217,8 @@ public partial class DM64: Resource
 	public static bool operator ==(DM64 a, DM64 b) => a.raw == b.raw;
 	public static bool operator !=(DM64 a, DM64 b) => a.raw != b.raw;
 
-	public override bool Equals(object obj)
+
+    public override bool Equals(object obj)
 	{
 		if (obj is DM64 other)
 		{

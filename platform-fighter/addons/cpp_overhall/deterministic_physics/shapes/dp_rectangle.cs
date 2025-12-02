@@ -1,14 +1,10 @@
 using Godot;
 using System;
 
-[Tool]
 [GlobalClass]
+[Tool]
 public partial class dp_rectangle : dp_shape
 {
-     public DM_Vector2 size = new DM_Vector2(50,50);
-    [Export]public Vector2 editor_size
-    {
-        get { return size.ToStandardVector(); }
-        set { size = new DM_Vector2(value); }
-    }
+    [Export] public Vector2 EditorSize = new(50,50);
+    public DM_Vector2 Size = new(50,50);
 }

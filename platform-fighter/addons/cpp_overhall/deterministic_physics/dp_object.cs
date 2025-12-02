@@ -99,7 +99,7 @@ public partial class dp_object : Node
 		switch (other.Shape)
 		{
 			case dp_circle otherCircle when Shape is dp_circle thisCircle:
-				DM64 max_distance = thisCircle.radius + otherCircle.radius;
+				DM64 max_distance = thisCircle.Radius + otherCircle.Radius;
 				DM64 distance = (Shape.Position - other.Shape.Position).GetMagnitude(); 
 				return distance < max_distance;
 			case dp_rectangle:
@@ -118,14 +118,14 @@ public partial class dp_object : Node
 				break;
 			case dp_rectangle otherRectangle when Shape is dp_rectangle thisRectangle:
 				DM64 AL = thisRectangle.Position.x;
-				DM64 AR = thisRectangle.Position.x + thisRectangle.size.x;
+				DM64 AR = thisRectangle.Position.x + thisRectangle.Size.x;
 				DM64 AB = thisRectangle.Position.y;
-				DM64 AT = thisRectangle.Position.y + thisRectangle.size.y;  
+				DM64 AT = thisRectangle.Position.y + thisRectangle.Size.y;  
 
 				DM64 BL = otherRectangle.Position.x;
-				DM64 BR = otherRectangle.Position.x + otherRectangle.size.x;
+				DM64 BR = otherRectangle.Position.x + otherRectangle.Size.x;
 				DM64 BB = otherRectangle.Position.y;
-				DM64 BT = otherRectangle.Position.y + thisRectangle.size.y; 
+				DM64 BT = otherRectangle.Position.y + thisRectangle.Size.y; 
 
 				return (
 					(AL < BR ) &&
@@ -181,8 +181,8 @@ public partial class dp_object : Node
 				}
 
 
-				DM_Vector2 ThisHalfSize = thisRectangle.size / 2;
-				DM_Vector2 OtherHalfSize = otherRectangle.size / 2;
+				DM_Vector2 ThisHalfSize = thisRectangle.Size / 2;
+				DM_Vector2 OtherHalfSize = otherRectangle.Size / 2;
 
 				DM_Vector2 other_expanded_min = otherRectangle.Position - OtherHalfSize - ThisHalfSize;
 				DM_Vector2 other_expanded_max = otherRectangle.Position + OtherHalfSize + ThisHalfSize;

@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3 uid="uid://cv76qtcfbufq1"]
+
+[ext_resource type="Script" uid="uid://ckefqjwson1th" path="res://scenes/testing_scenes/dummy_test_scripts/ShapeRendererTesting.cs" id="1_l8sel"]
+[ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/cpp_overhall/deterministic_physics/dp_physics_server.cs" id="2_t60jq"]
+[ext_resource type="Script" uid="uid://baentdytebcpr" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer.cs" id="3_t60jq"]
+[ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/cpp_overhall/deterministic_physics/dp_object.cs" id="4_5ihea"]
+[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_rectangle.cs" id="5_2dtu1"]
+
+[sub_resource type="Resource" id="Resource_52uld"]
+script = ExtResource("5_2dtu1")
+EditorSize = Vector2(51.38, 53.41)
+EditorPosition = Vector2(8.025, 0)
+metadata/_custom_type_script = "uid://0smx527v6br4"
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_l8sel")
+
+[node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]
+script = ExtResource("2_t60jq")
+SearchRoot = NodePath("..")
+metadata/_custom_type_script = "uid://b70u38nhjjbh8"
+
+[node name="shape renderer" type="Node2D" parent="." node_paths=PackedStringArray("PhysicsServer")]
+script = ExtResource("3_t60jq")
+PhysicsServer = NodePath("../dp_physics_server")
+RenderShapesInEditor = true
+RenderShapesInPlay = true
+
+[node name="dp_object" type="Node" parent="."]
+script = ExtResource("4_5ihea")
+Shape = SubResource("Resource_52uld")
+metadata/_custom_type_script = "uid://c4qq7jgy73oan"

@@ -24,7 +24,7 @@ public partial class dp_shape_renderer : Node2D
         foreach (dp_object PhysicsObject in PhysicsServer.AllShapes)
         {
             dp_shape Shape = PhysicsObject.Shape;
-            if (PhysicsObject == null) { continue; }
+            if (PhysicsObject == null || Shape == null) { continue; }
             if (Shape is dp_circle) { draw_collision_circle((dp_circle)Shape); }
             if (Shape is dp_rectangle) { draw_collision_rectangle((dp_rectangle)Shape); }
         }
@@ -32,12 +32,23 @@ public partial class dp_shape_renderer : Node2D
 
     public void draw_collision_circle(dp_circle circle)
     {
-        // GD.Print("drawing circle", circle.Position.ToStandardVector(), circle.radius.ToFloat(), circle.PhysicsObject.color);
-        DrawCircle(circle.Position.ToStandardVector(), circle.radius.ToFloat(), circle.PhysicsObject.color);
+        if (Engine.IsEditorHint())
+        {
+            DrawCircle(circle.EditorPosition, circle.EditorRadius, circle.PhysicsObject.color);
+            return;
+        }
+        DrawCircle(circle.Position.ToStandardVector(), circle.Radius.ToFloat(), circle.PhysicsObject.color);
     }
     public void draw_collision_rectangle(dp_rectangle rectangle)
     {
-        Rect2 DrawShape = new Rect2((rectangle.Position- (rectangle.size/2)).ToStandardVector(), ( rectangle.size).ToStandardVector());
+        Rect2 DrawShape;
+        if (Engine.IsEditorHint())
+        {
+            DrawShape = new Rect2(rectangle.EditorPosition- (rectangle.EditorSize/2), rectangle.EditorSize);
+        } else
+        {
+            DrawShape = new Rect2((rectangle.Position- (rectangle.Size/2)).ToStandardVector(), rectangle.Size.ToStandardVector());
+        }
         DrawRect(DrawShape, rectangle.PhysicsObject.color);
     }
 

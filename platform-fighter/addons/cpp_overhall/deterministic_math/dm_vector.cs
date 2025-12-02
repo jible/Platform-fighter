@@ -1,11 +1,11 @@
 using Godot;
 using System;
 
-[GlobalClass]
-public partial class DM_Vector2: Resource
+public partial class DM_Vector2: GodotObject
+
 {
-    [Export] public DM64 x;
-    [Export] public DM64 y;
+    public DM64 x;
+    public DM64 y;
     
 
     // Constructors
@@ -69,7 +69,7 @@ public partial class DM_Vector2: Resource
     public static DM_Vector2 operator /(DM64 a, DM_Vector2 b) => new DM_Vector2(a / b.x, a / b.y);
 
     public static DM_Vector2 operator *(DM_Vector2 a, int b) => new DM_Vector2(a.x * b, a.y * b);
-    public static DM_Vector2 operator /(DM_Vector2 a, int b) => new DM_Vector2(a.x / b, a.y / b);
+    public static DM_Vector2 operator /(DM_Vector2 a, int b) => (b== 0) ? new DM_Vector2(a.x / b, a.y / b) : new DM_Vector2(0,0);
 
 
     public DM64 GetMagnitude()
