@@ -4,12 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 public partial class dm_server : Node
 {
     public List<object> DM_objects = [];
+    private HashSet<object> _visited = new();
     public void CollectDM_Nodes( )
     {
         DM_objects = [];
+        _visited.Clear();
         Node root = GetTree().CurrentScene;
         _RecurseCollectDM_Nodes(root);
     }
@@ -17,6 +20,9 @@ public partial class dm_server : Node
     private void _RecurseCollectDM_Nodes( Object Parent)
     {
         if (Parent == null){return;}
+        if (_visited.Contains(Parent)) { return;}
+        _visited.Add(Parent);
+
 
         foreach (var field in Parent.GetType().GetFields())
         {
@@ -29,8 +35,7 @@ public partial class dm_server : Node
             }
         }
         if ( Parent is not Node node) { return;}
-        Node CastParent = (Node)Parent;
-        foreach (var child in CastParent.GetChildren())
+        foreach (var child in node.GetChildren())
         {
             _RecurseCollectDM_Nodes(child);
         }

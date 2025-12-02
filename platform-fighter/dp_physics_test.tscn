@@ -12,8 +12,9 @@ EditorSize = Vector2(51.38, 53.41)
 EditorPosition = Vector2(8.025, 0)
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
-[node name="Node2D" type="Node2D"]
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("shape")]
 script = ExtResource("1_l8sel")
+shape = NodePath("dp_object")
 
 [node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]
 script = ExtResource("2_t60jq")
