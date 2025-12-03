@@ -226,7 +226,6 @@ public partial class dp_object : Node
 				// Case for returning object to exactly where it entered:
 				DM64 enter = enterX > enterY? enterX: enterY;
 				DM64 exit = exitX < exitY? exitX: exitY;
-				GD.Print(thisRectangle.Position.ToStandardVector(), otherRectangle.Position.ToStandardVector());
 
 				if (enter > exit ||enter > 1 || enter < 0) {return false;}
 				thisRectangle.Position = PrevPos + (vel * enter);

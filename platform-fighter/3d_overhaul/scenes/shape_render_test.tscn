@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://7iow3tm6ac41"]
+
+[ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/cpp_overhall/deterministic_physics/dp_physics_server.cs" id="1_vltoh"]
+
+[node name="ShapeRenderTest" type="Node3D"]
+
+[node name="dp_physics_server" type="Node" parent="."]
+script = ExtResource("1_vltoh")
+metadata/_custom_type_script = "uid://b70u38nhjjbh8"
+
+[node name="3DShapeRenderer" type="Node3D" parent="."]

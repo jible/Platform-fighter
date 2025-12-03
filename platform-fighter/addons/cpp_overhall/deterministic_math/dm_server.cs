@@ -18,9 +18,6 @@ public partial class dm_server : Node
         {
             GD.Print(item);
         }
-        {
-            
-        }
         GD.Print(DM_objects);
         ConvertEditorMath();
 

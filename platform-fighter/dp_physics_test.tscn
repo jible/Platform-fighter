@@ -12,6 +12,7 @@ EditorPosition = Vector2(567, 456)
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="Resource" id="Resource_5ihea"]
+resource_local_to_scene = true
 script = ExtResource("5_2dtu1")
 EditorPosition = Vector2(300, 300)
 metadata/_custom_type_script = "uid://0smx527v6br4"
