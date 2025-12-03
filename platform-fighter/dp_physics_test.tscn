@@ -34,7 +34,6 @@ RenderShapesInPlay = true
 [node name="dp_object" type="Node" parent="."]
 script = ExtResource("4_5ihea")
 Shape = SubResource("Resource_52uld")
-layer_collision = 1
 mask_collision = 1
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 
@@ -45,6 +44,5 @@ position = Vector2(578, 323)
 script = ExtResource("4_5ihea")
 Shape = SubResource("Resource_5ihea")
 layer_collision = 1
-mask_collision = 1
 color = Color(0.72226965, 0.33124146, 0.51210076, 0.77254903)
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"

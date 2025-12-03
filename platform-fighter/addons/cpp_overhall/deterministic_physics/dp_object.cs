@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -185,14 +186,11 @@ public partial class dp_object : Node
 					return false;
 				}
 
-
 				DM_Vector2 ThisHalfSize = thisRectangle.Size / 2;
 				DM_Vector2 OtherHalfSize = otherRectangle.Size / 2;
 
 				DM_Vector2 other_expanded_min = otherRectangle.Position - OtherHalfSize - ThisHalfSize;
 				DM_Vector2 other_expanded_max = otherRectangle.Position + OtherHalfSize + ThisHalfSize;
-
-			 
 
 				
 				DM64 enterX;
@@ -228,9 +226,11 @@ public partial class dp_object : Node
 				// Case for returning object to exactly where it entered:
 				DM64 enter = enterX > enterY? enterX: enterY;
 				DM64 exit = exitX < exitY? exitX: exitY;
+				GD.Print(thisRectangle.Position.ToStandardVector(), otherRectangle.Position.ToStandardVector());
 
 				if (enter > exit ||enter > 1 || enter < 0) {return false;}
 				thisRectangle.Position = PrevPos + (vel * enter);
+
 				return true;
 		}
 		return false;
