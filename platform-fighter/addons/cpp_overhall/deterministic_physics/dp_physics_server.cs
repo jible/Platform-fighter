@@ -53,7 +53,7 @@ public partial class dp_physics_server : Node
                 if (ObjB.is_trigger){ continue;}
                 
                 // Final case where Obj A and B are collision objects
-                ObjA.CheckCollision(ObjB);         
+                ObjA.CheckCollision(ObjB);    
             }   
             ObjA.PopulateCurrentFrame();
         }

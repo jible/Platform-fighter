@@ -3,12 +3,28 @@ using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 
 public partial class dm_server : Node
 {
     public List<object> DM_objects = [];
     private HashSet<object> _visited = new();
+    public override void _Ready()
+    {
+        GD.Print("started");
+        CollectDM_Nodes();
+        foreach (var item in DM_objects)
+        {
+            GD.Print(item);
+        }
+        {
+            
+        }
+        GD.Print(DM_objects);
+        ConvertEditorMath();
+
+    }
     public void CollectDM_Nodes( )
     {
         DM_objects = [];
@@ -24,7 +40,7 @@ public partial class dm_server : Node
         _visited.Add(Parent);
 
 
-        foreach (var field in Parent.GetType().GetFields())
+        foreach (var field in Parent.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
         {
             if ((field.FieldType == typeof(DM64) || (field.FieldType == typeof(DM_Vector2))) && !DM_objects.Contains(Parent))
             {DM_objects.Add(Parent);}
@@ -50,7 +66,7 @@ public partial class dm_server : Node
         foreach (object obj in DM_objects)
         {
             var type = obj.GetType();
-            foreach (var field in type.GetFields())
+            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
 
                 string FieldName = (string)field.Name;

@@ -77,8 +77,12 @@ public partial class dp_object : Node
 			case dp_circle:
 				is_overlapping = detect_circle_overlap(other);
 				break;
+			case dp_rectangle:
+				GD.Print("Checking overlap");
+				is_overlapping = detect_rect_overlap(other);
+				break;
 			default:
-				detect_rect_overlap(other);
+				is_overlapping = detect_rect_overlap(other);
 				break;
 		}
 		if (is_overlapping && !overlaps[GetPrevBufferPosition()].ContainsKey(other))
@@ -165,6 +169,7 @@ public partial class dp_object : Node
 			case dp_circle:
 				break;
 			case dp_rectangle otherRectangle  when Shape is dp_rectangle thisRectangle:
+
 				Object PrevPosFromDict;
 				Dictionary<String, Object> FrameData = GetFrameData(Godot.Engine.GetPhysicsFrames() - 1);
 
