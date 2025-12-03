@@ -9,7 +9,6 @@ public partial class dp_shape_renderer_3d : Node3D
     [Export] public dp_physics_server PhysicsServer;
     [Export] public bool RenderShapesInEditor;
     [Export] public bool RenderShapesInPlay;
-    public Dictionary<dp_shape, MeshInstance3D> MeshCollection = [];
     public int shape_layer = 0;
     public float BuildBoardThickness = 0.1f;
 
@@ -31,20 +30,25 @@ public partial class dp_shape_renderer_3d : Node3D
         if ((Engine.IsEditorHint() && RenderShapesInEditor) || (!Engine.IsEditorHint() && RenderShapesInPlay))
         {
             update_shape_render();
+            GD.Print("wow");
         }
     }
 
     public void update_shape_render()
     {
         debugMesh.ClearSurfaces();
-
         if (PhysicsServer == null) { return; }
         foreach (dp_object PhysicsObject in PhysicsServer.AllShapes)
         {
+            
             dp_shape Shape = PhysicsObject.Shape;
             if (PhysicsObject == null || Shape == null) { continue; }
-            if (Shape is dp_circle c) { draw_collision_circle(c); }
-            else if (Shape is dp_rectangle r) { draw_collision_rectangle(r); }
+            if (Shape is dp_circle c) { 
+                GD.Print("circle");
+                draw_collision_circle(c); }
+            else if (Shape is dp_rectangle r) { 
+                GD.Print("rectangle");
+                draw_collision_rectangle(r); }
         }
     }
 
@@ -65,17 +69,28 @@ public partial class dp_shape_renderer_3d : Node3D
     }
     public void DrawCircle(Vector3 center, float radius, Color color)
     {
-        debugMesh.SurfaceBegin(Mesh.PrimitiveType.LineStrip);
+        debugMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
         debugMesh.SurfaceSetColor(color);
 
         int segments = 40;
-        for (int i = 0; i <= segments; i++)
+        Vector3 prev = center + new Vector3(radius, 0, 0);
+
+        for (int i = 1; i <= segments; i++)
         {
             float angle = (float)i / segments * Mathf.Tau;
-            Vector3 p = center + new Vector3(Mathf.Cos(angle) * radius,
-                                            Mathf.Sin(angle) * radius,
-                                            0);
-            debugMesh.SurfaceAddVertex(p);
+
+            Vector3 next = center + new Vector3(
+                Mathf.Cos(angle) * radius,
+                Mathf.Sin(angle) * radius,
+                0
+            );
+
+            // Each segment produces one triangle: center → prev → next
+            debugMesh.SurfaceAddVertex(center);
+            debugMesh.SurfaceAddVertex(prev);
+            debugMesh.SurfaceAddVertex(next);
+
+            prev = next;
         }
 
         debugMesh.SurfaceEnd();
@@ -99,7 +114,7 @@ public partial class dp_shape_renderer_3d : Node3D
 
     public void DrawRectangle(Vector3 center, Vector2 size, Color color)
     {
-        debugMesh.SurfaceBegin(Mesh.PrimitiveType.Lines);
+        debugMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
         debugMesh.SurfaceSetColor(color);
 
         Vector3 a = center + new Vector3(-size.X/2, -size.Y/2, 0);
@@ -107,16 +122,15 @@ public partial class dp_shape_renderer_3d : Node3D
         Vector3 c = center + new Vector3( size.X/2,  size.Y/2, 0);
         Vector3 d = center + new Vector3(-size.X/2,  size.Y/2, 0);
 
-        void Edge(Vector3 p1, Vector3 p2)
-        {
-            debugMesh.SurfaceAddVertex(p1);
-            debugMesh.SurfaceAddVertex(p2);
-        }
+        // Triangle 1
+        debugMesh.SurfaceAddVertex(a);
+        debugMesh.SurfaceAddVertex(b);
+        debugMesh.SurfaceAddVertex(c);
 
-        Edge(a, b);
-        Edge(b, c);
-        Edge(c, d);
-        Edge(d, a);
+        // Triangle 2
+        debugMesh.SurfaceAddVertex(c);
+        debugMesh.SurfaceAddVertex(d);
+        debugMesh.SurfaceAddVertex(a);
 
         debugMesh.SurfaceEnd();
     }

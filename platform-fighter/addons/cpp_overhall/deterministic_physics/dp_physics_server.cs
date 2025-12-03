@@ -10,7 +10,7 @@ public partial class dp_physics_server : Node
 {
 	public List<dp_object> AllShapes = new List<dp_object>();
 	//  
-
+	[Export] public Node SearchRoot;
 	public override void _Ready()
 	{
 		var tree = GetTree();
@@ -18,7 +18,6 @@ public partial class dp_physics_server : Node
 		tree.NodeAdded += _on_node_added;
 		tree.NodeRemoved += _on_node_removed;
 		AllShapes = new List<dp_object>();
-		Node SearchRoot = GetTree().CurrentScene;
 		if (SearchRoot != null)
 		{
 			GetAllShapes(SearchRoot);
