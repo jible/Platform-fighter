@@ -26,28 +26,24 @@ public partial class dp_shape_renderer_3d : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
-        
+        debugMesh.ClearSurfaces();
         if ((Engine.IsEditorHint() && RenderShapesInEditor) || (!Engine.IsEditorHint() && RenderShapesInPlay))
         {
             update_shape_render();
-            GD.Print("wow");
         }
     }
 
     public void update_shape_render()
     {
-        debugMesh.ClearSurfaces();
+        
         if (PhysicsServer == null) { return; }
         foreach (dp_object PhysicsObject in PhysicsServer.AllShapes)
         {
-            
             dp_shape Shape = PhysicsObject.Shape;
             if (PhysicsObject == null || Shape == null) { continue; }
             if (Shape is dp_circle c) { 
-                GD.Print("circle");
                 draw_collision_circle(c); }
             else if (Shape is dp_rectangle r) { 
-                GD.Print("rectangle");
                 draw_collision_rectangle(r); }
         }
     }
@@ -108,7 +104,6 @@ public partial class dp_shape_renderer_3d : Node3D
             ObjSize = rectangle.Size.ToStandardVector();
             ObjPos = VectorUp(rectangle.Position.ToStandardVector());
         }
-        
         DrawRectangle(ObjPos, ObjSize, rectangle.PhysicsObject.color);
     }
 
@@ -116,6 +111,9 @@ public partial class dp_shape_renderer_3d : Node3D
     {
         debugMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
         debugMesh.SurfaceSetColor(color);
+
+        debugMesh.SurfaceSetNormal(Vector3.Up);
+
 
         Vector3 a = center + new Vector3(-size.X/2, -size.Y/2, 0);
         Vector3 b = center + new Vector3( size.X/2, -size.Y/2, 0);
@@ -132,7 +130,22 @@ public partial class dp_shape_renderer_3d : Node3D
         debugMesh.SurfaceAddVertex(d);
         debugMesh.SurfaceAddVertex(a);
 
+
+        // Inverted triangles so it renders in both directions
+        debugMesh.SurfaceSetNormal(Vector3.Down);
+
+        // Triangle 1
+        debugMesh.SurfaceAddVertex(c);
+        debugMesh.SurfaceAddVertex(b);
+        debugMesh.SurfaceAddVertex(a);
+
+        // Triangle 2
+        debugMesh.SurfaceAddVertex(a);
+        debugMesh.SurfaceAddVertex(d);
+        debugMesh.SurfaceAddVertex(c);
+
         debugMesh.SurfaceEnd();
+
     }
 
 
