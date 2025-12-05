@@ -11,22 +11,13 @@ public partial class dp_shape_renderer_3d : Node3D
     [Export] public bool RenderShapesInPlay;
     public int shape_layer = 0;
     public float BuildBoardThickness = 0.1f;
+    public Dictionary<dp_shape,MeshInstance3D> ShapeToMesh = [];
+    public Dictionary<dp_shape,object[]> PreviousData = [];
 
 
-    private ImmediateMesh debugMesh;
-    private MeshInstance3D meshInstance;
-
-    public override void _Ready()
-    {
-        meshInstance = new MeshInstance3D();
-        debugMesh = new ImmediateMesh();
-        meshInstance.Mesh = debugMesh;
-        AddChild(meshInstance);
-    }
 
     public override void _PhysicsProcess(double delta)
     {
-        debugMesh.ClearSurfaces();
         if ((Engine.IsEditorHint() && RenderShapesInEditor) || (!Engine.IsEditorHint() && RenderShapesInPlay))
         {
             update_shape_render();
@@ -39,16 +30,27 @@ public partial class dp_shape_renderer_3d : Node3D
         if (PhysicsServer == null) { return; }
         foreach (dp_object PhysicsObject in PhysicsServer.AllShapes)
         {
+            
             dp_shape Shape = PhysicsObject.Shape;
+            MeshInstance3D mesh;
+
+            bool exists = ShapeToMesh.TryGetValue(Shape, out mesh);
+            if (!exists)
+            {
+                mesh = new MeshInstance3D();
+                AddChild(mesh);
+                ShapeToMesh[Shape] = mesh;
+            }
+
             if (PhysicsObject == null || Shape == null) { continue; }
             if (Shape is dp_circle c) { 
-                draw_collision_circle(c); }
+                draw_collision_circle(c, mesh); }
             else if (Shape is dp_rectangle r) { 
-                draw_collision_rectangle(r); }
+                draw_collision_rectangle(r, mesh); }
         }
     }
 
-    public void draw_collision_circle(dp_circle circle)
+    public void draw_collision_circle(dp_circle circle, MeshInstance3D mesh)
     {
         Vector3 ObjPosition;
         float ObjRadius;
@@ -65,35 +67,11 @@ public partial class dp_shape_renderer_3d : Node3D
     }
     public void DrawCircle(Vector3 center, float radius, Color color)
     {
-        debugMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
-        debugMesh.SurfaceSetColor(color);
-
-        int segments = 40;
-        Vector3 prev = center + new Vector3(radius, 0, 0);
-
-        for (int i = 1; i <= segments; i++)
-        {
-            float angle = (float)i / segments * Mathf.Tau;
-
-            Vector3 next = center + new Vector3(
-                Mathf.Cos(angle) * radius,
-                Mathf.Sin(angle) * radius,
-                0
-            );
-
-            // Each segment produces one triangle: center → prev → next
-            debugMesh.SurfaceAddVertex(center);
-            debugMesh.SurfaceAddVertex(prev);
-            debugMesh.SurfaceAddVertex(next);
-
-            prev = next;
-        }
-
-        debugMesh.SurfaceEnd();
+        return;
     }
 
 
-    public void draw_collision_rectangle(dp_rectangle rectangle)
+    public void draw_collision_rectangle(dp_rectangle rectangle, MeshInstance3D meshInstance)
     {
         Vector2 ObjSize;
         Vector3 ObjPos;
@@ -104,49 +82,30 @@ public partial class dp_shape_renderer_3d : Node3D
             ObjSize = rectangle.Size.ToStandardVector();
             ObjPos = VectorUp(rectangle.Position.ToStandardVector());
         }
-        DrawRectangle(ObjPos, ObjSize, rectangle.PhysicsObject.color);
+        
+        
+
+        meshInstance.Position = ObjPos;
+        
+        // Rectangle Data:
+        // [shape, size]
+        object[] ObjPrevData = [];
+        bool HasData = PreviousData.TryGetValue(rectangle, out ObjPrevData);
+
+        // If it has the data and its the same, 
+        if (
+            HasData &&
+            (string)ObjPrevData[0] == "rectangle" && 
+            (Vector2)ObjPrevData[1] == ObjSize)
+        {return;}
+        // In this case it is different, so make a new quad mesh
+        object[] NewData = [ "rectangle", ObjSize];
+        PreviousData[rectangle] = NewData;
+        var quad = new QuadMesh();
+        quad.Size = ObjSize;
+        meshInstance.Mesh = quad;
     }
 
-    public void DrawRectangle(Vector3 center, Vector2 size, Color color)
-    {
-        debugMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
-        debugMesh.SurfaceSetColor(color);
-
-        debugMesh.SurfaceSetNormal(Vector3.Up);
-
-
-        Vector3 a = center + new Vector3(-size.X/2, -size.Y/2, 0);
-        Vector3 b = center + new Vector3( size.X/2, -size.Y/2, 0);
-        Vector3 c = center + new Vector3( size.X/2,  size.Y/2, 0);
-        Vector3 d = center + new Vector3(-size.X/2,  size.Y/2, 0);
-
-        // Triangle 1
-        debugMesh.SurfaceAddVertex(a);
-        debugMesh.SurfaceAddVertex(b);
-        debugMesh.SurfaceAddVertex(c);
-
-        // Triangle 2
-        debugMesh.SurfaceAddVertex(c);
-        debugMesh.SurfaceAddVertex(d);
-        debugMesh.SurfaceAddVertex(a);
-
-
-        // Inverted triangles so it renders in both directions
-        debugMesh.SurfaceSetNormal(Vector3.Down);
-
-        // Triangle 1
-        debugMesh.SurfaceAddVertex(c);
-        debugMesh.SurfaceAddVertex(b);
-        debugMesh.SurfaceAddVertex(a);
-
-        // Triangle 2
-        debugMesh.SurfaceAddVertex(a);
-        debugMesh.SurfaceAddVertex(d);
-        debugMesh.SurfaceAddVertex(c);
-
-        debugMesh.SurfaceEnd();
-
-    }
 
 
     public Vector3 VectorUp(Vector2 original)
