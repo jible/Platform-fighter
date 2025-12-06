@@ -11,9 +11,8 @@ public partial class dp_shape_renderer_3d : Node3D
     [Export] public bool RenderShapesInPlay;
     public int shape_layer = 0;
     public float BuildBoardThickness = 0.1f;
-    public Dictionary<dp_shape,MeshInstance3D> ShapeToMesh = [];
-    public Dictionary<dp_shape,object[]> PreviousData = [];
-
+    public Dictionary<dp_object,MeshInstance3D> ObjectToMesh = [];
+    public Dictionary<dp_object,object[]> PreviousData = [];
 
 
     public override void _PhysicsProcess(double delta)
@@ -26,31 +25,54 @@ public partial class dp_shape_renderer_3d : Node3D
 
     public void update_shape_render()
     {
-        
+        var seenShapes = new HashSet<dp_object>();
+
         if (PhysicsServer == null) { return; }
         foreach (dp_object PhysicsObject in PhysicsServer.AllShapes)
         {
-            
+            if (PhysicsObject == null || PhysicsObject.Shape == null)
+            {
+                continue;
+            }
+
+
+
             dp_shape Shape = PhysicsObject.Shape;
+            seenShapes.Add(PhysicsObject);
             MeshInstance3D mesh;
 
-            bool exists = ShapeToMesh.TryGetValue(Shape, out mesh);
+            bool exists = ObjectToMesh.TryGetValue(PhysicsObject, out mesh);
             if (!exists)
             {
                 mesh = new MeshInstance3D();
                 AddChild(mesh);
-                ShapeToMesh[Shape] = mesh;
+                ObjectToMesh[PhysicsObject] = mesh;
             }
 
-            if (PhysicsObject == null || Shape == null) { continue; }
             if (Shape is dp_circle c) { 
-                draw_collision_circle(c, mesh); }
+                draw_collision_circle(PhysicsObject, c, mesh); }
             else if (Shape is dp_rectangle r) { 
-                draw_collision_rectangle(r, mesh); }
+                draw_collision_rectangle(PhysicsObject, r, mesh); }
+        }
+        var toRemove = new List<dp_object>();
+
+        foreach (var PhysicsObject in ObjectToMesh.Keys)
+        {
+            if (!seenShapes.Contains(PhysicsObject))
+            {
+                toRemove.Add(PhysicsObject);
+            }
+        }
+        foreach (var item in toRemove)
+        {
+            RemoveChild(ObjectToMesh[item]);
+            ObjectToMesh[item].QueueFree();
+            ObjectToMesh.Remove(item);
+            PreviousData.Remove(item);
         }
     }
 
-    public void draw_collision_circle(dp_circle circle, MeshInstance3D mesh)
+    public void draw_collision_circle(dp_object obj, dp_circle circle, MeshInstance3D mesh)
     {
         Vector3 ObjPosition;
         float ObjRadius;
@@ -71,7 +93,7 @@ public partial class dp_shape_renderer_3d : Node3D
     }
 
 
-    public void draw_collision_rectangle(dp_rectangle rectangle, MeshInstance3D meshInstance)
+    public void draw_collision_rectangle(dp_object obj, dp_rectangle rectangle, MeshInstance3D meshInstance)
     {
         Vector2 ObjSize;
         Vector3 ObjPos;
@@ -90,7 +112,7 @@ public partial class dp_shape_renderer_3d : Node3D
         // Rectangle Data:
         // [shape, size]
         object[] ObjPrevData = [];
-        bool HasData = PreviousData.TryGetValue(rectangle, out ObjPrevData);
+        bool HasData = PreviousData.TryGetValue(obj, out ObjPrevData);
 
         // If it has the data and its the same, 
         if (
@@ -99,8 +121,7 @@ public partial class dp_shape_renderer_3d : Node3D
             (Vector2)ObjPrevData[1] == ObjSize)
         {return;}
         // In this case it is different, so make a new quad mesh
-        object[] NewData = [ "rectangle", ObjSize];
-        PreviousData[rectangle] = NewData;
+        PreviousData[obj] = ["rectangle", ObjSize];
         var quad = new QuadMesh();
         quad.Size = ObjSize;
         meshInstance.Mesh = quad;
