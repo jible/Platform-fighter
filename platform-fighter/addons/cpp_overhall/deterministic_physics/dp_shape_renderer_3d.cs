@@ -12,7 +12,7 @@ public partial class dp_shape_renderer_3d : Node3D
     public int shape_layer = 0;
     public float BuildBoardThickness = 0.1f;
     public Dictionary<dp_object,MeshInstance3D> ObjectToMesh = [];
-    public Dictionary<dp_object,object[]> PreviousData = [];
+    private Dictionary<dp_object,RenderState> PreviousData = [];
 
 
     public override void _PhysicsProcess(double delta)
@@ -34,8 +34,6 @@ public partial class dp_shape_renderer_3d : Node3D
             {
                 continue;
             }
-
-
 
             dp_shape Shape = PhysicsObject.Shape;
             seenShapes.Add(PhysicsObject);
@@ -92,7 +90,6 @@ public partial class dp_shape_renderer_3d : Node3D
         return;
     }
 
-
     public void draw_collision_rectangle(dp_object obj, dp_rectangle rectangle, MeshInstance3D meshInstance)
     {
         Vector2 ObjSize;
@@ -104,33 +101,63 @@ public partial class dp_shape_renderer_3d : Node3D
             ObjSize = rectangle.Size.ToStandardVector();
             ObjPos = VectorUp(rectangle.Position.ToStandardVector());
         }
-        
-        
 
         meshInstance.Position = ObjPos;
         
         // Rectangle Data:
-        // [shape, size]
-        object[] ObjPrevData = [];
+        // [shape, color, size]
+        RenderState ObjPrevData;
         bool HasData = PreviousData.TryGetValue(obj, out ObjPrevData);
+        bool SameShape = HasData && ObjPrevData.ShapeType == "rectangle";
+        bool SameColor = HasData && ObjPrevData.color == obj.color;
+        bool SameSize = HasData && ObjPrevData.Size == ObjSize;
 
-        // If it has the data and its the same, 
-        if (
-            HasData &&
-            (string)ObjPrevData[0] == "rectangle" && 
-            (Vector2)ObjPrevData[1] == ObjSize)
-        {return;}
-        // In this case it is different, so make a new quad mesh
-        PreviousData[obj] = ["rectangle", ObjSize];
-        var quad = new QuadMesh();
-        quad.Size = ObjSize;
-        meshInstance.Mesh = quad;
+        if (!SameShape || !SameSize)
+        {
+            var quad = new QuadMesh();
+            quad.Size = ObjSize;
+            meshInstance.Mesh = quad;
+        }
+        if (!SameColor)
+        {
+            meshInstance.MaterialOverride = MakeMaterial(obj.color);
+        }
+
+        PreviousData[obj] = new RenderState("rectangle", ObjSize, obj.color);
     }
-
-
 
     public Vector3 VectorUp(Vector2 original)
     {
         return new Vector3(original.X, original.Y, shape_layer);
     }
+
+    public StandardMaterial3D MakeMaterial(Color color)
+    {
+        var mat = new StandardMaterial3D();
+
+        mat.AlbedoColor = color;
+        mat.Transparency = BaseMaterial3D.TransparencyEnum.Alpha;
+        // mat.BlendMode = BaseMaterial3D.BlendModeEnum.Mix;
+        // mat.DepthDrawMode = BaseMaterial3D.DepthDrawModeEnum.Always;
+        // mat.ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded;
+
+        return mat;
+    }
+
+    
+    class RenderState
+    {
+        public string ShapeType;
+        public Vector2 Size;
+        public Color color;
+
+        public RenderState(string st,Vector2 s, Color c)
+        {
+            ShapeType = st;
+            Size = s;
+            color = c;
+        }
+    }
 }
+
+
