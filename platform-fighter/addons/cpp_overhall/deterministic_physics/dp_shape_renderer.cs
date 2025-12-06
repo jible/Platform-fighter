@@ -21,7 +21,7 @@ public partial class dp_shape_renderer : Node2D
     {
         // base._Draw();
         if (PhysicsServer == null) { return; }
-        foreach (dp_object PhysicsObject in PhysicsServer.AllShapes)
+        foreach (dp_object PhysicsObject in PhysicsServer.AllObjects)
         {
             dp_shape Shape = PhysicsObject.Shape;
             if (PhysicsObject == null || Shape == null) { continue; }

@@ -8,16 +8,16 @@ using System.Security.AccessControl;
 [Tool]
 public partial class dp_physics_server : Node
 {
-	public List<dp_object> AllShapes = new List<dp_object>();
+	public List<dp_object> AllObjects = new List<dp_object>();
 	//  
 	[Export] public Node SearchRoot;
 	public override void _Ready()
 	{
-		var tree = GetTree();
-
-		tree.NodeAdded += _on_node_added;
-		tree.NodeRemoved += _on_node_removed;
-		AllShapes = new List<dp_object>();
+		dp_object.GlobalPhysicsServer = this;
+		// var tree = GetTree();
+		// tree.NodeAdded += _on_node_added;
+		// tree.NodeRemoved += _on_node_removed;
+		AllObjects = new List<dp_object>();
 		if (SearchRoot != null)
 		{
 			GetAllShapes(SearchRoot);
@@ -26,17 +26,23 @@ public partial class dp_physics_server : Node
 
 	public override void _PhysicsProcess(double delta)
 	{
-		if (Engine.IsEditorHint()) { return; }
 		HandleInteractions();
 	}
 
+	public void RegisterObj( dp_object target)
+    {
+        if (AllObjects.Contains(target)) return;
+		AllObjects.Add(target);
+    }
+
 	public void HandleInteractions()
 	{
-		foreach (dp_object ObjA in AllShapes)
+		if (Engine.IsEditorHint()) { return; }
+		foreach (dp_object ObjA in AllObjects)
 		{
 			if (!ObjA.is_active){continue;} 
 			if (ObjA.Shape ==null){continue;}
-			foreach (dp_object ObjB in AllShapes)
+			foreach (dp_object ObjB in AllObjects)
 			{
 				if (ObjA == ObjB) continue;
 				if (ObjA.is_static) continue;
@@ -56,18 +62,12 @@ public partial class dp_physics_server : Node
 			}   
 			ObjA.PopulateCurrentFrame();
 		}
-
-
 	}
-
-
-
-
 
 	public void GetAllShapes(Node Parent)
 	{
 		if (Parent == null) { return; }
-		if (Parent is dp_object) { AllShapes.Add((dp_object)Parent); }
+		if (Parent is dp_object) { AllObjects.Add((dp_object)Parent); }
 		foreach (var ChildNode in Parent.GetChildren())
 		{
 			GetAllShapes(ChildNode);
@@ -77,7 +77,7 @@ public partial class dp_physics_server : Node
 	{
 		if (node is dp_object CastedNode)
 		{
-			AllShapes.Add(CastedNode);
+			AllObjects.Add(CastedNode);
 		}
 	}
 
@@ -85,7 +85,7 @@ public partial class dp_physics_server : Node
 	{
 		if (node is dp_object)
 		{
-			AllShapes.Remove((dp_object)node);
+			AllObjects.Remove((dp_object)node);
 
 		}
 	}

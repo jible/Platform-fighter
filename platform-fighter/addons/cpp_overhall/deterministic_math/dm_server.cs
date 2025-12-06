@@ -12,13 +12,7 @@ public partial class dm_server : Node
     private HashSet<object> _visited = new();
     public override void _Ready()
     {
-        GD.Print("started");
         CollectDM_Nodes();
-        foreach (var item in DM_objects)
-        {
-            GD.Print(item);
-        }
-        GD.Print(DM_objects);
         ConvertEditorMath();
 
     }

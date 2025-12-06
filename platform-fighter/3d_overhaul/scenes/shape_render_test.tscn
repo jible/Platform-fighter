@@ -8,8 +8,8 @@
 
 [sub_resource type="Resource" id="Resource_3k7p8"]
 script = ExtResource("4_3kom4")
-EditorSize = Vector2(26.115, 31.62)
-EditorPosition = Vector2(-18.64, 0)
+EditorSize = Vector2(34.355, 39.755)
+EditorPosition = Vector2(-20.95, 4.195)
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="Resource" id="Resource_lfbv8"]
@@ -34,7 +34,7 @@ RenderShapesInEditor = true
 RenderShapesInPlay = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.022281885, 0.0074249506, 74.523445)
+transform = Transform3D(0.89156055, 0, 0.45290163, 0, 1, 0, -0.45290163, 0, 0.89156055, 14.063572, 0.0074249506, 74.523445)
 
 [node name="dp_object" type="Node" parent="."]
 script = ExtResource("3_fng5o")

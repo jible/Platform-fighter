@@ -11,6 +11,8 @@ public partial class dp_object : Node
 {
 	// Rollback Data
 	Dictionary<String, Object>[] RollbackData;
+	public static dp_physics_server GlobalPhysicsServer;
+
 
 	// Collision Data
 	[Export]public bool is_active = true;
@@ -58,6 +60,8 @@ public partial class dp_object : Node
 	public override void _Ready()
 	{
 		// Fill overlaps and position buffer with 
+		if (GlobalPhysicsServer != null)
+        {GlobalPhysicsServer.RegisterObj(this);}
 		if (Engine.IsEditorHint()) {return;}
 		overlaps = new Dictionary<dp_object, bool>[MaxDataBufferSize];
 		RollbackData = new Dictionary<String, Object>[MaxDataBufferSize];
@@ -67,6 +71,8 @@ public partial class dp_object : Node
 			overlaps[i] = [];
 		}
 	}
+
+
 
 	// Overlap Detection
 	public bool CheckOverlap(dp_object other)
