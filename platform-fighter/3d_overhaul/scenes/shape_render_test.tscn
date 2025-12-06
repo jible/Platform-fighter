@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://7iow3tm6ac41"]
 
-[ext_resource type="Script" uid="uid://ctmeupgwbw8b5" path="res://scenes/testing_scenes/dummy_test_scripts/shape_render_test.gd" id="1_fng5o"]
+[ext_resource type="Script" uid="uid://bl4ob8n7sbao" path="res://scenes/testing_scenes/dummy_test_scripts/ShapeRenderTest.cs" id="1_fng5o"]
 [ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/cpp_overhall/deterministic_physics/dp_physics_server.cs" id="1_vltoh"]
 [ext_resource type="Script" uid="uid://dq0qndvxc03wc" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer_3d.cs" id="2_lfbv8"]
 [ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/cpp_overhall/deterministic_physics/dp_object.cs" id="3_fng5o"]
@@ -8,18 +8,19 @@
 
 [sub_resource type="Resource" id="Resource_3k7p8"]
 script = ExtResource("4_3kom4")
-EditorSize = Vector2(5, 5)
-EditorPosition = Vector2(5.69, 0)
+EditorSize = Vector2(26.115, 31.62)
+EditorPosition = Vector2(-18.64, 0)
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="Resource" id="Resource_lfbv8"]
 script = ExtResource("4_3kom4")
-EditorSize = Vector2(5, 5)
+EditorSize = Vector2(13.69, 22.69)
+EditorPosition = Vector2(8.21, 0)
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
-[node name="ShapeRenderTest" type="Node3D" node_paths=PackedStringArray("moveable_object")]
+[node name="ShapeRenderTest" type="Node3D" node_paths=PackedStringArray("moveable")]
 script = ExtResource("1_fng5o")
-moveable_object = NodePath("dp_object")
+moveable = NodePath("dp_object")
 
 [node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]
 script = ExtResource("1_vltoh")
@@ -33,16 +34,21 @@ RenderShapesInEditor = true
 RenderShapesInPlay = true
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.022281885, 0.0074249506, 2.9800296)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.022281885, 0.0074249506, 74.523445)
 
 [node name="dp_object" type="Node" parent="."]
 script = ExtResource("3_fng5o")
 Shape = SubResource("Resource_3k7p8")
+layer_collision = 1
+mask_collision = 1
 color = Color(0.42355564, 0.8334536, 0.6435018, 0.34901962)
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 
 [node name="dp_object2" type="Node" parent="."]
 script = ExtResource("3_fng5o")
 Shape = SubResource("Resource_lfbv8")
+layer_collision = 1
+mask_collision = 1
+is_static = true
 color = Color(0.7893258, 0.23846656, 0.5376687, 0.77254903)
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
