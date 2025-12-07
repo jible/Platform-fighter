@@ -19,7 +19,6 @@ metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="Resource" id="Resource_ocp11"]
 script = ExtResource("6_3kom4")
-EditorRadius = 49.395
 EditorPosition = Vector2(1.455, 0)
 metadata/_custom_type_script = "uid://btu6jtv82ie0t"
 
@@ -61,4 +60,5 @@ metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 [node name="dp_object3" type="Node" parent="."]
 script = ExtResource("3_fng5o")
 Shape = SubResource("Resource_ocp11")
+color = Color(0.42352942, 0.8352941, 0.6431373, 0.34901962)
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"

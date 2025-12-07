@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Numerics;
 
-public partial class DM64: Godot.GodotObject
+public struct DM64
 {
 	// 1 sign bit 31 bits of in and 32 bits of decimal
 	static int SHIFT = 32;

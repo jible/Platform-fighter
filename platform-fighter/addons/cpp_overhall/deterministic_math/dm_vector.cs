@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class DM_Vector2: GodotObject
+public partial struct DM_Vector2
 
 {
     public DM64 x;

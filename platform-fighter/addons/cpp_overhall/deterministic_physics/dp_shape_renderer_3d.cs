@@ -76,11 +76,11 @@ public partial class dp_shape_renderer_3d : Node3D
         float ObjRadius;
         if (Engine.IsEditorHint())
         {
-            ObjPosition = VectorUp(circle.EditorPosition);
+            ObjPosition = VectorUp(circle.EditorPosition, shape_layer);
             ObjRadius = circle.EditorRadius;
         }else
         {
-            ObjPosition = VectorUp(circle.Position.ToStandardVector());
+            ObjPosition = VectorUp(circle.Position.ToStandardVector(), shape_layer);
             ObjRadius = circle.Radius.ToFloat();
         }
         
@@ -101,7 +101,6 @@ public partial class dp_shape_renderer_3d : Node3D
             MeshInstance.Mesh = mesh;
         }
 
-
         if (!SameColor)
         {
             MeshInstance.MaterialOverride = MakeMaterial(obj.color);
@@ -109,7 +108,7 @@ public partial class dp_shape_renderer_3d : Node3D
 
         MeshInstance.Position = ObjPosition;
         PreviousData[obj] = new RenderState("circle", ObjRadius, obj.color);
-        // MeshInstance.RotationDegrees = new Vector3(90, 0, 0);
+        MeshInstance.RotationDegrees = new Vector3(90, 0, 0);
 
     }
 
@@ -119,10 +118,10 @@ public partial class dp_shape_renderer_3d : Node3D
         Vector3 ObjPos;
         if (Engine.IsEditorHint()){
             ObjSize = rectangle.EditorSize;
-            ObjPos = VectorUp(rectangle.EditorPosition);
+            ObjPos = VectorUp(rectangle.EditorPosition, shape_layer);
         } else{
             ObjSize = rectangle.Size.ToStandardVector();
-            ObjPos = VectorUp(rectangle.Position.ToStandardVector());
+            ObjPos = VectorUp(rectangle.Position.ToStandardVector(), shape_layer);
         }
 
         meshInstance.Position = ObjPos;
@@ -137,21 +136,21 @@ public partial class dp_shape_renderer_3d : Node3D
 
         if (!SameShape || !SameSize)
         {
-            var quad = new QuadMesh();
-            quad.Size = ObjSize;
-            meshInstance.Mesh = quad;
+            var box = new BoxMesh();
+            box.Size = VectorUp(ObjSize, BuildBoardThickness);
+            meshInstance.Mesh = box;
         }
         if (!SameColor)
         {
             meshInstance.MaterialOverride = MakeMaterial(obj.color);
         }
-        // meshInstance.RotationDegrees = new Vector3(0, 0, 0);
+        meshInstance.RotationDegrees = new Vector3(0, 0, 0);
         PreviousData[obj] = new RenderState("rectangle", ObjSize, obj.color);
     }
 
-    public Vector3 VectorUp(Vector2 original)
+    public Vector3 VectorUp(Vector2 original, float z)
     {
-        return new Vector3(original.X, original.Y, shape_layer);
+        return new Vector3(original.X, original.Y, z);
     }
 
     public StandardMaterial3D MakeMaterial(Color color)
