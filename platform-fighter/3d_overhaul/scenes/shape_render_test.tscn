@@ -1,30 +1,26 @@
-[gd_scene load_steps=10 format=3 uid="uid://7iow3tm6ac41"]
+[gd_scene load_steps=8 format=3 uid="uid://7iow3tm6ac41"]
 
 [ext_resource type="Script" uid="uid://bl4ob8n7sbao" path="res://scenes/testing_scenes/dummy_test_scripts/ShapeRenderTest.cs" id="1_fng5o"]
 [ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/cpp_overhall/deterministic_physics/dp_physics_server.cs" id="1_vltoh"]
 [ext_resource type="Script" uid="uid://dq0qndvxc03wc" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer_3d.cs" id="2_lfbv8"]
 [ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/cpp_overhall/deterministic_physics/dp_object.cs" id="3_fng5o"]
-[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_rectangle.cs" id="4_3kom4"]
 [ext_resource type="Script" uid="uid://btu6jtv82ie0t" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_circle.cs" id="6_3kom4"]
 
-[sub_resource type="Resource" id="Resource_3k7p8"]
-script = ExtResource("4_3kom4")
-EditorPosition = Vector2(-30.68, 4.195)
-metadata/_custom_type_script = "uid://0smx527v6br4"
-
-[sub_resource type="Resource" id="Resource_lfbv8"]
-script = ExtResource("4_3kom4")
-EditorPosition = Vector2(8.21, 0)
-metadata/_custom_type_script = "uid://0smx527v6br4"
+[sub_resource type="Resource" id="Resource_fng5o"]
+script = ExtResource("6_3kom4")
+EditorRadius = 32.5
+EditorPosition = Vector2(-31.51, 0)
+metadata/_custom_type_script = "uid://btu6jtv82ie0t"
 
 [sub_resource type="Resource" id="Resource_ocp11"]
 script = ExtResource("6_3kom4")
-EditorPosition = Vector2(1.455, 0)
+EditorRadius = 25.84
+EditorPosition = Vector2(39.66, 0)
 metadata/_custom_type_script = "uid://btu6jtv82ie0t"
 
 [node name="ShapeRenderTest" type="Node3D" node_paths=PackedStringArray("moveable")]
 script = ExtResource("1_fng5o")
-moveable = NodePath("dp_object")
+moveable = NodePath("dp_object2")
 
 [node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]
 script = ExtResource("1_vltoh")
@@ -40,25 +36,20 @@ RenderShapesInPlay = true
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.89156055, 0, 0.45290163, 0, 1, 0, -0.45290163, 0, 0.89156055, 14.063572, 0.0074249506, 74.523445)
 
-[node name="dp_object" type="Node" parent="."]
-script = ExtResource("3_fng5o")
-Shape = SubResource("Resource_3k7p8")
-layer_collision = 1
-mask_collision = 1
-color = Color(0.42355564, 0.8334536, 0.6435018, 0.34901962)
-metadata/_custom_type_script = "uid://c4qq7jgy73oan"
-
 [node name="dp_object2" type="Node" parent="."]
 script = ExtResource("3_fng5o")
-Shape = SubResource("Resource_lfbv8")
+Shape = SubResource("Resource_fng5o")
 layer_collision = 1
 mask_collision = 1
-is_static = true
+is_trigger = true
 color = Color(0.7893258, 0.23846656, 0.5376687, 0.77254903)
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 
 [node name="dp_object3" type="Node" parent="."]
 script = ExtResource("3_fng5o")
 Shape = SubResource("Resource_ocp11")
+layer_collision = 1
+mask_collision = 1
+is_trigger = true
 color = Color(0.42352942, 0.8352941, 0.6431373, 0.34901962)
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
