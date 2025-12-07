@@ -70,7 +70,7 @@ public partial class dp_shape_renderer_3d : Node3D
         }
     }
 
-    public void draw_collision_circle(dp_object obj, dp_circle circle, MeshInstance3D mesh)
+    public void draw_collision_circle(dp_object obj, dp_circle circle, MeshInstance3D MeshInstance)
     {
         Vector3 ObjPosition;
         float ObjRadius;
@@ -83,11 +83,34 @@ public partial class dp_shape_renderer_3d : Node3D
             ObjPosition = VectorUp(circle.Position.ToStandardVector());
             ObjRadius = circle.Radius.ToFloat();
         }
-        DrawCircle(ObjPosition, ObjRadius,circle.PhysicsObject.color);
-    }
-    public void DrawCircle(Vector3 center, float radius, Color color)
-    {
-        return;
+        
+
+        RenderState ObjPrevData;
+        bool HasData = PreviousData.TryGetValue(obj, out ObjPrevData);
+        bool SameShape = HasData && ObjPrevData.ShapeType == "circle";
+        bool SameColor = HasData && ObjPrevData.color == obj.color;
+        bool SameRadius = HasData && ObjPrevData.Radius == ObjRadius;
+
+
+        if (!SameShape || !SameRadius)
+        {
+            CylinderMesh mesh = new();
+            mesh.TopRadius = ObjRadius;
+            mesh.BottomRadius = ObjRadius;
+            mesh.Height = BuildBoardThickness;
+            MeshInstance.Mesh = mesh;
+        }
+
+
+        if (!SameColor)
+        {
+            MeshInstance.MaterialOverride = MakeMaterial(obj.color);
+        }
+
+        MeshInstance.Position = ObjPosition;
+        PreviousData[obj] = new RenderState("circle", ObjRadius, obj.color);
+        // MeshInstance.RotationDegrees = new Vector3(90, 0, 0);
+
     }
 
     public void draw_collision_rectangle(dp_object obj, dp_rectangle rectangle, MeshInstance3D meshInstance)
@@ -103,7 +126,7 @@ public partial class dp_shape_renderer_3d : Node3D
         }
 
         meshInstance.Position = ObjPos;
-        
+        // e
         // Rectangle Data:
         // [shape, color, size]
         RenderState ObjPrevData;
@@ -122,7 +145,7 @@ public partial class dp_shape_renderer_3d : Node3D
         {
             meshInstance.MaterialOverride = MakeMaterial(obj.color);
         }
-
+        // meshInstance.RotationDegrees = new Vector3(0, 0, 0);
         PreviousData[obj] = new RenderState("rectangle", ObjSize, obj.color);
     }
 
@@ -149,12 +172,20 @@ public partial class dp_shape_renderer_3d : Node3D
     {
         public string ShapeType;
         public Vector2 Size;
+        public float Radius;
         public Color color;
 
         public RenderState(string st,Vector2 s, Color c)
         {
             ShapeType = st;
             Size = s;
+            color = c;
+        }
+
+        public RenderState(string st,float r, Color c)
+        {
+            ShapeType = st;
+            Radius = r;
             color = c;
         }
     }

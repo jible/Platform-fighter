@@ -14,9 +14,6 @@ public partial class dp_physics_server : Node
 	public override void _Ready()
 	{
 		dp_object.GlobalPhysicsServer = this;
-		// var tree = GetTree();
-		// tree.NodeAdded += _on_node_added;
-		// tree.NodeRemoved += _on_node_removed;
 		AllObjects = new List<dp_object>();
 		if (SearchRoot != null)
 		{

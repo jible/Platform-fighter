@@ -1,22 +1,27 @@
-[gd_scene load_steps=8 format=3 uid="uid://7iow3tm6ac41"]
+[gd_scene load_steps=10 format=3 uid="uid://7iow3tm6ac41"]
 
 [ext_resource type="Script" uid="uid://bl4ob8n7sbao" path="res://scenes/testing_scenes/dummy_test_scripts/ShapeRenderTest.cs" id="1_fng5o"]
 [ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/cpp_overhall/deterministic_physics/dp_physics_server.cs" id="1_vltoh"]
 [ext_resource type="Script" uid="uid://dq0qndvxc03wc" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer_3d.cs" id="2_lfbv8"]
 [ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/cpp_overhall/deterministic_physics/dp_object.cs" id="3_fng5o"]
 [ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_rectangle.cs" id="4_3kom4"]
+[ext_resource type="Script" uid="uid://btu6jtv82ie0t" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_circle.cs" id="6_3kom4"]
 
 [sub_resource type="Resource" id="Resource_3k7p8"]
 script = ExtResource("4_3kom4")
-EditorSize = Vector2(34.355, 39.755)
-EditorPosition = Vector2(-20.95, 4.195)
+EditorPosition = Vector2(-30.68, 4.195)
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="Resource" id="Resource_lfbv8"]
 script = ExtResource("4_3kom4")
-EditorSize = Vector2(13.69, 22.69)
 EditorPosition = Vector2(8.21, 0)
 metadata/_custom_type_script = "uid://0smx527v6br4"
+
+[sub_resource type="Resource" id="Resource_ocp11"]
+script = ExtResource("6_3kom4")
+EditorRadius = 49.395
+EditorPosition = Vector2(1.455, 0)
+metadata/_custom_type_script = "uid://btu6jtv82ie0t"
 
 [node name="ShapeRenderTest" type="Node3D" node_paths=PackedStringArray("moveable")]
 script = ExtResource("1_fng5o")
@@ -51,4 +56,9 @@ layer_collision = 1
 mask_collision = 1
 is_static = true
 color = Color(0.7893258, 0.23846656, 0.5376687, 0.77254903)
+metadata/_custom_type_script = "uid://c4qq7jgy73oan"
+
+[node name="dp_object3" type="Node" parent="."]
+script = ExtResource("3_fng5o")
+Shape = SubResource("Resource_ocp11")
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
