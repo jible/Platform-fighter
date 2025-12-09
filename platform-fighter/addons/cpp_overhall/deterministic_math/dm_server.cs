@@ -17,6 +17,7 @@ public partial class dm_server : Node
     {
         CollectDM_Nodes();
         ConvertEditorMath();
+        GD.Print("rawn");
 
     }
     public void CollectDM_Nodes( )
