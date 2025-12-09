@@ -8,6 +8,9 @@ using System.Reflection;
 
 public partial class dm_server : Node
 {
+    // Singleton: Every time a scene starts, it accesses every node and resource that has a DM64 and dmvector
+    // It extracts the value from any exported property with the "Editor" prefix and sends its value to the true run time value.
+    // Though oddly complicated and annoying this is the only way to export deterministic math to the editor.
     public List<object> DM_objects = [];
     private HashSet<object> _visited = new();
     public override void _Ready()
@@ -23,7 +26,7 @@ public partial class dm_server : Node
         Node root = GetTree().CurrentScene;
         _RecurseCollectDM_Nodes(root);
     }
-    // e
+
     private void _RecurseCollectDM_Nodes( Object Parent)
     {
         if (Parent == null){return;}

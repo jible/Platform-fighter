@@ -8,5 +8,10 @@ public partial class dp_circle : dp_shape
     [Export] public float EditorRadius = 50;
     public DM64 Radius = new(50);
     
-    
+    public override DM64 GetMaxSize()
+    {
+        
+        return Radius;
+    }
+
 }

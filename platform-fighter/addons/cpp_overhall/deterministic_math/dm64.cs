@@ -8,8 +8,9 @@ public struct DM64
 	static int SHIFT = 32;
 	static long SCALE = 1L << SHIFT;
 	public long raw = 0;
-	public long whole_bits = 0x0FFFFFFF00000000;
-	public long decimal_bits = 0x0000000FFFFFFFF;
+	public ulong sign_bit = 0x8000000000000000;
+	public ulong whole_bits = 0x7FFFFFFF00000000;
+	public ulong decimal_bits = 0x0000000FFFFFFFF;
 
 	// // Exports with getter and setter
 	// [Export] public string editor_value
@@ -41,7 +42,12 @@ public struct DM64
         SetRawFromString(value);
 		return;
     }
-	
+	public static DM64 FromRaw(long r)
+    {
+        DM64 o = new();
+		o.raw = r;
+		return o;
+    }
 	public void SetRawFromString(String value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -189,6 +195,16 @@ public struct DM64
         }
         return f;
 	}
+	public static DM64 operator %(DM64 a, DM64 b)
+    {
+        if (b== 0){throw new DivideByZeroException();}
+
+		long r = a.raw % b.raw;
+		DM64 o = new();
+		o.raw = r;
+		return o;
+
+    }
 
 	// Supporting math with ints
 	public static DM64 operator +(DM64 a, int b) => a + new DM64(b);
@@ -199,10 +215,12 @@ public struct DM64
     }
 	public static DM64 operator /(DM64 a, int b) => a / new DM64(b);
 
+
 	public static DM64 operator +(int a, DM64 b) => b + a;
 	public static DM64 operator -(int a, DM64 b) => b - a;
 	public static DM64 operator *(int a, DM64 b) => b * a;
 	public static DM64 operator /(int a, DM64 b) => new DM64(a) / b;
+
 
 	// Comparison operators
 	public static bool operator > (DM64 a, int b) => a.raw > ((long)b << SHIFT);
@@ -236,8 +254,64 @@ public struct DM64
         return raw.GetHashCode();
     }
 
-	
+	public DM64 Sign()
+    {
+        if (raw > 0) return new DM64 (1);
+		if (raw < 0) return new DM64 (-1);
+		return new DM64(0);
+    }
 
+	public DM64 Abs()
+    {
+		DM64 o = new ();
+		o.raw = raw < 0? - raw : raw;
+		return o;
+    }
+
+	public DM64 Round()
+    {
+        DM64 o = new();
+		if (raw >= 0)
+        	o.raw = ((raw + (SCALE>>1)) >> SHIFT) << SHIFT;
+		else
+        	o.raw = (( (raw - (SCALE>>1)) >> SHIFT) << SHIFT) + SCALE;
+		return o;
+    }
+
+	public DM64 Ceil()
+    {
+        DM64 o = new();
+		long truncated = (raw >> SHIFT) << SHIFT;
+		if (raw <= 0)
+        {
+            return DM64.FromRaw(truncated);
+        }
+        else
+        {
+            if ( raw == truncated) return DM64.FromRaw(truncated);
+			return DM64.FromRaw(truncated + SCALE);
+        }
+    }
+
+	public DM64 Floor()
+	{
+        DM64 o = new();
+		long truncated = (raw >> SHIFT) << SHIFT;
+		if (raw >= 0)
+        {
+            return DM64.FromRaw(truncated);
+        }
+        else
+        {
+            if ( raw == truncated) return DM64.FromRaw(truncated);
+			return DM64.FromRaw(truncated - SCALE);
+        }
+    }
+
+	public static DM64  Max(DM64 a, DM64 b)
+    {
+        return a > b ? a.copy() : b.copy();
+    }
 
 // Powers
 	public DM64 Pow(DM64 b)
@@ -298,11 +372,33 @@ public struct DM64
 
 	public static void UnitTest()
     {
-        GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + new DM64(5)).ToFloat());
-        GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + 5).ToFloat());
-        GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + new DM64(5)).ToFloat());
-        GD.Print("Expected ", 4 * 5, " output ", (new DM64(4) * 5). ToFloat());
-        GD.Print("Expected ", 2 * 50, " output ", (new DM64(2) * 50). ToFloat());
+        // GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + new DM64(5)).ToFloat());
+        // GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + 5).ToFloat());
+        // GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + new DM64(5)).ToFloat());
+        // GD.Print("Expected ", 4 * 5, " output ", (new DM64(4) * 5). ToFloat());
+        // GD.Print("Expected ", 2 * 50, " output ", (new DM64(2) * 50). ToFloat());
 
+
+        GD.Print("Expected ", 2 % 50, " output ", (new DM64(2) % new DM64(50)). ToFloat());
+        GD.Print("Expected ", 7 % 3, " output ", (new DM64(7) % new DM64(3)). ToFloat());
+        GD.Print("Expected ", 50 % 12, " output ", (new DM64(50) % new DM64(12)). ToFloat());
+        GD.Print("Expected ", 100 % 9, " output ", (new DM64(100) % new DM64(9)). ToFloat());
+        GD.Print("Expected ", 500 % 9, " output ", (new DM64(100) % new DM64(9)). ToFloat());
+
+
+		// int [][] tests = [
+        //     [100, 10],
+		// 	[9,2]
+        // ];
+
+		// foreach (int[] test in tests)
+		// {
+		// 	int a = test[0];
+		// 	int b = test[1];
+		// 	GD.Print("Add ", a, " ", b, " Expected ", a + b, " output ", (new DM64(a) + new DM64(b)).ToFloat());
+		// 	GD.Print("Add ", a, " ", b, " Expected ", a + b, " output ", (a + new DM64(b)).ToFloat());
+		// 	GD.Print("Add ", a, " ", b, " Expected ", a + b, " output ", (new DM64(a) + new DM64(b)).ToFloat());
+
+		// }
     } 
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 // This is a tool cause it prevents errors in the editor when it is exported
 [Tool]
 [GlobalClass]
-public partial class dp_shape : Resource
+public abstract partial class dp_shape : Resource
 {
     // World Space
     [Export] public Vector2 EditorPosition = new Vector2();
@@ -19,6 +19,7 @@ public partial class dp_shape : Resource
         return new Dictionary<String, object> { { "position", Position.copy() } };
     }
 
+    public abstract DM64 GetMaxSize();
 
     public virtual void LoadData(Dictionary<String, object> Data)
     {
