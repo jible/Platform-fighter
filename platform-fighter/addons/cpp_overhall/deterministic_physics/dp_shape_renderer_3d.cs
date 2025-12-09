@@ -28,7 +28,7 @@ public partial class dp_shape_renderer_3d : Node3D
         var seenShapes = new HashSet<dp_object>();
 
         if (PhysicsServer == null) { return; }
-        foreach (dp_object PhysicsObject in PhysicsServer.AllObjects)
+        foreach (dp_object PhysicsObject in PhysicsServer.AllEntities)
         {
             if (PhysicsObject == null || PhysicsObject.Shape == null)
             {

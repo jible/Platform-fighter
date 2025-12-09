@@ -9,19 +9,18 @@ using System.Security.AccessControl;
 [Tool]
 public partial class dp_physics_server : Node
 {
-	public List<dp_object> AllObjects = new List<dp_object>();
+	public List<dp_object> AllEntities = new List<dp_object>();
 	[Export] public Node SearchRoot;
 
 	// Play with these for optimizing!!
 	[Export] public int EditorHashGridSize = 30;
 	public DM64 HashGridSize = new(30);
-	[Export] public int EditorBigObjectMin = 100;
-	public DM64 BigObjectMin = new (100);
+
 
 	public override void _Ready()
 	{
 		dp_object.GlobalPhysicsServer = this;
-		AllObjects = new List<dp_object>();
+		AllEntities = new List<dp_object>();
 		if (SearchRoot != null)
 		{
 			GetAllShapes(SearchRoot);
@@ -39,130 +38,129 @@ public partial class dp_physics_server : Node
 		if (Engine.IsEditorHint()) { return; }
 
 		// Spacial Hashing
-		Dictionary<Vector2I, List<dp_object>> grid = [];
+		Dictionary<Vector2I, List<dp_object>> Grid = [];
 		Dictionary<dp_object, List<Vector2I>> ObjectCells =[];
 
-		HashObjects(grid, ObjectCells);
+		HashObjects(Grid, ObjectCells);
 
 		// Itterate through all objects
 		// Use Spacial Hashing to decide what objects to check
-		foreach (dp_object ObjA in AllObjects)
+		foreach (dp_object Entity in AllEntities)
 		{
 			HashSet<dp_object> interacted = [];
-			HandleObjectProcess(ObjA, grid, ObjectCells, interacted);
+			HandleObjectProcess(Entity, Grid, ObjectCells, interacted);
 		}
 	}
 
 	// Itterates through all physics objects and populates the grid with all 
 	// tile positions they overlap 
 	public void HashObjects(
-		Dictionary<Vector2I, List<dp_object>> grid, 
+		Dictionary<Vector2I, List<dp_object>> Grid, 
 		Dictionary<dp_object, List<Vector2I>> ObjectCells)
 	{
-		foreach (dp_object Obj in AllObjects)
+		foreach (dp_object Entity in AllEntities)
 		{
-			if (!Obj.is_active ||Obj.Shape == null) continue;
-			ObjectCells[Obj] = GetCoveredCells(Obj);
-			foreach (var cell in ObjectCells[Obj])
+			if (!Entity.is_active ||Entity.Shape == null) continue;
+			ObjectCells[Entity] = GetCoveredCells(Entity);
+			foreach (var Cell in ObjectCells[Entity])
 			{
-				if (!grid.TryGetValue(cell, out var list))
-				{grid[cell] = [];}
-				grid[cell].Add(Obj);
+				if (!Grid.TryGetValue(Cell, out var list))
+				{Grid[Cell] = [];}
+				Grid[Cell].Add(Entity);
 			}
 		}
 	}
+
 	// For a given object, itterate through all other physics objects and checks if they potentially overlap on
 	// any hashed tiles. if they do, it check 
 	public void HandleObjectProcess( 
-		dp_object obj,
-		Dictionary<Vector2I, List<dp_object>> grid, 
-		Dictionary<dp_object, List<Vector2I>> ObjectCells,
+		dp_object EntityA,
+		Dictionary<Vector2I, List<dp_object>> Grid, 
+		Dictionary<dp_object, List<Vector2I>> EntityCells,
 		HashSet<dp_object> interacted)
 	{
-		obj.CleanseBuffers();
-			if (!obj.is_active || obj.Shape ==null){return;} 
-			Vector2I GridPos = GetGridPos(obj);
+		EntityA.CleanseBuffers();
+			if (!EntityA.is_active || EntityA.Shape ==null){return;} 
+			Vector2I GridPos = GetGridPos(EntityA);
 
 			List<dp_object> cellData;
-			if (!grid.TryGetValue(GridPos, out cellData))
+			if (!Grid.TryGetValue(GridPos, out cellData))
 			{cellData = [];}
-			foreach (var cell in ObjectCells[obj])
+			foreach (var cell in EntityCells[EntityA])
 			{
-				if (grid.TryGetValue(cell, out var list))
+				if (Grid.TryGetValue(cell, out var list))
 				{
-					foreach (var other in list)
+					foreach (var EntityB in list)
 					{
-						if (interacted.Contains(other))continue;
-						interacted.Add(other);
-						HandleIndividualInteraction(obj, other);
+						if (interacted.Contains(EntityB))continue;
+						interacted.Add(EntityB);
+						HandleIndividualInteraction(EntityA, EntityB);
 					}
 				}
 			}
-			obj.PopulateCurrentFrame();
+			EntityA.PopulateCurrentFrame();
 	}
 
-	private Vector2I GetGridPos(dp_object obj)
+	private Vector2I GetGridPos(dp_object Entity)
 	{
-		DM_Vector2 DM_GridPos = obj.Shape.Position / HashGridSize;
+		DM_Vector2 DM_GridPos = Entity.Shape.Position / HashGridSize;
 		return new(DM_GridPos.x.Round().to_int(), DM_GridPos.y.Round().to_int());
 	}
 
-	private List<Vector2I> GetCoveredCells(dp_object obj)
+	private List<Vector2I> GetCoveredCells(dp_object Entity)
 	{
-		List<Vector2I> o = [];
-		dp_shape shape = obj.Shape;
+		List<Vector2I> Output = [];
+		dp_shape shape = Entity.Shape;
 		if (shape == null)
 		{
-			return o;
+			return Output;
 		}
 
 		DM64 maxSize = shape.GetMaxSize().Round();
 		DM64 CellsCovered = (maxSize/ HashGridSize).Ceil();
 		int Covered = CellsCovered.to_int();
 
-		Vector2I gridPos = GetGridPos(obj);
+		Vector2I gridPos = GetGridPos(Entity);
 
 		for (int i = -Covered; i <= Covered; i+= 1)
 		{
 			for (int j = -Covered; j <= Covered; j+= 1)
 			{
-				o.Add(gridPos + new Vector2I(i,j));
+				Output.Add(gridPos + new Vector2I(i,j));
 			}
 		}
 
-		return o;
+		return Output;
 	}
 
-	public void HandleIndividualInteraction(dp_object ObjA, dp_object ObjB)
+	public void HandleIndividualInteraction(dp_object EntityA, dp_object EntityB)
 	{
-		if (ObjA == ObjB) return;
-		if (ObjA.is_static) return;
-		if (!ObjB.is_active){return;} 
-		if ((ObjA.mask_collision & ObjB.layer_collision) == 0){return;}
-		if (!ObjB.is_active){return;} 
-		if (ObjA.is_trigger)
+		if (EntityA == EntityB) return;
+		if (EntityA.is_static) return;
+		if (!EntityB.is_active) return;
+		if ((EntityA.mask_collision & EntityB.layer_collision) == 0){return;}
+		if (!EntityB.is_active) return; 
+		if (EntityA.is_trigger)
 		{
-			// Search for overlaps
-			ObjA.CheckOverlap(ObjB);
+			EntityA.CheckOverlap(EntityB);
 			return;
 		}
-		if (ObjB.is_trigger){ return;}
+		if (EntityB.is_trigger){ return;}
 		
-		// Final case where Obj A and B are collision objects
-		ObjA.CheckCollision(ObjB);    
+		EntityA.CheckCollision(EntityB);    
 	}
 
 	public void RegisterObj( dp_object target)
 	{
-		if (AllObjects.Contains(target)) return;
-		AllObjects.Add(target);
+		if (AllEntities.Contains(target)) return;
+		AllEntities.Add(target);
 	}
 
 
 	public void GetAllShapes(Node Parent)
 	{
 		if (Parent == null) { return; }
-		if (Parent is dp_object) { AllObjects.Add((dp_object)Parent); }
+		if (Parent is dp_object) { AllEntities.Add((dp_object)Parent); }
 		foreach (var ChildNode in Parent.GetChildren())
 		{
 			GetAllShapes(ChildNode);
@@ -172,7 +170,7 @@ public partial class dp_physics_server : Node
 	{
 		if (node is dp_object CastedNode)
 		{
-			AllObjects.Add(CastedNode);
+			AllEntities.Add(CastedNode);
 		}
 	}
 
@@ -180,7 +178,7 @@ public partial class dp_physics_server : Node
 	{
 		if (node is dp_object)
 		{
-			AllObjects.Remove((dp_object)node);
+			AllEntities.Remove((dp_object)node);
 
 		}
 	}
