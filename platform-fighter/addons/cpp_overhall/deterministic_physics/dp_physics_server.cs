@@ -9,7 +9,6 @@ using System.Security.AccessControl;
 public partial class dp_physics_server : Node
 {
 	public List<dp_object> AllObjects = new List<dp_object>();
-	//  
 	[Export] public Node SearchRoot;
 	public override void _Ready()
 	{
@@ -37,6 +36,7 @@ public partial class dp_physics_server : Node
 		if (Engine.IsEditorHint()) { return; }
 		foreach (dp_object ObjA in AllObjects)
 		{
+			ObjA.CleanseBuffers();
 			if (!ObjA.is_active){continue;} 
 			if (ObjA.Shape ==null){continue;}
 			foreach (dp_object ObjB in AllObjects)

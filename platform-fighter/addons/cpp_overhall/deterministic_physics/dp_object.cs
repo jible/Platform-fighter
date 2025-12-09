@@ -72,8 +72,13 @@ public partial class dp_object : Node
 		}
 	}
 
+	// This needs to be called every frame before starting to collect overlap data.
+	public void CleanseBuffers()
+    {
+        RollbackData[GetCurrentBufferPosition()].Clear();
+        overlaps[GetCurrentBufferPosition()].Clear();
 
-
+    }
 	// Overlap Detection
 	public bool CheckOverlap(dp_object other)
 	{
@@ -89,8 +94,7 @@ public partial class dp_object : Node
 				is_overlapping = detect_rect_overlap(other);
 				break;
 			default:
-				is_overlapping = detect_rect_overlap(other);
-				break;
+				return false;
 		}
 		if (is_overlapping && !overlaps[GetPrevBufferPosition()].ContainsKey(other))
 		{

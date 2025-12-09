@@ -8,8 +8,8 @@
 
 [sub_resource type="Resource" id="Resource_fng5o"]
 script = ExtResource("6_3kom4")
-EditorRadius = 32.5
-EditorPosition = Vector2(-31.51, 0)
+EditorRadius = 35.145
+EditorPosition = Vector2(-31.09, 0)
 metadata/_custom_type_script = "uid://btu6jtv82ie0t"
 
 [sub_resource type="Resource" id="Resource_ocp11"]

@@ -10,6 +10,7 @@ public partial class ShapeRenderTest : Node3D
     {
         
         moveable.ObjectEntered += overlapped;
+        moveable.ObjectExited += exited;
     }
 
     private void overlapped(dp_object other)
@@ -17,7 +18,11 @@ public partial class ShapeRenderTest : Node3D
         GD.Print("entered");
 
     }
+    private void exited(dp_object other)
+    {
+        GD.Print("exited");
 
+    }
 
     public override void _Process(double delta)
     {

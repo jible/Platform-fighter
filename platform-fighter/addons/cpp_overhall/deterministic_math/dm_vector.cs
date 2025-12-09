@@ -47,6 +47,11 @@ public partial struct DM_Vector2
         return new Vector2(x.ToFloat(), y.ToFloat());
     }
 
+    public Vector2I ToVector2I()
+    {
+        return new Vector2I(x.to_int(), y.to_int());
+    }
+
     
     // Basic math operator overloads
     public static DM_Vector2 operator +(DM_Vector2 a, DM_Vector2 b) => new DM_Vector2(a.x + b.x, a.y + b.y);
@@ -73,6 +78,23 @@ public partial struct DM_Vector2
     => (b != 0) 
     ? new DM_Vector2(a.x / b, a.y / b) 
     : new DM_Vector2(0,0);
+
+    // Making it hashable
+    
+    public override bool Equals(object obj)
+	{
+		if (obj is DM_Vector2 other)
+		{
+			return (this.x == other.x) && (this.y == other.y);
+		}
+		return false;
+	}
+	
+    public override int GetHashCode()
+    {
+        return HashCode.Combine( x, y );
+    }
+
 
 
     public DM64 GetMagnitude()

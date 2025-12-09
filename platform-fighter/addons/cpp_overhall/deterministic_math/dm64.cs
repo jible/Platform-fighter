@@ -123,8 +123,12 @@ public struct DM64
 	// Extractors
 	public long to_long()
 	{
-		return raw >> SHIFT;
+		return raw / SCALE;
 	}
+	public int to_int()
+    {
+        return (int)to_long();
+    }
 	
 	public float ToFloat()
 	{
