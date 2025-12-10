@@ -13,7 +13,7 @@ public partial class dp_object : Node
 	Dictionary<String, Object>[] RollbackData;
 	public static dp_physics_server GlobalPhysicsServer;
 
-
+	public DM64 Epsilon = new(.0001f);
 	// Collision Data
 	[Export]public bool is_active = true;
 	private dp_shape _shape;
@@ -140,7 +140,7 @@ public partial class dp_object : Node
 				DM64 BL = otherRectangle.Position.x;
 				DM64 BR = otherRectangle.Position.x + otherRectangle.Size.x;
 				DM64 BB = otherRectangle.Position.y;
-				DM64 BT = otherRectangle.Position.y + thisRectangle.Size.y; 
+				DM64 BT = otherRectangle.Position.y + otherRectangle.Size.y; 
 
 				return (
 					(AL < BR ) &&
@@ -195,6 +195,7 @@ public partial class dp_object : Node
 
 					return false;
 				}
+				DM_Vector2 ProjectedPosition = thisRectangle.Position.copy();
 
 				DM_Vector2 ThisHalfSize = thisRectangle.Size / 2;
 				DM_Vector2 OtherHalfSize = otherRectangle.Size / 2;
@@ -228,17 +229,24 @@ public partial class dp_object : Node
 				if (vel.y == 0){ exitY = new DM64(1);} else
 				{exitY = (other_expanded_max.y - PrevPos.y)/vel.y;}
 				if (vel.y < 0){ (enterY, exitY) = (exitY, enterY); }
-				
-				// Todo:  Case for sliding
 
-
-
-				// Case for returning object to exactly where it entered:
-				DM64 enter = enterX > enterY? enterX: enterY;
-				DM64 exit = exitX < exitY? exitX: exitY;
+				bool EnteredOnX = enterX > enterY;
+				DM64 enter = EnteredOnX? enterX: enterY;
+				DM64 exit = !EnteredOnX? exitX: exitY;
 
 				if (enter > exit ||enter > 1 || enter < 0) {return false;}
 				thisRectangle.Position = PrevPos + (vel * enter);
+				DM_Vector2 normal = EnteredOnX? new DM_Vector2(vel.x.Sign() * -1, new( 0)) : new DM_Vector2( new( 0), vel.y.Sign() * -1);
+				thisRectangle.Position += normal * Epsilon;
+
+				// Sliding
+				if (EnteredOnX)
+                {
+					thisRectangle.Position.y = ProjectedPosition.y;
+                } else
+                {
+					thisRectangle.Position.x = ProjectedPosition.x;
+                }
 
 				return true;
 		}

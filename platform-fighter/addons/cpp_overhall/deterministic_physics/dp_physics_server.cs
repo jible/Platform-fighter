@@ -83,9 +83,7 @@ public partial class dp_physics_server : Node
 			if (!EntityA.is_active || EntityA.Shape ==null){return;} 
 			Vector2I GridPos = GetGridPos(EntityA);
 
-			List<dp_object> cellData;
-			if (!Grid.TryGetValue(GridPos, out cellData))
-			{cellData = [];}
+			
 			foreach (var cell in EntityCells[EntityA])
 			{
 				if (Grid.TryGetValue(cell, out var list))
