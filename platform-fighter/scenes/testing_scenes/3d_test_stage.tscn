@@ -42,11 +42,6 @@ metadata/_custom_type_script = "uid://dskjpbfkcglab"
 [node name="3D Test Char" parent="dp_shape_follower" instance=ExtResource("1_g0mnn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 6.05, 0)
 
-[node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]
-script = ExtResource("3_63073")
-SearchRoot = NodePath("..")
-metadata/_custom_type_script = "uid://b70u38nhjjbh8"
-
 [node name="dp_object" type="Node" parent="."]
 script = ExtResource("4_ih8ay")
 Shape = SubResource("Resource_xsi5r")
@@ -59,6 +54,11 @@ PhysicsServer = NodePath("../dp_physics_server")
 RenderShapesInEditor = true
 RenderShapesInPlay = true
 metadata/_custom_type_script = "uid://dq0qndvxc03wc"
+
+[node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]
+script = ExtResource("3_63073")
+SearchRoot = NodePath("..")
+metadata/_custom_type_script = "uid://b70u38nhjjbh8"
 
 [node name="dp_object2" type="Node" parent="."]
 script = ExtResource("4_ih8ay")
