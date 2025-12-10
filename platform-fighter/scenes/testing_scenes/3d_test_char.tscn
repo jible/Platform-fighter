@@ -51,7 +51,4 @@ bones/68/position = Vector3(-2.454317, -1.3038392, -0.23181877)
 bones/68/rotation = Quaternion(0.0007811765, 0.036705982, 0.99909955, 0.021262433)
 bones/68/scale = Vector3(1.0000004, 1.0000004, 1)
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 19.303837)
-
 [editable path="StylizedCharacter"]

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 
 [Tool]
+[GlobalClass]
 public partial class dp_shape_renderer_3d : Node3D
 {
     
