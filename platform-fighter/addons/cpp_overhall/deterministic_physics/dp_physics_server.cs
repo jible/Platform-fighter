@@ -101,7 +101,7 @@ public partial class dp_physics_server : Node
 
 	private Vector2I GetGridPos(dp_object Entity)
 	{
-		DM_Vector2 DM_GridPos = Entity.Shape.Position / HashGridSize;
+		DM_Vector2 DM_GridPos = Entity.GlobalPosition / HashGridSize;
 		return new(DM_GridPos.x.Round().to_int(), DM_GridPos.y.Round().to_int());
 	}
 
@@ -162,22 +162,6 @@ public partial class dp_physics_server : Node
 		foreach (var ChildNode in Parent.GetChildren())
 		{
 			GetAllShapes(ChildNode);
-		}
-	}
-	private void _on_node_added(Node node)
-	{
-		if (node is dp_object CastedNode)
-		{
-			AllEntities.Add(CastedNode);
-		}
-	}
-
-	private void _on_node_removed(Node node)
-	{
-		if (node is dp_object)
-		{
-			AllEntities.Remove((dp_object)node);
-
 		}
 	}
 }

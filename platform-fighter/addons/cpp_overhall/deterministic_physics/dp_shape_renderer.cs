@@ -25,29 +25,29 @@ public partial class dp_shape_renderer : Node2D
         {
             dp_shape Shape = PhysicsObject.Shape;
             if (PhysicsObject == null || Shape == null) { continue; }
-            if (Shape is dp_circle) { draw_collision_circle((dp_circle)Shape); }
-            if (Shape is dp_rectangle) { draw_collision_rectangle((dp_rectangle)Shape); }
+            if (Shape is dp_circle circle) { draw_collision_circle(PhysicsObject, circle); }
+            if (Shape is dp_rectangle rectangle) { draw_collision_rectangle(PhysicsObject, rectangle); }
         }
     }
 
-    public void draw_collision_circle(dp_circle circle)
+    public void draw_collision_circle(dp_object PhysicsObject, dp_circle circle)
     {
         if (Engine.IsEditorHint())
         {
-            DrawCircle(circle.EditorPosition, circle.EditorRadius, circle.PhysicsObject.color);
+            DrawCircle(PhysicsObject.EditorGlobalPosition, circle.EditorRadius, circle.PhysicsObject.color);
             return;
         }
-        DrawCircle(circle.Position.ToStandardVector(), circle.Radius.ToFloat(), circle.PhysicsObject.color);
+        DrawCircle(PhysicsObject.Position.ToStandardVector(), circle.Radius.ToFloat(), circle.PhysicsObject.color);
     }
-    public void draw_collision_rectangle(dp_rectangle rectangle)
+    public void draw_collision_rectangle(dp_object PhysicsObject, dp_rectangle rectangle)
     {
         Rect2 DrawShape;
         if (Engine.IsEditorHint())
         {
-            DrawShape = new Rect2(rectangle.EditorPosition- (rectangle.EditorSize/2), rectangle.EditorSize);
+            DrawShape = new Rect2(PhysicsObject.EditorGlobalPosition- (rectangle.EditorSize/2), rectangle.EditorSize);
         } else
         {
-            DrawShape = new Rect2((rectangle.Position- (rectangle.Size/2)).ToStandardVector(), rectangle.Size.ToStandardVector());
+            DrawShape = new Rect2((PhysicsObject.GlobalPosition - (rectangle.Size/2)).ToStandardVector(), rectangle.Size.ToStandardVector());
         }
         DrawRect(DrawShape, rectangle.PhysicsObject.color);
     }

@@ -9,11 +9,43 @@ using System.Text.RegularExpressions;
 [GlobalClass]
 public partial class dp_object : Node
 {
+	// World Space
+    [Export] public Vector2 EditorPosition = new Vector2();
+	public Vector2 EditorGlobalPosition
+    {
+        get
+        {
+            Node parent = GetParent();
+			if (parent is dp_object Cast)
+            {return EditorPosition + Cast.EditorPosition;} else
+            {return EditorPosition;}
+        }
+    }
+    public DM_Vector2 Position = new DM_Vector2();
+	public DM_Vector2 GlobalPosition
+    {
+        get
+        {
+            Node parent = GetParent();
+			if (parent is dp_object Cast)
+            {return Position + Cast.GlobalPosition;} else
+            {return Position;}
+        }
+		set
+        {
+            Node parent = GetParent();
+			if (parent is dp_object Cast)
+            {Position = Cast.GlobalPosition - value;} else
+            {Position = value;}
+        }
+    }
+
 	// Rollback Data
 	Dictionary<String, Object>[] RollbackData;
 	public static dp_physics_server GlobalPhysicsServer;
 
 	public DM64 Epsilon = new(.0001f);
+
 	// Collision Data
 	[Export]public bool is_active = true;
 	private dp_shape _shape;
@@ -115,7 +147,7 @@ public partial class dp_object : Node
 		{
 			case dp_circle otherCircle when Shape is dp_circle thisCircle:
 				DM64 max_distance = thisCircle.Radius + otherCircle.Radius;
-				DM64 distance = (Shape.Position - other.Shape.Position).GetMagnitude(); 
+				DM64 distance = (GlobalPosition - other.GlobalPosition).GetMagnitude(); 
 				return distance < max_distance;
 			case dp_rectangle:
 				GD.Print("circle rect overlap not programmed");
@@ -132,15 +164,15 @@ public partial class dp_object : Node
 				GD.Print("circle rect overlap not programmed");
 				break;
 			case dp_rectangle otherRectangle when Shape is dp_rectangle thisRectangle:
-				DM64 AL = thisRectangle.Position.x;
-				DM64 AR = thisRectangle.Position.x + thisRectangle.Size.x;
-				DM64 AB = thisRectangle.Position.y;
-				DM64 AT = thisRectangle.Position.y + thisRectangle.Size.y;  
+				DM64 AL = GlobalPosition.x;
+				DM64 AR = GlobalPosition.x + thisRectangle.Size.x;
+				DM64 AB = GlobalPosition.y;
+				DM64 AT = GlobalPosition.y + thisRectangle.Size.y;  
 
-				DM64 BL = otherRectangle.Position.x;
-				DM64 BR = otherRectangle.Position.x + otherRectangle.Size.x;
-				DM64 BB = otherRectangle.Position.y;
-				DM64 BT = otherRectangle.Position.y + otherRectangle.Size.y; 
+				DM64 BL = other.GlobalPosition.x;
+				DM64 BR = other.GlobalPosition.x + otherRectangle.Size.x;
+				DM64 BB = other.GlobalPosition.y;
+				DM64 BT = other.GlobalPosition.y + otherRectangle.Size.y; 
 
 				return (
 					(AL < BR ) &&
@@ -189,25 +221,25 @@ public partial class dp_object : Node
 					return false;
 				}
 				DM_Vector2 PrevPos = (DM_Vector2)PrevPosFromDict; 
-				DM_Vector2 vel = Shape.Position - PrevPos;
+				DM_Vector2 vel = GlobalPosition - PrevPos;
 				if (vel.x == new DM64(0) && vel.y == new DM64(0)){ 
 					// GD.Print("Still need to handle case with no velocity");
 
 					return false;
 				}
-				DM_Vector2 ProjectedPosition = thisRectangle.Position.copy();
+				DM_Vector2 ProjectedPosition = GlobalPosition.copy();
 
 				DM_Vector2 ThisHalfSize = thisRectangle.Size / 2;
 				DM_Vector2 OtherHalfSize = otherRectangle.Size / 2;
 
-				DM_Vector2 other_expanded_min = otherRectangle.Position - OtherHalfSize - ThisHalfSize;
-				DM_Vector2 other_expanded_max = otherRectangle.Position + OtherHalfSize + ThisHalfSize;
+				DM_Vector2 other_expanded_min = other.GlobalPosition - OtherHalfSize - ThisHalfSize;
+				DM_Vector2 other_expanded_max = other.GlobalPosition + OtherHalfSize + ThisHalfSize;
 
 				
 				DM64 enterX;
 				if ((vel.x == 0) &&  
-				(thisRectangle.Position.x <other_expanded_min.x || 
-				thisRectangle.Position.x > other_expanded_max.x)) return false;
+				(GlobalPosition.x <other_expanded_min.x || 
+				GlobalPosition.x > other_expanded_max.x)) return false;
 
 				if (vel.x == 0){enterX = new DM64(0);
 				} else
@@ -220,8 +252,8 @@ public partial class dp_object : Node
 				
 				DM64 enterY;
 				if ((vel.y == 0) && 
-				(thisRectangle.Position.y <other_expanded_min.y || 
-				thisRectangle.Position.y > other_expanded_max.y)) return false;
+				(GlobalPosition.y <other_expanded_min.y || 
+				GlobalPosition.y > other_expanded_max.y)) return false;
 
 				if (vel.y == 0){ enterY = new DM64(0);} else
 				{enterY = (other_expanded_min.y - PrevPos.y)/vel.y;}
@@ -235,17 +267,18 @@ public partial class dp_object : Node
 				DM64 exit = !EnteredOnX? exitX: exitY;
 
 				if (enter > exit ||enter > 1 || enter < 0) {return false;}
-				thisRectangle.Position = PrevPos + (vel * enter);
+				GlobalPosition = PrevPos + (vel * enter);
 				DM_Vector2 normal = EnteredOnX? new DM_Vector2(vel.x.Sign() * -1, new( 0)) : new DM_Vector2( new( 0), vel.y.Sign() * -1);
-				thisRectangle.Position += normal * Epsilon;
+				GlobalPosition += normal * Epsilon;
 
 				// Sliding
 				if (EnteredOnX)
                 {
-					thisRectangle.Position.y = ProjectedPosition.y;
+					GlobalPosition = new DM_Vector2(GlobalPosition.x, ProjectedPosition.y);
                 } else
                 {
-					thisRectangle.Position.x = ProjectedPosition.x;
+					GlobalPosition = new DM_Vector2(ProjectedPosition.x, GlobalPosition.y);
+
                 }
 
 				return true;
@@ -262,6 +295,7 @@ public partial class dp_object : Node
 	public void PopulateCurrentFrame()
 	{
 		Dictionary<String, Object> Data = Shape.ExtractData();
+		Data["position"] = Position;
 		RollbackData[GetCurrentBufferPosition()] = Data;
 	}
 }

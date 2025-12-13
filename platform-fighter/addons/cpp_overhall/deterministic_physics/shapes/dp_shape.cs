@@ -7,22 +7,12 @@ using System.Collections.Generic;
 [GlobalClass]
 public abstract partial class dp_shape : Resource
 {
-    // World Space
-    [Export] public Vector2 EditorPosition = new Vector2();
-    public DM_Vector2 Position = new DM_Vector2();
-
     // Owner
     public dp_object PhysicsObject;
     // Extend this method in extension classes and add to this array if you need to add more properties.
-    public virtual Dictionary<String, object> ExtractData()
-    {
-        return new Dictionary<String, object> { { "position", Position.copy() } };
-    }
+    public abstract Dictionary<String, object> ExtractData();
 
     public abstract DM64 GetMaxSize();
 
-    public virtual void LoadData(Dictionary<String, object> Data)
-    {
-        Position = ((DM_Vector2)Data["position"]).copy();
-    }
+    public abstract void LoadData(Dictionary<String, object> Data);
 }

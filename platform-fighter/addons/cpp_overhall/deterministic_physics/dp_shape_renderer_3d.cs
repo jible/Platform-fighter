@@ -77,11 +77,11 @@ public partial class dp_shape_renderer_3d : Node3D
         float ObjRadius;
         if (Engine.IsEditorHint())
         {
-            ObjPosition = VectorUp(circle.EditorPosition, shape_layer);
+            ObjPosition = VectorUp(obj.EditorGlobalPosition, shape_layer);
             ObjRadius = circle.EditorRadius;
         }else
         {
-            ObjPosition = VectorUp(circle.Position.ToStandardVector(), shape_layer);
+            ObjPosition = VectorUp(obj.GlobalPosition.ToStandardVector(), shape_layer);
             ObjRadius = circle.Radius.ToFloat();
         }
         
@@ -119,10 +119,10 @@ public partial class dp_shape_renderer_3d : Node3D
         Vector3 ObjPos;
         if (Engine.IsEditorHint()){
             ObjSize = rectangle.EditorSize;
-            ObjPos = VectorUp(rectangle.EditorPosition, shape_layer);
+            ObjPos = VectorUp(obj.EditorGlobalPosition, shape_layer);
         } else{
             ObjSize = rectangle.Size.ToStandardVector();
-            ObjPos = VectorUp(rectangle.Position.ToStandardVector(), shape_layer);
+            ObjPos = VectorUp(obj.GlobalPosition.ToStandardVector(), shape_layer);
         }
 
         meshInstance.Position = ObjPos;

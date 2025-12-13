@@ -8,39 +8,29 @@
 [ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_rectangle.cs" id="5_1u66e"]
 [ext_resource type="Script" uid="uid://dq0qndvxc03wc" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer_3d.cs" id="7_1u66e"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_glu5v"]
-
 [sub_resource type="Resource" id="Resource_xsi5r"]
 script = ExtResource("5_1u66e")
-EditorSize = Vector2(32.89, 41.305)
-EditorPosition = Vector2(-1.615, 0)
+EditorSize = Vector2(9.395, 18.63)
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="Resource" id="Resource_ih8ay"]
 script = ExtResource("5_1u66e")
-EditorSize = Vector2(36.95, 50)
-EditorPosition = Vector2(37.855, 0)
+EditorSize = Vector2(88.375, 3.36)
 metadata/_custom_type_script = "uid://0smx527v6br4"
+
+[sub_resource type="BoxMesh" id="BoxMesh_glu5v"]
 
 [node name="3D Test Stage" type="Node3D" node_paths=PackedStringArray("moveable")]
 script = ExtResource("1_ih8ay")
 moveable = NodePath("dp_object")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(87.815, 0, 0, 0, 0.62, 0, 0, 0, 10.15, 0, 0, 0)
-mesh = SubResource("BoxMesh_glu5v")
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.066805, 37.259872)
 
-[node name="dp_shape_follower" type="Node3D" parent="." node_paths=PackedStringArray("Target")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.615, 0, 0)
-script = ExtResource("2_531ip")
-Target = NodePath("../dp_object")
-metadata/_custom_type_script = "uid://dskjpbfkcglab"
-
-[node name="3D Test Char" parent="dp_shape_follower" instance=ExtResource("1_g0mnn")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 6.05, 0)
+[node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]
+script = ExtResource("3_63073")
+SearchRoot = NodePath("..")
+metadata/_custom_type_script = "uid://b70u38nhjjbh8"
 
 [node name="dp_object" type="Node" parent="."]
 script = ExtResource("4_ih8ay")
@@ -48,17 +38,13 @@ Shape = SubResource("Resource_xsi5r")
 mask_collision = 1
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 
-[node name="dp_shape_renderer_3d" type="Node3D" parent="." node_paths=PackedStringArray("PhysicsServer")]
-script = ExtResource("7_1u66e")
-PhysicsServer = NodePath("../dp_physics_server")
-RenderShapesInEditor = true
-RenderShapesInPlay = true
-metadata/_custom_type_script = "uid://dq0qndvxc03wc"
+[node name="dp_shape_follower" type="Node3D" parent="dp_object" node_paths=PackedStringArray("Target")]
+script = ExtResource("2_531ip")
+Target = NodePath("..")
+metadata/_custom_type_script = "uid://dskjpbfkcglab"
 
-[node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]
-script = ExtResource("3_63073")
-SearchRoot = NodePath("..")
-metadata/_custom_type_script = "uid://b70u38nhjjbh8"
+[node name="3D Test Char" parent="dp_object/dp_shape_follower" instance=ExtResource("1_g0mnn")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.11, 11.96, 0)
 
 [node name="dp_object2" type="Node" parent="."]
 script = ExtResource("4_ih8ay")
@@ -67,3 +53,20 @@ layer_collision = 1
 is_static = true
 color = Color(0.7517482, 0.33070448, 0.36716574, 0.77254903)
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
+
+[node name="dp_shape_follower2" type="Node3D" parent="dp_object2" node_paths=PackedStringArray("Target")]
+script = ExtResource("2_531ip")
+Target = NodePath("..")
+metadata/_custom_type_script = "uid://dskjpbfkcglab"
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="dp_object2/dp_shape_follower2"]
+transform = Transform3D(87.815, 0, 0, 0, 0.62, 0, 0, 0, 10.15, 0, 0, 0)
+mesh = SubResource("BoxMesh_glu5v")
+skeleton = NodePath("../../..")
+
+[node name="dp_shape_renderer_3d" type="Node3D" parent="." node_paths=PackedStringArray("PhysicsServer")]
+script = ExtResource("7_1u66e")
+PhysicsServer = NodePath("../dp_physics_server")
+RenderShapesInEditor = true
+RenderShapesInPlay = true
+metadata/_custom_type_script = "uid://dq0qndvxc03wc"

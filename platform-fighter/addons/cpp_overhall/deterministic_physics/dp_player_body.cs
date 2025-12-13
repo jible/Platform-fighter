@@ -18,7 +18,7 @@ public partial class dp_player_body : dp_object
 	}
 	public void PhysicsStep()
 	{
-		Shape.Position += Velocity;
+		Position += Velocity;
 	}
 
 	public bool IsGrounded()

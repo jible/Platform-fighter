@@ -27,7 +27,7 @@ public partial class ShapeRenderTest : Node3D
 	public override void _Process(double delta)
 	{
 		var inputDir = Input.GetVector("debug_left", "debug_right", "debug_down", "debug_up");
-		moveable.Shape.Position += new DM_Vector2((inputDir/ 7));
+		moveable.Position += new DM_Vector2((inputDir/ 7));
 	}
 
  
