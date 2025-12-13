@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Intrinsics.Arm;
 using System.Text.RegularExpressions;
 
 [Tool]
@@ -10,33 +11,98 @@ using System.Text.RegularExpressions;
 public partial class dp_object : Node
 {
 	// World Space
-    [Export] public Vector2 EditorPosition = new Vector2();
-	public Vector2 EditorGlobalPosition
-    {
-        get
+	private Vector2 _editorPosition = new();
+    
+    [Export] public Vector2 EditorPosition {
+        set
         {
-            Node parent = GetParent();
-			if (parent is dp_object Cast)
-            {return EditorPosition + Cast.EditorPosition;} else
-            {return EditorPosition;}
+            _editorPosition = value;
+			ComputeGlobalEditorPosition(); 
+        }
+		get
+        {
+            return _editorPosition;
         }
     }
-    public DM_Vector2 Position = new DM_Vector2();
+	public Vector2 EditorGlobalPosition = new();
+	private DM_Vector2 _position = new();
+    public DM_Vector2 Position
+    {
+        set
+        {
+            _position = value;
+			ComputeGlobalRuntimePosition();
+        }
+        get
+        {
+            return _position;
+        }
+    }
+	public DM_Vector2 _globalPosition = new();
+
 	public DM_Vector2 GlobalPosition
     {
         get
         {
-            Node parent = GetParent();
-			if (parent is dp_object Cast)
-            {return Position + Cast.GlobalPosition;} else
-            {return Position;}
+			return _globalPosition;
         }
-		set
+        set
         {
-            Node parent = GetParent();
-			if (parent is dp_object Cast)
-            {Position = Cast.GlobalPosition - value;} else
-            {Position = value;}
+			dp_object parent = GetParent() as dp_object;
+
+            _globalPosition = value.copy();
+			_position =  parent ==null? value: parent.GlobalPosition - value ;
+			foreach (Node child in GetChildren())
+            {
+				if (child is dp_object CastedChild)
+                {
+                    CastedChild.ComputeGlobalRuntimePosition();
+                }
+            }
+        }
+    }
+
+	public void SetPositionX(DM64 a)
+    {
+        _position.x = a;
+		ComputeGlobalRuntimePosition();
+    }
+	public void SetPositionY(DM64 a)
+    {
+        _position.y = a;
+		ComputeGlobalRuntimePosition();
+    }
+
+	public void ComputeGlobalRuntimePosition()
+    {
+		
+        dp_object Parent = GetParent() as dp_object;
+		GlobalPosition = (Parent != null)?
+		Parent.GlobalPosition + Position:
+		Position;
+
+		foreach ( Node Child in GetChildren())
+        {
+            if (Child is dp_object CastedChild)
+            {
+                CastedChild.ComputeGlobalRuntimePosition();
+            }
+        }
+    }
+
+	public void ComputeGlobalEditorPosition()
+    {
+		dp_object Parent = GetParent() as dp_object;
+		EditorGlobalPosition = (Parent != null)?
+		Parent.EditorGlobalPosition + EditorPosition:
+		EditorPosition;
+        
+		foreach ( Node Child in GetChildren())
+        {
+            if (Child is dp_object CastedChild)
+            {
+                CastedChild.ComputeGlobalEditorPosition();
+            }
         }
     }
 
@@ -278,7 +344,6 @@ public partial class dp_object : Node
                 } else
                 {
 					GlobalPosition = new DM_Vector2(ProjectedPosition.x, GlobalPosition.y);
-
                 }
 
 				return true;

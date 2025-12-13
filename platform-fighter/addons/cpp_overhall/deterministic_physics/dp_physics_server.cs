@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Security.AccessControl;
 
 [GlobalClass]
@@ -33,6 +34,7 @@ public partial class dp_physics_server : Node
 		PhysicsTick();
 	}
 
+
 	public void PhysicsTick()
 	{
 		if (Engine.IsEditorHint()) { return; }
@@ -50,6 +52,7 @@ public partial class dp_physics_server : Node
 			HashSet<dp_object> interacted = [];
 			HandleObjectProcess(Entity, Grid, ObjectCells, interacted);
 		}
+
 	}
 
 	// Itterates through all physics objects and populates the grid with all 
@@ -150,18 +153,20 @@ public partial class dp_physics_server : Node
 
 	public void RegisterObj( dp_object target)
 	{
-		if (AllEntities.Contains(target)) return;
-		AllEntities.Add(target);
+		if (!AllEntities.Contains(target)) AllEntities.Add(target);
 	}
 
 
 	public void GetAllShapes(Node Parent)
 	{
 		if (Parent == null) { return; }
-		if (Parent is dp_object) { AllEntities.Add((dp_object)Parent); }
+		if (Parent is dp_object CastedParent) {
+			if (!AllEntities.Contains(CastedParent)) AllEntities.Add(CastedParent); 
+		}
 		foreach (var ChildNode in Parent.GetChildren())
 		{
 			GetAllShapes(ChildNode);
 		}
 	}
+	
 }

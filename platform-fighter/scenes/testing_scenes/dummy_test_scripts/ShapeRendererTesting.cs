@@ -4,21 +4,21 @@ using System;
 public partial class ShapeRendererTesting : Node2D
 {
 	
-	[Export] dp_object shape;
+	[Export] dp_object target;
 	public override void _PhysicsProcess(double delta)
 	{
-		if (shape == null) return;
+		if (target == null) return;
 		if (Input.IsActionPressed("debug_up")){
-			shape.Position.y -= 10;
+			target.SetPositionX(target.Position.y - 10);
 		}
 		if (Input.IsActionPressed("debug_down")){
-			shape.Position.y += 10;
+			target.SetPositionX(target.Position.y + 10);
 		}
 		if (Input.IsActionPressed("debug_left")){
-			shape.Position.x -= 10;
+			target.SetPositionX(target.Position.x - 10);
 		}
 		if (Input.IsActionPressed("debug_right")){
-			shape.Position.x += 10;
+			target.SetPositionX(target.Position.x + 10);
 		}
 	}
 }
