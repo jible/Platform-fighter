@@ -1,16 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://bhoj2tjf7klq4"]
+[gd_scene load_steps=6 format=3 uid="uid://bhoj2tjf7klq4"]
 
+[ext_resource type="Script" uid="uid://dvop52atk0rdh" path="res://scenes/helper_scenes/play_scene_3d.gd" id="1_q7t6n"]
 [ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/cpp_overhall/deterministic_physics/dp_physics_server.cs" id="2_q7t6n"]
+[ext_resource type="Script" uid="uid://c7tlwcqf5nv4y" path="res://scenes/helper_scenes/tick_manager.gd" id="2_ya5bb"]
+[ext_resource type="Script" uid="uid://b1g2yvibmsn5v" path="res://characters/input_manager.gd" id="3_dmamo"]
 [ext_resource type="Script" uid="uid://dq0qndvxc03wc" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer_3d.cs" id="3_udxvj"]
 
 [node name="PlayScene3d" type="Node3D"]
+script = ExtResource("1_q7t6n")
 
 [node name="TickManager" type="Node" parent="."]
+script = ExtResource("2_ya5bb")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.96876085, 0.24799673, 0, -0.24799673, 0.96876085, 0, 0.9880096, 2.9457421)
 
 [node name="InputManager" type="Node" parent="."]
+script = ExtResource("3_dmamo")
 
 [node name="CharacterHolder" type="Node" parent="."]
 
