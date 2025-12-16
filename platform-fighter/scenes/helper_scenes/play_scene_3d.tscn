@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhoj2tjf7klq4"]
+
+[ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/cpp_overhall/deterministic_physics/dp_physics_server.cs" id="2_q7t6n"]
+[ext_resource type="Script" uid="uid://dq0qndvxc03wc" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer_3d.cs" id="3_udxvj"]
+
+[node name="PlayScene3d" type="Node3D"]
+
+[node name="TickManager" type="Node" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.96876085, 0.24799673, 0, -0.24799673, 0.96876085, 0, 0.9880096, 2.9457421)
+
+[node name="InputManager" type="Node" parent="."]
+
+[node name="CharacterHolder" type="Node" parent="."]
+
+[node name="StageHolder" type="Node" parent="."]
+
+[node name="PhysicsManagers" type="Node" parent="."]
+
+[node name="dp_physics_server" type="Node" parent="PhysicsManagers" node_paths=PackedStringArray("SearchRoot")]
+script = ExtResource("2_q7t6n")
+SearchRoot = NodePath("../..")
+metadata/_custom_type_script = "uid://b70u38nhjjbh8"
+
+[node name="dp_shape_renderer_3d" type="Node3D" parent="PhysicsManagers" node_paths=PackedStringArray("PhysicsServer")]
+script = ExtResource("3_udxvj")
+PhysicsServer = NodePath("../dp_physics_server")
+RenderShapesInEditor = true
+RenderShapesInPlay = true
+metadata/_custom_type_script = "uid://dq0qndvxc03wc"

@@ -44,7 +44,7 @@ Target = NodePath("..")
 metadata/_custom_type_script = "uid://dskjpbfkcglab"
 
 [node name="3D Test Char" parent="dp_object/dp_shape_follower" instance=ExtResource("1_g0mnn")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.11, 11.96, 0)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, -1.185, 0)
 
 [node name="dp_object2" type="Node" parent="."]
 script = ExtResource("4_ih8ay")
