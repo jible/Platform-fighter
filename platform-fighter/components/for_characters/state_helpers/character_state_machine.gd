@@ -1,5 +1,5 @@
 class_name CharacterStateMachine
-extends Node2D
+extends Node
 
 # Inspired by https://github.com/jible/capstone/blob/main/scripts/characters/state_machine.gd
 @export var starting_state: String = "Idle"
