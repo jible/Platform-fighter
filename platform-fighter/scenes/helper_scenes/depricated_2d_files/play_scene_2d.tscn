@@ -1,8 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://mbd7hr8paxe0"]
+[gd_scene load_steps=6 format=3 uid="uid://mbd7hr8paxe0"]
 
 [ext_resource type="Script" uid="uid://dr5leuuafn8o0" path="res://scenes/helper_scenes/depricated_2d_files/play_scene_2d.gd" id="1_nij0w"]
-[ext_resource type="Script" uid="uid://bu4xmull0njfa" path="res://components/for_scenes/stage_holder.gd" id="2_rw3rl"]
-[ext_resource type="Script" uid="uid://bu7dkeodqc58x" path="res://components/for_scenes/character_holder.gd" id="3_6mkn1"]
 [ext_resource type="Script" uid="uid://b1g2yvibmsn5v" path="res://characters/input_manager.gd" id="4_ckqmf"]
 [ext_resource type="Script" uid="uid://cm66823utepqk" path="res://components/for_scenes/debug_helper.gd" id="5_rwfl1"]
 [ext_resource type="Script" uid="uid://b1b5vrtqnk0ck" path="res://components/for_scenes/rollback_communication_manager.gd" id="6_8iwq5"]
@@ -20,11 +18,8 @@ rollback_communication_manager = NodePath("RollbackCommunicationManager")
 zoom = Vector2(0.31, 0.31)
 
 [node name="StageHolder" type="Node2D" parent="."]
-script = ExtResource("2_rw3rl")
 
-[node name="CharacterHolder" type="Node2D" parent="." node_paths=PackedStringArray("play_scene_manager")]
-script = ExtResource("3_6mkn1")
-play_scene_manager = NodePath("..")
+[node name="CharacterHolder" type="Node2D" parent="."]
 
 [node name="InputManager" type="Node" parent="." node_paths=PackedStringArray("play_scene_manager")]
 script = ExtResource("4_ckqmf")

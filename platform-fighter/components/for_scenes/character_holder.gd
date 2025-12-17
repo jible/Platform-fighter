@@ -1,9 +1,9 @@
 class_name CharacterHolder
-extends Node2D
+extends Node
 
 
 
-@export var play_scene_manager: PlaySceneManager
+@export var play_scene_manager: PlaySceneManager3D
 @export var starting_positions = [ Vector2(-10, -20), Vector2(300, -20)]
 var players: Array[BaseCharacter] = []
 
@@ -23,3 +23,7 @@ func instance_players():
 func start_players():
 	for child in get_children():
 		child.start_character()
+
+func tick():
+	for character in get_children():
+		TickManager.propogate_tick(character)

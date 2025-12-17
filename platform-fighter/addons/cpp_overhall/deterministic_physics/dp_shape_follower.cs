@@ -7,7 +7,7 @@ public partial class dp_shape_follower : Node3D
 {
 	[Export] dp_object Target;
 	[Export] float ZIndex = 0f;
-	public override void _Process(double delta)
+	public void UpdatePosition()
 	{
 		if (Target == null) return;
 		dp_shape shape = Target.Shape;
@@ -20,5 +20,10 @@ public partial class dp_shape_follower : Node3D
 	{
 		return new (v.X, v.Y, z);
 	}
+
+    public override void _Ready()
+    {
+        dp_shape_renderer_3d.GlobalInstance.RegisterFollower(this);
+    }
 
 }

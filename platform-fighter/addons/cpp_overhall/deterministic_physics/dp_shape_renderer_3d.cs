@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [GlobalClass]
 public partial class dp_shape_renderer_3d : Node3D
 {
-    
+    public static dp_shape_renderer_3d GlobalInstance;
     [Export] public dp_physics_server PhysicsServer;
     [Export] public bool RenderShapesInEditor;
     [Export] public bool RenderShapesInPlay;
@@ -15,10 +15,16 @@ public partial class dp_shape_renderer_3d : Node3D
     public Dictionary<dp_object,MeshInstance3D> ObjectToMesh = [];
     private Dictionary<dp_object,RenderState> PreviousData = [];
 
+    public List<dp_shape_follower> ShapeFollowers = [];
+
+    public override void _Ready()
+    {
+        GlobalInstance = this;
+    } 
 
     public override void _PhysicsProcess(double delta)
     {
-        if ((Engine.IsEditorHint() && RenderShapesInEditor) || (!Engine.IsEditorHint() && RenderShapesInPlay))
+        if (Engine.IsEditorHint() && RenderShapesInEditor)
         {
             update_shape_render();
         }
@@ -26,6 +32,10 @@ public partial class dp_shape_renderer_3d : Node3D
 
     public void update_shape_render()
     {
+        
+        UpdateFollowerPositions();
+        if (!Engine.IsEditorHint() && !RenderShapesInPlay) return;
+
         var seenShapes = new HashSet<dp_object>();
 
         if (PhysicsServer == null) { return; }
@@ -68,6 +78,25 @@ public partial class dp_shape_renderer_3d : Node3D
             ObjectToMesh[item].QueueFree();
             ObjectToMesh.Remove(item);
             PreviousData.Remove(item);
+        }
+    }
+
+    public void RegisterFollower(dp_shape_follower newItem)
+    {
+        if ( ShapeFollowers.Contains(newItem)) return;
+        ShapeFollowers.Add(newItem);
+    }
+
+    public void UpdateFollowerPositions()
+    {
+        foreach (var Follower in ShapeFollowers)
+        {
+            if (Follower == null)
+            {
+                ShapeFollowers.Remove(Follower);
+                continue;
+            }
+            Follower.UpdatePosition();
         }
     }
 

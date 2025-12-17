@@ -16,7 +16,7 @@ public partial class dp_physics_server : Node
 	// Play with these for optimizing!!
 	[Export] public int EditorHashGridSize = 30;
 	public DM64 HashGridSize = new(30);
-
+	
 
 	public override void _Ready()
 	{
@@ -26,12 +26,6 @@ public partial class dp_physics_server : Node
 		{
 			GetAllShapes(SearchRoot);
 		}
-	}
-
-	public override void _PhysicsProcess(double delta)
-	{
-		if (Engine.IsEditorHint()) { return; }
-		PhysicsTick();
 	}
 
 
@@ -53,6 +47,7 @@ public partial class dp_physics_server : Node
 			HandleObjectProcess(Entity, Grid, ObjectCells, interacted);
 		}
 
+
 	}
 
 	// Itterates through all physics objects and populates the grid with all 
@@ -63,7 +58,7 @@ public partial class dp_physics_server : Node
 	{
 		foreach (dp_object Entity in AllEntities)
 		{
-			if (!Entity.is_active ||Entity.Shape == null) continue;
+			if (!Entity.is_active || Entity.Shape == null) continue;
 			ObjectCells[Entity] = GetCoveredCells(Entity);
 			foreach (var Cell in ObjectCells[Entity])
 			{

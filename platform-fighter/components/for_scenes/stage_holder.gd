@@ -1,5 +1,5 @@
 class_name StageHolder
-extends Node2D
+extends Node
 
 @export var stage_path: String = "res://scenes/stages/test_stage.tscn"
 var stage: Node
@@ -12,3 +12,6 @@ func instance_stage():
 	instance.position = Vector2.ZERO
 	stage = instance
 	
+
+func tick():
+	pass

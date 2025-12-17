@@ -1,7 +1,7 @@
 class_name InputManager
 extends Node
 
-@export var play_scene_manager: PlaySceneManager
+@export var play_scene_manager: PlaySceneManager3D
 """
 This script parses inputs and feeds them to the player
 
@@ -101,6 +101,7 @@ func serialize_current_controller_state():
 	return finalized_controller_state
 	
 func dispatch_controller_states(previous_tick_state, current_tick_state):
+	if (current_tick_state.size() < finalized_controller_state.size()): return
 	for player_number in range(finalized_controller_state.size()):
 		var current_frame_player_controller = current_tick_state[player_number]
 		if current_frame_player_controller == null: continue
