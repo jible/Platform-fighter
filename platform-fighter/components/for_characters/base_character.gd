@@ -1,5 +1,5 @@
 class_name BaseCharacter
-extends Node3D
+extends Node2D
 
 @export_range(0,3, 1) var team_number = 0
 @export_range(0, 3, 1) var player_number = 0
@@ -17,7 +17,7 @@ var connected_to_scene = false
 @export var state_machine: CharacterStateMachine
 @export var behavior_manager: CharacterBehaviorManager
 @export var health: Health
-@export var model_holder: Node
+@export var sprite_manager: SpriteManager
 @export var animation_player: AnimationPlayer
 @export var input_handler: InputHandler
 @export var direction_changer: DirectionChanger

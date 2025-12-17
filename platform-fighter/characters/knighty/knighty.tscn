@@ -1,6 +1,6 @@
 [gd_scene load_steps=40 format=3 uid="uid://b7fq44qk4rp65"]
 
-[ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/characters2d/base_character.tscn" id="1_4qryq"]
+[ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_4qryq"]
 [ext_resource type="Texture2D" uid="uid://l620ouwxh0nk" path="res://assets/spritesheets/knighty_sheet.png" id="2_nd0r3"]
 [ext_resource type="Script" uid="uid://cmitgdh8qbd2q" path="res://components/for_characters/state_helpers/character_state.gd" id="3_w5g13"]
 [ext_resource type="Script" uid="uid://cttusb5j4ewfi" path="res://components/for_characters/default_states/dash.gd" id="4_jnrlp"]

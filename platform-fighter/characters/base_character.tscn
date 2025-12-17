@@ -1,0 +1,164 @@
+[gd_scene load_steps=21 format=3 uid="uid://e6cxo5jrheb1"]
+
+[ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_vnujj"]
+[ext_resource type="Script" uid="uid://b6mi77c7lmq4a" path="res://components/for_characters/physics_related/character_body.gd" id="2_a5pmx"]
+[ext_resource type="Script" uid="uid://baystk6bdn1w1" path="res://components/for_characters/animation_related/sprite_manager.gd" id="3_o2sve"]
+[ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/state_helpers/character_state_machine.gd" id="4_om1db"]
+[ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://characters/test_character/behaviors/jump_behavior.gd" id="5_hcpvk"]
+[ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://characters/test_character/behaviors/land_behavior.gd" id="6_cgfyo"]
+[ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://characters/test_character/behaviors/dash_behavior.gd" id="7_nf1us"]
+[ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://components/for_characters/state_helpers/behavior_manager.gd" id="8_a1fmy"]
+[ext_resource type="Script" uid="uid://ducy7snro2eo2" path="res://characters/knighty/behaviors/walk_behavior.gd" id="8_acq6v"]
+[ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/default_states/idle.gd" id="8_flllm"]
+[ext_resource type="Script" uid="uid://7d1kkrb1hnsn" path="res://components/for_characters/default_states/ariel.gd" id="9_dsqd8"]
+[ext_resource type="Script" uid="uid://ckq3s3m1o0l2x" path="res://components/for_characters/default_states/walk.gd" id="10_keiky"]
+[ext_resource type="Script" uid="uid://c4dt26bxow8ly" path="res://components/for_characters/default_states/jump.gd" id="11_rq2if"]
+[ext_resource type="Script" uid="uid://c2nimhkephjlf" path="res://components/for_characters/character_state_seralizer.gd" id="12_retdq"]
+[ext_resource type="Script" uid="uid://dh6rrb5uvquv4" path="res://components/for_characters/hitbox_hurtbox/health.gd" id="13_5ygvn"]
+[ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/animation_related/animation_updater.gd" id="15_2f3ic"]
+[ext_resource type="Script" uid="uid://dfn5xpobmmdm4" path="res://components/for_characters/animation_related/animation_player.gd" id="17_iht17"]
+[ext_resource type="Script" uid="uid://c5vmhdvjvsfbr" path="res://components/for_characters/input_handler.gd" id="18_cgfyo"]
+[ext_resource type="Script" uid="uid://l3olgavpcsgr" path="res://components/for_characters/reference_server.gd" id="18_hcpvk"]
+[ext_resource type="Script" uid="uid://bkusxx76ru2an" path="res://components/for_characters/direction_flipper.gd" id="19_cgfyo"]
+
+[node name="BaseCharacter" type="Node2D" node_paths=PackedStringArray("base_character", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player", "input_handler", "direction_changer")]
+script = ExtResource("1_vnujj")
+base_character = NodePath(".")
+state_machine = NodePath("SpriteManager/StateMachine")
+behavior_manager = NodePath("BehaviorManager")
+health = NodePath("Health")
+sprite_manager = NodePath("SpriteManager")
+animation_player = NodePath("AnimationPlayer")
+input_handler = NodePath("InputHandler")
+direction_changer = NodePath("DirectionFlipper")
+
+[node name="PhysicsCharacterBody" type="Node" parent="."]
+script = ExtResource("2_a5pmx")
+
+[node name="SpriteManager" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("base_character")]
+script = ExtResource("3_o2sve")
+base_character = NodePath("..")
+snap = false
+
+[node name="StateMachine" type="Node2D" parent="SpriteManager" node_paths=PackedStringArray("base_character")]
+scale = Vector2(0.0666667, 0.0666667)
+script = ExtResource("4_om1db")
+base_character = NodePath("../..")
+metadata/_custom_type_script = "uid://sukry204wfhf"
+
+[node name="Idle" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("8_flllm")
+base_character = NodePath("../../..")
+state_machine = NodePath("..")
+loop = true
+anim_target_frame_rate = 12.0
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="Aerial" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("9_dsqd8")
+base_character = NodePath("../../..")
+state_machine = NodePath("..")
+can_turn_around = false
+loop = true
+anim_target_frame_rate = 12.0
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="Walk" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("input_handler", "base_character", "state_machine")]
+script = ExtResource("10_keiky")
+input_handler = NodePath("../../../InputHandler")
+base_character = NodePath("../../..")
+state_machine = NodePath("..")
+loop = true
+anim_target_frame_rate = 12.0
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="Jump" type="Node2D" parent="SpriteManager/StateMachine" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("11_rq2if")
+base_character = NodePath("../../..")
+state_machine = NodePath("..")
+can_turn_around = false
+anim_target_frame_rate = 12.0
+metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." node_paths=PackedStringArray("state_machine")]
+script = ExtResource("17_iht17")
+state_machine = NodePath("../SpriteManager/StateMachine")
+
+[node name="Tools" type="Node" parent="."]
+
+[node name="AnimationUpdater" type="Node" parent="Tools" node_paths=PackedStringArray("sprite_manager", "animation_player", "state_machine")]
+script = ExtResource("15_2f3ic")
+sprite_manager = NodePath("../../SpriteManager")
+animation_player = NodePath("../../AnimationPlayer")
+state_machine = NodePath("../../SpriteManager/StateMachine")
+
+[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "state_machine", "behavior_manager", "health", "sprite_manager", "animation_player", "input_handler", "direction_changer")]
+script = ExtResource("18_hcpvk")
+base_character = NodePath("../..")
+state_machine = NodePath("../../SpriteManager/StateMachine")
+behavior_manager = NodePath("../../BehaviorManager")
+health = NodePath("../../Health")
+sprite_manager = NodePath("../../SpriteManager")
+animation_player = NodePath("../../AnimationPlayer")
+input_handler = NodePath("../../InputHandler")
+direction_changer = NodePath("../../DirectionFlipper")
+
+[node name="InputHandler" type="Node" parent="." node_paths=PackedStringArray("base_character")]
+script = ExtResource("18_cgfyo")
+base_character = NodePath("..")
+
+[node name="DirectionFlipper" type="Node2D" parent="." node_paths=PackedStringArray("base_character", "state_machine", "sprite_manager", "input_handler")]
+script = ExtResource("19_cgfyo")
+base_character = NodePath("..")
+state_machine = NodePath("../SpriteManager/StateMachine")
+sprite_manager = NodePath("../SpriteManager")
+input_handler = NodePath("../InputHandler")
+
+[node name="StateSerializer" type="Node" parent="." node_paths=PackedStringArray("base_character")]
+script = ExtResource("12_retdq")
+base_character = NodePath("..")
+
+[node name="BehaviorManager" type="Node" parent="." node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("8_a1fmy")
+base_character = NodePath("..")
+state_machine = NodePath("../SpriteManager/StateMachine")
+
+[node name="JumpBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("5_hcpvk")
+valid_states = Array[String](["Idle", "Walk", "Aerial"])
+base_character = NodePath("../..")
+state_machine = NodePath("../../SpriteManager/StateMachine")
+
+[node name="LandBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("6_cgfyo")
+priority = 1
+valid_states = Array[String](["Aerial"])
+base_character = NodePath("../..")
+state_machine = NodePath("../../SpriteManager/StateMachine")
+
+[node name="DashBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("7_nf1us")
+valid_states = Array[String](["Idle", "Walk", "Aerial"])
+base_character = NodePath("../..")
+state_machine = NodePath("../../SpriteManager/StateMachine")
+
+[node name="WalkBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
+script = ExtResource("8_acq6v")
+valid_states = Array[String](["Idle"])
+base_character = NodePath("../..")
+state_machine = NodePath("../../SpriteManager/StateMachine")
+
+[node name="Health" type="Node" parent="." node_paths=PackedStringArray("base_character", "state_machine", "sprite_manager")]
+script = ExtResource("13_5ygvn")
+base_character = NodePath("..")
+state_machine = NodePath("../SpriteManager/StateMachine")
+sprite_manager = NodePath("../SpriteManager")
+starting_health = 20.0
+metadata/_custom_type_script = "uid://dh6rrb5uvquv4"
+
+[connection signal="state_changed" from="SpriteManager/StateMachine" to="AnimationPlayer" method="_on_state_machine_state_changed"]
+[connection signal="state_changed" from="SpriteManager/StateMachine" to="DirectionFlipper" method="_on_state_machine_state_changed"]
+[connection signal="state_changed" from="SpriteManager/StateMachine" to="BehaviorManager" method="_on_state_machine_state_changed"]
+[connection signal="animation_finished" from="AnimationPlayer" to="SpriteManager/StateMachine" method="_on_animation_player_animation_finished"]
+[connection signal="button_pressed" from="InputHandler" to="BehaviorManager/JumpBehavior" method="_on_input_handler_button_pressed"]
+[connection signal="button_pressed" from="InputHandler" to="BehaviorManager/DashBehavior" method="_on_input_handler_button_pressed"]

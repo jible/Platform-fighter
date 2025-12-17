@@ -2,11 +2,11 @@
 
 [ext_resource type="PackedScene" uid="uid://bcvpcui6ekv5q" path="res://scenes/testing_scenes/3d_test_char.tscn" id="1_g0mnn"]
 [ext_resource type="Script" uid="uid://bl4ob8n7sbao" path="res://scenes/testing_scenes/dummy_test_scripts/ShapeRenderTest.cs" id="1_ih8ay"]
-[ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/physics_objects/dp_shape_follower.cs" id="2_531ip"]
-[ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/physics_objects/dp_physics_server.cs" id="3_63073"]
-[ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/physics_objects/dp_object.cs" id="4_ih8ay"]
-[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/physics_objects/shapes/dp_rectangle.cs" id="5_1u66e"]
-[ext_resource type="Script" uid="uid://dq0qndvxc03wc" path="res://addons/physics_objects/dp_shape_renderer_3d.cs" id="7_1u66e"]
+[ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_follower.cs" id="2_531ip"]
+[ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/cpp_overhall/deterministic_physics/dp_physics_server.cs" id="3_63073"]
+[ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/cpp_overhall/deterministic_physics/dp_object.cs" id="4_ih8ay"]
+[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/cpp_overhall/deterministic_physics/shapes/dp_rectangle.cs" id="5_1u66e"]
+[ext_resource type="Script" uid="uid://dq0qndvxc03wc" path="res://addons/cpp_overhall/deterministic_physics/dp_shape_renderer_3d.cs" id="7_1u66e"]
 
 [sub_resource type="Resource" id="Resource_xsi5r"]
 script = ExtResource("5_1u66e")

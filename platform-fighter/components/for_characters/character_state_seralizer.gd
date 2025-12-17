@@ -12,6 +12,8 @@ Every frame, this will call to extract the state from each node's collection of 
 all_states is a rolling array of all character states. 
 Each character state is another array of all node states on that character
 each node state is an array of the values of the properties that belong to the given node
+
+
 '''
 @export var base_character: BaseCharacter
 @export var max_rollback:int = 50

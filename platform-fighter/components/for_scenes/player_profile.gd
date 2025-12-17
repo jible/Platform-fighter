@@ -22,7 +22,7 @@ enum ControllerType{
 # so different players can have the same input device but different device types
 @export var controller_type: ControllerType
 # The selected character
-@export var selected_character: CharacterProfile =preload("uid://wmqfm5khqbjm")
+@export var selected_character: CharacterProfile =preload("res://characters/character_profiles/test_character_profile.tres")
 # Player tag
 @export var player_tag: PlayerTag = preload("res://player_tags/default_player_tag.tres")
 
