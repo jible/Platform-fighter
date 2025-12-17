@@ -5,11 +5,16 @@ using System;
 [Tool]
 public partial class dp_shape_follower : Node3D
 {
-	[Export] dp_object Target;
+	dp_object Target;
 	[Export] float ZIndex = 0f;
 	public void UpdatePosition()
 	{
-		if (Target == null) return;
+		if (Target == null)
+		{
+			Node Parent = GetParent();
+			if ( Parent is dp_object casted)Target = casted;
+			else return;
+		}
 		dp_shape shape = Target.Shape;
 		if (shape == null) return;
 		if (Engine.IsEditorHint()) Position = VectorUp(Target.EditorGlobalPosition, ZIndex);
