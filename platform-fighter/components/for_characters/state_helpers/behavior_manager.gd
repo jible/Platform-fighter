@@ -6,7 +6,7 @@ var active_behaviors: Array[CharacterBehavior]
 
 @export var base_character: BaseCharacter
 @export var state_machine: CharacterStateMachine
-@export var character_body: SpecializedCharacterBody
+@export var character_body: dp_player_body
 
 
 func _ready():
@@ -15,6 +15,8 @@ func _ready():
 	get_active_behaviors()
 
 func get_active_behaviors():
+	# This is broken for now since the body doesn't store a lock level
+	return
 	active_behaviors.clear()
 	for behavior in all_behaviors:
 		if behavior.priority >= character_body.lock_level and state_machine.current_state_name in behavior.valid_states:

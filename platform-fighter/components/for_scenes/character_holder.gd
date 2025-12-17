@@ -7,6 +7,9 @@ extends Node
 @export var starting_positions = [ Vector2(-10, -20), Vector2(300, -20)]
 var players: Array[BaseCharacter] = []
 
+func config():
+	instance_players()
+
 # Make sure all aspects are loaded without making the players act
 func instance_players():
 	for player in PlayerManager.all_players:

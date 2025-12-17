@@ -32,6 +32,13 @@ script = ExtResource("3_63073")
 SearchRoot = NodePath("..")
 metadata/_custom_type_script = "uid://b70u38nhjjbh8"
 
+[node name="dp_shape_renderer_3d" type="Node3D" parent="." node_paths=PackedStringArray("PhysicsServer")]
+script = ExtResource("7_1u66e")
+PhysicsServer = NodePath("../dp_physics_server")
+RenderShapesInEditor = true
+RenderShapesInPlay = true
+metadata/_custom_type_script = "uid://dq0qndvxc03wc"
+
 [node name="dp_object" type="Node" parent="."]
 script = ExtResource("4_ih8ay")
 Shape = SubResource("Resource_xsi5r")
@@ -63,10 +70,3 @@ metadata/_custom_type_script = "uid://dskjpbfkcglab"
 transform = Transform3D(87.815, 0, 0, 0, 0.62, 0, 0, 0, 10.15, 0, 0, 0)
 mesh = SubResource("BoxMesh_glu5v")
 skeleton = NodePath("../../..")
-
-[node name="dp_shape_renderer_3d" type="Node3D" parent="." node_paths=PackedStringArray("PhysicsServer")]
-script = ExtResource("7_1u66e")
-PhysicsServer = NodePath("../dp_physics_server")
-RenderShapesInEditor = true
-RenderShapesInPlay = true
-metadata/_custom_type_script = "uid://dq0qndvxc03wc"

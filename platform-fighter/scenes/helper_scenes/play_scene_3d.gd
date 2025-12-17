@@ -8,10 +8,11 @@ class_name PlaySceneManager3D
 @export var character_holder: CharacterHolder
 @export var physics_manager: dp_physics_server
 @export var physics_renderer: dp_shape_renderer_3d
-@export var shape_renderer: dp_shape_renderer_3d
 @export var test_objects_holder: Node
 
 func _ready():
+	character_holder.config()
+	stage_holder.config()
 	pass
 	
 func _physics_process(_delta):

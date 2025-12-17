@@ -10,10 +10,10 @@ var started: bool = false
 
 var connected_to_scene = false
 
-@export var play_scene_manager: PlaySceneManager
+@export var play_scene_manager: PlaySceneManager3D
 
 @export var base_character:BaseCharacter
-@export var character_body: SpecializedCharacterBody
+@export var character_body: dp_player_body
 @export var state_machine: CharacterStateMachine
 @export var behavior_manager: CharacterBehaviorManager
 @export var health: Health

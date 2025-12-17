@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bhoj2tjf7klq4"]
+[gd_scene load_steps=9 format=3 uid="uid://bhoj2tjf7klq4"]
 
 [ext_resource type="Script" uid="uid://dvop52atk0rdh" path="res://scenes/helper_scenes/play_scene_3d.gd" id="1_q7t6n"]
 [ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/physics_objects/dp_physics_server.cs" id="2_q7t6n"]
@@ -8,7 +8,9 @@
 [ext_resource type="Script" uid="uid://bu7dkeodqc58x" path="res://components/for_scenes/character_holder.gd" id="4_pt0u0"]
 [ext_resource type="Script" uid="uid://bu4xmull0njfa" path="res://components/for_scenes/stage_holder.gd" id="5_4pkxd"]
 
-[node name="PlayScene3d" type="Node3D" node_paths=PackedStringArray("input_manager", "tick_manager", "camera", "stage_holder", "character_holder", "physics_manager", "physics_renderer", "shape_renderer")]
+[sub_resource type="BoxMesh" id="BoxMesh_pt0u0"]
+
+[node name="PlayScene3d" type="Node3D" node_paths=PackedStringArray("input_manager", "tick_manager", "camera", "stage_holder", "character_holder", "physics_manager", "physics_renderer", "test_objects_holder")]
 script = ExtResource("1_q7t6n")
 input_manager = NodePath("InputManager")
 tick_manager = NodePath("TickManager")
@@ -17,7 +19,7 @@ stage_holder = NodePath("StageHolder")
 character_holder = NodePath("CharacterHolder")
 physics_manager = NodePath("PhysicsManagers/dp_physics_server")
 physics_renderer = NodePath("PhysicsManagers/dp_shape_renderer_3d")
-shape_renderer = NodePath("PhysicsManagers/dp_shape_renderer_3d")
+test_objects_holder = NodePath("TestObjects/MeshInstance3D")
 
 [node name="TickManager" type="Node" parent="." node_paths=PackedStringArray("play_scene_manager", "input_manager", "character_holder")]
 script = ExtResource("2_ya5bb")
@@ -38,6 +40,7 @@ play_scene_manager = NodePath("..")
 
 [node name="StageHolder" type="Node" parent="."]
 script = ExtResource("5_4pkxd")
+stage_path = "uid://b7b5b5sp6pcdj"
 
 [node name="PhysicsManagers" type="Node" parent="."]
 
@@ -48,9 +51,12 @@ metadata/_custom_type_script = "uid://b70u38nhjjbh8"
 
 [node name="dp_shape_renderer_3d" type="Node3D" parent="PhysicsManagers" node_paths=PackedStringArray("PhysicsServer")]
 script = ExtResource("3_udxvj")
+PhysicsServer = NodePath("../dp_physics_server")
 RenderShapesInEditor = true
 RenderShapesInPlay = true
-PhysicsServer = NodePath("../dp_physics_server")
 metadata/_custom_type_script = "uid://dq0qndvxc03wc"
 
 [node name="TestObjects" type="Node" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TestObjects"]
+mesh = SubResource("BoxMesh_pt0u0")

@@ -18,7 +18,7 @@ var health: float = 0
 
 func _ready():
 	health = starting_health
-	connect_hurtboxes(sprite_manager)
+	#connect_hurtboxes(sprite_manager)
 	pass
 
 func connect_hurtboxes(base):

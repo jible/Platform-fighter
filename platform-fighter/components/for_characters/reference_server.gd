@@ -11,7 +11,7 @@ This script gives all nodes with the "reference_server" property a reference to 
 @export_tool_button("Serve References") var button = serve_references
 
 @export var base_character:BaseCharacter
-@export var character_body: SpecializedCharacterBody
+@export var character_body: dp_player_body
 @export var state_machine: CharacterStateMachine
 @export var behavior_manager: CharacterBehaviorManager
 @export var health: Health
