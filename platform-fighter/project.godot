@@ -20,7 +20,7 @@ config/icon="res://assets/images/icon.svg"
 GlobalResources="*res://globals/global_resources.gd"
 NetworkManager="*res://addons/godotrollback/network_manager.gd"
 PlayerManager="*res://globals/player_manager.gd"
-DmServer="*res://addons/cpp_overhall/deterministic_math/dm_server.cs"
+DmServer="*res://addons/math_objects/dm_server.cs"
 
 [display]
 
@@ -33,7 +33,7 @@ project/assembly_name="platform fighter"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/hitbox_editor/plugin.cfg")
+enabled=PackedStringArray()
 
 [global_group]
 

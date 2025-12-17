@@ -1,6 +1,6 @@
 extends Node2D
 
-var play_scene_path = "res://scenes/helper_scenes/play_scene.tscn"
+var play_scene_path = "res://scenes/helper_scenes/play_scene_3d.tscn"
 @export var label_container: HBoxContainer
 
 func _ready():
