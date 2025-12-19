@@ -157,9 +157,18 @@ public partial class dp_object : Node
 
 	public override void _Ready()
 	{
+		GD.Print("obj ready called");
 		// Fill overlaps and position buffer with 
-		if (GlobalPhysicsServer != null)
-        {GlobalPhysicsServer.RegisterObj(this);}
+		if (GlobalPhysicsServer == null)
+		{
+			GlobalPhysicsServer = dp_physics_server.GlobalInstance;
+			if (GlobalPhysicsServer == null)
+			{
+				GD.Print("No Physics Server");
+				throw new Exception ("No dp physics server found");
+			}
+		}
+        GlobalPhysicsServer.RegisterObj(this);
 		if (Engine.IsEditorHint()) {return;}
 		overlaps = new Dictionary<dp_object, bool>[MaxDataBufferSize];
 		RollbackData = new Dictionary<String, Object>[MaxDataBufferSize];

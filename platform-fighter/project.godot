@@ -21,6 +21,8 @@ GlobalResources="*res://globals/global_resources.gd"
 NetworkManager="*res://addons/godotrollback/network_manager.gd"
 PlayerManager="*res://globals/player_manager.gd"
 DmServer="*res://addons/math_objects/dm_server.cs"
+DpShapeRenderer3d="*res://addons/deterministic_physics/physics_objects/dp_shape_renderer_3d.cs"
+DpPhysicsServer="*res://addons/deterministic_physics/physics_objects/dp_physics_server.cs"
 
 [display]
 
@@ -30,10 +32,6 @@ window/vsync/vsync_mode=0
 [dotnet]
 
 project/assembly_name="platform fighter"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/deterministic_physics/plugin.cfg")
 
 [global_group]
 

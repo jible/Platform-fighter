@@ -8,7 +8,7 @@ public partial class dp_shape_renderer_3d : Node3D
 {
     public static dp_shape_renderer_3d GlobalInstance;
     [Export] public dp_physics_server PhysicsServer;
-    [Export] public bool RenderShapesInEditor;
+    [Export] public bool RenderShapesInEditor = true;
     [Export] public bool RenderShapesInPlay;
     public int shape_layer = 0;
     public float BuildBoardThickness = 0.1f;
@@ -21,26 +21,32 @@ public partial class dp_shape_renderer_3d : Node3D
     {
         GlobalInstance = this;
     } 
-
     public override void _PhysicsProcess(double delta)
     {
+        
         if (Engine.IsEditorHint() && RenderShapesInEditor)
         {
             update_shape_render();
         }
     }
-
     public void update_shape_render()
     {
         
         UpdateFollowerPositions();
         if (!Engine.IsEditorHint() && !RenderShapesInPlay) return;
 
+        Node CurrentScene = (Engine.IsEditorHint()) ? GetTree().EditedSceneRoot: GetTree().CurrentScene;
+
         var seenShapes = new HashSet<dp_object>();
 
-        if (PhysicsServer == null) { return; }
+        if (PhysicsServer == null) { 
+            PhysicsServer = dp_physics_server.GlobalInstance;
+            if (PhysicsServer == null) return;
+        }
         foreach (dp_object PhysicsObject in PhysicsServer.AllEntities)
         {
+            
+
             if (PhysicsObject == null || PhysicsObject.Shape == null)
             {
                 continue;
@@ -54,7 +60,7 @@ public partial class dp_shape_renderer_3d : Node3D
             if (!exists)
             {
                 mesh = new MeshInstance3D();
-                AddChild(mesh);
+                CurrentScene.AddChild(mesh);
                 ObjectToMesh[PhysicsObject] = mesh;
             }
 
@@ -74,7 +80,9 @@ public partial class dp_shape_renderer_3d : Node3D
         }
         foreach (var item in toRemove)
         {
-            RemoveChild(ObjectToMesh[item]);
+            var mesh = ObjectToMesh[item];
+            if (mesh != null && mesh.GetParent() == CurrentScene)
+            { CurrentScene.RemoveChild(ObjectToMesh[item]);}
             ObjectToMesh[item].QueueFree();
             ObjectToMesh.Remove(item);
             PreviousData.Remove(item);

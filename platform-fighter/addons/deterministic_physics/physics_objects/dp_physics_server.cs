@@ -17,9 +17,10 @@ public partial class dp_physics_server : Node
 	[Export] public int EditorHashGridSize = 30;
 	public DM64 HashGridSize = new(30);
 	
-
+	public static dp_physics_server GlobalInstance;
 	public override void _Ready()
 	{
+		GlobalInstance = this;
 		dp_object.GlobalPhysicsServer = this;
 		AllEntities = new List<dp_object>();
 		if (SearchRoot != null)
@@ -27,6 +28,7 @@ public partial class dp_physics_server : Node
 			GetAllShapes(SearchRoot);
 		}
 	}
+
 
 
 	public void PhysicsTick()
@@ -148,6 +150,7 @@ public partial class dp_physics_server : Node
 
 	public void RegisterObj( dp_object target)
 	{
+		GD.Print("register");
 		if (!AllEntities.Contains(target)) AllEntities.Add(target);
 	}
 
@@ -156,7 +159,10 @@ public partial class dp_physics_server : Node
 	{
 		if (Parent == null) { return; }
 		if (Parent is dp_object CastedParent) {
-			if (!AllEntities.Contains(CastedParent)) AllEntities.Add(CastedParent); 
+			if (!AllEntities.Contains(CastedParent)) {
+				AllEntities.Add(CastedParent); 
+				GD.Print(CastedParent);
+			}
 		}
 		foreach (var ChildNode in Parent.GetChildren())
 		{

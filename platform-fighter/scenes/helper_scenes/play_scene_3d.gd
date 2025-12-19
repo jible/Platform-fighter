@@ -6,14 +6,12 @@ class_name PlaySceneManager3D
 @export var camera: Camera3D
 @export var stage_holder: StageHolder
 @export var character_holder: CharacterHolder
-@export var physics_manager: dp_physics_server
-@export var physics_renderer: dp_shape_renderer_3d
 @export var test_objects_holder: Node
 
 func _ready():
+	
 	character_holder.config()
 	stage_holder.config()
-	pass
 	
 func _physics_process(_delta):
 	pass
@@ -27,10 +25,10 @@ func tick(prev_tick_inputs, current_tick_inputs):
 	# Progress stage tick
 	stage_holder.tick()
 	# Progress character ticks
-	#character_holder.tick():
+	character_holder.tick()
 	
 	TickManager.propogate_tick(test_objects_holder)
 	
 	# Physics and rendering
-	physics_manager.PhysicsTick();
-	physics_renderer.update_shape_render()
+	DpPhysicsServer.PhysicsTick();
+	DpShapeRenderer3d.update_shape_render()
