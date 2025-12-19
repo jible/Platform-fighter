@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://cv76qtcfbufq1"]
 
 [ext_resource type="Script" uid="uid://ckefqjwson1th" path="res://scenes/testing_scenes/dummy_test_scripts/ShapeRendererTesting.cs" id="1_l8sel"]
-[ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/physics_objects/dp_physics_server.cs" id="2_t60jq"]
-[ext_resource type="Script" uid="uid://baentdytebcpr" path="res://addons/physics_objects/dp_shape_renderer.cs" id="3_t60jq"]
-[ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/physics_objects/dp_object.cs" id="4_5ihea"]
-[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/physics_objects/shapes/dp_rectangle.cs" id="5_2dtu1"]
+[ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/deterministic_physics/physics_objects/dp_physics_server.cs" id="2_t60jq"]
+[ext_resource type="Script" uid="uid://baentdytebcpr" path="res://addons/deterministic_physics/physics_objects/dp_shape_renderer.cs" id="3_t60jq"]
+[ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/deterministic_physics/physics_objects/dp_object.cs" id="4_5ihea"]
+[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="5_2dtu1"]
 
 [sub_resource type="Resource" id="Resource_52uld"]
 script = ExtResource("5_2dtu1")

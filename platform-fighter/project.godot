@@ -33,7 +33,7 @@ project/assembly_name="platform fighter"
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/deterministic_physics/plugin.cfg")
 
 [global_group]
 

@@ -1,10 +1,10 @@
 [gd_scene load_steps=19 format=3 uid="uid://db2kvp6c4fwm2"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_ti21a"]
-[ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/physics_objects/dp_player_body.cs" id="2_dn0l0"]
-[ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/physics_objects/dp_shape_follower.cs" id="3_dn0l0"]
+[ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/deterministic_physics/physics_objects/dp_player_body.cs" id="2_dn0l0"]
+[ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/deterministic_physics/physics_objects/dp_shape_follower.cs" id="3_dn0l0"]
 [ext_resource type="Script" uid="uid://dfn5xpobmmdm4" path="res://components/for_characters/animation_related/animation_player.gd" id="3_gauxr"]
-[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/physics_objects/shapes/dp_rectangle.cs" id="3_mbejc"]
+[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="3_mbejc"]
 [ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/animation_related/animation_updater.gd" id="4_dn0l0"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/state_helpers/character_state_machine.gd" id="5_gauxr"]
 [ext_resource type="Script" uid="uid://l3olgavpcsgr" path="res://components/for_characters/reference_server.gd" id="5_ldp7p"]
