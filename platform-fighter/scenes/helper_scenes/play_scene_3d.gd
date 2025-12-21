@@ -9,7 +9,6 @@ class_name PlaySceneManager3D
 @export var test_objects_holder: Node
 
 func _ready():
-	
 	character_holder.config()
 	stage_holder.config()
 	

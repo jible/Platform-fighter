@@ -24,7 +24,7 @@ input_manager = NodePath("../InputManager")
 character_holder = NodePath("../CharacterHolder")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.96876085, 0.24799673, 0, -0.24799673, 0.96876085, 0, 2.1037512, 6.357172)
+transform = Transform3D(1, 0, 0, 0, 0.9094322, 0.4158523, 0, -0.4158523, 0.9094322, 0, 4.2964163, 9.881272)
 
 [node name="InputManager" type="Node" parent="." node_paths=PackedStringArray("play_scene_manager")]
 script = ExtResource("3_dmamo")

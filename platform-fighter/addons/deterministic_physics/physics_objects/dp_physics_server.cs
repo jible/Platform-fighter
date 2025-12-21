@@ -34,7 +34,6 @@ public partial class dp_physics_server : Node
 	public void PhysicsTick()
 	{
 		if (Engine.IsEditorHint()) { return; }
-
 		// Spacial Hashing
 		Dictionary<Vector2I, List<dp_object>> Grid = [];
 		Dictionary<dp_object, List<Vector2I>> ObjectCells =[];
