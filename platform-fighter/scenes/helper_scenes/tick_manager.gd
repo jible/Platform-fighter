@@ -33,6 +33,11 @@ func start():
 
 func _physics_process(_delta):
 	if !continue_play:
+		print("paused")
+		return
+	
+	if (DpPhysicsServer == null) or (DpShapeRenderer3d == null):
+		print("not ready to tick")
 		return
 	
 	# Serialize World State

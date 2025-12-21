@@ -11,21 +11,21 @@ using System.Security.AccessControl;
 public partial class dp_physics_server : Node
 {
 	public List<dp_object> AllEntities = new List<dp_object>();
-	[Export] public Node SearchRoot;
+
 
 	// Play with these for optimizing!!
 	[Export] public int EditorHashGridSize = 30;
 	public DM64 HashGridSize = new(30);
 	
 	public static dp_physics_server GlobalInstance;
-	public override void _Ready()
+	public void configure(Node SceneRoot)
 	{
 		GlobalInstance = this;
 		dp_object.GlobalPhysicsServer = this;
 		AllEntities = new List<dp_object>();
-		if (SearchRoot != null)
+		if (SceneRoot != null)
 		{
-			GetAllShapes(SearchRoot);
+			GetAllShapes(SceneRoot);
 		}
 	}
 
@@ -150,7 +150,6 @@ public partial class dp_physics_server : Node
 
 	public void RegisterObj( dp_object target)
 	{
-		GD.Print("register");
 		if (!AllEntities.Contains(target)) AllEntities.Add(target);
 	}
 
@@ -161,7 +160,6 @@ public partial class dp_physics_server : Node
 		if (Parent is dp_object CastedParent) {
 			if (!AllEntities.Contains(CastedParent)) {
 				AllEntities.Add(CastedParent); 
-				GD.Print(CastedParent);
 			}
 		}
 		foreach (var ChildNode in Parent.GetChildren())

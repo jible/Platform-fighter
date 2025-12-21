@@ -17,10 +17,30 @@ public partial class dp_shape_renderer_3d : Node3D
 
     public List<dp_shape_follower> ShapeFollowers = [];
 
-    public override void _Ready()
+    public void configure(Node Root)
     {
         GlobalInstance = this;
+
+        ObjectToMesh.Clear();
+        PreviousData.Clear();
+
+        GetAllFollowers(Root);
     } 
+
+    public void GetAllFollowers(Node Parent)
+	{
+		if (Parent == null) { return; }
+		if (Parent is dp_shape_follower CastedParent) {
+			if (!ShapeFollowers.Contains(CastedParent)) {
+				ShapeFollowers.Add(CastedParent); 
+			}
+		}
+		foreach (var ChildNode in Parent.GetChildren())
+		{
+			GetAllFollowers(ChildNode);
+		}
+	}
+
     public override void _PhysicsProcess(double delta)
     {
         
@@ -78,14 +98,19 @@ public partial class dp_shape_renderer_3d : Node3D
                 toRemove.Add(PhysicsObject);
             }
         }
-        foreach (var item in toRemove)
+        while (toRemove.Count > 0)
         {
-            var mesh = ObjectToMesh[item];
+            var PhysicsObj = toRemove[0];
+            var mesh = ObjectToMesh[PhysicsObj];
             if (mesh != null && mesh.GetParent() == CurrentScene)
-            { CurrentScene.RemoveChild(ObjectToMesh[item]);}
-            ObjectToMesh[item].QueueFree();
-            ObjectToMesh.Remove(item);
-            PreviousData.Remove(item);
+            { 
+                CurrentScene.RemoveChild(mesh);
+                mesh.QueueFree();
+            }
+            ObjectToMesh[PhysicsObj].QueueFree();
+            ObjectToMesh.Remove(PhysicsObj);
+            PreviousData.Remove(PhysicsObj);
+            toRemove.RemoveAt(0);
         }
     }
 
@@ -94,6 +119,8 @@ public partial class dp_shape_renderer_3d : Node3D
         if ( ShapeFollowers.Contains(newItem)) return;
         ShapeFollowers.Add(newItem);
     }
+
+
 
     public void UpdateFollowerPositions()
     {

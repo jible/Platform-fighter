@@ -157,7 +157,6 @@ public partial class dp_object : Node
 
 	public override void _Ready()
 	{
-		GD.Print("obj ready called");
 		// Fill overlaps and position buffer with 
 		if (GlobalPhysicsServer == null)
 		{
@@ -165,7 +164,7 @@ public partial class dp_object : Node
 			if (GlobalPhysicsServer == null)
 			{
 				GD.Print("No Physics Server");
-				throw new Exception ("No dp physics server found");
+				return;
 			}
 		}
         GlobalPhysicsServer.RegisterObj(this);
@@ -197,7 +196,6 @@ public partial class dp_object : Node
 				is_overlapping = detect_circle_overlap(other);
 				break;
 			case dp_rectangle:
-				GD.Print("Checking overlap");
 				is_overlapping = detect_rect_overlap(other);
 				break;
 			default:

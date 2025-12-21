@@ -1,9 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://b7b5b5sp6pcdj"]
+[gd_scene load_steps=5 format=3 uid="uid://b7b5b5sp6pcdj"]
+
+[ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/deterministic_physics/physics_objects/dp_object.cs" id="1_jgj7r"]
+[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="2_o6hhb"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_rtbfa"]
+
+[sub_resource type="Resource" id="Resource_skasa"]
+script = ExtResource("2_o6hhb")
+EditorSize = Vector2(22.5, 1)
+metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [node name="TestStage3d" type="Node3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(22.645, 0, 0, 0, 0.105, 0, 0, 0, 0.845, 0, 0, 0)
 mesh = SubResource("BoxMesh_rtbfa")
+
+[node name="dp_object" type="Node" parent="."]
+script = ExtResource("1_jgj7r")
+Shape = SubResource("Resource_skasa")
+color = Color(0.78261614, 0.20124134, 0.6399146, 0.77254903)
+metadata/_custom_type_script = "uid://c4qq7jgy73oan"

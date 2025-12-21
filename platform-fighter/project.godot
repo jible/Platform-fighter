@@ -33,6 +33,10 @@ window/vsync/vsync_mode=0
 
 project/assembly_name="platform fighter"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/deterministic_physics/plugin.cfg")
+
 [global_group]
 
 hitboxes=""

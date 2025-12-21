@@ -28,7 +28,9 @@ public partial class dp_shape_follower : Node3D
 
 	public override void _Ready()
 	{
-		dp_shape_renderer_3d.GlobalInstance.RegisterFollower(this);
+		dp_shape_renderer_3d renderer = dp_shape_renderer_3d.GlobalInstance;
+		if ( renderer == null) { return;}
+		renderer.RegisterFollower(this);
 	}
 
 }
