@@ -7,19 +7,15 @@
 [sub_resource type="Resource" id="Resource_ufx5m"]
 resource_local_to_scene = true
 script = ExtResource("2_1slp7")
-EditorSize = Vector2(28.31, 16.37)
+EditorSize = Vector2(24.34, 16.37)
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [node name="TestCharacter3d" instance=ExtResource("1_kca7h")]
 
 [node name="dp_player_body" parent="." index="0"]
-EditorPosition = Vector2(0, -6.97)
 Shape = SubResource("Resource_ufx5m")
 
-[node name="dp_shape_follower" parent="dp_player_body" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.97, 0)
-
-[node name="StylizedCharacter" parent="dp_player_body/dp_shape_follower" index="0" instance=ExtResource("2_ebxpf")]
+[node name="StylizedCharacter" parent="dp_player_body/dp_shape_follower" index="1" instance=ExtResource("2_ebxpf")]
 transform = Transform3D(-1.0927847e-08, 0, 0.25, 0, 0.25, 0, -0.25, 0, -1.0927847e-08, 0, 0, 0)
 
 [editable path="dp_player_body/dp_shape_follower/StylizedCharacter"]

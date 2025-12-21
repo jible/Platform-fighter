@@ -3,8 +3,3 @@ TODO:
 	
 
 Make a game n watch esque character. (make spots where the character can go and thats the only spot. and u swap between them)
-
-
-BUGS:
-	If dp object extends another scene's dp object, it will render both its unique shape and the base object's shape.
-	Have not tested with physics interactions (like if the physics actually works, but it probably does)

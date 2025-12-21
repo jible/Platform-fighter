@@ -1,9 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://db2kvp6c4fwm2"]
+[gd_scene load_steps=19 format=3 uid="uid://db2kvp6c4fwm2"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_ti21a"]
 [ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/deterministic_physics/physics_objects/dp_player_body.cs" id="2_dn0l0"]
 [ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/deterministic_physics/physics_objects/dp_shape_follower.cs" id="3_dn0l0"]
 [ext_resource type="Script" uid="uid://dfn5xpobmmdm4" path="res://components/for_characters/animation_related/animation_player.gd" id="3_gauxr"]
+[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="3_mbejc"]
 [ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/animation_related/animation_updater.gd" id="4_dn0l0"]
 [ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/state_helpers/character_state_machine.gd" id="5_gauxr"]
 [ext_resource type="Script" uid="uid://l3olgavpcsgr" path="res://components/for_characters/reference_server.gd" id="5_ldp7p"]
@@ -17,23 +18,32 @@
 [ext_resource type="Script" uid="uid://ducy7snro2eo2" path="res://characters/characters2d/knighty/behaviors/walk_behavior.gd" id="12_8ph2c"]
 [ext_resource type="Script" uid="uid://c2nimhkephjlf" path="res://components/for_characters/character_state_seralizer.gd" id="13_xfj4i"]
 
-[node name="BaseCharacter3d" type="Node3D" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "animation_player", "input_handler")]
+[sub_resource type="Resource" id="Resource_msbiy"]
+resource_local_to_scene = true
+script = ExtResource("3_mbejc")
+metadata/_custom_type_script = "uid://0smx527v6br4"
+
+[node name="BaseCharacter3d" type="Node3D" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "model_holder", "animation_player", "input_handler")]
 script = ExtResource("1_ti21a")
 base_character = NodePath(".")
 character_body = NodePath("dp_player_body")
 state_machine = NodePath("StateMachine")
 behavior_manager = NodePath("BehaviorManager")
 health = NodePath("Health")
+model_holder = NodePath("dp_player_body/dp_shape_follower/ModelHolder")
 animation_player = NodePath("AnimationPlayer")
 input_handler = NodePath("InputHandler")
 
 [node name="dp_player_body" type="Node" parent="."]
 script = ExtResource("2_dn0l0")
+Shape = SubResource("Resource_msbiy")
 metadata/_custom_type_script = "uid://dbrqeh8cf0vgv"
 
 [node name="dp_shape_follower" type="Node3D" parent="dp_player_body"]
 script = ExtResource("3_dn0l0")
 metadata/_custom_type_script = "uid://dskjpbfkcglab"
+
+[node name="ModelHolder" type="Node" parent="dp_player_body/dp_shape_follower"]
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." node_paths=PackedStringArray("state_machine")]
 script = ExtResource("3_gauxr")
@@ -99,12 +109,13 @@ script = ExtResource("4_dn0l0")
 animation_player = NodePath("../../AnimationPlayer")
 state_machine = NodePath("../../StateMachine")
 
-[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "animation_player", "input_handler")]
+[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "model_holder", "animation_player", "input_handler")]
 script = ExtResource("5_ldp7p")
 base_character = NodePath("../..")
 character_body = NodePath("../../dp_player_body")
 state_machine = NodePath("../../StateMachine")
 behavior_manager = NodePath("../../BehaviorManager")
 health = NodePath("../../Health")
+model_holder = NodePath("../../dp_player_body/dp_shape_follower/ModelHolder")
 animation_player = NodePath("../../AnimationPlayer")
 input_handler = NodePath("../../InputHandler")
