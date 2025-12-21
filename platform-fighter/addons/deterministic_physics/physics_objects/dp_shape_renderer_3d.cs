@@ -21,6 +21,11 @@ public partial class dp_shape_renderer_3d : Node3D
     {
         GlobalInstance = this;
     } 
+
+    public static dp_shape_renderer_3d GetGlobalInstance()
+    {
+        return GlobalInstance;
+    }
     public override void _PhysicsProcess(double delta)
     {
         
@@ -34,8 +39,8 @@ public partial class dp_shape_renderer_3d : Node3D
         
         UpdateFollowerPositions();
         if (!Engine.IsEditorHint() && !RenderShapesInPlay) return;
-
-        Node CurrentScene = (Engine.IsEditorHint()) ? GetTree().EditedSceneRoot: GetTree().CurrentScene;
+        
+        Node CurrentScene = Engine.IsEditorHint() ? GetTree().EditedSceneRoot: GetTree().CurrentScene;
 
         var seenShapes = new HashSet<dp_object>();
 
@@ -163,7 +168,6 @@ public partial class dp_shape_renderer_3d : Node3D
         }
 
         meshInstance.Position = ObjPos;
-        // e
         // Rectangle Data:
         // [shape, color, size]
         RenderState ObjPrevData;

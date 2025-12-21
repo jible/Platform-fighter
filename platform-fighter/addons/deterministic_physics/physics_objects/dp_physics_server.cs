@@ -29,11 +29,35 @@ public partial class dp_physics_server : Node
 		}
 	}
 
+	public static dp_physics_server GetGlobalInstance()
+	{
+		return GlobalInstance;
+	}
 
+	public void CorrectEntityCollection()
+	{
+		List<dp_object> ToRemove = [];
+		foreach (var Entity in AllEntities)
+		{
+			if (Entity == null || Entity.Shape == null)
+			{
+				ToRemove.Add(Entity);
+			}
+		}
+		foreach (var item in ToRemove)
+		{
+			AllEntities.Remove(item);
+		}
+	}
 
 	public void PhysicsTick()
 	{
+		// Fix List
+		CorrectEntityCollection();
+
+		// Don't do physics operations in editor
 		if (Engine.IsEditorHint()) { return; }
+		
 
 		// Spacial Hashing
 		Dictionary<Vector2I, List<dp_object>> Grid = [];

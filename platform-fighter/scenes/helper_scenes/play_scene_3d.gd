@@ -30,5 +30,5 @@ func tick(prev_tick_inputs, current_tick_inputs):
 	TickManager.propogate_tick(test_objects_holder)
 	
 	# Physics and rendering
-	DpPhysicsServer.PhysicsTick();
-	DpShapeRenderer3d.update_shape_render()
+	dp_physics_server.GetGlobalInstance().PhysicsTick();
+	dp_shape_renderer_3d.GetGlobalInstance().update_shape_render()
