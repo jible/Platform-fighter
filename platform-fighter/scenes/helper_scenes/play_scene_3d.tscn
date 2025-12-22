@@ -24,7 +24,7 @@ input_manager = NodePath("../InputManager")
 character_holder = NodePath("../CharacterHolder")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.9094322, 0.4158523, 0, -0.4158523, 0.9094322, 0, 4.2964163, 9.881272)
+transform = Transform3D(1, 0, 0, 0, 0.9094322, 0.4158523, 0, -0.4158523, 0.9094322, 0, 4.2964163, 36.236317)
 
 [node name="InputManager" type="Node" parent="." node_paths=PackedStringArray("play_scene_manager")]
 script = ExtResource("3_dmamo")
@@ -41,4 +41,5 @@ stage_path = "uid://b7b5b5sp6pcdj"
 [node name="TestObjects" type="Node" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TestObjects"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.993413, 0)
 mesh = SubResource("BoxMesh_pt0u0")

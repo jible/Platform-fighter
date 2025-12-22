@@ -4,7 +4,7 @@ extends Node
 
 
 @export var play_scene_manager: PlaySceneManager3D
-@export var starting_positions = [ Vector2(-10, -20), Vector2(300, -20)]
+var starting_positions = [ Vector2(-10, -20), Vector2(300, -20)]
 var players: Array[BaseCharacter] = []
 
 func config():
@@ -21,7 +21,7 @@ func instance_players():
 		players.append(instance)
 		instance.name = "Player" + str(player.player_number)
 		instance.configure_player(player.team_number, player.player_number, player.player_tag)
-
+		
 # Allow players to animate and receive inputs
 func start_players():
 	for child in get_children():

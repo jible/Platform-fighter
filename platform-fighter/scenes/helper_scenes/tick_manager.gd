@@ -39,7 +39,6 @@ func _physics_process(_delta):
 	if (DpPhysicsServer == null) or (DpShapeRenderer3d == null):
 		print("not ready to tick")
 		return
-	
 	# Serialize World State
 	serialize_tick()
 	

@@ -9,7 +9,7 @@ public partial class dp_shape_renderer_3d : Node3D
     public static dp_shape_renderer_3d GlobalInstance;
     [Export] public dp_physics_server PhysicsServer;
     [Export] public bool RenderShapesInEditor = true;
-    [Export] public bool RenderShapesInPlay;
+    [Export] public bool RenderShapesInPlay = true;
     public int shape_layer = 0;
     public float BuildBoardThickness = 0.1f;
     public Dictionary<dp_object,MeshInstance3D> ObjectToMesh = [];
@@ -17,13 +17,36 @@ public partial class dp_shape_renderer_3d : Node3D
 
     public List<dp_shape_follower> ShapeFollowers = [];
 
-    public void configure(Node Root)
+    public override void _Ready()
     {
+        configure();
+        GetTree().SceneChanged += () => configure();
+    }
+
+    public Node GetRoot()
+    {
+        Node root= Engine.IsEditorHint() 
+        ? GetTree().EditedSceneRoot:
+        GetTree().CurrentScene;
+
+        return root;
+    }
+
+    public void configure(Node Root = null)
+    {
+        if (Root == null)
+        {
+            Root = GetRoot();
+        }
         GlobalInstance = this;
 
+        foreach (var mesh in ObjectToMesh.Values)
+        {
+            mesh.QueueFree();
+        }
         ObjectToMesh.Clear();
         PreviousData.Clear();
-
+        ShapeFollowers.Clear();
         GetAllFollowers(Root);
     } 
 

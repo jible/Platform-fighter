@@ -12,99 +12,102 @@ public partial class dp_object : Node
 {
 	// World Space
 	private Vector2 _editorPosition = new();
-    
-    [Export] public Vector2 EditorPosition {
-        set
-        {
-            _editorPosition = value;
+	
+	[Export] public Vector2 EditorPosition {
+		set
+		{
+			_editorPosition = value;
 			ComputeGlobalEditorPosition(); 
-        }
+		}
 		get
-        {
-            return _editorPosition;
-        }
-    }
+		{
+			return _editorPosition;
+		}
+	}
 	public Vector2 EditorGlobalPosition = new();
 	private DM_Vector2 _position = new();
-    public DM_Vector2 Position
-    {
-        set
-        {
-            _position = value;
+	public DM_Vector2 Position
+	{
+		set
+		{
+			_position = value;
 			ComputeGlobalRuntimePosition();
-        }
-        get
-        {
-            return _position;
-        }
-    }
+		}
+		get
+		{
+			return _position;
+		}
+	}
 	public DM_Vector2 _globalPosition = new();
 
 	public DM_Vector2 GlobalPosition
-    {
-        get
-        {
+	{
+		get
+		{
 			return _globalPosition;
-        }
-        set
-        {
+		}
+		set
+		{
 			dp_object parent = GetParent() as dp_object;
 
-            _globalPosition = value.copy();
+			_globalPosition = value.copy();
 			_position =  parent ==null? value: parent.GlobalPosition - value ;
 			foreach (Node child in GetChildren())
-            {
+			{
 				if (child is dp_object CastedChild)
-                {
-                    CastedChild.ComputeGlobalRuntimePosition();
-                }
-            }
-        }
-    }
+				{
+					CastedChild.ComputeGlobalRuntimePosition();
+				}
+			}
+		}
+	}
 
 	public void SetPositionX(DM64 a)
-    {
-        _position.x = a;
+	{
+		_position.x = a;
 		ComputeGlobalRuntimePosition();
-    }
+	}
 	public void SetPositionY(DM64 a)
-    {
-        _position.y = a;
+	{
+		_position.y = a;
 		ComputeGlobalRuntimePosition();
-    }
+	}
+
+
+
 
 	public void ComputeGlobalRuntimePosition()
-    {
+	{
 		
-        dp_object Parent = GetParent() as dp_object;
+		dp_object Parent = GetParent() as dp_object;
 		GlobalPosition = (Parent != null)?
 		Parent.GlobalPosition + Position:
 		Position;
 
 		foreach ( Node Child in GetChildren())
-        {
-            if (Child is dp_object CastedChild)
-            {
-                CastedChild.ComputeGlobalRuntimePosition();
-            }
-        }
-    }
+		{
+			if (Child is dp_object CastedChild)
+			{
+				CastedChild.ComputeGlobalRuntimePosition();
+			}
+		}
+	}
 
 	public void ComputeGlobalEditorPosition()
-    {
+	{
 		dp_object Parent = GetParent() as dp_object;
 		EditorGlobalPosition = (Parent != null)?
 		Parent.EditorGlobalPosition + EditorPosition:
 		EditorPosition;
-        
+		
 		foreach ( Node Child in GetChildren())
-        {
-            if (Child is dp_object CastedChild)
-            {
-                CastedChild.ComputeGlobalEditorPosition();
-            }
-        }
-    }
+		{
+			if (Child is dp_object CastedChild)
+			{
+				CastedChild.ComputeGlobalEditorPosition();
+			}
+		}
+	}
 
 	// Rollback Data
 	Dictionary<String, Object>[] RollbackData;
@@ -150,7 +153,6 @@ public partial class dp_object : Node
 	static int MaxDataBufferSize = max_physics_rollback + 1;
 	DM_Vector2[] position_buffer = [];
 
-
 	[Signal] public delegate void ObjectEnteredEventHandler(dp_object other);
 	[Signal] public delegate void ObjectExitedEventHandler(dp_object other);
 	[Signal] public delegate void ObjectCollidedEventHandler(dp_object other);
@@ -167,7 +169,7 @@ public partial class dp_object : Node
 				return;
 			}
 		}
-        GlobalPhysicsServer.RegisterObj(this);
+		GlobalPhysicsServer.RegisterObj(this);
 		if (Engine.IsEditorHint()) {return;}
 		overlaps = new Dictionary<dp_object, bool>[MaxDataBufferSize];
 		RollbackData = new Dictionary<String, Object>[MaxDataBufferSize];
@@ -180,11 +182,11 @@ public partial class dp_object : Node
 
 	// This needs to be called every frame before starting to collect overlap data.
 	public void CleanseBuffers()
-    {
-        RollbackData[GetCurrentBufferPosition()].Clear();
-        overlaps[GetCurrentBufferPosition()].Clear();
+	{
+		RollbackData[GetCurrentBufferPosition()].Clear();
+		overlaps[GetCurrentBufferPosition()].Clear();
 
-    }
+	}
 	// Overlap Detection
 	public bool CheckOverlap(dp_object other)
 	{
@@ -276,7 +278,6 @@ public partial class dp_object : Node
 		}
 		return;
 	}
-	
 
 	public bool HandleRectCollision(dp_object other)
 	{
@@ -289,15 +290,15 @@ public partial class dp_object : Node
 				Object PrevPosFromDict;
 				Dictionary<String, Object> FrameData = GetFrameData(Godot.Engine.GetPhysicsFrames() - 1);
 
-				if (!FrameData.TryGetValue("position", out PrevPosFromDict))
+				if (!FrameData.TryGetValue("position", out PrevPosFromDict) || (DM_Vector2)PrevPosFromDict == GlobalPosition)
 				{
-					return false;
+					return HandleStaticRectRectCollision(thisRectangle, other, otherRectangle);
 				}
+
 				DM_Vector2 PrevPos = (DM_Vector2)PrevPosFromDict; 
 				DM_Vector2 vel = GlobalPosition - PrevPos;
 				if (vel.x == new DM64(0) && vel.y == new DM64(0)){ 
 					// GD.Print("Still need to handle case with no velocity");
-
 					return false;
 				}
 				DM_Vector2 ProjectedPosition = GlobalPosition.copy();
@@ -346,16 +347,31 @@ public partial class dp_object : Node
 
 				// Sliding
 				if (EnteredOnX)
-                {
+				{
 					GlobalPosition = new DM_Vector2(GlobalPosition.x, ProjectedPosition.y);
-                } else
-                {
+				} else
+				{
 					GlobalPosition = new DM_Vector2(ProjectedPosition.x, GlobalPosition.y);
-                }
+				}
 
 				return true;
 		}
 		return false;
+	}
+
+	public bool HandleStaticRectRectCollision(dp_rectangle CastedShape, dp_object Other, dp_rectangle OtherCastedShape)
+	{
+		GD.Print("static collision");
+		bool overlapping = detect_rect_overlap(Other);
+
+		if (!overlapping) return false;
+
+		// Gonna get a little creative with this for now! Instead of finding the nearest edge,
+		//  im gonna take the minecraft approach and always push things up!
+
+		DM64 newY = Other.Position.y -(OtherCastedShape.Size.y/2) - (CastedShape.Size.y/2); 
+		SetPositionY(newY);
+		return true;
 	}
 	
 	public Dictionary<String, Object> GetFrameData(ulong frame)

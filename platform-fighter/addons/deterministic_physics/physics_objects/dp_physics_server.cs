@@ -16,16 +16,37 @@ public partial class dp_physics_server : Node
 	// Play with these for optimizing!!
 	[Export] public int EditorHashGridSize = 30;
 	public DM64 HashGridSize = new(30);
-	
-	public static dp_physics_server GlobalInstance;
-	public void configure(Node SceneRoot)
+
+    public override void _Ready()
 	{
 		GlobalInstance = this;
-		dp_object.GlobalPhysicsServer = this;
-		AllEntities = new List<dp_object>();
+		configure();
+		GetTree().SceneChanged += () => configure();
+	}
+
+	public Node GetRoot()
+    {
+        Node root= Engine.IsEditorHint() 
+        ? GetTree().EditedSceneRoot:
+        GetTree().CurrentScene;
+
+        return root;
+    }
+	
+	public static dp_physics_server GlobalInstance;
+	public void configure(Node SceneRoot = null)
+	{
+		GD.Print("configuring");
+		if (SceneRoot == null)
+		{
+			SceneRoot = GetRoot();
+		}
+
+
+		AllEntities.Clear();
 		if (SceneRoot != null)
 		{
-			GetAllShapes(SceneRoot);
+			GetAllEntities(SceneRoot);
 		}
 	}
 
@@ -153,7 +174,7 @@ public partial class dp_physics_server : Node
 	}
 
 
-	public void GetAllShapes(Node Parent)
+	public void GetAllEntities(Node Parent)
 	{
 		if (Parent == null) { return; }
 		if (Parent is dp_object CastedParent) {
@@ -163,7 +184,7 @@ public partial class dp_physics_server : Node
 		}
 		foreach (var ChildNode in Parent.GetChildren())
 		{
-			GetAllShapes(ChildNode);
+			GetAllEntities(ChildNode);
 		}
 	}
 	

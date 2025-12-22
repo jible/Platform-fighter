@@ -54,6 +54,8 @@ public partial struct DM_Vector2
 
     
     // Basic math operator overloads
+    public static bool operator ==(DM_Vector2 a, DM_Vector2 b) => a.x == b.x && a.y == b.y;
+    public static bool operator !=(DM_Vector2 a, DM_Vector2 b) => a.x != b.x || a.y != b.y;
     public static DM_Vector2 operator +(DM_Vector2 a, DM_Vector2 b) => new DM_Vector2(a.x + b.x, a.y + b.y);
     public static DM_Vector2 operator -(DM_Vector2 a, DM_Vector2 b) => new DM_Vector2(a.x - b.x, a.y - b.y);
     public static DM_Vector2 operator *(DM_Vector2 a, DM_Vector2 b) => new DM_Vector2(a.x * b.x, a.y * b.y);
