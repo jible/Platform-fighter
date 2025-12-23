@@ -90,7 +90,7 @@ public partial class dp_shape_renderer_3d : Node3D
         {
             
 
-            if (PhysicsObject == null || PhysicsObject.Shape == null)
+            if (PhysicsObject == null || !IsInstanceValid(PhysicsObject) || PhysicsObject.Shape == null || !IsInstanceValid(PhysicsObject.Shape))
             {
                 continue;
             }
@@ -100,7 +100,7 @@ public partial class dp_shape_renderer_3d : Node3D
             MeshInstance3D mesh;
 
             bool exists = ObjectToMesh.TryGetValue(PhysicsObject, out mesh);
-            if (!exists)
+            if (!exists || mesh == null || IsInstanceValid(mesh))
             {
                 mesh = new MeshInstance3D();
                 CurrentScene.AddChild(mesh);
@@ -121,19 +121,11 @@ public partial class dp_shape_renderer_3d : Node3D
                 toRemove.Add(PhysicsObject);
             }
         }
-        while (toRemove.Count > 0)
+
+       foreach( var PhysicsObj in toRemove)
         {
-            var PhysicsObj = toRemove[0];
-            var mesh = ObjectToMesh[PhysicsObj];
-            if (mesh != null && mesh.GetParent() == CurrentScene)
-            { 
-                CurrentScene.RemoveChild(mesh);
-                mesh.QueueFree();
-            }
-            ObjectToMesh[PhysicsObj].QueueFree();
             ObjectToMesh.Remove(PhysicsObj);
             PreviousData.Remove(PhysicsObj);
-            toRemove.RemoveAt(0);
         }
     }
 
@@ -147,15 +139,16 @@ public partial class dp_shape_renderer_3d : Node3D
 
     public void UpdateFollowerPositions()
     {
-        foreach (var Follower in ShapeFollowers)
+        foreach (var Follower in ShapeFollowers.ToArray())
         {
-            if (Follower == null)
+            if (Follower == null || !IsInstanceValid(Follower))
             {
                 ShapeFollowers.Remove(Follower);
                 continue;
             }
             Follower.UpdatePosition();
         }
+
     }
 
     public void draw_collision_circle(dp_object obj, dp_circle circle, MeshInstance3D MeshInstance)
