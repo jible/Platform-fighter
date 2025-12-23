@@ -100,7 +100,7 @@ public partial class dp_shape_renderer_3d : Node3D
             MeshInstance3D mesh;
 
             bool exists = ObjectToMesh.TryGetValue(PhysicsObject, out mesh);
-            if (!exists || mesh == null || IsInstanceValid(mesh))
+            if (!exists || mesh == null || !IsInstanceValid(mesh))
             {
                 mesh = new MeshInstance3D();
                 CurrentScene.AddChild(mesh);
@@ -204,9 +204,7 @@ public partial class dp_shape_renderer_3d : Node3D
             ObjSize = rectangle.Size.ToStandardVector();
             ObjPos = VectorUp(obj.GlobalPosition.ToStandardVector(), shape_layer);
         }
-
         meshInstance.Position = ObjPos;
-        // e
         // Rectangle Data:
         // [shape, color, size]
         RenderState ObjPrevData;

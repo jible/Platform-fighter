@@ -15,14 +15,24 @@ public partial class dm_server : Node
     private HashSet<object> _visited = new();
     public override void _Ready()
     {
-        CollectDM_Nodes();
         ConvertEditorMath();
+
+        GetTree().SceneChanged += () =>
+        {
+            ConvertEditorMath();
+        };
+
+        GetTree().NodeAdded += ConvertEditorMath;
     }
-    public void CollectDM_Nodes( )
+
+    public void CollectDM_Nodes(Node root = null )
     {
         DM_objects = [];
         _visited.Clear();
-        Node root = GetTree().CurrentScene;
+        if (root == null)
+        {
+            root = GetTree().CurrentScene;
+        }
         _RecurseCollectDM_Nodes(root);
     }
 
@@ -51,9 +61,12 @@ public partial class dm_server : Node
     }
 
 
-    public void ConvertEditorMath()
+    public void ConvertEditorMath(Node RootNode = null)
     {
-        String Prefix = "Editor";
+
+        CollectDM_Nodes(RootNode);
+
+        string Prefix = "Editor";
         int PrefixLength = Prefix.Length;
 
         foreach (object obj in DM_objects)
@@ -61,8 +74,8 @@ public partial class dm_server : Node
             var type = obj.GetType();
             foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
-
                 string FieldName = (string)field.Name;
+
                 Type FieldType = field.FieldType;
                 object value = field.GetValue(obj);
 
