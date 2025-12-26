@@ -13,22 +13,11 @@ public partial class dm_server : Node
     // Though oddly complicated and annoying this is the only way to export deterministic math to the editor.
     public List<object> DM_objects = [];
     private HashSet<object> _visited = new();
-    public override void _Ready()
-    {
-        ConvertEditorMath();
 
-        GetTree().SceneChanged += () =>
-        {
-            ConvertEditorMath();
-        };
-
-        GetTree().NodeAdded += ConvertEditorMath;
-    }
 
     public void CollectDM_Nodes(Node root = null )
     {
         DM_objects = [];
-        _visited.Clear();
         if (root == null)
         {
             root = GetTree().CurrentScene;
@@ -49,20 +38,22 @@ public partial class dm_server : Node
             {DM_objects.Add(Parent);}
             if (typeof(Resource).IsAssignableFrom(field.FieldType))
             {
+                GD.Print("found resource field");
                 var r = field.GetValue(Parent);
                 if (r!= null) {_RecurseCollectDM_Nodes(r);}
             }
         }
-        if ( Parent is not Node node) { return;}
+        if ( Parent is not Node) { return;}
+        Node node = (Node)Parent;
         foreach (var child in node.GetChildren())
         {
             _RecurseCollectDM_Nodes(child);
         }
     }
 
-
     public void ConvertEditorMath(Node RootNode = null)
     {
+        _visited.Clear();
 
         CollectDM_Nodes(RootNode);
 
@@ -74,7 +65,7 @@ public partial class dm_server : Node
             var type = obj.GetType();
             foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
-                string FieldName = (string)field.Name;
+                string FieldName = field.Name;
 
                 Type FieldType = field.FieldType;
                 object value = field.GetValue(obj);

@@ -12,6 +12,7 @@ func config():
 
 # Make sure all aspects are loaded without making the players act
 func instance_players():
+	print("instancing players")
 	for player in PlayerManager.all_players:
 		if !player: continue
 		var character_profile = player.selected_character

@@ -8,12 +8,11 @@ class_name PlaySceneManager3D
 @export var character_holder: CharacterHolder
 @export var test_objects_holder: Node
 
+
 func _ready():
 	character_holder.config()
 	stage_holder.config()
-	
-func _physics_process(_delta):
-	pass
+
 
 func tick(prev_tick_inputs, current_tick_inputs):
 	# Get previous and current inputs states and pass them to input manager to disbatch

@@ -18,6 +18,7 @@ var sample_state: Dictionary = {
 @export var input_manager: InputManager
 @export var character_holder: CharacterHolder
 var continue_play: bool = true
+var configured_math: bool = false
 
 func _ready():
 	# Fill the states buffer with empty states
@@ -32,6 +33,9 @@ func start():
 	pass
 
 func _physics_process(_delta):
+	if (!configured_math):
+		DmServer.ConvertEditorMath(play_scene_manager)
+		configured_math = true
 	if !continue_play:
 		print("paused")
 		return
@@ -39,6 +43,7 @@ func _physics_process(_delta):
 	if (DpPhysicsServer == null) or (DpShapeRenderer3d == null):
 		print("not ready to tick")
 		return
+	
 	# Serialize World State
 	serialize_tick()
 	
