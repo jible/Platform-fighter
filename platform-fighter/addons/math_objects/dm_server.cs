@@ -2,6 +2,7 @@ using Godot;
 using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -13,7 +14,21 @@ public partial class dm_server : Node
     // Though oddly complicated and annoying this is the only way to export deterministic math to the editor.
     public List<object> DM_objects = [];
     private HashSet<object> _visited = new();
+    public override void _Ready()
+    {
+        ConvertEditorMath();
 
+        GetTree().SceneChanged += () =>
+        {
+            
+            _visited.Clear();
+            ConvertEditorMath();
+        };
+
+        GetTree().NodeAdded += (node) =>{
+            ConvertEditorMath(node);
+        };
+    }
 
     public void CollectDM_Nodes(Node root = null )
     {
@@ -32,28 +47,39 @@ public partial class dm_server : Node
         _visited.Add(Parent);
 
 
+        foreach (var prop in Parent.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+        {
+            if (!prop.CanRead || !prop.CanWrite)continue;
+            if ((prop.PropertyType == typeof(DM64) || (prop.PropertyType == typeof(DM_Vector2))) && !DM_objects.Contains(Parent))
+            {DM_objects.Add(Parent);}
+
+            if (typeof(Resource).IsAssignableFrom(prop.PropertyType))
+            {
+                var r = prop.GetValue(Parent);
+                if (r!= null) {_RecurseCollectDM_Nodes(r);}
+            }
+        }
         foreach (var field in Parent.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
         {
             if ((field.FieldType == typeof(DM64) || (field.FieldType == typeof(DM_Vector2))) && !DM_objects.Contains(Parent))
             {DM_objects.Add(Parent);}
+
             if (typeof(Resource).IsAssignableFrom(field.FieldType))
             {
-                GD.Print("found resource field");
                 var r = field.GetValue(Parent);
                 if (r!= null) {_RecurseCollectDM_Nodes(r);}
             }
         }
-        if ( Parent is not Node) { return;}
-        Node node = (Node)Parent;
+        if ( Parent is not Node node) { return;}
         foreach (var child in node.GetChildren())
         {
             _RecurseCollectDM_Nodes(child);
         }
     }
 
+
     public void ConvertEditorMath(Node RootNode = null)
     {
-        _visited.Clear();
 
         CollectDM_Nodes(RootNode);
 

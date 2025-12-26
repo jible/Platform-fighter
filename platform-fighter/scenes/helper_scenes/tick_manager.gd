@@ -18,7 +18,6 @@ var sample_state: Dictionary = {
 @export var input_manager: InputManager
 @export var character_holder: CharacterHolder
 var continue_play: bool = true
-var configured_math: bool = false
 
 func _ready():
 	# Fill the states buffer with empty states
@@ -33,9 +32,6 @@ func start():
 	pass
 
 func _physics_process(_delta):
-	if (!configured_math):
-		DmServer.ConvertEditorMath(play_scene_manager)
-		configured_math = true
 	if !continue_play:
 		print("paused")
 		return
@@ -55,8 +51,6 @@ func _physics_process(_delta):
 	play_scene_manager.tick(game_states[prev_state_key].inputs, game_states[current_state_key].inputs)
 	current_tick = current_tick + 1
 
-	
-	
 func serialize_tick():
 	var current_state_key = get_state_key(current_tick)
 	# Collect Inputs

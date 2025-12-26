@@ -24,4 +24,5 @@ public partial class dp_rectangle : dp_shape
     {
         Size = ((DM_Vector2)Data["size"]).copy();
     }
+
 }
