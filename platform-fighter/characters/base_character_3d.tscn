@@ -30,8 +30,6 @@ input_handler = NodePath("InputHandler")
 
 [node name="dp_player_body" type="Node" parent="."]
 script = ExtResource("2_dn0l0")
-layer_collision = 1
-mask_collision = 1
 metadata/_custom_type_script = "uid://dbrqeh8cf0vgv"
 
 [node name="dp_shape_follower" type="Node3D" parent="dp_player_body"]
@@ -55,10 +53,11 @@ base_character = NodePath("..")
 [node name="Idle" type="Node" parent="StateMachine"]
 script = ExtResource("7_ldp7p")
 
-[node name="Health" type="Node" parent="." node_paths=PackedStringArray("base_character", "state_machine")]
+[node name="Health" type="Node" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("7_msbiy")
 base_character = NodePath("..")
 state_machine = NodePath("../StateMachine")
+character_body = NodePath("../dp_player_body")
 starting_health = 20.0
 metadata/_custom_type_script = "uid://dh6rrb5uvquv4"
 
@@ -68,8 +67,9 @@ base_character = NodePath("..")
 state_machine = NodePath("../StateMachine")
 character_body = NodePath("../dp_player_body")
 
-[node name="JumpBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
+[node name="JumpBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("character_body", "base_character", "state_machine")]
 script = ExtResource("9_vfhrb")
+character_body = NodePath("../../dp_player_body")
 valid_states = Array[String](["Idle", "Walk", "Aerial"])
 base_character = NodePath("../..")
 state_machine = NodePath("../../StateMachine")
@@ -87,8 +87,9 @@ valid_states = Array[String](["Idle", "Walk", "Aerial"])
 base_character = NodePath("../..")
 state_machine = NodePath("../../StateMachine")
 
-[node name="WalkBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
+[node name="WalkBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("character_body", "base_character", "state_machine")]
 script = ExtResource("12_8ph2c")
+character_body = NodePath("../../dp_player_body")
 valid_states = Array[String](["Idle"])
 base_character = NodePath("../..")
 state_machine = NodePath("../../StateMachine")

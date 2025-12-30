@@ -22,7 +22,6 @@ func configure():
 	input_manager.button_event.connect(pass_button_signal)
 	
 func pass_button_signal(button_name: ControllerState.Button_Types, _player_number: int, pressed: bool):
-	
 	if player_number != _player_number: return
 	if pressed:
 		button_pressed.emit(button_name)

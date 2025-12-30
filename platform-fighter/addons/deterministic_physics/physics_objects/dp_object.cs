@@ -73,9 +73,6 @@ public partial class dp_object : Node
 		ComputeGlobalRuntimePosition();
 	}
 
-
-
-
 	public void ComputeGlobalRuntimePosition()
 	{
 		

@@ -22,6 +22,7 @@ var connected_to_scene = false
 @export var input_handler: InputHandler
 @export var direction_changer: DirectionChanger
 
+
 func _ready():
 	get_all_children()
 	for decendant in all_decendants:
@@ -35,6 +36,8 @@ func configure_player(_team_number, _player_number, _player_tag):
 	player_tag =_player_tag
 	var player_holder = get_parent()
 	play_scene_manager = player_holder.play_scene_manager
+	character_body.layer_collision = GlobalResources.PhysicsLayers.ENVIRONMENT | GlobalResources.PhysicsLayers.PLATFORM
+	
 	for child in all_decendants:
 		if child.has_method("configure"): child.configure()
 	configured = true

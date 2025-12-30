@@ -13,6 +13,7 @@ For instance, you may inherit a base state but not want to use it.'''
 @export var base_character: BaseCharacter
 @export var state_machine: CharacterStateMachine
 @export var character_body:SpecializedCharacterBody
+@export var input_handler: InputHandler
 
 @export var state_type:SpecializedCharacterBody.state_types = SpecializedCharacterBody.state_types.STANDARD
 @export var can_turn_around: bool = true
