@@ -30,6 +30,8 @@ input_handler = NodePath("InputHandler")
 
 [node name="dp_player_body" type="Node" parent="."]
 script = ExtResource("2_dn0l0")
+layer_collision = 1
+mask_collision = 1
 metadata/_custom_type_script = "uid://dbrqeh8cf0vgv"
 
 [node name="dp_shape_follower" type="Node3D" parent="dp_player_body"]
