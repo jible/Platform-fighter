@@ -1,12 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://bhoj2tjf7klq4"]
+[gd_scene load_steps=6 format=3 uid="uid://bhoj2tjf7klq4"]
 
 [ext_resource type="Script" uid="uid://dvop52atk0rdh" path="res://scenes/helper_scenes/play_scene_3d.gd" id="1_q7t6n"]
 [ext_resource type="Script" uid="uid://c7tlwcqf5nv4y" path="res://scenes/helper_scenes/tick_manager.gd" id="2_ya5bb"]
 [ext_resource type="Script" uid="uid://b1g2yvibmsn5v" path="res://characters/input_manager.gd" id="3_dmamo"]
 [ext_resource type="Script" uid="uid://bu7dkeodqc58x" path="res://components/for_scenes/character_holder.gd" id="4_pt0u0"]
 [ext_resource type="Script" uid="uid://bu4xmull0njfa" path="res://components/for_scenes/stage_holder.gd" id="5_4pkxd"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_pt0u0"]
 
 [node name="PlayScene3d" type="Node3D" node_paths=PackedStringArray("input_manager", "tick_manager", "camera", "stage_holder", "character_holder", "test_objects_holder")]
 script = ExtResource("1_q7t6n")
@@ -15,7 +13,7 @@ tick_manager = NodePath("TickManager")
 camera = NodePath("Camera3D")
 stage_holder = NodePath("StageHolder")
 character_holder = NodePath("CharacterHolder")
-test_objects_holder = NodePath("TestObjects/MeshInstance3D")
+test_objects_holder = NodePath("")
 
 [node name="TickManager" type="Node" parent="." node_paths=PackedStringArray("play_scene_manager", "input_manager", "character_holder")]
 script = ExtResource("2_ya5bb")
@@ -39,7 +37,3 @@ script = ExtResource("5_4pkxd")
 stage_path = "uid://b7b5b5sp6pcdj"
 
 [node name="TestObjects" type="Node" parent="."]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="TestObjects"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.993413, 0)
-mesh = SubResource("BoxMesh_pt0u0")

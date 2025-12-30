@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://db2kvp6c4fwm2"]
+[gd_scene load_steps=13 format=3 uid="uid://db2kvp6c4fwm2"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_ti21a"]
 [ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/deterministic_physics/physics_objects/dp_player_body.cs" id="2_dn0l0"]
@@ -11,10 +11,6 @@
 [ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/default_states/idle.gd" id="7_ldp7p"]
 [ext_resource type="Script" uid="uid://dh6rrb5uvquv4" path="res://components/for_characters/hitbox_hurtbox/health.gd" id="7_msbiy"]
 [ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://components/for_characters/state_helpers/behavior_manager.gd" id="8_q3qux"]
-[ext_resource type="Script" uid="uid://bb8kwxbaq3n5e" path="res://characters/characters2d/test_character/behaviors/jump_behavior.gd" id="9_vfhrb"]
-[ext_resource type="Script" uid="uid://cnbxotskunjox" path="res://characters/characters2d/test_character/behaviors/land_behavior.gd" id="10_3i4w2"]
-[ext_resource type="Script" uid="uid://cn2u5divpissa" path="res://characters/characters2d/test_character/behaviors/dash_behavior.gd" id="11_1yjbf"]
-[ext_resource type="Script" uid="uid://ducy7snro2eo2" path="res://characters/characters2d/knighty/behaviors/walk_behavior.gd" id="12_8ph2c"]
 [ext_resource type="Script" uid="uid://c2nimhkephjlf" path="res://components/for_characters/character_state_seralizer.gd" id="13_xfj4i"]
 
 [node name="BaseCharacter3d" type="Node3D" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "model_holder", "animation_player", "input_handler")]
@@ -50,8 +46,12 @@ base_character = NodePath("..")
 script = ExtResource("5_gauxr")
 base_character = NodePath("..")
 
-[node name="Idle" type="Node" parent="StateMachine"]
+[node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("base_character", "state_machine", "character_body", "input_handler")]
 script = ExtResource("7_ldp7p")
+base_character = NodePath("../..")
+state_machine = NodePath("..")
+character_body = NodePath("../../dp_player_body")
+input_handler = NodePath("../../InputHandler")
 
 [node name="Health" type="Node" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("7_msbiy")
@@ -66,33 +66,6 @@ script = ExtResource("8_q3qux")
 base_character = NodePath("..")
 state_machine = NodePath("../StateMachine")
 character_body = NodePath("../dp_player_body")
-
-[node name="JumpBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("character_body", "base_character", "state_machine")]
-script = ExtResource("9_vfhrb")
-character_body = NodePath("../../dp_player_body")
-valid_states = Array[String](["Idle", "Walk", "Aerial"])
-base_character = NodePath("../..")
-state_machine = NodePath("../../StateMachine")
-
-[node name="LandBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
-script = ExtResource("10_3i4w2")
-priority = 1
-valid_states = Array[String](["Aerial"])
-base_character = NodePath("../..")
-state_machine = NodePath("../../StateMachine")
-
-[node name="DashBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("base_character", "state_machine")]
-script = ExtResource("11_1yjbf")
-valid_states = Array[String](["Idle", "Walk", "Aerial"])
-base_character = NodePath("../..")
-state_machine = NodePath("../../StateMachine")
-
-[node name="WalkBehavior" type="Node" parent="BehaviorManager" node_paths=PackedStringArray("character_body", "base_character", "state_machine")]
-script = ExtResource("12_8ph2c")
-character_body = NodePath("../../dp_player_body")
-valid_states = Array[String](["Idle"])
-base_character = NodePath("../..")
-state_machine = NodePath("../../StateMachine")
 
 [node name="StateSerializer" type="Node" parent="." node_paths=PackedStringArray("base_character")]
 script = ExtResource("13_xfj4i")

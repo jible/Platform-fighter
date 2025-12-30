@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cphrg1b214cjs"]
-
-[ext_resource type="Script" uid="uid://dgsvmrvaujggp" path="res://scenes/testing_scenes/dummy_test_scripts/TestingCscript.cs" id="2_0w53s"]
-
-[node name="Testing math" type="Node2D"]
-
-[node name="testing c#script" type="Node2D" parent="."]
-script = ExtResource("2_0w53s")

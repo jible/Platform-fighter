@@ -124,7 +124,6 @@ func jump():
 func _on_landed():
 	used_ariel_jumps = 0
 
-
 func add_capped_velocity_impulse(impulse_vector: Vector2):
 	# For each axis
 	for axis in ["x", "y"]:

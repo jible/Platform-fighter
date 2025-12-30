@@ -1,12 +1,49 @@
 [gd_scene load_steps=11 format=3 uid="uid://sh0prfk6saue"]
 
 [ext_resource type="PackedScene" uid="uid://bcvpcui6ekv5q" path="res://scenes/testing_scenes/3d_test_char.tscn" id="1_g0mnn"]
-[ext_resource type="Script" uid="uid://bl4ob8n7sbao" path="res://scenes/testing_scenes/dummy_test_scripts/ShapeRenderTest.cs" id="1_ih8ay"]
 [ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/deterministic_physics/physics_objects/dp_shape_follower.cs" id="2_531ip"]
 [ext_resource type="Script" uid="uid://b70u38nhjjbh8" path="res://addons/deterministic_physics/physics_objects/dp_physics_server.cs" id="3_63073"]
 [ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/deterministic_physics/physics_objects/dp_object.cs" id="4_ih8ay"]
 [ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="5_1u66e"]
 [ext_resource type="Script" uid="uid://dq0qndvxc03wc" path="res://addons/deterministic_physics/physics_objects/dp_shape_renderer_3d.cs" id="7_1u66e"]
+
+[sub_resource type="CSharpScript" id="CSharpScript_63073"]
+script/source = "using Godot;
+using System;
+using System.Numerics;
+
+public partial class ShapeRenderTest : Node3D
+{
+	[Export] public dp_object moveable;
+
+	public override void _Ready()
+	{
+		
+		moveable.ObjectEntered += overlapped;
+		moveable.ObjectExited += exited;
+	}
+
+	private void overlapped(dp_object other)
+	{
+		GD.Print(\"entered\");
+
+	}
+	private void exited(dp_object other)
+	{
+		GD.Print(\"exited\");
+
+	}
+
+	public override void _Process(double delta)
+	{
+		var inputDir = Input.GetVector(\"debug_left\", \"debug_right\", \"debug_down\", \"debug_up\");
+		moveable.Position += new DM_Vector2((inputDir/ 7));
+	}
+
+ 
+
+}
+"
 
 [sub_resource type="Resource" id="Resource_xsi5r"]
 script = ExtResource("5_1u66e")
@@ -21,22 +58,19 @@ metadata/_custom_type_script = "uid://0smx527v6br4"
 [sub_resource type="BoxMesh" id="BoxMesh_glu5v"]
 
 [node name="3D Test Stage" type="Node3D" node_paths=PackedStringArray("moveable")]
-script = ExtResource("1_ih8ay")
+script = SubResource("CSharpScript_63073")
 moveable = NodePath("dp_object")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.066805, 37.259872)
 
-[node name="dp_physics_server" type="Node" parent="." node_paths=PackedStringArray("SearchRoot")]
+[node name="dp_physics_server" type="Node" parent="."]
 script = ExtResource("3_63073")
-SearchRoot = NodePath("..")
 metadata/_custom_type_script = "uid://b70u38nhjjbh8"
 
 [node name="dp_shape_renderer_3d" type="Node3D" parent="." node_paths=PackedStringArray("PhysicsServer")]
 script = ExtResource("7_1u66e")
 PhysicsServer = NodePath("../dp_physics_server")
-RenderShapesInEditor = true
-RenderShapesInPlay = true
 metadata/_custom_type_script = "uid://dq0qndvxc03wc"
 
 [node name="dp_object" type="Node" parent="."]
@@ -45,9 +79,8 @@ Shape = SubResource("Resource_xsi5r")
 mask_collision = 1
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 
-[node name="dp_shape_follower" type="Node3D" parent="dp_object" node_paths=PackedStringArray("Target")]
+[node name="dp_shape_follower" type="Node3D" parent="dp_object"]
 script = ExtResource("2_531ip")
-Target = NodePath("..")
 metadata/_custom_type_script = "uid://dskjpbfkcglab"
 
 [node name="3D Test Char" parent="dp_object/dp_shape_follower" instance=ExtResource("1_g0mnn")]
@@ -61,9 +94,8 @@ is_static = true
 color = Color(0.7517482, 0.33070448, 0.36716574, 0.77254903)
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 
-[node name="dp_shape_follower2" type="Node3D" parent="dp_object2" node_paths=PackedStringArray("Target")]
+[node name="dp_shape_follower2" type="Node3D" parent="dp_object2"]
 script = ExtResource("2_531ip")
-Target = NodePath("..")
 metadata/_custom_type_script = "uid://dskjpbfkcglab"
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="dp_object2/dp_shape_follower2"]

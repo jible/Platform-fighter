@@ -18,7 +18,7 @@ public partial class dp_physics_server : Node
 	[Export] public int EditorHashGridSize = 30;
 	public DM64 HashGridSize = new(30);
 
-    public override void _Ready()
+	public override void _Ready()
 	{
 		GlobalInstance = this;
 		configure();
@@ -26,18 +26,17 @@ public partial class dp_physics_server : Node
 	}
 
 	public Node GetRoot()
-    {
-        Node root= Engine.IsEditorHint() 
-        ? GetTree().EditedSceneRoot:
-        GetTree().CurrentScene;
+	{
+		Node root= Engine.IsEditorHint() 
+		? GetTree().EditedSceneRoot:
+		GetTree().CurrentScene;
 
-        return root;
-    }
+		return root;
+	}
 	
 	public static dp_physics_server GlobalInstance;
 	public void configure(Node SceneRoot = null)
 	{
-		GD.Print("configuring");
 		if (SceneRoot == null)
 		{
 			SceneRoot = GetRoot();

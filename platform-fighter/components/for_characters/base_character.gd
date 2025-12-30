@@ -30,13 +30,14 @@ func _ready():
 		decendant.set_physics_process(false)
 
 var all_decendants : Array[Node]
+
 func configure_player(_team_number, _player_number, _player_tag):
 	team_number = _team_number
 	player_number = _player_number
 	player_tag =_player_tag
 	var player_holder = get_parent()
 	play_scene_manager = player_holder.play_scene_manager
-	character_body.layer_collision = GlobalResources.PhysicsLayers.ENVIRONMENT | GlobalResources.PhysicsLayers.PLATFORM
+	character_body.mask_collision = GlobalResources.PhysicsLayers.ENVIRONMENT | GlobalResources.PhysicsLayers.PLATFORM
 	
 	for child in all_decendants:
 		if child.has_method("configure"): child.configure()
