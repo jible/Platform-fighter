@@ -1,27 +1,16 @@
-[gd_scene load_steps=13 format=3 uid="uid://db2kvp6c4fwm2"]
+[gd_scene load_steps=6 format=3 uid="uid://db2kvp6c4fwm2"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_ti21a"]
 [ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/deterministic_physics/physics_objects/dp_player_body.cs" id="2_dn0l0"]
 [ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/deterministic_physics/physics_objects/dp_shape_follower.cs" id="3_dn0l0"]
-[ext_resource type="Script" uid="uid://dfn5xpobmmdm4" path="res://components/for_characters/animation_related/animation_player.gd" id="3_gauxr"]
-[ext_resource type="Script" uid="uid://cyx5u1bdbim25" path="res://components/for_characters/animation_related/animation_updater.gd" id="4_dn0l0"]
-[ext_resource type="Script" uid="uid://sukry204wfhf" path="res://components/for_characters/state_helpers/character_state_machine.gd" id="5_gauxr"]
 [ext_resource type="Script" uid="uid://l3olgavpcsgr" path="res://components/for_characters/reference_server.gd" id="5_ldp7p"]
 [ext_resource type="Script" uid="uid://c5vmhdvjvsfbr" path="res://components/for_characters/input_handler.gd" id="6_mbejc"]
-[ext_resource type="Script" uid="uid://c1x241hfjd5yv" path="res://components/for_characters/default_states/idle.gd" id="7_ldp7p"]
-[ext_resource type="Script" uid="uid://dh6rrb5uvquv4" path="res://components/for_characters/hitbox_hurtbox/health.gd" id="7_msbiy"]
-[ext_resource type="Script" uid="uid://rqjacinosm0v" path="res://components/for_characters/state_helpers/behavior_manager.gd" id="8_q3qux"]
-[ext_resource type="Script" uid="uid://c2nimhkephjlf" path="res://components/for_characters/character_state_seralizer.gd" id="13_xfj4i"]
 
-[node name="BaseCharacter3d" type="Node3D" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "model_holder", "animation_player", "input_handler")]
+[node name="BaseCharacter3d" type="Node3D" node_paths=PackedStringArray("base_character", "character_body", "model_holder", "input_handler")]
 script = ExtResource("1_ti21a")
 base_character = NodePath(".")
 character_body = NodePath("dp_player_body")
-state_machine = NodePath("StateMachine")
-behavior_manager = NodePath("BehaviorManager")
-health = NodePath("Health")
-model_holder = NodePath("dp_player_body/dp_shape_follower/ModelHolder")
-animation_player = NodePath("AnimationPlayer")
+model_holder = NodePath("")
 input_handler = NodePath("InputHandler")
 
 [node name="dp_player_body" type="Node" parent="."]
@@ -32,59 +21,15 @@ metadata/_custom_type_script = "uid://dbrqeh8cf0vgv"
 script = ExtResource("3_dn0l0")
 metadata/_custom_type_script = "uid://dskjpbfkcglab"
 
-[node name="ModelHolder" type="Node" parent="dp_player_body/dp_shape_follower"]
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." node_paths=PackedStringArray("state_machine")]
-script = ExtResource("3_gauxr")
-state_machine = NodePath("../StateMachine")
-
 [node name="InputHandler" type="Node" parent="." node_paths=PackedStringArray("base_character")]
 script = ExtResource("6_mbejc")
 base_character = NodePath("..")
 
-[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("base_character")]
-script = ExtResource("5_gauxr")
-base_character = NodePath("..")
-
-[node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("base_character", "state_machine", "character_body", "input_handler")]
-script = ExtResource("7_ldp7p")
-base_character = NodePath("../..")
-state_machine = NodePath("..")
-character_body = NodePath("../../dp_player_body")
-input_handler = NodePath("../../InputHandler")
-
-[node name="Health" type="Node" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-script = ExtResource("7_msbiy")
-base_character = NodePath("..")
-state_machine = NodePath("../StateMachine")
-character_body = NodePath("../dp_player_body")
-starting_health = 20.0
-metadata/_custom_type_script = "uid://dh6rrb5uvquv4"
-
-[node name="BehaviorManager" type="Node" parent="." node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
-script = ExtResource("8_q3qux")
-base_character = NodePath("..")
-state_machine = NodePath("../StateMachine")
-character_body = NodePath("../dp_player_body")
-
-[node name="StateSerializer" type="Node" parent="." node_paths=PackedStringArray("base_character")]
-script = ExtResource("13_xfj4i")
-base_character = NodePath("..")
-
 [node name="Tools" type="Node" parent="."]
 
-[node name="AnimationUpdater" type="Node" parent="Tools" node_paths=PackedStringArray("animation_player", "state_machine")]
-script = ExtResource("4_dn0l0")
-animation_player = NodePath("../../AnimationPlayer")
-state_machine = NodePath("../../StateMachine")
-
-[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "character_body", "state_machine", "behavior_manager", "health", "model_holder", "animation_player", "input_handler")]
+[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "character_body", "model_holder", "input_handler")]
 script = ExtResource("5_ldp7p")
 base_character = NodePath("../..")
 character_body = NodePath("../../dp_player_body")
-state_machine = NodePath("../../StateMachine")
-behavior_manager = NodePath("../../BehaviorManager")
-health = NodePath("../../Health")
-model_holder = NodePath("../../dp_player_body/dp_shape_follower/ModelHolder")
-animation_player = NodePath("../../AnimationPlayer")
+model_holder = NodePath("")
 input_handler = NodePath("../../InputHandler")

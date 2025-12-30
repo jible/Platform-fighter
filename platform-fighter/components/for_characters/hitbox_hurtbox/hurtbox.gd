@@ -2,7 +2,7 @@ class_name Hurtbox
 extends Area2D
 
 @export var base_character: BaseCharacter
-@export var character_body: SpecializedCharacterBody
+#@export var character_body: SpecializedCharacterBody
 var health = null
 
 

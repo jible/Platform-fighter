@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="CharacterProfile" load_steps=2 format=3 uid="uid://wmqfm5khqbjm"]
-
-[ext_resource type="Script" uid="uid://8wse53qq7l01" path="res://components/for_characters/character_profile.gd" id="1_w2unf"]
-
-[resource]
-script = ExtResource("1_w2unf")
-name = "Test Character"
-scene_path = "res://characters/test_character_3d.tscn"
-metadata/_custom_type_script = "uid://8wse53qq7l01"

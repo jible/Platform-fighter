@@ -9,9 +9,6 @@ Decides knock back
 signal knockback( kb_vector :Vector2)
 
 @export var base_character: BaseCharacter
-@export var state_machine: CharacterStateMachine
-@export var character_body: SpecializedCharacterBody
-@export var sprite_manager: SpriteManager
 @export var starting_health: float = 10
 
 var health: float = 0
