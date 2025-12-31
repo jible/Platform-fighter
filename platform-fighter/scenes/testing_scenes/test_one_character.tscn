@@ -5,3 +5,4 @@
 [node name="TestOneCharacter" type="Node2D"]
 script = ExtResource("1_tftup")
 play_scene_path = "res://scenes/helper_scenes/play_scene_3d.tscn"
+character_path = "res://scenes/testing_scenes/3d_test_char.tscn"
