@@ -1,16 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://db2kvp6c4fwm2"]
+[gd_scene load_steps=7 format=3 uid="uid://db2kvp6c4fwm2"]
 
 [ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_ti21a"]
 [ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/deterministic_physics/physics_objects/dp_player_body.cs" id="2_dn0l0"]
 [ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/deterministic_physics/physics_objects/dp_shape_follower.cs" id="3_dn0l0"]
 [ext_resource type="Script" uid="uid://l3olgavpcsgr" path="res://components/for_characters/reference_server.gd" id="5_ldp7p"]
+[ext_resource type="Script" uid="uid://dyypwd01w745s" path="res://components/for_characters/physics_related/CharacterController.cs" id="6_7sj80"]
 [ext_resource type="Script" uid="uid://c5vmhdvjvsfbr" path="res://components/for_characters/input_handler.gd" id="6_mbejc"]
 
-[node name="BaseCharacter3d" type="Node3D" node_paths=PackedStringArray("base_character", "character_body", "model_holder", "input_handler")]
+[node name="BaseCharacter3d" type="Node3D" node_paths=PackedStringArray("base_character", "character_body", "input_handler")]
 script = ExtResource("1_ti21a")
 base_character = NodePath(".")
 character_body = NodePath("dp_player_body")
-model_holder = NodePath("")
 input_handler = NodePath("InputHandler")
 
 [node name="dp_player_body" type="Node" parent="."]
@@ -27,9 +27,11 @@ base_character = NodePath("..")
 
 [node name="Tools" type="Node" parent="."]
 
-[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "character_body", "model_holder", "input_handler")]
+[node name="ReferenceServer" type="Node" parent="Tools" node_paths=PackedStringArray("base_character", "character_body", "input_handler")]
 script = ExtResource("5_ldp7p")
 base_character = NodePath("../..")
 character_body = NodePath("../../dp_player_body")
-model_holder = NodePath("")
 input_handler = NodePath("../../InputHandler")
+
+[node name="CharacterController" type="Node" parent="."]
+script = ExtResource("6_7sj80")

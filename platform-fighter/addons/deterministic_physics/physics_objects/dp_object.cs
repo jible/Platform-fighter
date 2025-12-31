@@ -365,7 +365,7 @@ public partial class dp_object : Node
 		// Gonna get a little creative with this for now! Instead of finding the nearest edge,
 		//  im gonna take the minecraft approach and always push things up!
 
-		DM64 newY = Other.Position.y +(OtherCastedShape.Size.y/2) + (CastedShape.Size.y/2); 
+		DM64 newY = Other.Position.y +(OtherCastedShape.Size.y/2) + (CastedShape.Size.y/2) + Epsilon; 
 		SetPositionY(newY);
 		return true;
 	}

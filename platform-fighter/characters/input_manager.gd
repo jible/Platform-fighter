@@ -59,9 +59,8 @@ func _input(event):
 		else: 
 			var stick_num = floor(event.axis/2)
 			var axis = 'x' if event.axis%2 == 0 else 'y'
-			current_controller_states[player_number].sticks[stick_num][axis] = axis_value
+			current_controller_states[player_number].sticks[stick_num][axis] = sign(axis_value) * floor(abs(axis_value)/.3).to_int() 
 	elif event is InputEventKey:
-		
 		var buttons = tag.reverse_map.get(event.keycode)
 		if buttons == null:	return
 		for button in buttons:

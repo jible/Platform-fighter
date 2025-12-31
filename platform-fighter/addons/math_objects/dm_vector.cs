@@ -9,7 +9,7 @@ public partial struct DM_Vector2
     
 
     // Constructors
-    public DM_Vector2()
+    public DM_Vector2(float v)
     {
         x = new DM64();
         y = new DM64();

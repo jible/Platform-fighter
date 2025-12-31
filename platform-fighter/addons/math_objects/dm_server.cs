@@ -83,36 +83,40 @@ public partial class dm_server : Node
 
         CollectDM_Nodes(RootNode);
 
-        string Prefix = "Editor";
-        int PrefixLength = Prefix.Length;
-
-        foreach (object obj in DM_objects)
+        List<string> Prefixes = ["editor_", "Editor"];
+        foreach (var Prefix in Prefixes)
         {
-            var type = obj.GetType();
-            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+            int PrefixLength = Prefix.Length;
+
+            foreach (object obj in DM_objects)
             {
-                string FieldName = field.Name;
-
-                Type FieldType = field.FieldType;
-                object value = field.GetValue(obj);
-
-                if (!FieldName.StartsWith(Prefix)){continue;}
-                string ToBeUpdatedFieldName = FieldName[PrefixLength..];
-
-                System.Reflection.FieldInfo ToBeUpdatedField = type.GetField(ToBeUpdatedFieldName);
-
-                if (ToBeUpdatedField == null){ continue;}
-                Type ToBeUpdateFieldType = ToBeUpdatedField.FieldType;
-                if (ToBeUpdatedField == null){ continue;}
-                if ( FieldType == typeof(float) && ToBeUpdateFieldType == typeof(DM64) )
+                var type = obj.GetType();
+                foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
                 {
-                    ToBeUpdatedField.SetValue(obj, new DM64((float)value));
-                }
-                else if (FieldType == typeof(Vector2) && ToBeUpdateFieldType == typeof(DM_Vector2)){
-                    ToBeUpdatedField.SetValue(obj, new DM_Vector2((Vector2)value));
-                    
+                    string FieldName = field.Name;
+
+                    Type FieldType = field.FieldType;
+                    object value = field.GetValue(obj);
+
+                    if (!FieldName.StartsWith(Prefix)){continue;}
+                    string ToBeUpdatedFieldName = FieldName[PrefixLength..];
+
+                    System.Reflection.FieldInfo ToBeUpdatedField = type.GetField(ToBeUpdatedFieldName);
+
+                    if (ToBeUpdatedField == null){ continue;}
+                    Type ToBeUpdateFieldType = ToBeUpdatedField.FieldType;
+                    if (ToBeUpdatedField == null){ continue;}
+                    if ( FieldType == typeof(float) && ToBeUpdateFieldType == typeof(DM64) )
+                    {
+                        ToBeUpdatedField.SetValue(obj, new DM64((float)value));
+                    }
+                    else if (FieldType == typeof(Vector2) && ToBeUpdateFieldType == typeof(DM_Vector2)){
+                        ToBeUpdatedField.SetValue(obj, new DM_Vector2((Vector2)value));
+                        
+                    }
                 }
             }
         }
+       
     }
 }

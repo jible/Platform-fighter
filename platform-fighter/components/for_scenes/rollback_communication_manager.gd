@@ -11,7 +11,7 @@ enum PacketType {
 	MESSAGE,
 	INPUT,
 }
-@export var play_scene_manager: PlaySceneManager
+@export var play_scene_manager: PlaySceneManager3D
 @export var input_manager: InputManager
 
 var udp: PacketPeerUDP

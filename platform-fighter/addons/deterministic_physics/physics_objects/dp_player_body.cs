@@ -6,13 +6,19 @@ using System.ComponentModel;
 [Tool]
 public partial class dp_player_body : dp_object
 {
-	DM_Vector2 Velocity = new();
-	// Shadow these properties so they aren't exported to the editor
+	public DM_Vector2 Velocity = new();
+	
+    [Export] float EditorAcceleration = new();
+    DM64 Acceleration;
 
-	// public void PhysicsStep()
-	// {
-	// 	Position += Velocity;
-	// }
+    [Export] float EditorMaxVelocity = new();
+    DM64 MaxVelocity = new();
+
+    public void Tick()
+    {
+        Velocity += Acceleration * new DM_Vector2(1,1);
+		Position += Velocity;
+    } 
 
 	// public bool IsGrounded()
 	// {
