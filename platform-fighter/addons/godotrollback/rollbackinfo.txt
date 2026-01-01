@@ -1,5 +1,0 @@
-This is a plugin that includes several data types/ tools that make it easier
-to make a godot game with rollback netcode.
-
-The tools include:
-	- an animation tool that is tick based (rather than godot time based) 

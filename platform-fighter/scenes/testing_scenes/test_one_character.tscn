@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bmqsywfwu7cdr"]
-
-[ext_resource type="Script" uid="uid://bqmflo3xq3vaq" path="res://scenes/testing_scenes/dummy_test_scripts/test_one_character.gd" id="1_tftup"]
-
-[node name="TestOneCharacter" type="Node2D"]
-script = ExtResource("1_tftup")
-play_scene_path = "res://scenes/helper_scenes/play_scene_3d.tscn"
-character_path = "res://scenes/testing_scenes/3d_test_char.tscn"
