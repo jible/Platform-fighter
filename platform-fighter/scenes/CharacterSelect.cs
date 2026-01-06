@@ -7,6 +7,7 @@ public partial class CharacterSelect : Control
     [Export] Label MessageHolder;
     [Export] VBoxContainer CharacterLabels;
     public Dictionary <int, Label> Labels = [];
+    private string PlayScenePath = "uid://t16aulelxjm1";
 
     public override void _Ready()
     {
@@ -24,6 +25,9 @@ public partial class CharacterSelect : Control
         } else if (@event.IsActionPressed("play_default_special"))
         {
             PlayerManager.GlobalInstance.AttemptRemovePlayer(@event);
+        } else if (@event.IsActionPressed("start"))
+        {
+            GetTree().ChangeSceneToFile(PlayScenePath);
         }
     }
 

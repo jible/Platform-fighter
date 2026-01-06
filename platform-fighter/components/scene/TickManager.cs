@@ -100,8 +100,8 @@ public partial class TickManager : Node
     public static void PropogateSerialize(Node node, Dictionary<Node,Dictionary<String, object>> SerializationData)
     {
         if (node == null) return;
-        if (node is ITickable tickable)
-        {SerializationData[node] = tickable.SerializeState();}
+        if (node is ISerializable serializable)
+        {SerializationData[node] = serializable.SerializeState();}
 
         foreach (var child in node.GetChildren())
         {PropogateSerialize(child, SerializationData);}
@@ -110,9 +110,9 @@ public partial class TickManager : Node
     public static void PropogateLoadState(Node node, Dictionary<Node,Dictionary<String, object>> SerializationData)
     {
         if (node == null) return;
-        if (node is ITickable tickable)
+        if (node is ISerializable serializable)
         {
-            tickable.LoadState(SerializationData[node]);
+            serializable.LoadState(SerializationData[node]);
         }
         foreach (var child in node.GetChildren())
         {
