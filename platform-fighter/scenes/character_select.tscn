@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://cdcq8ql8pxore"]
+
+[ext_resource type="Script" uid="uid://cb65paunk2o1g" path="res://scenes/CharacterSelect.cs" id="1_x8mhf"]
+
+[node name="CharacterSelect" type="Control" node_paths=PackedStringArray("MessageHolder", "CharacterLabels")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_x8mhf")
+MessageHolder = NodePath("CharacterLabels/Message")
+CharacterLabels = NodePath("CharacterLabels")
+
+[node name="CharacterLabels" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Message" type="Label" parent="CharacterLabels"]
+layout_mode = 2

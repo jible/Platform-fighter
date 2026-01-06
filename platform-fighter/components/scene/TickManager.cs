@@ -41,6 +41,12 @@ public partial class TickManager : Node
     public override void _PhysicsProcess(double delta)
     {
         if (!ContinuePlay) return;
+        Tick();
+    }
+
+    public void Tick()
+    {
+        
         if (dp_physics_server.GlobalInstance == null || dp_shape_renderer_3d.GlobalInstance == null)
         {return;}
 
@@ -55,6 +61,22 @@ public partial class TickManager : Node
         States[GetStateKey(CurrentTick)] = CurrentTickStates;
         playManager.Tick();
     }
+
+    public void SimulateMultipleTicks(int StartTick, int EndTick)
+    {
+        if (EndTick < StartTick)
+        {
+            throw new ArgumentException("Cannot simulate ticks in negative order");
+        }
+
+        LoadTick(StartTick);
+
+        for (int i = StartTick ; i < EndTick; i++)
+        {
+            Tick();
+        }
+    }
+
 
     public void LoadTick(int Tick)
     {
@@ -98,4 +120,6 @@ public partial class TickManager : Node
         }
     }
 
+
+    
 }

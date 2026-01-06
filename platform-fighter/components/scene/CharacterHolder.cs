@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public partial class CharacterHolder : Node
 {
-    [Export] PlayManager payManager;
+    [Export] PlayerManager playerManager;
     List<Node> Players= [];
 
     public void Config()
@@ -14,7 +14,7 @@ public partial class CharacterHolder : Node
 
     public void InstancePlayers()
     {
-        foreach(var Player in PlayerManager.AllPlayers){
+        foreach(var Player in playerManager.AllPlayers){
             if (Players == null){ continue;}
             
         }

@@ -9,7 +9,7 @@ public partial class dp_player_body : dp_object
 	public DM_Vector2 Velocity = new();
 	
 	[Export] float EditorAcceleration = new();
-	DM64 Acceleration;
+	DM64 Acceleration = new();
 
 	[Export] float EditorMaxVelocity = new();
 	DM64 MaxVelocity = new();
