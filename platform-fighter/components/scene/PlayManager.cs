@@ -8,6 +8,14 @@ public partial class PlayManager : Node3D
     [Export] public StageHolder StageHolder;
     [Export] public Camera3D Camera;
     [Export] public InputManager inputManager;
+
+
+    public override void _Ready()
+    {
+        characterHolder.Config();
+        StageHolder.Config();
+    }
+
     public void Tick()
     {
         characterHolder.Tick();
