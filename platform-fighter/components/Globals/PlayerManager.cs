@@ -6,7 +6,7 @@ using System.Linq;
 public partial class PlayerManager : Node
 {
     public List<PlayerProfile> AllPlayers = [];
-    public int MaxPlayerCount = 4;
+    public static int MaxPlayerCount = 4;
     public static  PlayerManager GlobalInstance;
     [Signal] public delegate void PlayerAddedEventHandler(int PlayerNumber);
     [Signal] public delegate void PlayerRemovedEventHandler(int PlayerNumber);
@@ -28,9 +28,7 @@ public partial class PlayerManager : Node
             foreach (var item in AllPlayers)
             {
                 GD.Print(item);
-
             }
-
         }
     }
 
