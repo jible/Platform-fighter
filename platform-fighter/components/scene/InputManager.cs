@@ -6,20 +6,12 @@ using System.Formats.Asn1;
 public partial class InputManager : Node
 {
     [Export] PlayerManager playerManager;
-    public float DirftThreshold = .1f;
+    public float DriftThreshold = .1f;
 
-    public int KeyboardCharNum = 0;
     public ControllerState[][] AllControllerStates = [];
     public ControllerState[] CurrentControllerStates;
     public ControllerState[] FinalizedControllerState;
     
-    public HashSet<ControllerState.LeftStickDirections> LeftStickDirections = new()
-    {
-        ControllerState.LeftStickDirections.LEFT_UP,
-        ControllerState.LeftStickDirections.LEFT_DOWN,
-        ControllerState.LeftStickDirections.LEFT_LEFT,
-        ControllerState.LeftStickDirections.LEFT_RIGHT,
-    };
     [Signal] public delegate void ButtonEventEventHandler(ControllerState.ButtonTypes Button, int PlayerNumber, bool Pressed);
 
     
@@ -72,7 +64,7 @@ public partial class InputManager : Node
         // This is the case where it is actual stick handling
 
         float Magnitude = StickMotion.AxisValue;
-        if (Math.Abs(Magnitude) < DirftThreshold)
+        if (Math.Abs(Magnitude) < DriftThreshold)
         {
             Magnitude = 0;
         }
@@ -87,9 +79,9 @@ public partial class InputManager : Node
 
     public void HandleKeyboardInput(InputEventKey KeyEvent, PlayerTag playerTag, int PlayerNumber)
     {
-        Object Button;
+        ControllerState.ButtonTypes Button;
         bool Success = playerTag.ReverseMap.TryGetValue(KeyEvent.Keycode, out Button);
-
+        if (!Success) return;
         CurrentControllerStates[PlayerNumber].SetButton(Button, KeyEvent.IsPressed());
     }
 
@@ -108,31 +100,48 @@ public partial class InputManager : Node
             FinalizedControllerState[PlayerNumber] = CurrentControllerStates[PlayerNumber].GetCopy();
         }
     }
-    Dictionary< ControllerState.LeftStickDirections, Vector2> InputToDirection = new()
+    Dictionary< ControllerState.ButtonTypes, Vector2> LeftStickInputToDirection = new()
     {
-        {ControllerState.LeftStickDirections.LEFT_DOWN, Vector2.Down},
-        {ControllerState.LeftStickDirections.LEFT_LEFT, Vector2.Left},
-        {ControllerState.LeftStickDirections.LEFT_RIGHT, Vector2.Right},
-        {ControllerState.LeftStickDirections.LEFT_UP, Vector2.Up},
+        {ControllerState.ButtonTypes.LEFT_DOWN, Vector2.Down},
+        {ControllerState.ButtonTypes.LEFT_LEFT, Vector2.Left},
+        {ControllerState.ButtonTypes.LEFT_RIGHT, Vector2.Right},
+        {ControllerState.ButtonTypes.LEFT_UP, Vector2.Up},
+        
+
+    };
+    Dictionary< ControllerState.ButtonTypes, Vector2> RightStickInputToDirection = new()
+    {
+        {ControllerState.ButtonTypes.RIGHT_DOWN, Vector2.Down},
+        {ControllerState.ButtonTypes.RIGHT_LEFT, Vector2.Left},
+        {ControllerState.ButtonTypes.RIGHT_RIGHT, Vector2.Right},
+        {ControllerState.ButtonTypes.RIGHT_UP, Vector2.Up},
+
     };
 
 
     public void ApplyKeyboardDirectionInputs(PlayerProfile playerProfile, int PlayerNumber)
     {
-        Vector2 Direction = new();
+        Vector2 LeftStickDirection = new();
+        Vector2 RightStickDirection = new();
         
-        for (int j = 0; j < (int)ControllerState.LeftStickDirections.COUNT; j++)
+        for (int StickInputs = (int)ControllerState.ButtonTypes.SERIALIZABLE_END + 1; StickInputs < (int)ControllerState.ButtonTypes.COUNT; StickInputs++)
         {
-            foreach (var action in playerProfile.playerTag.ActionMap[j])
+            foreach (var action in playerProfile.playerTag.ActionMap[(ControllerState.ButtonTypes)StickInputs])
             {
+                Vector2 DirectionToAdd;
                 if (Input.IsKeyPressed((Key)action))
                 {
-                    Direction += InputToDirection[(ControllerState.LeftStickDirections)j];
+                    bool LeftContains = LeftStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out DirectionToAdd);
+                    if (LeftContains) LeftStickDirection += DirectionToAdd;
+                    bool RightContains = RightStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out DirectionToAdd);
+                    if (RightContains)RightStickDirection  += DirectionToAdd;
                 }
                 
             }
         }
-        CurrentControllerStates[PlayerNumber].StickStates[0].SetFromVector( Direction);
+        CurrentControllerStates[PlayerNumber].StickStates[0].SetFromVector( LeftStickDirection);
+        CurrentControllerStates[PlayerNumber].StickStates[1].SetFromVector( RightStickDirection);
+
     }
     
 }
