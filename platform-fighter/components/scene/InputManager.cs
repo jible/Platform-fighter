@@ -87,12 +87,11 @@ public partial class InputManager : Node
 
     public void SerializeCurrentControllerState()
     {
-        // If keyboard, build input vector
-        
-        
         for (int PlayerNumber = 0; PlayerNumber < FinalizedControllerState.Length; PlayerNumber++)
         {
             PlayerProfile playerProfile = playerManager.AllPlayers[PlayerNumber];
+            // If keyboard, build input vector
+
             if (playerProfile.ControllerType == PlayerProfile.ControllerTypes.KEYBOARD)
             {
                 ApplyKeyboardDirectionInputs(playerProfile, PlayerNumber);
@@ -129,13 +128,12 @@ public partial class InputManager : Node
             foreach (var action in playerProfile.playerTag.ActionMap[(ControllerState.ButtonTypes)StickInputs])
             {
                 Vector2 DirectionToAdd;
-                if (Input.IsKeyPressed((Key)action))
-                {
-                    bool LeftContains = LeftStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out DirectionToAdd);
-                    if (LeftContains) LeftStickDirection += DirectionToAdd;
-                    bool RightContains = RightStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out DirectionToAdd);
-                    if (RightContains)RightStickDirection  += DirectionToAdd;
-                }
+                if (!Input.IsKeyPressed((Key)action)) { continue; }
+                
+                bool LeftContains = LeftStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out DirectionToAdd);
+                if (LeftContains) LeftStickDirection += DirectionToAdd;
+                bool RightContains = RightStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out DirectionToAdd);
+                if (RightContains)RightStickDirection  += DirectionToAdd;
                 
             }
         }
