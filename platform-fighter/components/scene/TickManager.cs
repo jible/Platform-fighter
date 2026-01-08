@@ -46,20 +46,36 @@ public partial class TickManager : Node
 
     public void Tick()
     {
-        
         if (dp_physics_server.GlobalInstance == null || dp_shape_renderer_3d.GlobalInstance == null)
         {return;}
 
+        if (dp_physics_server.GlobalInstance == null || dp_shape_renderer_3d.GlobalInstance == null)
+        {
+            GD.Print("Physics engine and renderer not ready");
+        }
         // Serialize the current tick
         int CurrentStateKey = GetStateKey(CurrentTick);
         int PreviousStateKey = GetStateKey(CurrentTick - 1);
 
-        // Itterate through all nodes in this scene.
-        // If they have a method for Serializing their state, call it
+        SerializeCurrentTick(CurrentStateKey);
+        // Dispatch Inputs + Call processes
+        CallProcesses(CurrentStateKey, PreviousStateKey);
+    }
+
+
+    public void SerializeCurrentTick(int CurrentTickKey)
+    {
+        inputManager.SerializeCurrentControllerState(CurrentTickKey);
+
         Dictionary<Node,Dictionary<String, object>> CurrentTickStates = [];
         PropogateSerialize(playManager, CurrentTickStates);
-        States[GetStateKey(CurrentTick)] = CurrentTickStates;
-        playManager.Tick();
+        States[CurrentTickKey] = CurrentTickStates;
+    }
+
+    public void CallProcesses(int CurrentTickKey, int PreviousTickKey)
+    {
+        inputManager.DispatchControllerStates(CurrentTickKey, PreviousTickKey );
+        PropogateTick(playManager);
     }
 
     public void SimulateMultipleTicks(int StartTick, int EndTick)
@@ -76,7 +92,6 @@ public partial class TickManager : Node
             Tick();
         }
     }
-
 
     public void LoadTick(int Tick)
     {

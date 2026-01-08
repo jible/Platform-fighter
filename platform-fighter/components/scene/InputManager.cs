@@ -10,7 +10,6 @@ public partial class InputManager : Node
 
     public ControllerState[][] AllControllerStates = [];
     public ControllerState[] CurrentControllerStates;
-    public ControllerState[] FinalizedControllerState;
     
     [Signal] public delegate void ButtonEventEventHandler(ControllerState.ButtonTypes Button, int PlayerNumber, bool Pressed);
 
@@ -33,11 +32,9 @@ public partial class InputManager : Node
     public override void _Ready()
     {
         CurrentControllerStates = new ControllerState[PlayerManager.MaxPlayerCount];
-        FinalizedControllerState = new ControllerState[PlayerManager.MaxPlayerCount];
         for (int i = 0; i < PlayerManager.MaxPlayerCount; i++)
         {
             CurrentControllerStates[i] = new();
-            FinalizedControllerState[i] = new();
         }
     }
 
@@ -58,6 +55,12 @@ public partial class InputManager : Node
         else if (@event is InputEventJoypadMotion StickMotion) HandleJoypadMotion(StickMotion, PlayerNumber);
         else if (@event is InputEventKey KeyEvent) HandleKeyboardInput(KeyEvent, playerTag, PlayerNumber);
 
+    }
+
+    public ControllerState[] GetInputsForTick(int Tick)
+    {
+        ControllerState[] Inputs = AllControllerStates[Tick];
+        return Inputs;
     }
 
     public void HandleJoypadButton( InputEventJoypadButton JoyEvent, PlayerTag playerTag, int player_number)
@@ -100,9 +103,9 @@ public partial class InputManager : Node
         CurrentControllerStates[PlayerNumber].SetButton(Button, KeyEvent.IsPressed());
     }
 
-    public void SerializeCurrentControllerState()
+    public void SerializeCurrentControllerState(int Frame)
     {
-        for (int PlayerNumber = 0; PlayerNumber < FinalizedControllerState.Length; PlayerNumber++)
+        for (int PlayerNumber = 0; PlayerNumber < CurrentControllerStates.Length; PlayerNumber++)
         {
             PlayerProfile playerProfile = playerManager.AllPlayers[PlayerNumber];
             // If keyboard, build input vector
@@ -111,8 +114,11 @@ public partial class InputManager : Node
             {
                 ApplyKeyboardDirectionInputs(playerProfile, PlayerNumber);
             }
-            FinalizedControllerState[PlayerNumber] = CurrentControllerStates[PlayerNumber].GetCopy();
+
+
+            AllControllerStates[Frame][PlayerNumber] = CurrentControllerStates[PlayerNumber].GetCopy();
         }
+        
     }
 
 
@@ -140,8 +146,11 @@ public partial class InputManager : Node
 
     }
     
-    public void DispatchControllerStates(ControllerState[] PreviousTickState, ControllerState[] CurrentTickState)
+    public void DispatchControllerStates(int CurrentTick, int PreviousTick)
     {
+        ControllerState[] PreviousTickState = AllControllerStates[PreviousTick];
+        ControllerState[] CurrentTickState = AllControllerStates[CurrentTick];
+
         for (int PlayerNumber = 0; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber ++)
         {
             var CurrentFrameController = CurrentTickState[PlayerNumber];
