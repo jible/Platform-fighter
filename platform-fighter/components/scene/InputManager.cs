@@ -5,10 +5,10 @@ using System.Formats.Asn1;
 
 public partial class InputManager : Node
 {
-    [Export] PlayerManager playerManager;
+    PlayerManager playerManager;
     public float DriftThreshold = .1f;
 
-    public ControllerState[][] AllControllerStates = [];
+    public ControllerState[][] AllControllerStates;
     public ControllerState[] CurrentControllerStates;
     
     [Signal] public delegate void ButtonEventEventHandler(ControllerState.ButtonTypes Button, int PlayerNumber, bool Pressed);
@@ -31,10 +31,20 @@ public partial class InputManager : Node
     
     public override void _Ready()
     {
+        playerManager = PlayerManager.GlobalInstance;
         CurrentControllerStates = new ControllerState[PlayerManager.MaxPlayerCount];
-        for (int i = 0; i < PlayerManager.MaxPlayerCount; i++)
+        AllControllerStates = new ControllerState[RollbackManager.MAX_ROLLBACK_FRAMES][];
+        for (int Frame = 0; Frame <RollbackManager.MAX_ROLLBACK_FRAMES; Frame++)
         {
-            CurrentControllerStates[i] = new();
+            AllControllerStates[Frame] = new ControllerState[PlayerManager.MaxPlayerCount];
+            for (int PlayerNumber = 0; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber++)
+            {
+                AllControllerStates[Frame][PlayerNumber] = new();
+            }
+        }
+        for (int PlayerNumber = 0; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber++)
+        {
+            CurrentControllerStates[PlayerNumber] = new();
         }
     }
 

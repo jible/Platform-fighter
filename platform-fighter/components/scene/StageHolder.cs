@@ -5,7 +5,7 @@ using System.Numerics;
 public partial class StageHolder : Node
 {
 
-    [Export] String StagePath = "";
+    [Export] String StagePath = "uid://bv57u8g75hkaj";
     Node Stage;
 
     public void Config()

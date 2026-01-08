@@ -1,16 +1,13 @@
 [gd_scene load_steps=6 format=3 uid="uid://db2kvp6c4fwm2"]
 
-[ext_resource type="Script" uid="uid://d2chktcb8jb34" path="res://components/for_characters/base_character.gd" id="1_ti21a"]
+[ext_resource type="Script" uid="uid://bmo5fsex1xcio" path="res://components/character/BaseCharacter3d.cs" id="1_1xapf"]
 [ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/deterministic_physics/physics_objects/dp_player_body.cs" id="2_dn0l0"]
 [ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/deterministic_physics/physics_objects/dp_shape_follower.cs" id="3_dn0l0"]
-[ext_resource type="Script" uid="uid://b0uukebpujwrj" path="res://components/for_characters/InputHandler.cs" id="4_1xapf"]
-[ext_resource type="Script" uid="uid://dyypwd01w745s" path="res://components/for_characters/physics_related/CharacterController.cs" id="6_7sj80"]
+[ext_resource type="Script" uid="uid://qdb0pgmidjtk" path="res://components/character/InputHandler.cs" id="4_7sj80"]
+[ext_resource type="Script" uid="uid://blscnryetxh34" path="res://components/character/CharacterController.cs" id="5_5ggak"]
 
-[node name="BaseCharacter3d" type="Node3D" node_paths=PackedStringArray("base_character", "character_body", "input_handler")]
-script = ExtResource("1_ti21a")
-base_character = NodePath(".")
-character_body = NodePath("dp_player_body")
-input_handler = NodePath("InputHandler")
+[node name="BaseCharacter3d" type="Node3D"]
+script = ExtResource("1_1xapf")
 
 [node name="dp_player_body" type="Node" parent="."]
 script = ExtResource("2_dn0l0")
@@ -21,7 +18,7 @@ script = ExtResource("3_dn0l0")
 metadata/_custom_type_script = "uid://dskjpbfkcglab"
 
 [node name="InputHandler" type="Node" parent="."]
-script = ExtResource("4_1xapf")
+script = ExtResource("4_7sj80")
 
 [node name="CharacterController" type="Node" parent="."]
-script = ExtResource("6_7sj80")
+script = ExtResource("5_5ggak")

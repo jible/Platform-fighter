@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 public partial class CharacterHolder : Node, ITickable,ISerializable
 {
-    [Export] PlayerManager playerManager;
+    public PlayerManager playerManager;
+    [Export] public PlayManager playManager; 
     List<Node> Players= [];
 
     public void Config()
     {
+        playerManager = PlayerManager.GlobalInstance;
         InstancePlayers();
     }
 
@@ -22,7 +24,15 @@ public partial class CharacterHolder : Node, ITickable,ISerializable
     {
         foreach(var Player in playerManager.AllPlayers){
             if (Players == null){ continue;}
-            
+
+
+            var characterPath = Player.SelectedCharacterPath;
+            PackedScene scene = (PackedScene)GD.Load(characterPath);
+            BaseCharacter3d instance = (BaseCharacter3d)scene.Instantiate();
+
+            AddChild(instance);
+            instance.Name = "Player" + Player.PlayerNumber.ToString();
+            instance.ConfigurePlayer(Player.TeamNumber, Player.PlayerNumber, Player.playerTag);
         }
     }
 

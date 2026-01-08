@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://bv57u8g75hkaj"]
+
+[ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/deterministic_physics/physics_objects/dp_object.cs" id="1_8kaqf"]
+[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="2_q6b3p"]
+[ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/deterministic_physics/physics_objects/dp_shape_follower.cs" id="3_8gf4l"]
+
+[sub_resource type="Resource" id="Resource_txm6t"]
+script = ExtResource("2_q6b3p")
+EditorSize = Vector2(10, 0.25)
+metadata/_custom_type_script = "uid://0smx527v6br4"
+
+[sub_resource type="BoxMesh" id="BoxMesh_day66"]
+size = Vector3(10, 0.25, 0.7)
+
+[node name="TestStage" type="Node3D"]
+
+[node name="dp_object" type="Node" parent="."]
+script = ExtResource("1_8kaqf")
+Shape = SubResource("Resource_txm6t")
+metadata/_custom_type_script = "uid://c4qq7jgy73oan"
+
+[node name="dp_shape_follower" type="Node3D" parent="dp_object"]
+script = ExtResource("3_8gf4l")
+metadata/_custom_type_script = "uid://dskjpbfkcglab"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="dp_object/dp_shape_follower"]
+mesh = SubResource("BoxMesh_day66")

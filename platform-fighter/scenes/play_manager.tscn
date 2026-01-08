@@ -6,14 +6,23 @@
 [ext_resource type="Script" uid="uid://cu45470np3jab" path="res://components/scene/StageHolder.cs" id="4_7mows"]
 [ext_resource type="Script" uid="uid://c3tmsr2hf5rlu" path="res://components/scene/InputManager.cs" id="5_lxgt1"]
 
-[node name="Play" type="Node3D"]
+[node name="Play" type="Node3D" node_paths=PackedStringArray("tickManager", "characterHolder", "StageHolder", "Camera", "inputManager")]
 script = ExtResource("1_odhga")
+tickManager = NodePath("Tick Manager")
+characterHolder = NodePath("Character Holder")
+StageHolder = NodePath("Stage Holder")
+Camera = NodePath("Camera3D")
+inputManager = NodePath("Input Manager")
 
-[node name="Tick Manager" type="Node" parent="."]
+[node name="Tick Manager" type="Node" parent="." node_paths=PackedStringArray("playManager", "inputManager", "characterHolder")]
 script = ExtResource("1_ksl5y")
+playManager = NodePath("..")
+inputManager = NodePath("../Input Manager")
+characterHolder = NodePath("../Character Holder")
 
-[node name="Character Holder" type="Node" parent="."]
+[node name="Character Holder" type="Node" parent="." node_paths=PackedStringArray("playManager")]
 script = ExtResource("3_haxjl")
+playManager = NodePath("..")
 
 [node name="Stage Holder" type="Node" parent="."]
 script = ExtResource("4_7mows")

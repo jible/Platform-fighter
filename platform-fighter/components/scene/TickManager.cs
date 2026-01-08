@@ -10,7 +10,6 @@ public partial class TickManager : Node
     This manager is in charge of progressing the game tick by tick. 
     It notifies the play manager when a tick has passed and 
     */
-	[Export] int MaxRollbackTicks = 50;
 
     int CurrentTick = 0;
 
@@ -24,7 +23,7 @@ public partial class TickManager : Node
 
     public override void _Ready()
     {
-        for ( int i = 0; i < MaxRollbackTicks; i++)
+        for ( int i = 0; i < RollbackManager.MAX_ROLLBACK_FRAMES; i++)
         {
             // Find a proper means to store game state
             States.Append([]);
@@ -35,7 +34,7 @@ public partial class TickManager : Node
 
     public int GetStateKey(int frame)
     {
-        return frame % MaxRollbackTicks;
+        return frame % RollbackManager.MAX_ROLLBACK_FRAMES;
     }
 
     public override void _PhysicsProcess(double delta)
