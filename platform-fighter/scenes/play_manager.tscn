@@ -1,0 +1,25 @@
+[gd_scene load_steps=6 format=3 uid="uid://t16aulelxjm1"]
+
+[ext_resource type="Script" uid="uid://wbtkfmgv4xks" path="res://components/scene/TickManager.cs" id="1_ksl5y"]
+[ext_resource type="Script" uid="uid://dc1ntk6chgu8k" path="res://components/scene/PlayManager.cs" id="1_odhga"]
+[ext_resource type="Script" uid="uid://iu7c3i82t8dr" path="res://components/scene/CharacterHolder.cs" id="3_haxjl"]
+[ext_resource type="Script" uid="uid://cu45470np3jab" path="res://components/scene/StageHolder.cs" id="4_7mows"]
+[ext_resource type="Script" uid="uid://c3tmsr2hf5rlu" path="res://components/scene/InputManager.cs" id="5_lxgt1"]
+
+[node name="Play" type="Node3D"]
+script = ExtResource("1_odhga")
+
+[node name="Tick Manager" type="Node" parent="."]
+script = ExtResource("1_ksl5y")
+
+[node name="Character Holder" type="Node" parent="."]
+script = ExtResource("3_haxjl")
+
+[node name="Stage Holder" type="Node" parent="."]
+script = ExtResource("4_7mows")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.69514954, 2.039779)
+
+[node name="Input Manager" type="Node" parent="."]
+script = ExtResource("5_lxgt1")
