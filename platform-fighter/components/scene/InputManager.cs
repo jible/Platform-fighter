@@ -14,6 +14,21 @@ public partial class InputManager : Node
     
     [Signal] public delegate void ButtonEventEventHandler(ControllerState.ButtonTypes Button, int PlayerNumber, bool Pressed);
 
+
+    Dictionary< ControllerState.ButtonTypes, Vector2> LeftStickInputToDirection = new()
+    {
+        {ControllerState.ButtonTypes.LEFT_DOWN, Vector2.Down},
+        {ControllerState.ButtonTypes.LEFT_LEFT, Vector2.Left},
+        {ControllerState.ButtonTypes.LEFT_RIGHT, Vector2.Right},
+        {ControllerState.ButtonTypes.LEFT_UP, Vector2.Up},
+    };
+    Dictionary< ControllerState.ButtonTypes, Vector2> RightStickInputToDirection = new()
+    {
+        {ControllerState.ButtonTypes.RIGHT_DOWN, Vector2.Down},
+        {ControllerState.ButtonTypes.RIGHT_LEFT, Vector2.Left},
+        {ControllerState.ButtonTypes.RIGHT_RIGHT, Vector2.Right},
+        {ControllerState.ButtonTypes.RIGHT_UP, Vector2.Up},
+    };
     
     public override void _Ready()
     {
@@ -99,23 +114,6 @@ public partial class InputManager : Node
             FinalizedControllerState[PlayerNumber] = CurrentControllerStates[PlayerNumber].GetCopy();
         }
     }
-    Dictionary< ControllerState.ButtonTypes, Vector2> LeftStickInputToDirection = new()
-    {
-        {ControllerState.ButtonTypes.LEFT_DOWN, Vector2.Down},
-        {ControllerState.ButtonTypes.LEFT_LEFT, Vector2.Left},
-        {ControllerState.ButtonTypes.LEFT_RIGHT, Vector2.Right},
-        {ControllerState.ButtonTypes.LEFT_UP, Vector2.Up},
-        
-
-    };
-    Dictionary< ControllerState.ButtonTypes, Vector2> RightStickInputToDirection = new()
-    {
-        {ControllerState.ButtonTypes.RIGHT_DOWN, Vector2.Down},
-        {ControllerState.ButtonTypes.RIGHT_LEFT, Vector2.Left},
-        {ControllerState.ButtonTypes.RIGHT_RIGHT, Vector2.Right},
-        {ControllerState.ButtonTypes.RIGHT_UP, Vector2.Up},
-
-    };
 
 
     public void ApplyKeyboardDirectionInputs(PlayerProfile playerProfile, int PlayerNumber)
@@ -142,4 +140,24 @@ public partial class InputManager : Node
 
     }
     
+    public void DispatchControllerStates(ControllerState[] PreviousTickState, ControllerState[] CurrentTickState)
+    {
+        for (int PlayerNumber = 0; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber ++)
+        {
+            var CurrentFrameController = CurrentTickState[PlayerNumber];
+            if (CurrentFrameController == null ) continue;
+
+            var PreviousFrameController = PreviousTickState[PlayerNumber];
+
+            for (int Button = 0; Button < (int)ControllerState.ButtonTypes.SERIALIZABLE_END; Button++)
+            {
+                var CurrentButtonValue = CurrentFrameController.GetButton((ControllerState.ButtonTypes)Button);
+                var PreviousButtonValue = PreviousFrameController.GetButton((ControllerState.ButtonTypes)Button);
+                if (CurrentButtonValue != PreviousButtonValue)
+                {
+                    EmitSignal("ButtonEvent", [PlayerNumber, CurrentButtonValue]);
+                }
+            }
+        }
+    }
 }
