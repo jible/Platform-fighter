@@ -6,19 +6,23 @@
 [ext_resource type="Script" uid="uid://qdb0pgmidjtk" path="res://components/character/InputHandler.cs" id="4_7sj80"]
 [ext_resource type="Script" uid="uid://blscnryetxh34" path="res://components/character/CharacterController.cs" id="5_5ggak"]
 
-[node name="BaseCharacter3d" type="Node3D"]
+[node name="BaseCharacter3d" type="Node3D" node_paths=PackedStringArray("inputHandler", "playerBody")]
 script = ExtResource("1_1xapf")
+inputHandler = NodePath("InputHandler")
+playerBody = NodePath("dp_player_body")
 
-[node name="dp_player_body" type="Node" parent="."]
+[node name="dp_player_body" type="Node" parent="." node_paths=PackedStringArray("inputHandler")]
 script = ExtResource("2_dn0l0")
+inputHandler = NodePath("../InputHandler")
 metadata/_custom_type_script = "uid://dbrqeh8cf0vgv"
 
 [node name="dp_shape_follower" type="Node3D" parent="dp_player_body"]
 script = ExtResource("3_dn0l0")
 metadata/_custom_type_script = "uid://dskjpbfkcglab"
 
-[node name="InputHandler" type="Node" parent="."]
+[node name="InputHandler" type="Node" parent="." node_paths=PackedStringArray("baseCharacter")]
 script = ExtResource("4_7sj80")
+baseCharacter = NodePath("..")
 
 [node name="CharacterController" type="Node" parent="."]
 script = ExtResource("5_5ggak")

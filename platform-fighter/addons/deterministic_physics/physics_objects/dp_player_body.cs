@@ -7,7 +7,7 @@ using System.ComponentModel;
 public partial class dp_player_body : dp_object, ITickable
 {
 	public DM_Vector2 Velocity = new();
-	
+	[Export] InputHandler inputHandler;
 	[Export] float EditorAcceleration = new();
 	DM64 Acceleration = new(.0025f);
 
@@ -16,7 +16,9 @@ public partial class dp_player_body : dp_object, ITickable
 
 	public void Tick()
 	{
-		Velocity += Acceleration * new DM_Vector2(1,1);
+		DM_Vector2 dirVector = inputHandler.PollForStickState(0);
+		GD.Print(dirVector.ToStandardVector());
+		Velocity += Acceleration * dirVector;
 		Position += Velocity;
 	} 
 

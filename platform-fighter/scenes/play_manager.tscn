@@ -34,5 +34,6 @@ script = ExtResource("4_7mows")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.955464, 0.2951078, 0, -0.2951078, 0.955464, 0, 8.026318, 16.686108)
 
-[node name="Input Manager" type="Node" parent="."]
+[node name="Input Manager" type="Node" parent="." node_paths=PackedStringArray("tickManager")]
 script = ExtResource("5_lxgt1")
+tickManager = NodePath("../Tick Manager")

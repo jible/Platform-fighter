@@ -1,8 +1,11 @@
 using Godot;
 using System;
 
+[Tool]
 public partial class BaseCharacter3d : Node3D
 {
+    [Export] InputHandler inputHandler;
+    [Export] dp_player_body playerBody;
     public int PlayerNumber;
     public PlayerProfile playerProfile;
 
@@ -14,6 +17,9 @@ public partial class BaseCharacter3d : Node3D
 
         CharacterHolder characterHolder = (CharacterHolder)GetParent();
         playManager = characterHolder.playManager;
+
+
+        inputHandler.Configure();
         // Many nodes may have a configure method that still needs to be called
         // TODO: Implement that soon!
     }

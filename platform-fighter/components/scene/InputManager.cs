@@ -145,9 +145,9 @@ public partial class InputManager : Node
                 if (!Input.IsKeyPressed((Key)action)) { continue; }
                 
                 bool LeftContains = LeftStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out DirectionToAdd);
-                if (LeftContains) LeftStickDirection += DirectionToAdd;
+                if (LeftContains) LeftStickDirection += DirectionToAdd * StickState.MAX_STICK_AXIS_VALUE;
                 bool RightContains = RightStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out DirectionToAdd);
-                if (RightContains)RightStickDirection  += DirectionToAdd;
+                if (RightContains)RightStickDirection  += DirectionToAdd * StickState.MAX_STICK_AXIS_VALUE;
                 
             }
         }
@@ -161,11 +161,14 @@ public partial class InputManager : Node
     {
         // Not gonna put safety checks over this since it 
         // should only error here when player number management is wrong.
-        return AllControllerStates[tickManager.GetCurrentTick()][PlayerNumber].GetButton(Button);
+        return AllControllerStates[tickManager.GetStateKey(tickManager.GetCurrentTick() ) ][PlayerNumber].GetButton(Button);
     }
 
     public DM_Vector2 PollForStickState(int StickNumber, int PlayerNumber)
     {
-        return AllControllerStates[tickManager.GetCurrentTick()][PlayerNumber].StickStates[StickNumber].ToVector();
+        GD.Print(StickNumber, PlayerNumber, tickManager.GetCurrentTick());
+        ControllerState State = AllControllerStates[tickManager.GetStateKey(tickManager.GetCurrentTick() ) ][PlayerNumber];
+        StickState StickState =  State.StickStates[StickNumber];
+        return StickState.ToRangedVector();
     }
 }
