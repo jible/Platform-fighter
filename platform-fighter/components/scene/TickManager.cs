@@ -12,7 +12,10 @@ public partial class TickManager : Node
     */
 
     int CurrentTick = 0;
-
+    public int GetCurrentTick()
+    {
+        return CurrentTick;
+    }
 
     Dictionary<Node, Dictionary<String, object>>[] States;
 
@@ -60,11 +63,10 @@ public partial class TickManager : Node
         }
         // Serialize the current tick
         int CurrentStateKey = GetStateKey(CurrentTick);
-        int PreviousStateKey = GetStateKey(CurrentTick - 1);
 
         SerializeCurrentTick(CurrentStateKey);
         // Dispatch Inputs + Call processes
-        CallProcesses(CurrentStateKey, PreviousStateKey);
+        CallProcesses(CurrentStateKey);
         CurrentTick += 1;
     }
 
@@ -78,9 +80,9 @@ public partial class TickManager : Node
         States[CurrentTickKey] = CurrentTickStates;
     }
 
-    public void CallProcesses(int CurrentTickKey, int PreviousTickKey)
+    public void CallProcesses(int CurrentTickKey)
     {
-        inputManager.DispatchControllerStates(CurrentTickKey, PreviousTickKey );
+        inputManager.SerializeCurrentControllerState(CurrentTickKey );
         playManager.Tick();
         PropogateTick(playManager);
     }

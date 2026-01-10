@@ -16,7 +16,6 @@ public partial class dp_player_body : dp_object, ITickable
 
 	public void Tick()
 	{
-		GD.Print("ticking");
 		Velocity += Acceleration * new DM_Vector2(1,1);
 		Position += Velocity;
 	} 

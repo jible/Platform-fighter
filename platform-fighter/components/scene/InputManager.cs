@@ -6,6 +6,7 @@ using System.Formats.Asn1;
 public partial class InputManager : Node
 {
     PlayerManager playerManager;
+    [Export] TickManager tickManager;
     public float DriftThreshold = .1f;
 
     public ControllerState[][] AllControllerStates;
@@ -155,27 +156,16 @@ public partial class InputManager : Node
 
     }
     
-    public void DispatchControllerStates(int CurrentTick, int PreviousTick)
+
+    public bool PollForInput(ControllerState.ButtonTypes Button, int PlayerNumber)
     {
-        ControllerState[] PreviousTickState = AllControllerStates[PreviousTick];
-        ControllerState[] CurrentTickState = AllControllerStates[CurrentTick];
+        // Not gonna put safety checks over this since it 
+        // should only error here when player number management is wrong.
+        return AllControllerStates[tickManager.GetCurrentTick()][PlayerNumber].GetButton(Button);
+    }
 
-        for (int PlayerNumber = 0; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber ++)
-        {
-            var CurrentFrameController = CurrentTickState[PlayerNumber];
-            if (CurrentFrameController == null ) continue;
-
-            var PreviousFrameController = PreviousTickState[PlayerNumber];
-
-            for (int Button = 0; Button < (int)ControllerState.ButtonTypes.SERIALIZABLE_END; Button++)
-            {
-                var CurrentButtonValue = CurrentFrameController.GetButton((ControllerState.ButtonTypes)Button);
-                var PreviousButtonValue = PreviousFrameController.GetButton((ControllerState.ButtonTypes)Button);
-                if (CurrentButtonValue != PreviousButtonValue)
-                {
-                    EmitSignal("ButtonEvent", [PlayerNumber, CurrentButtonValue]);
-                }
-            }
-        }
+    public DM_Vector2 PollForStickState(int StickNumber, int PlayerNumber)
+    {
+        return AllControllerStates[tickManager.GetCurrentTick()][PlayerNumber].StickStates[StickNumber].ToVector();
     }
 }

@@ -33,7 +33,7 @@ public partial class CharacterHolder : Node, ITickable
 
             Player.Instance= instance;
             instance.Name = "Player" + Player.PlayerNumber.ToString();
-            instance.ConfigurePlayer(Player.TeamNumber, Player.PlayerNumber, Player.playerTag);
+            instance.ConfigurePlayer(Player.PlayerNumber);
         }
     }
 

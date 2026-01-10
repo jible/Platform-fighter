@@ -3,16 +3,14 @@ using System;
 
 public partial class BaseCharacter3d : Node3D
 {
-    public int TeamNumber;
     public int PlayerNumber;
-    public PlayerTag playerTag;
+    public PlayerProfile playerProfile;
 
     public PlayManager playManager;
-    public void ConfigurePlayer(int _teamNumber, int _playerNumber, PlayerTag _playerTag)
+    public void ConfigurePlayer(int _playerNumber)
     {
-        TeamNumber = _teamNumber;
         PlayerNumber = _playerNumber;
-        playerTag = _playerTag;
+        playerProfile = PlayerManager.GlobalInstance.AllPlayers[PlayerNumber];
 
         CharacterHolder characterHolder = (CharacterHolder)GetParent();
         playManager = characterHolder.playManager;
