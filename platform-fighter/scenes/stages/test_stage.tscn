@@ -6,11 +6,11 @@
 
 [sub_resource type="Resource" id="Resource_txm6t"]
 script = ExtResource("2_q6b3p")
-EditorSize = Vector2(10, 0.75)
+EditorSize = Vector2(30, 0.75)
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="BoxMesh" id="BoxMesh_day66"]
-size = Vector3(10, 0.25, 0.7)
+size = Vector3(30, 0.25, 0.7)
 
 [node name="TestStage" type="Node3D"]
 
