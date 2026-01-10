@@ -81,6 +81,7 @@ public partial class TickManager : Node
     public void CallProcesses(int CurrentTickKey, int PreviousTickKey)
     {
         inputManager.DispatchControllerStates(CurrentTickKey, PreviousTickKey );
+        playManager.Tick();
         PropogateTick(playManager);
     }
 

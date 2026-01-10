@@ -42,15 +42,12 @@ public partial class dp_physics_server : Node
 			SceneRoot = GetRoot();
 		}
 
-
 		AllEntities.Clear();
 		if (SceneRoot != null)
 		{
 			GetAllEntities(SceneRoot);
 		}
 	}
-
-
 
 	public void PhysicsTick()
 	{
@@ -68,8 +65,6 @@ public partial class dp_physics_server : Node
 			HashSet<dp_object> interacted = [];
 			HandleObjectProcess(Entity, Grid, ObjectCells, interacted);
 		}
-
-
 	}
 
 	// Itterates through all physics objects and populates the grid with all 
@@ -100,23 +95,22 @@ public partial class dp_physics_server : Node
 		HashSet<dp_object> interacted)
 	{
 		EntityA.CleanseBuffers();
-			if (!EntityA.is_active || EntityA.Shape ==null){return;} 
-			Vector2I GridPos = GetGridPos(EntityA);
+		if (!EntityA.is_active || EntityA.Shape ==null){return;} 
 
-			
-			foreach (var cell in EntityCells[EntityA])
+		
+		foreach (var cell in EntityCells[EntityA])
+		{
+			if (Grid.TryGetValue(cell, out var list))
 			{
-				if (Grid.TryGetValue(cell, out var list))
+				foreach (var EntityB in list)
 				{
-					foreach (var EntityB in list)
-					{
-						if (interacted.Contains(EntityB))continue;
-						interacted.Add(EntityB);
-						HandleIndividualInteraction(EntityA, EntityB);
-					}
+					if (interacted.Contains(EntityB))continue;
+					interacted.Add(EntityB);
+					HandleIndividualInteraction(EntityA, EntityB);
 				}
 			}
-			EntityA.PopulateCurrentFrame();
+		}
+		EntityA.PopulateCurrentFrame();
 	}
 
 	private Vector2I GetGridPos(dp_object Entity)
@@ -170,7 +164,11 @@ public partial class dp_physics_server : Node
 
 	public void RegisterObj( dp_object target)
 	{
-		if (!AllEntities.Contains(target)) AllEntities.Add(target);
+		if (!AllEntities.Contains(target))
+		{
+			AllEntities.Add(target);
+		} 
+		
 	}
 
 
@@ -178,9 +176,7 @@ public partial class dp_physics_server : Node
 	{
 		if (Parent == null) { return; }
 		if (Parent is dp_object CastedParent) {
-			if (!AllEntities.Contains(CastedParent)) {
-				AllEntities.Add(CastedParent); 
-			}
+			RegisterObj(CastedParent);
 		}
 		foreach (var ChildNode in Parent.GetChildren())
 		{

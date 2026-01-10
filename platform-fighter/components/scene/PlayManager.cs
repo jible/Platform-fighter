@@ -12,6 +12,8 @@ public partial class PlayManager : Node3D
 
     public override void _Ready()
     {
+        dp_physics_server.GlobalInstance.configure();
+        dp_shape_renderer_3d.GlobalInstance.configure();
         characterHolder.Config();
         StageHolder.Config();
     }
@@ -19,6 +21,8 @@ public partial class PlayManager : Node3D
     public void Tick()
     {
         characterHolder.Tick();
+        dp_physics_server.GlobalInstance.PhysicsTick();
+        dp_shape_renderer_3d.GlobalInstance.update_shape_render();
         return;
     }
 }

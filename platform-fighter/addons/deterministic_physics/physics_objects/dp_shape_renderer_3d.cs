@@ -78,7 +78,8 @@ public partial class dp_shape_renderer_3d : Node3D
 		UpdateFollowerPositions();
 		if (!Engine.IsEditorHint() && !RenderShapesInPlay) return;
 
-		Node CurrentScene = (Engine.IsEditorHint()) ? GetTree().EditedSceneRoot: GetTree().CurrentScene;
+
+		Node CurrentScene = Engine.IsEditorHint() ? GetTree().EditedSceneRoot: GetTree().CurrentScene;
 
 		var seenShapes = new HashSet<dp_object>();
 
@@ -89,7 +90,6 @@ public partial class dp_shape_renderer_3d : Node3D
 		foreach (dp_object PhysicsObject in PhysicsServer.AllEntities)
 		{
 			
-
 			if (PhysicsObject == null || !IsInstanceValid(PhysicsObject) || PhysicsObject.Shape == null || !IsInstanceValid(PhysicsObject.Shape))
 			{
 				continue;

@@ -1,5 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://due8lbighr0jf"]
+[gd_scene load_steps=4 format=3 uid="uid://due8lbighr0jf"]
 
 [ext_resource type="PackedScene" uid="uid://db2kvp6c4fwm2" path="res://characters/base_character_3d.tscn" id="1_jxsvq"]
+[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="2_ixxai"]
+
+[sub_resource type="Resource" id="Resource_fdi86"]
+script = ExtResource("2_ixxai")
+EditorSize = Vector2(5, 5)
+metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [node name="TestCharacter" instance=ExtResource("1_jxsvq")]
+
+[node name="dp_player_body" parent="." index="0"]
+EditorPosition = Vector2(0, 2.5)
+Shape = SubResource("Resource_fdi86")
+layer_collision = 1
+mask_collision = 1
+
+[node name="dp_shape_follower" parent="dp_player_body" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
