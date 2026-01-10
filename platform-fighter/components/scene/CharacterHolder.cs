@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class CharacterHolder : Node, ITickable,ISerializable
+public partial class CharacterHolder : Node, ITickable
 {
     public PlayerManager playerManager;
     [Export] public PlayManager playManager; 
@@ -23,7 +23,7 @@ public partial class CharacterHolder : Node, ITickable,ISerializable
     public void InstancePlayers()
     {
         foreach(var Player in playerManager.AllPlayers){
-            if (Players == null){ continue;}
+            if (Player == null){ continue;}
 
 
             var characterPath = Player.SelectedCharacterPath;
@@ -36,14 +36,14 @@ public partial class CharacterHolder : Node, ITickable,ISerializable
         }
     }
 
-    public Dictionary<string, object> SerializeState()
-    {
-        throw new NotImplementedException();
-    }
+    // public Dictionary<string, object> SerializeState()
+    // {
+    //     throw new NotImplementedException();
+    // }
 
-    public void LoadState(Dictionary<string, object> State)
-    {
-        throw new NotImplementedException();
-    }
+    // public void LoadState(Dictionary<string, object> State)
+    // {
+    //     throw new NotImplementedException();
+    // }
 
 }

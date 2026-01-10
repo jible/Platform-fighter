@@ -14,7 +14,7 @@ public partial class TickManager : Node
     int CurrentTick = 0;
 
 
-    List<Dictionary<Node, Dictionary<String, object>>> States = [];
+    Dictionary<Node, Dictionary<String, object>>[] States;
 
     [Export] PlayManager playManager;
     [Export] InputManager inputManager;
@@ -23,10 +23,10 @@ public partial class TickManager : Node
 
     public override void _Ready()
     {
+        States = new Dictionary<Node, Dictionary<string, object>>[ RollbackManager.MAX_ROLLBACK_FRAMES];
         for ( int i = 0; i < RollbackManager.MAX_ROLLBACK_FRAMES; i++)
         {
-            // Find a proper means to store game state
-            States.Append([]);
+            States[i] = [];
         }
         // Populate current tick
         return;
@@ -34,7 +34,12 @@ public partial class TickManager : Node
 
     public int GetStateKey(int frame)
     {
+        if (frame < 0)
+        {
+            frame += RollbackManager.MAX_ROLLBACK_FRAMES;
+        }
         return frame % RollbackManager.MAX_ROLLBACK_FRAMES;
+
     }
 
     public override void _PhysicsProcess(double delta)
@@ -45,6 +50,7 @@ public partial class TickManager : Node
 
     public void Tick()
     {
+
         if (dp_physics_server.GlobalInstance == null || dp_shape_renderer_3d.GlobalInstance == null)
         {return;}
 
@@ -59,6 +65,7 @@ public partial class TickManager : Node
         SerializeCurrentTick(CurrentStateKey);
         // Dispatch Inputs + Call processes
         CallProcesses(CurrentStateKey, PreviousStateKey);
+        CurrentTick += 1;
     }
 
 

@@ -119,7 +119,7 @@ public partial class InputManager : Node
         {
             PlayerProfile playerProfile = playerManager.AllPlayers[PlayerNumber];
             // If keyboard, build input vector
-
+            if (playerProfile == null) continue;
             if (playerProfile.ControllerType == PlayerProfile.ControllerTypes.KEYBOARD)
             {
                 ApplyKeyboardDirectionInputs(playerProfile, PlayerNumber);
@@ -130,7 +130,6 @@ public partial class InputManager : Node
         }
         
     }
-
 
     public void ApplyKeyboardDirectionInputs(PlayerProfile playerProfile, int PlayerNumber)
     {
