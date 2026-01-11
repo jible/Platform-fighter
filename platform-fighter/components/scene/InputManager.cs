@@ -108,9 +108,11 @@ public partial class InputManager : Node
 
     public void HandleKeyboardInput(InputEventKey KeyEvent, PlayerTag playerTag, int PlayerNumber)
     {
+
         ControllerState.ButtonTypes Button;
         bool Success = playerTag.ReverseMap.TryGetValue(KeyEvent.Keycode, out Button);
         if (!Success) return;
+        if ((int) Button > (int) ControllerState.ButtonTypes.SERIALIZABLE_END) return;
         CurrentControllerStates[PlayerNumber].SetButton(Button, KeyEvent.IsPressed());
     }
 
@@ -126,7 +128,6 @@ public partial class InputManager : Node
                 ApplyKeyboardDirectionInputs(playerProfile, PlayerNumber);
             }
 
-
             AllControllerStates[Frame][PlayerNumber] = CurrentControllerStates[PlayerNumber].GetCopy();
         }
         
@@ -141,19 +142,17 @@ public partial class InputManager : Node
         {
             foreach (var action in playerProfile.playerTag.ActionMap[(ControllerState.ButtonTypes)StickInputs])
             {
-                Vector2 DirectionToAdd;
+                Vector2 LeftDir;
+                Vector2 RightDir;
                 if (!Input.IsKeyPressed((Key)action)) { continue; }
-                
-                bool LeftContains = LeftStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out DirectionToAdd);
-                if (LeftContains) LeftStickDirection += DirectionToAdd * StickState.MAX_STICK_AXIS_VALUE;
-                bool RightContains = RightStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out DirectionToAdd);
-                if (RightContains)RightStickDirection  += DirectionToAdd * StickState.MAX_STICK_AXIS_VALUE;
-                
+                bool LeftContains = LeftStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out LeftDir);
+                if (LeftContains) LeftStickDirection += LeftDir;
+                bool RightContains = RightStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out RightDir);
+                if (RightContains)RightStickDirection  += RightDir;
             }
         }
-        CurrentControllerStates[PlayerNumber].StickStates[0].SetFromVector( LeftStickDirection);
-        CurrentControllerStates[PlayerNumber].StickStates[1].SetFromVector( RightStickDirection);
-
+        CurrentControllerStates[PlayerNumber].StickStates[0].SetFromVector( LeftStickDirection.Normalized());
+        CurrentControllerStates[PlayerNumber].StickStates[1].SetFromVector( RightStickDirection.Normalized());
     }
     
 
@@ -166,9 +165,9 @@ public partial class InputManager : Node
 
     public DM_Vector2 PollForStickState(int StickNumber, int PlayerNumber)
     {
-        GD.Print(StickNumber, PlayerNumber, tickManager.GetCurrentTick());
         ControllerState State = AllControllerStates[tickManager.GetStateKey(tickManager.GetCurrentTick() ) ][PlayerNumber];
         StickState StickState =  State.StickStates[StickNumber];
-        return StickState.ToRangedVector();
+        // GD.Print(StickState.ToVector().ToStandardVector());
+        return StickState.ToVector();
     }
 }

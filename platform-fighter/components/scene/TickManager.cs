@@ -143,7 +143,4 @@ public partial class TickManager : Node
             PropogateLoadState(child, SerializationData);
         }
     }
-
-
-    
 }
