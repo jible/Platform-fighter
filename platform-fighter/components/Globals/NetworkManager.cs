@@ -131,7 +131,7 @@ public partial class NetworkManager : Node
             return;
         }
 
-        RpcId(1, "give_host_connection_properties");
+        RpcId(1, "GiveHostConnectionProperties");
     }
 
     [Rpc]
@@ -139,7 +139,16 @@ public partial class NetworkManager : Node
     {
         var RequesterID = Multiplayer.GetRemoteSenderId();
         if (connectionType != ConnectionType.HOST) return;
-        RpcId(RequesterID, "receive_host_connection_properties", HostRollbackIp, HostRollbackPort);
+        RpcId(RequesterID, "ReceiveHostConnectionProperties", HostRollbackIp, HostRollbackPort);
+    }
+
+    [Rpc]
+    public void ReceiveHostConnectionProperties(string IpAddress, int port, string rollbackAddress, int rollbackePort)
+    {
+        
+        HostRollbackIp = rollbackAddress;
+        HostRollbackPort = rollbackePort;
+
     }
 
     public string GetSafeIp()
