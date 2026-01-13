@@ -18,9 +18,7 @@ public partial class dp_player_body : dp_object, ITickable
 	{
 		DM_Vector2 dirVector = inputHandler.PollForStickState(0);
 		dirVector.y =dirVector.y * -1;
-		// GD.Print("accel " , dirVector.ToStandardVector());
 		Velocity += Acceleration * dirVector;
-		// GD.Print("VEL", Velocity.ToStandardVector());
 		Position = Position + Velocity;
 		
 	} 

@@ -167,7 +167,6 @@ public partial class InputManager : Node
     {
         ControllerState State = AllControllerStates[tickManager.GetStateKey(tickManager.GetCurrentTick() ) ][PlayerNumber];
         StickState StickState =  State.StickStates[StickNumber];
-        // GD.Print(StickState.ToVector().ToStandardVector());
         return StickState.ToVector();
     }
 }

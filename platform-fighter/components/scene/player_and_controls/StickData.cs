@@ -36,7 +36,6 @@ public class StickState
         int YSign = V.Y < 0 ? 1: 0;
         int XBits = (int)Math.Round(Math.Abs(V.X) * Buckets);
         int YBits = (int)Math.Round(Math.Abs(V.Y) * Buckets);
-        GD.Print(XBits, " ",YBits);
         Data = (byte)(
             XSign << 7 |
             XBits << 4 | 
