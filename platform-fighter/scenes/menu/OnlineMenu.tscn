@@ -1,0 +1,75 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxax0g1vr4tev"]
+
+[ext_resource type="Script" uid="uid://c2d17imu0wwh0" path="res://scenes/menu/OnlineMenu.cs" id="1_y0sr0"]
+
+[node name="OnlineMenu" type="Control" node_paths=PackedStringArray("SelectModeNodes", "HostModeNodes", "ClientModeNodes")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_y0sr0")
+SelectModeNodes = NodePath("SelectMode")
+HostModeNodes = NodePath("HostMode")
+ClientModeNodes = NodePath("ClientMode")
+
+[node name="SelectMode" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 234.0
+offset_bottom = 221.0
+
+[node name="MenuLabel" type="Label" parent="SelectMode"]
+layout_mode = 2
+text = "Online Menu"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SelectMode"]
+layout_mode = 2
+
+[node name="HostPrompt" type="Label" parent="SelectMode/VBoxContainer"]
+layout_mode = 2
+text = "Press H to host"
+
+[node name="JoinPrompt" type="Label" parent="SelectMode/VBoxContainer"]
+layout_mode = 2
+text = "Press J to join"
+
+[node name="ConnectionData" type="VBoxContainer" parent="SelectMode/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SelectMode/VBoxContainer/ConnectionData"]
+layout_mode = 2
+
+[node name="IpLabel" type="Label" parent="SelectMode/VBoxContainer/ConnectionData/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "IP Address: "
+
+[node name="IpField" type="TextEdit" parent="SelectMode/VBoxContainer/ConnectionData/HBoxContainer"]
+clip_contents = false
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 2
+text = "127.0.0.1"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="SelectMode/VBoxContainer/ConnectionData"]
+layout_mode = 2
+
+[node name="PortLabel" type="Label" parent="SelectMode/VBoxContainer/ConnectionData/HBoxContainer2"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Port: "
+
+[node name="PortField" type="TextEdit" parent="SelectMode/VBoxContainer/ConnectionData/HBoxContainer2"]
+clip_contents = false
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 2
+text = "9000"
+
+[node name="HostMode" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MenuLabel" type="Label" parent="HostMode"]
+layout_mode = 2
+
+[node name="ClientMode" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

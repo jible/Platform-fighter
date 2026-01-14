@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://by514r3mafxn4"]
+
+[ext_resource type="Script" uid="uid://hj57pmpg7mt4" path="res://scenes/menu/MainMenu.cs" id="1_m2yvp"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_m2yvp")
+
+[node name="MenuContents" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GameName" type="Label" parent="MenuContents"]
+layout_mode = 2
+text = "JUXTOPPOSED"
+
+[node name="Options" type="VBoxContainer" parent="MenuContents"]
+layout_mode = 2
+
+[node name="LocalSelect" type="Label" parent="MenuContents/Options"]
+layout_mode = 2
+text = "Press L for local"
+
+[node name="OnlineSelect" type="Label" parent="MenuContents/Options"]
+layout_mode = 2
+text = "Press O for online"

@@ -33,20 +33,7 @@ public partial class RollbackManager : Node
         GloablInstance = this;
     }
 
-    public void StartConnection()
-    {
-        switch (connectionType)
-        {
-            case NetworkManager.ConnectionType.CLIENT:
-                GD.Print("e");
-                break;
-            case NetworkManager.ConnectionType.HOST:
-                break;
-            
-        }
-    }
-
-    private void StartHostRollbackk(int Port, String IpAddress)
+    private void StartHostRollback(int Port, String IpAddress)
     {
         udp = new PacketPeerUdp();
         var err = udp.Bind(Port, IpAddress);
