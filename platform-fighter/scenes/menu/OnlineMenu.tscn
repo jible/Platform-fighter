@@ -2,13 +2,12 @@
 
 [ext_resource type="Script" uid="uid://c2d17imu0wwh0" path="res://scenes/menu/OnlineMenu.cs" id="1_y0sr0"]
 
-[node name="OnlineMenu" type="Control" node_paths=PackedStringArray("SelectModeNodes", "HostModeNodes", "ClientModeNodes")]
+[node name="OnlineMenu" type="Control" node_paths=PackedStringArray("IpField", "PortField")]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_y0sr0")
-SelectModeNodes = NodePath("SelectMode")
-HostModeNodes = NodePath("HostMode")
-ClientModeNodes = NodePath("ClientMode")
+IpField = NodePath("SelectMode/VBoxContainer/ConnectionData/HBoxContainer/IpField")
+PortField = NodePath("SelectMode/VBoxContainer/ConnectionData/HBoxContainer2/PortField")
 
 [node name="SelectMode" type="VBoxContainer" parent="."]
 layout_mode = 0
@@ -60,16 +59,3 @@ clip_contents = false
 custom_minimum_size = Vector2(80, 30)
 layout_mode = 2
 text = "9000"
-
-[node name="HostMode" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="MenuLabel" type="Label" parent="HostMode"]
-layout_mode = 2
-
-[node name="ClientMode" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0

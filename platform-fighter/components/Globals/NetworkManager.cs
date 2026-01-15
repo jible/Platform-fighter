@@ -20,15 +20,15 @@ public partial class NetworkManager : Node
         DISCONNECTED
     }
 
-    int PORT = 9000;
-    string TARGET_IP = "127.0.0.1";
+    public static int DefaultTestingPort = 8000;
+    public static string DefaultTargetIp = "127.0.0.1";
     int MAX_CLIENTS = 2;
 
 
     int CurrentLobbySize = 0;
     int TargetLobbySize = 2;
 
-    
+    UserNetworkData RollBackData;
     int RollbackPort;
     int RollbackIp;
 
@@ -39,14 +39,16 @@ public partial class NetworkManager : Node
     public delegate void StartedToHostEventHandler();
     public delegate void MessageReceivedEventHandler(string Message);
 
-
-    ConnectionType connectionType = ConnectionType.DISCONNECTED;
+    public static NetworkManager GlobalInstance;
+    public ConnectionType connectionType = ConnectionType.DISCONNECTED;
 
     bool ReadiedUp = false;
     ENetMultiplayerPeer Peer;
 
     public override void _Ready()
     {
+        GlobalInstance = this; 
+
         Multiplayer.PeerConnected += (Peer) =>
         {
             PrintLobbyStatus();
@@ -87,13 +89,13 @@ public partial class NetworkManager : Node
         connectionType = ConnectionType.HOST;
         GD.Print($"Hosting on port {Port}");
 
-        HostRollbackPort = PORT + 1;
+        HostRollbackPort = Port + 1;
         HostRollbackIp = GetSafeIp();
         PrintLobbyStatus();
     }
 
 
-    public void JoinGame(String _ip, int _port)
+    public void JoinGame(string _ip, int _port)
     {
         Peer = new ENetMultiplayerPeer();
         var err = Peer.CreateClient(_ip, _port);
@@ -112,7 +114,7 @@ public partial class NetworkManager : Node
 
         var AllPeers = Multiplayer.GetPeers();
         GD.Print($"Lobby Size: {AllPeers.Length + 1}-----------------------------------------");
-        GD.Print($"HOST IP: {TARGET_IP}, Port: {PORT}");
+        GD.Print($"HOST IP: {HostRollbackIp}, Port: {HostRollbackPort}");
 
         foreach (var PeerId in AllPeers)
         {
@@ -143,12 +145,10 @@ public partial class NetworkManager : Node
     }
 
     [Rpc]
-    public void ReceiveHostConnectionProperties(string IpAddress, int port, string rollbackAddress, int rollbackePort)
+    public void ReceiveHostConnectionProperties(string rollbackAddress, int rollbackePort)
     {
-        
         HostRollbackIp = rollbackAddress;
         HostRollbackPort = rollbackePort;
-
     }
 
     public string GetSafeIp()
@@ -163,5 +163,23 @@ public partial class NetworkManager : Node
             }
         }
         return "127.0.0.1";
+    }
+}
+
+
+public class UserNetworkData
+{
+    public int EnetPort;
+    public string IpAddress;
+    public int RollbackPort;
+    public UserNetworkData(int _EnetPort,string _IpAddress, int _RollbackPort = -1)
+    {   
+        EnetPort = _EnetPort;
+        IpAddress = _IpAddress;
+        RollbackPort = _RollbackPort;
+        if (RollbackPort < 0)
+        {
+            RollbackPort = EnetPort + 1;
+        }
     }
 }

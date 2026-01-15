@@ -4,42 +4,14 @@ using System.Collections.Generic;
 
 public partial class OnlineMenu : Control
 {
-    public enum Modes
-    {
-        SELECT,
-        HOST,
-        CLIENT,
-    }
-    [Export] Control SelectModeNodes;
-    [Export] Control HostModeNodes;
-    [Export] Control ClientModeNodes;
 
-    public Dictionary< Modes, Control> ModeToNode;
-
-    public void _Ready()
-    {
-        ModeToNode = new(){
-            {Modes.SELECT, SelectModeNodes},
-            {Modes.CLIENT, ClientModeNodes},
-            {Modes.HOST, HostModeNodes},
-        };
-
-        ChangeMode(Modes.SELECT);
-    }
-
-    Modes Mode = Modes.SELECT;
+    [Export] TextEdit IpField;
+    [Export] TextEdit PortField;
+    string CharSelectScenePath = "uid://cdcq8ql8pxore";
     public override void _Input(InputEvent @event)
     {
-        switch (Mode)
-        {
-            case Modes.SELECT:
-                SelectInputProcess(@event);
-                break;
-            case Modes.HOST:
-                break;
-            case Modes.CLIENT:
-                break;
-        }
+        SelectInputProcess(@event);
+
     }
 
     void SelectInputProcess( InputEvent Event )
@@ -50,41 +22,29 @@ public partial class OnlineMenu : Control
             EventKey = Casted;
         } else return;
 
+        int Port;
+        bool isValidPort = int.TryParse(PortField.Text, out Port);
+
+        if (!isValidPort) return;
+
+        string Ip = IpField.Text;
+        // TODO: Make a function that verifies ip
+
         if (EventKey.Keycode == Key.H)
         {
-            
+            NetworkManager.GlobalInstance.StartGame(Port);
+            GetTree().ChangeSceneToFile(CharSelectScenePath);
         } else if (EventKey.Keycode == Key.J)
         {
+            NetworkManager.GlobalInstance.JoinGame(Ip, Port);
+
+            GetTree().ChangeSceneToFile(CharSelectScenePath);
             
         }
     }
 
-    void HostInputProcess ( InputEvent Event )
-    {
-        InputEventKey EventKey;
-        if (Event is InputEventKey Casted && Casted.Pressed)
-        {
-            EventKey = Casted;
-        } else return;
 
-    }
-    void ClientInputProcess ( InputEvent Event )
-    {
-        InputEventKey EventKey;
-        if (Event is InputEventKey Casted && Casted.Pressed)
-        {
-            EventKey = Casted;
-        } else return;
-
-        
-    }
-
-    void ChangeMode(Modes _Mode)
-    {
-        ModeToNode[Mode].Visible  = false;
-        Mode = _Mode;
-        ModeToNode[Mode].Visible  = true;
-        
-    }
 
 }
+
+

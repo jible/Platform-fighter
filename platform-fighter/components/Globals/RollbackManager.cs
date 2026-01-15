@@ -24,8 +24,8 @@ public partial class RollbackManager : Node
 
     PacketPeerUdp udp;
     int RoundTripTicks = 0;
-    UserUdpData HostData;
-    List<UserUdpData> ClientData= [];
+    UserNetworkData HostData;
+    List<UserNetworkData> ClientData= [];
     List<object> ClientLatency = [];
 
     public override void _Ready()
@@ -59,13 +59,4 @@ public partial class RollbackManager : Node
 }
 
 
-public class UserUdpData
-{
-    public int Port;
-    public string IpAddress;
-    public UserUdpData(int _port,string _ipAddress)
-    {
-        Port = _port;
-        IpAddress = _ipAddress;
-    }
-}
+
