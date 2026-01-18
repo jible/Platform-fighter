@@ -20,7 +20,7 @@ public partial class PlayerManager : Node
             AllPlayers.Add(null);
         }
     }
-
+    // Not related to what im doing right now, but proccess is misspelled So fix this <- TODO 
     public override void _Process(double delta)
     {
         if (Input.IsActionJustPressed("debug_slow_game"))
@@ -32,21 +32,24 @@ public partial class PlayerManager : Node
         }
     }
 
+    public void AttemptAddRemotePlayer(int RemotePlayerPeerID)
+    {
+        int PlayerNumber = GetFreePlayerNumber();
+        if (PlayerNumber == -1) return;
+
+         PlayerProfile playerProfile = new();
+        playerProfile.ConfigureRemotePlayer(PlayerNumber, RemotePlayerPeerID);
+
+        AllPlayers[PlayerNumber] = playerProfile;
+        EmitSignal("PlayerAdded", PlayerNumber);
+    }
 
     public void AttemptAddPlayer(InputEvent input)
     {
         if (GetPlayerNumberFromInput(input ) != -1) return;
-        int PlayerNumber = -1;
-        for (int i = 0 ; i < MaxPlayerCount; i++)
-        {
-            if ( AllPlayers[i] == null)
-            {
-                PlayerNumber = i;
-                break;
-            }
-        }
-        // No valid player slots
+        int PlayerNumber = GetFreePlayerNumber();
         if (PlayerNumber == -1) return;
+
 
         PlayerProfile playerProfile = new();
         playerProfile.Configure(PlayerNumber, input.Device, GetControllerType(input));
@@ -79,6 +82,20 @@ public partial class PlayerManager : Node
         }
         
         return -1;
+    }
+
+    public int GetFreePlayerNumber()
+    {
+         int PlayerNumber = -1;
+        for (int i = 0 ; i < MaxPlayerCount; i++)
+        {
+            if ( AllPlayers[i] == null)
+            {
+                PlayerNumber = i;
+                break;
+            }
+        }
+        return PlayerNumber;
     }
 
     public PlayerProfile.ControllerTypes GetControllerType(InputEvent input)

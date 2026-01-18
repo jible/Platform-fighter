@@ -8,6 +8,7 @@ public partial class PlayerProfile : Resource
     {
         KEYBOARD,
         CONTROLLER,
+        REMOTE_PLAYER
     }
 
 
@@ -19,6 +20,7 @@ public partial class PlayerProfile : Resource
     public String SelectedCharacterPath = "uid://due8lbighr0jf"; 
 
     public int InputDeviceNumber = 0;
+    public int RemotePeerID = -1;
 
 
 
@@ -34,5 +36,13 @@ public partial class PlayerProfile : Resource
         PlayerNumber = _PlayerNumber;
         InputDeviceNumber = _InputDeviceNumber;
         ControllerType = _ControllerType;
+    }
+
+    public void ConfigureRemotePlayer(int _PlayerNumber, int _RemotPeerID)
+    {
+        PlayerNumber = _PlayerNumber;
+        InputDeviceNumber = -1;
+        ControllerType = ControllerTypes.REMOTE_PLAYER;
+        RemotePeerID = _RemotPeerID;        
     }
 }

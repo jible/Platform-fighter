@@ -18,7 +18,7 @@ public partial class NetworkManager : Node
         HOST,
         CLIENT,
         DISCONNECTED
-    }
+    }                                
 
     public static int DefaultTestingPort = 8000;
     public static string DefaultTargetIp = "127.0.0.1";
@@ -35,9 +35,10 @@ public partial class NetworkManager : Node
 
     string HostRollbackIp;
     int HostRollbackPort;
-
+    [Signal]
     public delegate void StartedToHostEventHandler();
-    public delegate void MessageReceivedEventHandler(string Message);
+    [Signal]
+    public delegate void ClientRequestedAddPlayerEventHandler(int PlayerNumber, bool Status);
 
     public static NetworkManager GlobalInstance;
     public ConnectionType connectionType = ConnectionType.DISCONNECTED;
@@ -126,31 +127,42 @@ public partial class NetworkManager : Node
         GD.Print("---------------------------------------------------------------------------");
     }
 
-    public void GetHostInfo()
+    // Lobby info functions
+    // RPC PREFIX INDICATES WHAT MACHINE THE FUNCTION SHOULD BE RUN ON (not called on) 
+    // CTH = CLIENT_TO_HOST
+    // HTC = HOST_TO_CLIENT
+    public int GetDestination()
     {
-        if (connectionType != ConnectionType.CLIENT)
+        if (connectionType == ConnectionType.HOST)
         {
-            return;
+            return (int)MultiplayerPeer.TargetPeerBroadcast;
         }
+        return (int)MultiplayerPeer.TargetPeerServer;
 
-        RpcId(1, "GiveHostConnectionProperties");
+        
     }
 
-    [Rpc]
-    public void GiveHostConnectionProperties()
+
+    public void SendPlayerReadyStatus(int id, int PlayerNumber,bool Status){
+        RpcId ( MultiplayerPeer.TargetPeerBroadcast, "RecievePlayerReadyStatus", PlayerNumber, Status);
+    }
+
+
+    [Rpc] 
+    public void ReceivePlayerReadyStatus(int PlayerNumber,bool Status)
     {
-        var RequesterID = Multiplayer.GetRemoteSenderId();
-        if (connectionType != ConnectionType.HOST) return;
-        RpcId(RequesterID, "ReceiveHostConnectionProperties", HostRollbackIp, HostRollbackPort);
+
+        if (PlayerNumber == -1)
+        {
+            PlayerManager.GlobalInstance.AttemptAddRemotePlayer()
+        }
+        EmitSignal("PlayerReadyStatusReceived", PlayerNumber, Status);
     }
 
-    [Rpc]
-    public void ReceiveHostConnectionProperties(string rollbackAddress, int rollbackePort)
-    {
-        HostRollbackIp = rollbackAddress;
-        HostRollbackPort = rollbackePort;
-    }
 
+
+
+    // Helper Functions
     public string GetSafeIp()
     {
         String[] Ips = IP.GetLocalAddresses();

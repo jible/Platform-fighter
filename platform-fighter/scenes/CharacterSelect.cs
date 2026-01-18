@@ -38,8 +38,6 @@ public partial class CharacterSelect : Control
         ConnectionTypeToState[NetworkManager.GlobalInstance.connectionType].HandleInput(@event);
     }
 
-
-
     public void GoToPlayScene()
     {
         GetTree().ChangeSceneToFile(PlayScenePath);
@@ -69,82 +67,15 @@ public partial class CharacterSelect : Control
     }
 
     
-    public class OfflineMenuState: CharSelectMenuState
-    {
-        public OfflineMenuState(CharacterSelect _charSelectScene) : base(_charSelectScene)
-        {
-        }
-
-        public override void HandleInput(InputEvent inputEvent)
-        {
-            if (!inputEvent.IsPressed()) return;
-            if (inputEvent.IsActionPressed("debug_ready") )
-            {
-                PlayerManager.GlobalInstance.AttemptAddPlayer(inputEvent);
-            } else if (inputEvent.IsActionPressed("play_default_special"))
-            {
-                PlayerManager.GlobalInstance.AttemptRemovePlayer(inputEvent);
-            } else if (inputEvent.IsActionPressed("start"))
-            {
-                charSelectScene.GoToPlayScene();
-            }
-        }
-    }
-
-    public class HostMenuState: CharSelectMenuState
-    {
-        public HostMenuState(CharacterSelect _charSelectScene) : base(_charSelectScene)
-        {
-        }
-
-        public override void HandleInput(InputEvent inputEvent)
-        {
-            if (!inputEvent.IsPressed()) return;
-            if (inputEvent.IsActionPressed("debug_ready") )
-            {
-                PlayerManager.GlobalInstance.AttemptAddPlayer(inputEvent);
-            } else if (inputEvent.IsActionPressed("play_default_special"))
-            {
-                PlayerManager.GlobalInstance.AttemptRemovePlayer(inputEvent);
-            } else if (inputEvent.IsActionPressed("start"))
-            {
-            }
-        }
-    }
-
-    public class ClientMenuState: CharSelectMenuState
-    {
-        public ClientMenuState(CharacterSelect _charSelectScene) : base(_charSelectScene)
-        {
-        }
-
-        
-
-        public override void HandleInput(InputEvent inputEvent)
-        {
-            if (!inputEvent.IsPressed()) return;
-            if (inputEvent.IsActionPressed("debug_ready") )
-            {
-            } else if (inputEvent.IsActionPressed("play_default_special"))
-            {
-            } else if (inputEvent.IsActionPressed("start"))
-            {
-            }
-        }
-    }
-
-
-    public class CharSelectMenuState
-    {
-        public CharacterSelect charSelectScene;
-        public CharSelectMenuState(CharacterSelect _charSelectScene)
-        {
-            charSelectScene = _charSelectScene;
-        }
-        public virtual void  Ready(){}
-        public virtual void HandleInput(InputEvent inputEvent ){}
-    }
+    
 }
 
 
+
+    
+
+    
+
+
+ 
 
