@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Reflection.PortableExecutable;
 
 public partial class NetworkManager : Node
 {
@@ -32,23 +33,26 @@ public partial class NetworkManager : Node
     int RollbackPort;
     int RollbackIp;
 
+    [Signal]
+    public delegate void PlayerAddedRequestEventHandler(int RemotePlayerPeerID);
+    [Signal]
+    public delegate void PlayerAddedNotificationEventHandler(int PlayerNumber, int PeerId,  bool IsLocal);    
 
     string HostRollbackIp;
     int HostRollbackPort;
-    [Signal]
-    public delegate void StartedToHostEventHandler();
-    [Signal]
-    public delegate void ClientRequestedAddPlayerEventHandler(int PlayerNumber, bool Status);
-
     public static NetworkManager GlobalInstance;
     public ConnectionType connectionType = ConnectionType.DISCONNECTED;
 
     bool ReadiedUp = false;
     ENetMultiplayerPeer Peer;
 
+    public override void _EnterTree()
+    {
+        base._EnterTree();
+        GlobalInstance = this;
+    }
     public override void _Ready()
     {
-        GlobalInstance = this; 
 
         Multiplayer.PeerConnected += (Peer) =>
         {
@@ -131,36 +135,29 @@ public partial class NetworkManager : Node
     // RPC PREFIX INDICATES WHAT MACHINE THE FUNCTION SHOULD BE RUN ON (not called on) 
     // CTH = CLIENT_TO_HOST
     // HTC = HOST_TO_CLIENT
-    public int GetDestination()
+    public void RequestAddPlayer(){
+        RpcId ( MultiplayerPeer.TargetPeerServer, "OnAddPlayerRequest");
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer)] 
+    public void OnAddPlayerRequest()
     {
-        if (connectionType == ConnectionType.HOST)
-        {
-            return (int)MultiplayerPeer.TargetPeerBroadcast;
-        }
-        return (int)MultiplayerPeer.TargetPeerServer;
-
-        
-    }
-
-
-    public void SendPlayerReadyStatus(int id, int PlayerNumber,bool Status){
-        RpcId ( MultiplayerPeer.TargetPeerBroadcast, "RecievePlayerReadyStatus", PlayerNumber, Status);
-    }
-
-
-    [Rpc] 
-    public void ReceivePlayerReadyStatus(int PlayerNumber,bool Status)
+        int RemotePlayerPeerID = Multiplayer.GetRemoteSenderId();
+        EmitSignal("PlayerAddedRequest", RemotePlayerPeerID);
+    }   
+    
+    public void NotifyPlayerAdded(int PlayerNumber, int PlayerPeerID)
     {
-
-        if (PlayerNumber == -1)
-        {
-            PlayerManager.GlobalInstance.AttemptAddRemotePlayer()
-        }
-        EmitSignal("PlayerReadyStatusReceived", PlayerNumber, Status);
+        RpcId ( MultiplayerPeer.TargetPeerBroadcast, "OnNotifyPlayerAdded", PlayerNumber, PlayerPeerID);
     }
 
-
-
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    public void OnNotifyPlayerAdded(int PlayerNumber, int PeerId)
+    {
+        bool IsLocal = PeerId == Peer.GetUniqueId();
+        EmitSignal("PlayerAddedNotification", PlayerNumber, PeerId, IsLocal);
+    }
+    
 
     // Helper Functions
     public string GetSafeIp()

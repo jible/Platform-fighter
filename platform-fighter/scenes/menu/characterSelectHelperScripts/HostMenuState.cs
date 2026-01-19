@@ -13,11 +13,14 @@ public class HostMenuState: CharSelectMenuState
             if (inputEvent.IsActionPressed("debug_ready") )
             {
                 PlayerManager.GlobalInstance.AttemptAddPlayer(inputEvent);
-            } else if (inputEvent.IsActionPressed("play_default_special"))
-            {
-                PlayerManager.GlobalInstance.AttemptRemovePlayer(inputEvent);
-            } else if (inputEvent.IsActionPressed("start"))
+            }  else if (inputEvent.IsActionPressed("start"))
             {
             }
+        }
+
+         public override void OnPlayerAdded(int PlayerNumber)
+        {
+            PlayerProfile NewPlayer = PlayerManager.GlobalInstance.AllPlayers[PlayerNumber];
+            NetworkManager.GlobalInstance.NotifyPlayerAdded(PlayerNumber, NewPlayer.RemotePeerID);
         }
     }

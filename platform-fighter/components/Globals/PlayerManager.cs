@@ -8,18 +8,39 @@ public partial class PlayerManager : Node
     public List<PlayerProfile> AllPlayers = [];
     public static int MaxPlayerCount = 4;
     public static  PlayerManager GlobalInstance;
+
+    public Queue<InputEvent> QueuedControllers= new();
+
     [Signal] public delegate void PlayerAddedEventHandler(int PlayerNumber);
     [Signal] public delegate void PlayerRemovedEventHandler(int PlayerNumber);
 
+    public void QueueController(InputEvent inputEvent)
+    {
+        QueuedControllers.Enqueue(inputEvent);
+    }
+    public override void _EnterTree()
+    {
+        base._EnterTree();
+        GlobalInstance = this;
+    }
 
     public override void _Ready()
     {
-        GlobalInstance = this;
         for (int i = 0; i < MaxPlayerCount; i++)
         {
             AllPlayers.Add(null);
         }
+        NetworkManager.GlobalInstance.PlayerAddedRequest += (RemotePlayerPeerID) => {
+            AttemptAddRemotePlayer(RemotePlayerPeerID);
+        };
+        NetworkManager.GlobalInstance.PlayerAddedNotification += (PlayerNumber, PeerId, IsLocal) =>
+        {
+            OverrideAddPlayer(PlayerNumber, PeerId, IsLocal);
+        };
     }
+
+
+    
     // Not related to what im doing right now, but proccess is misspelled So fix this <- TODO 
     public override void _Process(double delta)
     {
@@ -32,13 +53,49 @@ public partial class PlayerManager : Node
         }
     }
 
+    // This function is for the network manager to add players from other systems.
+    public void OverrideAddPlayer(int PlayerNumber, int PeerId, bool IsLocal)
+    {
+        int DeviceNumber = -1;
+        PlayerProfile.ControllerTypes ControllerType = PlayerProfile.ControllerTypes.REMOTE_PLAYER;
+        if (IsLocal)
+        {
+            // There should be no case where a player slot is overriden and it was already populated
+            if (AllPlayers[PlayerNumber] != null)
+            {
+                GD.Print("something is wrong");
+            }
+
+            InputEvent QueuedController;
+            bool Success = QueuedControllers.TryDequeue(out QueuedController);
+            if (!Success)
+            {
+                GD.Print("Failed to find queued controller");
+                throw new Exception("Player Added with no queued controlelr");
+            }
+
+            DeviceNumber = QueuedController.Device;
+            ControllerType  = GetControllerType(QueuedController);
+        } 
+        
+
+        PlayerProfile playerProfile = new();
+        playerProfile.Configure(PlayerNumber, DeviceNumber, ControllerType, PeerId);
+        EmitSignal("PlayerAdded", PlayerNumber);
+
+    }
+
+    // Method for host
     public void AttemptAddRemotePlayer(int RemotePlayerPeerID)
     {
         int PlayerNumber = GetFreePlayerNumber();
-        if (PlayerNumber == -1) return;
-
-         PlayerProfile playerProfile = new();
-        playerProfile.ConfigureRemotePlayer(PlayerNumber, RemotePlayerPeerID);
+        if (PlayerNumber == -1) {
+            GD.Print("no available player slots for remote player");
+            // TODO: Tell the client that the slot wasn't available
+            return;
+        }
+        PlayerProfile playerProfile = new();
+        playerProfile.Configure(PlayerNumber, -1, PlayerProfile.ControllerTypes.REMOTE_PLAYER, RemotePlayerPeerID);
 
         AllPlayers[PlayerNumber] = playerProfile;
         EmitSignal("PlayerAdded", PlayerNumber);

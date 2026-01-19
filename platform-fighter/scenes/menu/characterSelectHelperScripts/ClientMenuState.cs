@@ -9,7 +9,6 @@ public class ClientMenuState: CharSelectMenuState
         }
 
         // List of controllers that are waiting to be added as a player
-        public List<Dictionary< String, object>> QueuedControllers= new();
 
         public override void HandleInput(InputEvent inputEvent)
         {
@@ -18,10 +17,8 @@ public class ClientMenuState: CharSelectMenuState
             int PlayerNumber = PlayerManager.GlobalInstance.GetPlayerNumberFromInput(inputEvent);
             if (inputEvent.IsActionPressed("debug_ready") && PlayerNumber == -1)
             {
-               NetworkManager.GlobalInstance.SendPlayerReadyStatus(PlayerNumber, true);
-            } else if (PlayerNumber != -1 && inputEvent.IsActionPressed("play_default_special"))
-            {
-               NetworkManager.GlobalInstance.SendPlayerReadyStatus(PlayerNumber, false);
+                PlayerManager.GlobalInstance.QueueController(inputEvent);
+                NetworkManager.GlobalInstance.RequestAddPlayer();
             }
         }
     }

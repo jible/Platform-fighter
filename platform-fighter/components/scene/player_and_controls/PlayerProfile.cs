@@ -19,7 +19,7 @@ public partial class PlayerProfile : Resource
 
     public String SelectedCharacterPath = "uid://due8lbighr0jf"; 
 
-    public int InputDeviceNumber = 0;
+    public int InputDeviceNumber = -1;
     public int RemotePeerID = -1;
 
 
@@ -31,18 +31,11 @@ public partial class PlayerProfile : Resource
 
     public Node Instance;
 
-    public void Configure(int _PlayerNumber, int _InputDeviceNumber, ControllerTypes _ControllerType)
+    public void Configure(int _PlayerNumber, int _InputDeviceNumber, ControllerTypes _ControllerType, int _RemotePeerId = -1)
     {
         PlayerNumber = _PlayerNumber;
         InputDeviceNumber = _InputDeviceNumber;
         ControllerType = _ControllerType;
-    }
-
-    public void ConfigureRemotePlayer(int _PlayerNumber, int _RemotPeerID)
-    {
-        PlayerNumber = _PlayerNumber;
-        InputDeviceNumber = -1;
-        ControllerType = ControllerTypes.REMOTE_PLAYER;
-        RemotePeerID = _RemotPeerID;        
+        RemotePeerID = _RemotePeerId;
     }
 }

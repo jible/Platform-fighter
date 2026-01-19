@@ -10,4 +10,6 @@ using System;
         }
         public virtual void  Ready(){}
         public virtual void HandleInput(InputEvent inputEvent ){}
+
+        public virtual void OnPlayerAdded(int PlayerNum){}
     }
