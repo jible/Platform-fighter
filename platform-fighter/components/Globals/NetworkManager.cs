@@ -151,10 +151,11 @@ public partial class NetworkManager : Node
         RpcId ( MultiplayerPeer.TargetPeerBroadcast, "OnNotifyPlayerAdded", PlayerNumber, PlayerPeerID);
     }
 
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    [Rpc(MultiplayerApi.RpcMode.Authority)]
     public void OnNotifyPlayerAdded(int PlayerNumber, int PeerId)
     {
         bool IsLocal = PeerId == Peer.GetUniqueId();
+        GD.Print(IsLocal);
         EmitSignal("PlayerAddedNotification", PlayerNumber, PeerId, IsLocal);
     }
     

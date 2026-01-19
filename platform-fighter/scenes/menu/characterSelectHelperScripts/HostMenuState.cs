@@ -10,7 +10,9 @@ public class HostMenuState: CharSelectMenuState
         public override void HandleInput(InputEvent inputEvent)
         {
             if (!inputEvent.IsPressed()) return;
-            if (inputEvent.IsActionPressed("debug_ready") )
+            int PlayerNumber = PlayerManager.GlobalInstance.GetPlayerNumberFromInput(inputEvent);
+
+            if (inputEvent.IsActionPressed("debug_ready") && PlayerNumber == -1)
             {
                 PlayerManager.GlobalInstance.AttemptAddPlayer(inputEvent);
             }  else if (inputEvent.IsActionPressed("start"))

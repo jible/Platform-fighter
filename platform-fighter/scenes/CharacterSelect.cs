@@ -51,6 +51,9 @@ public partial class CharacterSelect : Control
     public void OnPlayerAdded(int PlayerNumber)
     {
         GD.Print("playerAdded", PlayerNumber);
+
+        ConnectionTypeToState[NetworkManager.GlobalInstance.connectionType].OnPlayerAdded(PlayerNumber);
+
         Label NewLabel = new();
         CharacterLabels.AddChild(NewLabel);
         Labels[PlayerNumber ] = NewLabel;

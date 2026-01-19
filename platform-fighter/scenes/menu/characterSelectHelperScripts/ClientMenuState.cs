@@ -21,4 +21,10 @@ public class ClientMenuState: CharSelectMenuState
                 NetworkManager.GlobalInstance.RequestAddPlayer();
             }
         }
+
+        public override void Ready()
+        {
+            base.Ready();
+        }
+
     }

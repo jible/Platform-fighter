@@ -81,6 +81,7 @@ public partial class PlayerManager : Node
 
         PlayerProfile playerProfile = new();
         playerProfile.Configure(PlayerNumber, DeviceNumber, ControllerType, PeerId);
+        AllPlayers[PlayerNumber] = playerProfile;
         EmitSignal("PlayerAdded", PlayerNumber);
 
     }
@@ -165,7 +166,7 @@ public partial class PlayerManager : Node
             return PlayerProfile.ControllerTypes.KEYBOARD;
         } else
         {
-            throw new ArgumentException("Unexpected Input Type Received");
+            return PlayerProfile.ControllerTypes.UNACCEPTED_INPUT;
         }
     }
 }

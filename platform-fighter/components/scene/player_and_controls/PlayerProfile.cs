@@ -8,7 +8,8 @@ public partial class PlayerProfile : Resource
     {
         KEYBOARD,
         CONTROLLER,
-        REMOTE_PLAYER
+        REMOTE_PLAYER,
+        UNACCEPTED_INPUT
     }
 
 
