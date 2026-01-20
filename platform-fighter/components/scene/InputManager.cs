@@ -76,8 +76,10 @@ public partial class InputManager : Node
 
     public void HandleJoypadButton( InputEventJoypadButton JoyEvent, PlayerTag playerTag, int player_number)
     {
-        ControllerState.ButtonTypes Button = (ControllerState.ButtonTypes)playerTag.ReverseMap[JoyEvent.ButtonIndex];
-        CurrentControllerStates[player_number].SetButton(Button, @JoyEvent.IsPressed());
+        ControllerState.ButtonTypes Button; 
+        bool Success = playerTag.ReverseMap.TryGetValue(JoyEvent.ButtonIndex, out Button);
+        if (!Success) return;
+        CurrentControllerStates[player_number].SetButton(Button, JoyEvent.IsPressed());
     }
 
     public void HandleJoypadMotion(InputEventJoypadMotion StickMotion, int PlayerNumber)
@@ -104,6 +106,7 @@ public partial class InputManager : Node
         // This is a cheeky solution to check if the value changed on the x or y axis
         StickState.Axis StickAxis = ((int)Axis % 2 == 0) ? StickState.Axis.X : StickState.Axis.Y;
         Stick.SetAxis(StickAxis, Magnitude);
+        GD.Print(Stick.ToRangedVector().ToStandardVector());
     }
 
     public void HandleKeyboardInput(InputEventKey KeyEvent, PlayerTag playerTag, int PlayerNumber)
@@ -126,6 +129,15 @@ public partial class InputManager : Node
             if (playerProfile.ControllerType == PlayerProfile.ControllerTypes.KEYBOARD)
             {
                 ApplyKeyboardDirectionInputs(playerProfile, PlayerNumber);
+            } else if (playerProfile.ControllerType == PlayerProfile.ControllerTypes.CONTROLLER)
+            {
+                float lX = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftX);
+                float ly = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftY);
+                CurrentControllerStates[PlayerNumber].StickStates[0].SetFromVector(new Vector2(lX,ly));
+
+                float rx = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftX);
+                float ry = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftY);
+                CurrentControllerStates[PlayerNumber].StickStates[1].SetFromVector(new Vector2(rx,ry));
             }
 
             AllControllerStates[Frame][PlayerNumber] = CurrentControllerStates[PlayerNumber].GetCopy();

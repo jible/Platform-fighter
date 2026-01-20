@@ -37,9 +37,10 @@ public partial class NetworkManager : Node
     public delegate void PlayerAddedRequestEventHandler(int RemotePlayerPeerID);
     [Signal]
     public delegate void PlayerAddedNotificationEventHandler(int PlayerNumber, int PeerId,  bool IsLocal);    
+    [Signal]
+    public delegate void EnterMatchNotificationEventHandler();    
 
-    string HostRollbackIp;
-    int HostRollbackPort;
+
     public static NetworkManager GlobalInstance;
     public ConnectionType connectionType = ConnectionType.DISCONNECTED;
 
@@ -80,7 +81,7 @@ public partial class NetworkManager : Node
         };
     }
 
-    public void StartGame(int Port)
+    public void StartLobby( string Address, int Port)
     {
         Peer = new ENetMultiplayerPeer();
 
@@ -92,15 +93,14 @@ public partial class NetworkManager : Node
 
         Multiplayer.MultiplayerPeer = Peer;
         connectionType = ConnectionType.HOST;
-        GD.Print($"Hosting on port {Port}");
+        GD.Print($"Hosting on port {Port} at address {Address}");
 
-        HostRollbackPort = Port + 1;
-        HostRollbackIp = GetSafeIp();
+        RollBackData = new( Address, Port, Port + 1);
         PrintLobbyStatus();
     }
 
 
-    public void JoinGame(string _ip, int _port)
+    public void JoinLobby(string _ip, int _port)
     {
         Peer = new ENetMultiplayerPeer();
         var err = Peer.CreateClient(_ip, _port);
@@ -119,7 +119,7 @@ public partial class NetworkManager : Node
 
         var AllPeers = Multiplayer.GetPeers();
         GD.Print($"Lobby Size: {AllPeers.Length + 1}-----------------------------------------");
-        GD.Print($"HOST IP: {HostRollbackIp}, Port: {HostRollbackPort}");
+        GD.Print($"HOST IP: {RollBackData.IpAddress}, Port: {RollBackData.RollbackPort}");
 
         foreach (var PeerId in AllPeers)
         {
@@ -158,7 +158,17 @@ public partial class NetworkManager : Node
         GD.Print(IsLocal);
         EmitSignal("PlayerAddedNotification", PlayerNumber, PeerId, IsLocal);
     }
+
+    public void NotifyEnterMatchStarted()
+    {
+        RpcId(MultiplayerPeer.TargetPeerBroadcast, "OnNotifyEnterMatch");
+    }
     
+    [Rpc(MultiplayerApi.RpcMode.Authority)]
+    public void OnNotifyEnterMatch()
+    {
+        EmitSignal("EnterMatchNotification");
+    }
 
     // Helper Functions
     public string GetSafeIp()
@@ -179,17 +189,13 @@ public partial class NetworkManager : Node
 
 public class UserNetworkData
 {
-    public int EnetPort;
     public string IpAddress;
     public int RollbackPort;
-    public UserNetworkData(int _EnetPort,string _IpAddress, int _RollbackPort = -1)
+    public int LobbyPort;
+    public UserNetworkData(string _IpAddress, int _LobbyPort, int _RollbackPort = -1)
     {   
-        EnetPort = _EnetPort;
         IpAddress = _IpAddress;
         RollbackPort = _RollbackPort;
-        if (RollbackPort < 0)
-        {
-            RollbackPort = EnetPort + 1;
-        }
+        LobbyPort = _LobbyPort;
     }
 }

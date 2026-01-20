@@ -28,7 +28,7 @@ public partial class RollbackManager : Node
     List<UserNetworkData> ClientData= [];
     List<object> ClientLatency = [];
 
-    public override void _Ready()
+    public override void _EnterTree()
     {
         GloablInstance = this;
     }
@@ -41,10 +41,10 @@ public partial class RollbackManager : Node
         {
             throw new ArgumentException($"Failed to bind UDP on port {Port}");
         }
-        HostData = new(Port, IpAddress);
+        HostData = new( IpAddress, Port);
     }
 
-    public void PrepareToJoinRollback()
+    public void PrepareToJoinRollback(string Address, int Port)
     {
         udp = new PacketPeerUdp();
         var err = udp.Bind(0);

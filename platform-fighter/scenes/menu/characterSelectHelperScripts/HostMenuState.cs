@@ -17,6 +17,8 @@ public class HostMenuState: CharSelectMenuState
                 PlayerManager.GlobalInstance.AttemptAddPlayer(inputEvent);
             }  else if (inputEvent.IsActionPressed("start"))
             {
+                NetworkManager.GlobalInstance.NotifyEnterMatchStarted();
+                charSelectScene.GoToPlayScene();
             }
         }
 

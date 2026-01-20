@@ -21,16 +21,24 @@ public partial class CharacterSelect : Control
             {NetworkManager.ConnectionType.CLIENT, new ClientMenuState(this)},
         };
 
+        ConnectionTypeToState[NetworkManager.GlobalInstance.connectionType].Ready();
+
+        PopulateUI();
+        
+        MessageHolder.Text = "Press R to ready";
+        PlayerManager.GlobalInstance.PlayerAdded += OnPlayerAdded;
+        PlayerManager.GlobalInstance.PlayerRemoved += OnPlayerRemoved;
+        NetworkManager.GlobalInstance.EnterMatchNotification += GoToPlayScene;
+
+    }
+
+    public void PopulateUI()
+    {
         foreach (var player in PlayerManager.GlobalInstance.AllPlayers)
         {
             if (player == null) continue;
             OnPlayerAdded(player.PlayerNumber);
         }
-        MessageHolder.Text = "Press R to ready";
-        PlayerManager.GlobalInstance.PlayerAdded += OnPlayerAdded;
-        PlayerManager.GlobalInstance.PlayerRemoved += OnPlayerRemoved;
-
-        ConnectionTypeToState[NetworkManager.GlobalInstance.connectionType].Ready();
     }
 
     public override void _Input(InputEvent @event )
@@ -43,10 +51,6 @@ public partial class CharacterSelect : Control
         GetTree().ChangeSceneToFile(PlayScenePath);
     }
 
-    public int RequestAddPlayer()
-    {
-        return -1;
-    }
 
     public void OnPlayerAdded(int PlayerNumber)
     {

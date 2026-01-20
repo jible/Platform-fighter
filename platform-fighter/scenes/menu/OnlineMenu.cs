@@ -32,11 +32,11 @@ public partial class OnlineMenu : Control
 
         if (EventKey.Keycode == Key.H)
         {
-            NetworkManager.GlobalInstance.StartGame(Port);
+            NetworkManager.GlobalInstance.StartLobby( Ip, Port);
             GetTree().ChangeSceneToFile(CharSelectScenePath);
         } else if (EventKey.Keycode == Key.J)
         {
-            NetworkManager.GlobalInstance.JoinGame(Ip, Port);
+            NetworkManager.GlobalInstance.JoinLobby(Ip, Port);
 
             GetTree().ChangeSceneToFile(CharSelectScenePath);
             

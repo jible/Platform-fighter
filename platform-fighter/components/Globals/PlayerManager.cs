@@ -156,7 +156,7 @@ public partial class PlayerManager : Node
         return PlayerNumber;
     }
 
-    public PlayerProfile.ControllerTypes GetControllerType(InputEvent input)
+    public static PlayerProfile.ControllerTypes GetControllerType(InputEvent input)
     {
         if (input is InputEventJoypadButton || input is InputEventJoypadMotion)
         {
@@ -168,5 +168,10 @@ public partial class PlayerManager : Node
         {
             return PlayerProfile.ControllerTypes.UNACCEPTED_INPUT;
         }
+    }
+
+    public static bool IsSameDevice(InputEvent A, InputEvent B)
+    {
+        return A.Device == B.Device && (GetControllerType(A) == GetControllerType(B)); 
     }
 }
