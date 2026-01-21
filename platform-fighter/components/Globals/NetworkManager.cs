@@ -1,6 +1,10 @@
 using Godot;
 using System;
+using Godot.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.PortableExecutable;
+using Godot.NativeInterop;
 
 public partial class NetworkManager : Node
 {
@@ -57,7 +61,13 @@ public partial class NetworkManager : Node
 
         Multiplayer.PeerConnected += (Peer) =>
         {
+            GD.Print("asdlk");
             PrintLobbyStatus();
+            if (connectionType == ConnectionType.HOST)
+            {
+                SendPlayerInfo(Peer);
+
+            }
         };
 
         Multiplayer.PeerDisconnected += (Peer) =>
@@ -79,6 +89,57 @@ public partial class NetworkManager : Node
         {
             PrintLobbyStatus();
         };
+    }
+
+    //When a peer joins, the host calls this function to notify the peer of the lobby state
+    // It passes what player slots are taken, what machines are using them and what tag each player has.
+    public void SendPlayerInfo(long PeerId)
+    {
+        Godot.Collections.Array MessageData = new Godot.Collections.Array(); 
+        for (int i = 0; i < PlayerManager.MaxPlayerCount; i++)
+        {
+            GD.Print(i);
+            PlayerProfile playerProfile = PlayerManager.GlobalInstance.AllPlayers[i];
+            if (playerProfile == null)
+            {
+                GD.Print(i, "checkpoint b");
+
+                MessageData.Add(
+                    new Dictionary
+                    {
+                        {"IsNull", true},
+                    }
+                );
+                continue;
+            }
+            GD.Print(i, "checkpoint a");
+            Dictionary PlayerDataDict = new Dictionary
+            {
+              {"PlayerNumber", i},
+              {"PeerId", playerProfile.RemotePeerID},
+              {"PlayerTag", playerProfile.playerTag}  
+            };
+            MessageData.Add(PlayerDataDict);
+        }
+        GD.Print("Max player count", PlayerManager.MaxPlayerCount);
+        GD.Print("pre length", MessageData.Count);
+        RpcId(PeerId, "ReceivePlayerInfo", MessageData);
+    }
+
+    [Rpc(MultiplayerApi.RpcMode.Authority)]
+    public void ReceivePlayerInfo(Godot.Collections.Array PlayerData)
+    {
+        for (int i = 0; i < PlayerManager.MaxPlayerCount; i++)
+        {
+            GD.Print(PlayerData.Count);
+            Dictionary PlayerDataDict = (Dictionary)PlayerData[i];
+            Godot.Variant IsNull;
+            if (PlayerDataDict.TryGetValue("IsNull", out IsNull))
+            {
+                continue;
+            }
+            PlayerManager.GlobalInstance.OverrideAddPlayer(i, (int)PlayerDataDict["PeerId"], false);
+        }
     }
 
     public void StartLobby( string Address, int Port)

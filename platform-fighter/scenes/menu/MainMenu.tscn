@@ -8,6 +8,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_m2yvp")
+metadata/_edit_horizontal_guides_ = [-54.0]
 
 [node name="MenuContents" type="VBoxContainer" parent="."]
 layout_mode = 0
