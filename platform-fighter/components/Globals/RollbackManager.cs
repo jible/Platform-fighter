@@ -65,17 +65,28 @@ public partial class RollbackManager : Node
             throw new ArgumentException("Failed to bind UDP  client socket");
         }
         udp.ConnectToHost(HostAddress, HostPort);
-
+        udp.SetDestAddress(HostAddress, HostPort);
     }
 
     public void SendEncodedPackets(PacketType packetType, byte[] EncodedPacket)
     {
-        byte[] Buffer =[];
-        Buffer.Concat([(byte)packetType]);
-        Buffer.Concat(EncodedPacket);
+        
+        byte[] Buffer = new byte[1 + EncodedPacket.Length];
+        Buffer[0] = (byte)packetType;
+        Array.Copy(EncodedPacket, 0, Buffer, 1, EncodedPacket.Length);
 
-        udp.PutPacket(Buffer);
 
+        if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
+        {
+            foreach (var target in ClientData)
+            {
+                udp.SetDestAddress(target.Item1, target.Item2);
+                udp.PutPacket(Buffer); 
+            }
+        } else if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.CLIENT)
+        {
+            udp.PutPacket(Buffer);   
+        }
     }
 
     public void HandlePacket(byte[] Packet, string Address, int Port)
@@ -100,10 +111,6 @@ public partial class RollbackManager : Node
     }
 
 
-    public void HandleInputPacket(byte[] Packet)
-    {
-        
-    }
 
 
     public override void _Process(double delta)
