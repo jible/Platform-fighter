@@ -15,11 +15,13 @@ public class ClientMenuState: CharSelectMenuState
             if (!inputEvent.IsPressed()) return;
             // Will be negative 1 if no player is bound to it
             int PlayerNumber = PlayerManager.GlobalInstance.GetPlayerNumberFromInput(inputEvent);
+            // if (PlayerManager.GlobalInstance.pla) // Try to check if locally there are already too many acvite playter before requesting
             if (inputEvent.IsActionPressed("debug_ready") && PlayerNumber == -1 && !CheckIfQueued(inputEvent))
             {
                 GD.Print("REady pressed)");
                 PlayerManager.GlobalInstance.QueueController(inputEvent);
-                NetworkManager.GlobalInstance.lobbyManager.RequestAddPlayer();
+                NetworkManager.GlobalInstance.SendMessage(NetworkManager.NetworkMessageType.RequestAddPlayer, null);
+
             }
         }
 
@@ -35,6 +37,14 @@ public class ClientMenuState: CharSelectMenuState
         public override void Ready()
         {
             base.Ready();
+        }
+
+        public override void OnNetworkMessageReceived(NetworkManager.NetworkMessageType messageType, Godot.Collections.Dictionary MessageData)
+        {
+            if (messageType == NetworkManager.NetworkMessageType.EnterMatch)
+            {
+                charSelectScene.GoToPlayScene();
+            }
         }
 
     }

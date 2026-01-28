@@ -12,4 +12,5 @@ using System;
         public virtual void HandleInput(InputEvent inputEvent ){}
 
         public virtual void OnPlayerAdded(int PlayerNum){}
+        public virtual void OnNetworkMessageReceived(NetworkManager.NetworkMessageType messageType, Godot.Collections.Dictionary MessageData){}
     }

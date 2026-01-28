@@ -211,13 +211,13 @@ public class LobbyManager
                     OnReceiveLobbySyncData((Godot.Collections.Array)MessageData["LobbyState"]);
                     break;
                 case NetworkManager.NetworkMessageType.RequestAddPlayer:
-                    OnAddPlayerRequested(Sender);
+                    PlayerManager.GlobalInstance.AttemptAddRemotePlayer(Sender);
                     break;
                 case NetworkManager.NetworkMessageType.PlayerAdded:
                     int PlayerNumber = (int)MessageData["PlayerNumber"];
                     int PeerId = NetworkManager.GlobalInstance.GetPeerId();
                     bool IsLocal = PeerId == (int)MessageData["PeerId"];
-                    OnPlayerAddedNotification(PlayerNumber, PeerId, IsLocal);
+                    PlayerManager.GlobalInstance.OverrideAddPlayer(PlayerNumber, PeerId, IsLocal);
                     break;
             }
         };
@@ -231,13 +231,11 @@ public class LobbyManager
             }
         };
 
-        NetworkManager.GlobalInstance.Multiplayer.PeerConnected += (Peer) =>
-        {
-            SendLobySyncData(Peer);
-        };
+        NetworkManager.GlobalInstance.Multiplayer.PeerConnected += SendLobySyncData;
     }
     public void SendLobySyncData(long PeerId)
     {
+        if (NetworkManager.GlobalInstance.connectionType != NetworkManager.ConnectionType.HOST) return;
         Godot.Collections.Array LobbyStateData = new Godot.Collections.Array(); 
         for (int i = 0; i < PlayerManager.MaxPlayerCount; i++)
         {
@@ -266,17 +264,6 @@ public class LobbyManager
 
         NetworkManager.GlobalInstance.SendMessageSpecificClient(NetworkManager.NetworkMessageType.SyncLobbyState, MessageData, (int)PeerId);
     }
-
-    // Todo add signal listener for this method (listening for lobby sync message)
-    
-
-
-
-    // Message Calls
-    public void RequestAddPlayer()
-    {
-        NetworkManager.GlobalInstance.SendMessage(NetworkManager.NetworkMessageType.RequestAddPlayer, null);
-    }
     
     public void NotifyPlayerAdded(int PlayerNumber, int PeerId)
     {
@@ -289,25 +276,13 @@ public class LobbyManager
 
     }
 
-    public void NotifyMatchStart()
-    {
-        NetworkManager.GlobalInstance.SendMessage(NetworkManager.NetworkMessageType.EnterMatch, null);
-    }
-
     // Message Responses
-    public void OnPlayerAddedNotification(int PlayerNumber, int  PeerId, bool IsLocal)
-    {
-        PlayerManager.GlobalInstance.OverrideAddPlayer(PlayerNumber, PeerId, IsLocal);
-    }
 
-    public void OnAddPlayerRequested(int Sender){
-        PlayerManager.GlobalInstance.AttemptAddRemotePlayer(Sender);
-    }
+
     public void OnReceiveLobbySyncData(Godot.Collections.Array PlayerData)
     {
         for (int i = 0; i < PlayerManager.MaxPlayerCount; i++)
         {
-            GD.Print(PlayerData.Count);
             Dictionary PlayerDataDict = (Dictionary)PlayerData[i];
             Godot.Variant IsNull;
             if (PlayerDataDict.TryGetValue("IsNull", out IsNull))
