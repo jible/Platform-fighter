@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using Godot.NativeInterop;
+using System.Security.Cryptography.X509Certificates;
 
 public partial class NetworkManager : Node
 {
@@ -18,130 +19,111 @@ public partial class NetworkManager : Node
     To view UDP connection methods, view RollbackManager.cs
 
     */
+    public static NetworkManager GlobalInstance;
+
+    // Enums--------------------------------------------------------------------------------------------------------------------------
     public enum ConnectionType
     {
         HOST,
         CLIENT,
         DISCONNECTED
-    }                                
+    }           
+    public enum NetworkMessageType
+    {
+        // Host Methods
+        PlayerAdded,
+        EnterMatch,
+        SyncLobbyState,
+
+        // Client Methods
+        RequestAddPlayer,
+
+    }
+
+    // Return true if host can use this method
+    public bool IsHostMessage(NetworkMessageType MessageType)
+    {
+        return MessageType is
+            NetworkMessageType.PlayerAdded or 
+            NetworkMessageType.EnterMatch or 
+            NetworkMessageType.SyncLobbyState;
+    }
+    // Returns true if client can use this method
+    public bool IsClientMessage( NetworkMessageType messageType)
+    {
+        return messageType is NetworkMessageType.RequestAddPlayer;
+    }
+
+               
+    
+    // Default Lobby Location/ Settings--------------------------------------------------------------------------------------------------------------------------
 
     public static int DefaultTestingPort = 8000;
     public static string DefaultTargetIp = "127.0.0.1";
     int MAX_CLIENTS = 2;
 
+    // Runtime Lobby Data --------------------------------------------------------------------------------------------------------------------------
+    public LobbyManager lobbyManager;
 
-    int CurrentLobbySize = 0;
-    int TargetLobbySize = 2;
-
-    UserNetworkData RollBackData;
-    int RollbackPort;
-    int RollbackIp;
-
+    // Host Data
+    int HostPort;
+    string HostIP;
+    // Signals --------------------------------------------------------------------------------------------------------------------------
     [Signal]
-    public delegate void PlayerAddedRequestEventHandler(int RemotePlayerPeerID);
-    [Signal]
-    public delegate void PlayerAddedNotificationEventHandler(int PlayerNumber, int PeerId,  bool IsLocal);    
-    [Signal]
-    public delegate void EnterMatchNotificationEventHandler();    
-
-
-    public static NetworkManager GlobalInstance;
+    public delegate void MessageReceivedEventHandler(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData, int Sender);    
+    
+    // Lobby State--------------------------------------------------------------------------------------------------------------------------
     public ConnectionType connectionType = ConnectionType.DISCONNECTED;
 
-    bool ReadiedUp = false;
     ENetMultiplayerPeer Peer;
-
+    // Standard Methods --------------------------------------------------------------------------------------------------------------------------
     public override void _EnterTree()
     {
         base._EnterTree();
         GlobalInstance = this;
+
     }
+
     public override void _Ready()
     {
-
-        Multiplayer.PeerConnected += (Peer) =>
-        {
-            GD.Print("asdlk");
-            PrintLobbyStatus();
-            if (connectionType == ConnectionType.HOST)
-            {
-                SendPlayerInfo(Peer);
-
-            }
-        };
-
-        Multiplayer.PeerDisconnected += (Peer) =>
-        {
-            PrintLobbyStatus();
-        };
-
-        Multiplayer.ConnectedToServer += () =>
-        {
-            PrintLobbyStatus();
-        };
-
-        Multiplayer.ConnectionFailed += () =>
-        {
-            PrintLobbyStatus();
-        };
-
-        Multiplayer.ServerDisconnected += () =>
-        {
-            PrintLobbyStatus();
-        };
+        base._Ready();
+        lobbyManager = new();
+        lobbyManager.Config();
     }
 
-    //When a peer joins, the host calls this function to notify the peer of the lobby state
-    // It passes what player slots are taken, what machines are using them and what tag each player has.
-    public void SendPlayerInfo(long PeerId)
+
+    public void SendMessageSpecificClient(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData, int ClientId)
     {
-        Godot.Collections.Array MessageData = new Godot.Collections.Array(); 
-        for (int i = 0; i < PlayerManager.MaxPlayerCount; i++)
+        if (connectionType != ConnectionType.HOST)
         {
-            GD.Print(i);
-            PlayerProfile playerProfile = PlayerManager.GlobalInstance.AllPlayers[i];
-            if (playerProfile == null)
-            {
-                GD.Print(i, "checkpoint b");
-
-                MessageData.Add(
-                    new Dictionary
-                    {
-                        {"IsNull", true},
-                    }
-                );
-                continue;
-            }
-            GD.Print(i, "checkpoint a");
-            Dictionary PlayerDataDict = new Dictionary
-            {
-              {"PlayerNumber", i},
-              {"PeerId", playerProfile.RemotePeerID},
-              {"PlayerTag", playerProfile.playerTag}  
-            };
-            MessageData.Add(PlayerDataDict);
+            GD.Print("This is a host only method");
         }
-        GD.Print("Max player count", PlayerManager.MaxPlayerCount);
-        GD.Print("pre length", MessageData.Count);
-        RpcId(PeerId, "ReceivePlayerInfo", MessageData);
+        RpcId(ClientId, "ReceiveMessage",(int) messageType, MessageData);
     }
-
-    [Rpc(MultiplayerApi.RpcMode.Authority)]
-    public void ReceivePlayerInfo(Godot.Collections.Array PlayerData)
+    
+    public void SendMessage(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData)
     {
-        for (int i = 0; i < PlayerManager.MaxPlayerCount; i++)
+        if (connectionType != ConnectionType.HOST && IsHostMessage(messageType))
         {
-            GD.Print(PlayerData.Count);
-            Dictionary PlayerDataDict = (Dictionary)PlayerData[i];
-            Godot.Variant IsNull;
-            if (PlayerDataDict.TryGetValue("IsNull", out IsNull))
-            {
-                continue;
-            }
-            PlayerManager.GlobalInstance.OverrideAddPlayer(i, (int)PlayerDataDict["PeerId"], false);
+            GD.Print("Attempting to send Host Message from non-host");
         }
+        if (connectionType != ConnectionType.CLIENT && IsClientMessage(messageType))
+        {
+            GD.Print("Attempting to send client Message from non-client");
+        }
+        Rpc("ReceiveMessage",(int) messageType, MessageData);
     }
 
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    public void ReceiveMessage(int messageID, Godot.Collections.Dictionary MessageData)
+    {
+        int Sender = Multiplayer.GetRemoteSenderId();
+        EmitSignal ("MessageReceived", messageID, MessageData, Sender);
+    }
+
+
+
+    // Host Methods --------------------------------------------------------------------------------------------------------------------------
     public void StartLobby( string Address, int Port)
     {
         Peer = new ENetMultiplayerPeer();
@@ -151,15 +133,16 @@ public partial class NetworkManager : Node
         {
             throw new ArgumentException($"Failed to create server: {err}");    
         }
+        HostPort = Port;
+        HostIP = Address;
+
 
         Multiplayer.MultiplayerPeer = Peer;
         connectionType = ConnectionType.HOST;
         GD.Print($"Hosting on port {Port} at address {Address}");
 
-        RollBackData = new( Address, Port, Port + 1);
         PrintLobbyStatus();
     }
-
 
     public void JoinLobby(string _ip, int _port)
     {
@@ -170,17 +153,20 @@ public partial class NetworkManager : Node
             throw new ArgumentException ($"Failed to join server");
         }
 
+
         Multiplayer.MultiplayerPeer = Peer;
         connectionType = ConnectionType.CLIENT;
+
     }
 
+    // Universal Methods --------------------------------------------------------------------------------------------------------------------------
     public void PrintLobbyStatus()
     {
         if (connectionType != ConnectionType.HOST) return;
 
         var AllPeers = Multiplayer.GetPeers();
         GD.Print($"Lobby Size: {AllPeers.Length + 1}-----------------------------------------");
-        GD.Print($"HOST IP: {RollBackData.IpAddress}, Port: {RollBackData.RollbackPort}");
+        GD.Print($"HOST IP: {HostIP}, Port: {HostPort}");
 
         foreach (var PeerId in AllPeers)
         {
@@ -191,47 +177,7 @@ public partial class NetworkManager : Node
         }
         GD.Print("---------------------------------------------------------------------------");
     }
-
-    // Lobby info functions
-    // RPC PREFIX INDICATES WHAT MACHINE THE FUNCTION SHOULD BE RUN ON (not called on) 
-    // CTH = CLIENT_TO_HOST
-    // HTC = HOST_TO_CLIENT
-    public void RequestAddPlayer(){
-        RpcId ( MultiplayerPeer.TargetPeerServer, "OnAddPlayerRequest");
-    }
-
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer)] 
-    public void OnAddPlayerRequest()
-    {
-        int RemotePlayerPeerID = Multiplayer.GetRemoteSenderId();
-        EmitSignal("PlayerAddedRequest", RemotePlayerPeerID);
-    }   
-    
-    public void NotifyPlayerAdded(int PlayerNumber, int PlayerPeerID)
-    {
-        RpcId ( MultiplayerPeer.TargetPeerBroadcast, "OnNotifyPlayerAdded", PlayerNumber, PlayerPeerID);
-    }
-
-    [Rpc(MultiplayerApi.RpcMode.Authority)]
-    public void OnNotifyPlayerAdded(int PlayerNumber, int PeerId)
-    {
-        bool IsLocal = PeerId == Peer.GetUniqueId();
-        GD.Print(IsLocal);
-        EmitSignal("PlayerAddedNotification", PlayerNumber, PeerId, IsLocal);
-    }
-
-    public void NotifyEnterMatchStarted()
-    {
-        RpcId(MultiplayerPeer.TargetPeerBroadcast, "OnNotifyEnterMatch");
-    }
-    
-    [Rpc(MultiplayerApi.RpcMode.Authority)]
-    public void OnNotifyEnterMatch()
-    {
-        EmitSignal("EnterMatchNotification");
-    }
-
-    // Helper Functions
+  
     public string GetSafeIp()
     {
         String[] Ips = IP.GetLocalAddresses();
@@ -245,18 +191,133 @@ public partial class NetworkManager : Node
         }
         return "127.0.0.1";
     }
+
+    public int GetPeerId()
+    {
+        return Peer.GetUniqueId();
+    }
+    
 }
 
-
-public class UserNetworkData
+public class LobbyManager
 {
-    public string IpAddress;
-    public int RollbackPort;
-    public int LobbyPort;
-    public UserNetworkData(string _IpAddress, int _LobbyPort, int _RollbackPort = -1)
-    {   
-        IpAddress = _IpAddress;
-        RollbackPort = _RollbackPort;
-        LobbyPort = _LobbyPort;
+    public void Config()
+    {
+        NetworkManager.GlobalInstance.MessageReceived += (MessageType, MessageData, Sender) =>
+        {
+            switch (MessageType)
+            {
+                case NetworkManager.NetworkMessageType.SyncLobbyState:
+                    OnReceiveLobbySyncData((Godot.Collections.Array)MessageData["LobbyState"]);
+                    break;
+                case NetworkManager.NetworkMessageType.RequestAddPlayer:
+                    OnAddPlayerRequested(Sender);
+                    break;
+                case NetworkManager.NetworkMessageType.PlayerAdded:
+                    int PlayerNumber = (int)MessageData["PlayerNumber"];
+                    int PeerId = NetworkManager.GlobalInstance.GetPeerId();
+                    bool IsLocal = PeerId == (int)MessageData["PeerId"];
+                    OnPlayerAddedNotification(PlayerNumber, PeerId, IsLocal);
+                    break;
+            }
+        };
+
+        PlayerManager.GlobalInstance.PlayerAdded += (PlayerNumber) =>
+        {
+            if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
+            {
+                int NewPlayerPeerId = PlayerManager.GlobalInstance.AllPlayers[PlayerNumber].RemotePeerID;
+                NotifyPlayerAdded(PlayerNumber, NewPlayerPeerId);
+            }
+        };
+
+        NetworkManager.GlobalInstance.Multiplayer.PeerConnected += (Peer) =>
+        {
+            SendLobySyncData(Peer);
+        };
+    }
+    public void SendLobySyncData(long PeerId)
+    {
+        Godot.Collections.Array LobbyStateData = new Godot.Collections.Array(); 
+        for (int i = 0; i < PlayerManager.MaxPlayerCount; i++)
+        {
+            PlayerProfile playerProfile = PlayerManager.GlobalInstance.AllPlayers[i];
+            if (playerProfile == null)
+            {
+                LobbyStateData.Add(
+                    new Dictionary
+                    {
+                        {"IsNull", true},
+                    }
+                );
+                continue;
+            }
+            Dictionary PlayerDataDict = new Dictionary
+            {
+              {"PlayerNumber", i},
+              {"PeerId", playerProfile.RemotePeerID},
+              {"PlayerTag", playerProfile.playerTag}  
+            };
+            LobbyStateData.Add(PlayerDataDict);
+        }
+        Godot.Collections.Dictionary MessageData = new();
+        MessageData["LobbyState"] = LobbyStateData;
+
+
+        NetworkManager.GlobalInstance.SendMessageSpecificClient(NetworkManager.NetworkMessageType.SyncLobbyState, MessageData, (int)PeerId);
+    }
+
+    // Todo add signal listener for this method (listening for lobby sync message)
+    
+
+
+
+    // Message Calls
+    public void RequestAddPlayer()
+    {
+        NetworkManager.GlobalInstance.SendMessage(NetworkManager.NetworkMessageType.RequestAddPlayer, null);
+    }
+    
+    public void NotifyPlayerAdded(int PlayerNumber, int PeerId)
+    {
+        Godot.Collections.Dictionary MessageData = new Godot.Collections.Dictionary()
+        {
+          {"PlayerNumber", PlayerNumber}  ,
+          {"PeerId", PeerId}
+        };
+        NetworkManager.GlobalInstance.SendMessage(NetworkManager.NetworkMessageType.PlayerAdded, MessageData);
+
+    }
+
+    public void NotifyMatchStart()
+    {
+        NetworkManager.GlobalInstance.SendMessage(NetworkManager.NetworkMessageType.EnterMatch, null);
+    }
+
+    // Message Responses
+    public void OnPlayerAddedNotification(int PlayerNumber, int  PeerId, bool IsLocal)
+    {
+        PlayerManager.GlobalInstance.OverrideAddPlayer(PlayerNumber, PeerId, IsLocal);
+    }
+
+    public void OnAddPlayerRequested(int Sender){
+        PlayerManager.GlobalInstance.AttemptAddRemotePlayer(Sender);
+    }
+    public void OnReceiveLobbySyncData(Godot.Collections.Array PlayerData)
+    {
+        for (int i = 0; i < PlayerManager.MaxPlayerCount; i++)
+        {
+            GD.Print(PlayerData.Count);
+            Dictionary PlayerDataDict = (Dictionary)PlayerData[i];
+            Godot.Variant IsNull;
+            if (PlayerDataDict.TryGetValue("IsNull", out IsNull))
+            {
+                continue;
+            }
+            PlayerManager.GlobalInstance.OverrideAddPlayer(i, (int)PlayerDataDict["PeerId"], false);
+        }
     }
 }
+
+
+

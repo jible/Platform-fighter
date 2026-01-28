@@ -19,7 +19,7 @@ public class ClientMenuState: CharSelectMenuState
             {
                 GD.Print("REady pressed)");
                 PlayerManager.GlobalInstance.QueueController(inputEvent);
-                NetworkManager.GlobalInstance.RequestAddPlayer();
+                NetworkManager.GlobalInstance.lobbyManager.RequestAddPlayer();
             }
         }
 

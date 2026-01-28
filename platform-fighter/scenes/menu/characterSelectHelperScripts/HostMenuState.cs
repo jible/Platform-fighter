@@ -17,7 +17,7 @@ public class HostMenuState: CharSelectMenuState
                 PlayerManager.GlobalInstance.AttemptAddPlayer(inputEvent);
             }  else if (inputEvent.IsActionPressed("start"))
             {
-                NetworkManager.GlobalInstance.NotifyEnterMatchStarted();
+                NetworkManager.GlobalInstance.lobbyManager.NotifyMatchStart();
                 charSelectScene.GoToPlayScene();
             }
         }
@@ -25,6 +25,6 @@ public class HostMenuState: CharSelectMenuState
          public override void OnPlayerAdded(int PlayerNumber)
         {
             PlayerProfile NewPlayer = PlayerManager.GlobalInstance.AllPlayers[PlayerNumber];
-            NetworkManager.GlobalInstance.NotifyPlayerAdded(PlayerNumber, NewPlayer.RemotePeerID);
+            NetworkManager.GlobalInstance.lobbyManager.NotifyPlayerAdded(PlayerNumber, NewPlayer.RemotePeerID);
         }
     }

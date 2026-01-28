@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 public partial class RollbackManager : Node
 {
-    public RollbackManager GloablInstance;
+    public static RollbackManager GloablInstance;
     public static int MAX_ROLLBACK_FRAMES = 50;
 
 
@@ -40,7 +40,7 @@ public partial class RollbackManager : Node
         return new (Address, Port);
     }
 
-    private void StartHostRollback(int Port, String IpAddress)
+    public void StartHostRollback(int Port, String IpAddress)
     {
         udp = new PacketPeerUdp();
         var err = udp.Bind(Port, IpAddress);
@@ -65,7 +65,6 @@ public partial class RollbackManager : Node
             throw new ArgumentException("Failed to bind UDP  client socket");
         }
         udp.ConnectToHost(HostAddress, HostPort);
-        udp.SetDestAddress(HostAddress, HostPort);
     }
 
     public void SendEncodedPackets(PacketType packetType, byte[] EncodedPacket)
@@ -110,9 +109,6 @@ public partial class RollbackManager : Node
         }
     }
 
-
-
-
     public override void _Process(double delta)
     {
         if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.DISCONNECTED)
@@ -129,11 +125,15 @@ public partial class RollbackManager : Node
             HandlePacket(Packet, Address,Port);
             
         }
-
-
     }
+
+    
+    
 
 }
 
 
-
+// public class ClientRollbackData
+// {
+//     float latency
+// }

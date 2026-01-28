@@ -30,13 +30,6 @@ public partial class PlayerManager : Node
         {
             AllPlayers.Add(null);
         }
-        NetworkManager.GlobalInstance.PlayerAddedRequest += (RemotePlayerPeerID) => {
-            AttemptAddRemotePlayer(RemotePlayerPeerID);
-        };
-        NetworkManager.GlobalInstance.PlayerAddedNotification += (PlayerNumber, PeerId, IsLocal) =>
-        {
-            OverrideAddPlayer(PlayerNumber, PeerId, IsLocal);
-        };
     }
 
 
