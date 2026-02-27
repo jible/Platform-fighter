@@ -18,7 +18,6 @@ public class ClientMenuState: CharSelectMenuState
             // if (PlayerManager.GlobalInstance.pla) // Try to check if locally there are already too many acvite playter before requesting
             if (inputEvent.IsActionPressed("debug_ready") && PlayerNumber == -1 && !CheckIfQueued(inputEvent))
             {
-                GD.Print("REady pressed)");
                 PlayerManager.GlobalInstance.QueueController(inputEvent);
                 NetworkManager.GlobalInstance.SendMessage(NetworkManager.NetworkMessageType.RequestAddPlayer, null);
 

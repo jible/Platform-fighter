@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Formats.Asn1;
+using System.Linq;
 
 public partial class InputManager : Node
 {
@@ -119,7 +120,7 @@ public partial class InputManager : Node
         CurrentControllerStates[PlayerNumber].SetButton(Button, KeyEvent.IsPressed());
     }
 
-    public void SerializeCurrentControllerState(int Frame)
+    public void SerializeCurrentControllerState(int TickKey)
     {
         for (int PlayerNumber = 0; PlayerNumber < CurrentControllerStates.Length; PlayerNumber++)
         {
@@ -140,9 +141,33 @@ public partial class InputManager : Node
                 CurrentControllerStates[PlayerNumber].StickStates[1].SetFromVector(new Vector2(rx,ry));
             }
 
-            AllControllerStates[Frame][PlayerNumber] = CurrentControllerStates[PlayerNumber].GetCopy();
+            AllControllerStates[TickKey][PlayerNumber] = CurrentControllerStates[PlayerNumber].GetCopy();
         }
+
+        // Once the current controller states have been serialized, send them to the other players
+        // Update to only do this if you are online!
+        RollbackManager.GloablInstance.SendEncodedPackets(RollbackManager.PacketType.INPUT, EncodeInputs(TickKey));
         
+    }
+
+    public byte[] EncodeInputs( int TickKey )
+    {
+        int FrameAmount = 5;
+        int StartFrame = tickManager.GetStateKey(TickKey - FrameAmount);
+        int OutputLength = FrameAmount * ControllerState.EncodedSize * PlayerManager.MaxPlayerCount; 
+        int OutputWalker = 0;
+        byte[] output = new byte[OutputLength];
+
+        for (int i = 0; i < FrameAmount; i++)
+        {
+            for ( int j = 0; j < PlayerManager.MaxPlayerCount; j++)
+            {
+                byte[] controllerState = AllControllerStates[tickManager.GetStateKey(StartFrame + i)][j].GetEncoded();
+                controllerState.CopyTo(output, OutputWalker);
+                OutputWalker += ControllerState.EncodedSize;
+            }
+        }
+        return output;
     }
 
     public void ApplyKeyboardDirectionInputs(PlayerProfile playerProfile, int PlayerNumber)

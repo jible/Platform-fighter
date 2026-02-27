@@ -29,6 +29,13 @@ public class ControllerState
         COUNT,
     }
 
+    public enum StickTypes
+    {
+        LEFT,
+        RIGHT,
+        COUNT,
+    }
+
     public ButtonTypes[] ToBeSerialized = [
         ButtonTypes.SPECIAL,
         ButtonTypes.LIGHT,
@@ -37,7 +44,8 @@ public class ControllerState
     ];
     const int ButtonCount = (int)ButtonTypes.SERIALIZABLE_END;
     const int ButtonBytes = (ButtonCount + 7) / 8;
-    sbyte[] ButtonStates = new sbyte[ButtonBytes];
+    public const int EncodedSize = (int)(ButtonBytes + StickTypes.COUNT);
+    byte[] ButtonStates = new byte[ButtonBytes];
 
 
     public List<StickState> StickStates = [
@@ -45,10 +53,6 @@ public class ControllerState
         new StickState(),
     ];
 
-    // public ControllerState()
-    // {
-        
-    // }
 
     public void SetButton(ButtonTypes Button, bool Value)
     {
@@ -57,13 +61,13 @@ public class ControllerState
 
         if (Value)
         {
-            sbyte Mask = (sbyte)(1 << BitIndex);
+            byte Mask = (byte)(1 << BitIndex);
             ButtonStates[ByteIndex] |= Mask;
 
         }
         else
         {
-            sbyte Mask = (sbyte)((~0 ) ^ 1 << BitIndex);
+            byte Mask = (byte)((~0 ) ^ 1 << BitIndex);
             ButtonStates[ByteIndex] &= Mask;
         }
     }
@@ -73,11 +77,11 @@ public class ControllerState
         int ByteIndex = (int)Button / 8;
         int BitIndex =  (int)Button % 8;
 
-        sbyte NeededByte = ButtonStates[ByteIndex];
-        sbyte Mask = (sbyte)(1 << BitIndex);
+        byte NeededByte = ButtonStates[ByteIndex];
+        byte Mask = (byte)(1 << BitIndex);
         return (NeededByte & Mask) != 0;
     }
-
+    
     public ControllerState GetCopy()
     {
         var Copy = new ControllerState();
@@ -89,20 +93,18 @@ public class ControllerState
     }
 
 
-    public StreamPeerBuffer GetEncoded()
+    public byte[] GetEncoded()
     {
-        var Buffer = new StreamPeerBuffer();
-        foreach (var B in ButtonStates)
-        {
-            Buffer.Put8(B);
-        }
-
+        var Output = new byte[ButtonBytes + StickStates.Count];
+        ButtonStates.CopyTo(Output, 0);
+        int OutputWalker = ButtonBytes;
         foreach (var Stick in StickStates)
         {
-            Buffer.Put8((sbyte)Stick.GetEncoded());
+            Output[OutputWalker] = Stick.GetEncoded();
+            OutputWalker += 1;
         }
         
-        return Buffer;
+        return Output;
     }
 
 

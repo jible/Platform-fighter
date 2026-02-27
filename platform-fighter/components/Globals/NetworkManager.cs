@@ -88,7 +88,7 @@ public partial class NetworkManager : Node
     {
         base._Ready();
         lobbyManager = new();
-        lobbyManager.Config();
+        lobbyManager.ConfigLobby();
     }
 
 
@@ -201,7 +201,7 @@ public partial class NetworkManager : Node
 
 public class LobbyManager
 {
-    public void Config()
+    public void ConfigLobby()
     {
         NetworkManager.GlobalInstance.MessageReceived += (MessageType, MessageData, Sender) =>
         {
@@ -231,9 +231,9 @@ public class LobbyManager
             }
         };
 
-        NetworkManager.GlobalInstance.Multiplayer.PeerConnected += SendLobySyncData;
+        NetworkManager.GlobalInstance.Multiplayer.PeerConnected += SendLobbySyncData;
     }
-    public void SendLobySyncData(long PeerId)
+    public void SendLobbySyncData(long PeerId)
     {
         if (NetworkManager.GlobalInstance.connectionType != NetworkManager.ConnectionType.HOST) return;
         Godot.Collections.Array LobbyStateData = new Godot.Collections.Array(); 
