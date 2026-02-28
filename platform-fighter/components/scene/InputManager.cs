@@ -146,6 +146,7 @@ public partial class InputManager : Node
 
         // Once the current controller states have been serialized, send them to the other players
         // Update to only do this if you are online!
+        if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.DISCONNECTED) return;
         RollbackManager.GloablInstance.SendEncodedPackets(RollbackManager.PacketType.INPUT, EncodeInputs(TickKey));
         
     }
@@ -158,11 +159,20 @@ public partial class InputManager : Node
         int OutputWalker = 0;
         byte[] output = new byte[OutputLength];
 
-        for (int i = 0; i < FrameAmount; i++)
+        List<int> LocalPlayers = [];
+        for ( int j = 0; j < PlayerManager.MaxPlayerCount; j++)
         {
-            for ( int j = 0; j < PlayerManager.MaxPlayerCount; j++)
+            var CurrentPlayer = playerManager.AllPlayers[j];
+            if (CurrentPlayer == null
+            || CurrentPlayer.InputDeviceNumber == -1) continue;
+            LocalPlayers.Add(j);
+        }
+
+        for (int Frame = 0; Frame < FrameAmount; Frame++)
+        {
+            foreach (var PlayerNumber in LocalPlayers) 
             {
-                byte[] controllerState = AllControllerStates[tickManager.GetStateKey(StartFrame + i)][j].GetEncoded();
+                byte[] controllerState = AllControllerStates[tickManager.GetStateKey(StartFrame + Frame)][PlayerNumber].GetEncoded();
                 controllerState.CopyTo(output, OutputWalker);
                 OutputWalker += ControllerState.EncodedSize;
             }

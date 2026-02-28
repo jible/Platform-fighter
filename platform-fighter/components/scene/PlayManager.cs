@@ -16,6 +16,8 @@ public partial class PlayManager : Node3D
         dp_shape_renderer_3d.GlobalInstance.configure();
         characterHolder.Config();
         StageHolder.Config();
+
+        
     }
 
     public void Tick()

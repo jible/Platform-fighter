@@ -21,12 +21,14 @@ public partial class RollbackManager : Node
         INPUT,
     }
 
-    
+    int PacketNumber = 0;
     [Signal] // The packet type is an int since it doesn't like when you put non-godot types (like c# enums) in signals
     public delegate void UdpDataReceivedEventHandler(int packetType, byte[] Packet);    
 
     PacketPeerUdp udp;
     int RoundTripTicks = 0;
+    string HostAddress;
+    int HostPort = 7777;
     HashSet<Tuple<string, int>> ClientData= new();
     List<object> ClientLatency = [];
 
@@ -48,6 +50,8 @@ public partial class RollbackManager : Node
         {
             throw new ArgumentException($"Failed to bind UDP on port {Port}");
         }
+        HostPort = Port;
+        HostAddress = IpAddress;
     }
 
     public void NotifyHostOfConnection()
@@ -56,15 +60,17 @@ public partial class RollbackManager : Node
         udp.PutPacket(Packet);
     }
 
-    public void JoinRollback(string ClientAddress, int ClientPort, string HostAddress, int HostPort)
+    public void JoinRollback( string _HostAddress, int _HostPort)
     {
         udp = new PacketPeerUdp();
-        var err = udp.Bind(ClientPort, ClientAddress);
+        var err = udp.Bind(0, "0.0.0.0");
         if (err != Error.Ok)
         {
             throw new ArgumentException("Failed to bind UDP  client socket");
         }
-        udp.ConnectToHost(HostAddress, HostPort);
+        udp.ConnectToHost(_HostAddress, _HostPort);
+        HostPort = _HostPort;
+        HostAddress = _HostAddress;
     }
 
     public void SendEncodedPackets(PacketType packetType, byte[] EncodedPacket)
@@ -84,6 +90,7 @@ public partial class RollbackManager : Node
             }
         } else if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.CLIENT)
         {
+            udp.SetDestAddress(HostAddress, HostPort);
             udp.PutPacket(Buffer);   
         }
     }
