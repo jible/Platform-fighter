@@ -42,7 +42,7 @@ public class ClientMenuState: CharSelectMenuState
         {
             if (messageType == NetworkManager.NetworkMessageType.EnterMatch)
             {
-                RollbackManager.GloablInstance.JoinRollback();
+                // RollbackManager.GloablInstance.JoinRollback();
                 charSelectScene.GoToPlayScene();
             }
         }

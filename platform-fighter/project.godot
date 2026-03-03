@@ -22,7 +22,6 @@ DpShapeRenderer3d="*res://addons/deterministic_physics/physics_objects/dp_shape_
 DpPhysicsServer="*res://addons/deterministic_physics/physics_objects/dp_physics_server.cs"
 PlayerManager="*res://components/Globals/PlayerManager.cs"
 NetworkManager="*res://components/Globals/NetworkManager.cs"
-RollbackManager="*res://components/Globals/RollbackManager.cs"
 
 [display]
 

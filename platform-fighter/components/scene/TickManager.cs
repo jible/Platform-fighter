@@ -26,8 +26,8 @@ public partial class TickManager : Node
 
     public override void _Ready()
     {
-        States = new Dictionary<Node, Dictionary<string, object>>[ RollbackManager.MAX_ROLLBACK_FRAMES];
-        for ( int i = 0; i < RollbackManager.MAX_ROLLBACK_FRAMES; i++)
+        States = new Dictionary<Node, Dictionary<string, object>>[ NetworkManager.MAX_ROLLBACK_FRAMES];
+        for ( int i = 0; i < NetworkManager.MAX_ROLLBACK_FRAMES; i++)
         {
             States[i] = [];
         }
@@ -39,9 +39,9 @@ public partial class TickManager : Node
     {
         if (frame < 0)
         {
-            frame += RollbackManager.MAX_ROLLBACK_FRAMES;
+            frame += NetworkManager.MAX_ROLLBACK_FRAMES;
         }
-        return frame % RollbackManager.MAX_ROLLBACK_FRAMES;
+        return frame % NetworkManager.MAX_ROLLBACK_FRAMES;
 
     }
 
@@ -61,6 +61,11 @@ public partial class TickManager : Node
         {
             GD.Print("Physics engine and renderer not ready");
         }
+
+        /*
+        Before handling the current tick, check if you need to rollback
+        */
+
         // Serialize the current tick
         int CurrentStateKey = GetStateKey(CurrentTick);
 

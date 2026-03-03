@@ -3,6 +3,7 @@ using Godot.NativeInterop;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ControllerState
 {
@@ -107,7 +108,65 @@ public class ControllerState
         return Output;
     }
 
+    public static ControllerState FromEncoded(byte[] Encoded)
+    {
+        ControllerState output = new();
+        int EncodedSize = ButtonBytes + output.StickStates.Count;
+        if (Encoded.Count() != EncodedSize)
+        {
+            GD.PushError("Received Input Data of incorrect size");
+        }
 
+        int Walker = 0;
+        for (; Walker < ButtonBytes;  Walker ++)
+        {
+            output.ButtonStates[Walker] = Encoded [Walker];
+        }
+        for (int i = 0; i < output.StickStates.Count(); i++, Walker++)
+        {
+            var stick = new StickState();
+            stick.Decoded(Encoded[Walker]);
+            output.StickStates[i] = stick;
+        }
+
+        
+        return output;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+        ControllerState Other = (ControllerState)obj;
+        if (Other.ButtonStates !=ButtonStates)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < StickStates.Count(); i++)
+        {
+            if (StickStates[i] != Other.StickStates[i]) return false;
+        }
+        
+        return true;
+    }
+    
+    // override object.GetHashCode
+    public override int GetHashCode()
+    {
+        int output = 0;
+        foreach (var stick in StickStates)
+        {
+            output = HashCode.Combine(stick.GetHashCode(), output );
+        }
+        foreach (var item in ButtonStates)
+        {
+            output = HashCode.Combine(item.GetHashCode(), output );
+        }
+        return HashCode.Combine(ButtonStates.GetHashCode(), output );
+    }
 
 
 }

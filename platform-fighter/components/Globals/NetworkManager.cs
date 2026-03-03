@@ -40,23 +40,16 @@ public partial class NetworkManager : Node
 
     }
 
-    // Return true if host can use this method
-    public bool IsHostMessage(NetworkMessageType MessageType)
+    public enum FastNetworkMessageType
     {
-        return MessageType is
-            NetworkMessageType.PlayerAdded or 
-            NetworkMessageType.EnterMatch or 
-            NetworkMessageType.SyncLobbyState;
-    }
-    // Returns true if client can use this method
-    public bool IsClientMessage( NetworkMessageType messageType)
-    {
-        return messageType is NetworkMessageType.RequestAddPlayer;
-    }
+        Input,
 
-               
+    }
+    
+
     
     // Default Lobby Location/ Settings--------------------------------------------------------------------------------------------------------------------------
+    public static int MAX_ROLLBACK_FRAMES = 50;
 
     public static int DefaultTestingPort = 8000;
     public static string DefaultTargetIp = "127.0.0.1";
@@ -70,7 +63,9 @@ public partial class NetworkManager : Node
     string HostIP;
     // Signals --------------------------------------------------------------------------------------------------------------------------
     [Signal]
-    public delegate void MessageReceivedEventHandler(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData, int Sender);    
+    public delegate void MessageReceivedEventHandler(int messageType, Godot.Collections.Dictionary MessageData, int Sender);    
+    [Signal]
+    public delegate void FastMessageReceivedEventHandler(int messageType, byte[] MessageData, int Sender);    
     
     // Lobby State--------------------------------------------------------------------------------------------------------------------------
     public ConnectionType connectionType = ConnectionType.DISCONNECTED;
@@ -92,25 +87,50 @@ public partial class NetworkManager : Node
     }
 
 
+    public override void _Process(double delta)
+    {
+        GetAllPackets();
+    }
+
+    public void GetAllPackets()
+    {
+        if (connectionType ==ConnectionType.DISCONNECTED) return;
+
+        while (Multiplayer.MultiplayerPeer.GetAvailablePacketCount() > 0)
+        {
+            byte [] packet = Multiplayer.MultiplayerPeer.GetPacket();
+            int SenderPeerId = Multiplayer.MultiplayerPeer.GetPacketPeer();
+            HandlePacket(packet, SenderPeerId);
+        }
+    }
+
+
+    public void HandlePacket(byte[] Packet, int SenderPeerId)
+    {
+        if (Packet.Count() < 1) return;
+
+        NetworkMessageType messageType = (NetworkMessageType)Packet[0];
+        byte[] ClippedMessageData = Packet[1..];
+
+        EmitSignal("FastMessageReceived", (int)messageType, ClippedMessageData, SenderPeerId);
+    }
+    
+    public void SendFastMessage(FastNetworkMessageType messageType, byte[] MessageData, int TargetID)
+    {
+        Multiplayer.MultiplayerPeer.SetTargetPeer(TargetID);
+        byte[] Prepended = new byte[MessageData.Count() + 1];
+        Prepended[0] = (byte)messageType;
+        MessageData.CopyTo(Prepended,1);
+        Multiplayer.MultiplayerPeer.PutPacket(Prepended);
+    }
+
     public void SendMessageSpecificClient(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData, int ClientId)
     {
-        if (connectionType != ConnectionType.HOST)
-        {
-            GD.Print("This is a host only method");
-        }
         RpcId(ClientId, "ReceiveMessage",(int) messageType, MessageData);
     }
     
     public void SendMessage(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData)
     {
-        if (connectionType != ConnectionType.HOST && IsHostMessage(messageType))
-        {
-            GD.Print("Attempting to send Host Message from non-host");
-        }
-        if (connectionType != ConnectionType.CLIENT && IsClientMessage(messageType))
-        {
-            GD.Print("Attempting to send client Message from non-client");
-        }
         Rpc("ReceiveMessage",(int) messageType, MessageData);
     }
 
@@ -120,8 +140,6 @@ public partial class NetworkManager : Node
         int Sender = Multiplayer.GetRemoteSenderId();
         EmitSignal ("MessageReceived", messageID, MessageData, Sender);
     }
-
-
 
     // Host Methods --------------------------------------------------------------------------------------------------------------------------
     public void StartLobby( string Address, int Port)
@@ -177,20 +195,6 @@ public partial class NetworkManager : Node
         }
         GD.Print("---------------------------------------------------------------------------");
     }
-  
-    public string GetSafeIp()
-    {
-        String[] Ips = IP.GetLocalAddresses();
-
-        foreach (var address in Ips)
-        {
-            if (address.StartsWith("192.") || address.StartsWith("10."))
-            {
-                return address;
-            }
-        }
-        return "127.0.0.1";
-    }
 
     public int GetPeerId()
     {
@@ -205,7 +209,7 @@ public class LobbyManager
     {
         NetworkManager.GlobalInstance.MessageReceived += (MessageType, MessageData, Sender) =>
         {
-            switch (MessageType)
+            switch ((NetworkManager.NetworkMessageType)MessageType)
             {
                 case NetworkManager.NetworkMessageType.SyncLobbyState:
                     OnReceiveLobbySyncData((Godot.Collections.Array)MessageData["LobbyState"]);
