@@ -4,10 +4,12 @@ using System.Xml.Linq;
 
 public interface ISerializable
 {
-    ISaveHandler saveHandler {get; set;}
+    // Literally just return a save handler that is correctly typed with a reference
+    // To itself. Then the tick manager can store the save handler
+    public ISaveHandler MakeSaveHandler();
 }
 
-
+// Note This Type has to be named "SerializedState" 
 public interface ISerializedState<T>
 where T : ISerializable
 {
@@ -16,6 +18,7 @@ where T : ISerializable
 
     // Given An object, this state applies itself to the object's properties
     public void Load(T e);
+
 }
 
 public interface ISaveHandler
@@ -30,10 +33,10 @@ where TState : ISerializedState<TObject>, new()
 {
     TObject Owner;
     TState[] States;
-    public SaveHandler(int Ticks, TObject owner)
+    public SaveHandler(TObject owner)
     {
-        States = new TState[Ticks];
-        for(int Tick = 0; Tick < Ticks; Tick++)
+        States = new TState[NetworkManager.MAX_ROLLBACK_FRAMES];
+        for(int Tick = 0; Tick < NetworkManager.MAX_ROLLBACK_FRAMES; Tick++)
         {
             States[Tick] = new TState();
         }

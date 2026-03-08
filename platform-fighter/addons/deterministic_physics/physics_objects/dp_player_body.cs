@@ -17,14 +17,10 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 	[Export] float EditorMaxVelocity = new();
 	DM64 MaxVelocity = new();
 
-	private ISaveHandler _saveHandler;
-    public ISaveHandler saveHandler { get { return _saveHandler;} set {_saveHandler = value;} }
-
-    public override void _Ready()
+    public ISaveHandler MakeSaveHandler()
     {
-    	_saveHandler = new SaveHandler<dp_player_body, SerializedState>(NetworkManager.MAX_ROLLBACK_FRAMES, this);
+        return new SaveHandler<dp_player_body, SerializedState> (this);
     }
-
 
     public void Tick()
 	{

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.NativeInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,8 @@ public partial class TickManager : Node
         return CurrentTick;
     }
 
-    ISerializable[] RollbackObjects;
+    ISerializable[] RollbackObjects = [];
+    Dictionary<ISerializable, ISaveHandler> SaveHandlers = [];
 
     [Export] PlayManager playManager;
     [Export] InputManager inputManager;
@@ -27,6 +29,15 @@ public partial class TickManager : Node
     public override void _Ready()
     {
         RollbackObjects = CollectSerializableNodes(playManager).ToArray();
+        foreach (var rollbackObject in RollbackObjects)
+        {
+            // Look overr this!! Untested and familiar syntax!!
+            Type objectType = rollbackObject.GetType();
+            Type stateType = objectType.GetNestedType("SerializedState");
+            Type HandlerType = typeof(SaveHandler<,>).MakeGenericType(objectType,stateType);
+            ISaveHandler handler = (ISaveHandler)Activator.CreateInstance(HandlerType, rollbackObject);
+            SaveHandlers[rollbackObject] = handler;
+        }
         // Populate current tick
         return;
     }
@@ -88,15 +99,13 @@ public partial class TickManager : Node
         }
     }
 
-
     public void SerializeCurrentTick(int CurrentTickKey)
     {
         foreach( ISerializable serializable in RollbackObjects)
         {
-            serializable.saveHandler.Save(CurrentTickKey);
+            SaveHandlers[serializable].Save(CurrentTickKey);
         }
     }
-
 
     public void CallProcesses()
     {
@@ -105,11 +114,11 @@ public partial class TickManager : Node
         PropogateTick(playManager);
     }
 
-    public void LoadTick(int Tick)
+    public void LoadTick(int TickKey)
     {
         foreach( ISerializable serializable in RollbackObjects)
         {
-            serializable.saveHandler.Save(Tick);
+            SaveHandlers[serializable].Load(TickKey);
         }
     }
 
@@ -129,21 +138,40 @@ public partial class TickManager : Node
     // Method that gets a list of all nodes that are serializable.
     public List<ISerializable> CollectSerializableNodes(Node Root)
     {
-        List<ISerializable> Output = new();
-        PropogateSerialziableCollecting(Root, Output);
-        return Output;
+        var Collector = new ObjectTypeCollector<ISerializable>();
+        return Collector.CollectTargetNodes(Root);
     }
-    // Helper method for getting all serializable nodes
-    public void PropogateSerialziableCollecting(Node Parent, List<ISerializable> Output)
+
+    // Method that gets a list of all nodes that are serializable.
+    public List<ITickable> CollectTickableNodes(Node Root)
     {
-        if (Parent == null) return;
-        if (Parent is ISerializable serializable)
-        {
-            Output.Add(serializable);
-        }
-        foreach (var child in Parent.GetChildren())
-        {
-            PropogateSerialziableCollecting(child, Output);
-        }
+        var Collector = new ObjectTypeCollector<ITickable>();
+        return Collector.CollectTargetNodes(Root);
     }
 }
+
+
+   
+// Helper Class for getting objects of a given type
+public class ObjectTypeCollector<TargetType>
+    {
+        public List<TargetType> CollectTargetNodes(Node Root)
+        {
+            List<TargetType> Output = new();
+            PropogateCollecting(Root, Output);
+            return Output;
+        }
+        // Helper method for getting all serializable nodes
+        private void PropogateCollecting(Node Parent, List<TargetType> Output)
+        {
+            if (Parent == null) return;
+            if (Parent is TargetType serializable)
+            {
+                Output.Add(serializable);
+            }
+            foreach (var child in Parent.GetChildren())
+            {
+                PropogateCollecting(child, Output);
+            }
+        }
+    }
