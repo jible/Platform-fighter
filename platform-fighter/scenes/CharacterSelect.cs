@@ -29,7 +29,7 @@ public partial class CharacterSelect : Control
         PlayerManager.GlobalInstance.PlayerAdded += OnPlayerAdded;
         PlayerManager.GlobalInstance.PlayerRemoved += OnPlayerRemoved;
         NetworkManager.GlobalInstance.MessageReceived += (messageType,messageData,Sender) => {
-            ConnectionTypeToState[NetworkManager.GlobalInstance.connectionType].OnNetworkMessageReceived(messageType, messageData);
+            ConnectionTypeToState[NetworkManager.GlobalInstance.connectionType].OnNetworkMessageReceived((NetworkManager.NetworkMessageType)messageType, messageData);
         };
 
     }

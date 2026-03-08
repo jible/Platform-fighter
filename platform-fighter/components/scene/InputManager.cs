@@ -12,7 +12,7 @@ public partial class InputManager : Node
     // This needs a better name: Its how many frames of inputs you send over the network each time you send a packet
     const int FramesOfInputsToSend = 5;
 
-    int? RollbackTargetFrame = null;
+    public int? RollbackTargetFrame = null;
     public ControllerState[][] AllControllerStates;
     public ControllerState[] CurrentControllerStates;
     public Queue<byte[]> RemoteInputQueue = new();
@@ -255,9 +255,8 @@ public partial class InputManager : Node
         // As of now, just send the message on the host. in the future it may be better to change this to wait
         // Until client packets have been received, but honestly its probably fine just sending them since 
         // the controller array stores whatever it thinks is right at this moment.
-        NetworkManager.GlobalInstance.SendFastMessage(NetworkManager.FastNetworkMessageType.Input, EncodeInputs(TickKey), 1);
-
-        
+        int TargetId = (int)((NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST) ? MultiplayerPeer.TargetPeerBroadcast : MultiplayerPeer.TargetPeerServer);
+        NetworkManager.GlobalInstance.SendFastMessage(NetworkManager.FastNetworkMessageType.Input, EncodeInputs(TickKey), TargetId);
     }
 
     public byte[] EncodeInputs( int TickKey )

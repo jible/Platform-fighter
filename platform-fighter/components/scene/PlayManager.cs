@@ -22,9 +22,11 @@ public partial class PlayManager : Node3D
 
     public void Tick()
     {
-        characterHolder.Tick();
         dp_physics_server.GlobalInstance.PhysicsTick();
-        dp_shape_renderer_3d.GlobalInstance.update_shape_render();
+        if (!tickManager.IsRollingBack )
+        {
+            dp_shape_renderer_3d.GlobalInstance.update_shape_render();
+        } 
         return;
     }
 }

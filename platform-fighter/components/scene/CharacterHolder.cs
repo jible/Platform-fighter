@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class CharacterHolder : Node, ITickable
+public partial class CharacterHolder : Node
 {
     public PlayerManager playerManager;
     [Export] public PlayManager playManager; 
@@ -12,12 +12,6 @@ public partial class CharacterHolder : Node, ITickable
         playerManager = PlayerManager.GlobalInstance;
         InstancePlayers();
     }
-
-    public void Tick()
-    {
-        
-    }
-
 
     public void InstancePlayers()
     {
@@ -37,14 +31,5 @@ public partial class CharacterHolder : Node, ITickable
         }
     }
 
-    // public Dictionary<string, object> SerializeState()
-    // {
-    //     throw new NotImplementedException();
-    // }
-
-    // public void LoadState(Dictionary<string, object> State)
-    // {
-    //     throw new NotImplementedException();
-    // }
 
 }

@@ -10,14 +10,14 @@ public partial class TickManager : Node
     This manager is in charge of progressing the game tick by tick. 
     It notifies the play manager when a tick has passed and 
     */
-
+    public bool IsRollingBack = false;
     int CurrentTick = 0;
     public int GetCurrentTick()
     {
         return CurrentTick;
     }
 
-    Dictionary<Node, Dictionary<String, object>>[] States;
+    ISerializable[] RollbackObjects;
 
     [Export] PlayManager playManager;
     [Export] InputManager inputManager;
@@ -26,11 +26,7 @@ public partial class TickManager : Node
 
     public override void _Ready()
     {
-        States = new Dictionary<Node, Dictionary<string, object>>[ NetworkManager.MAX_ROLLBACK_FRAMES];
-        for ( int i = 0; i < NetworkManager.MAX_ROLLBACK_FRAMES; i++)
-        {
-            States[i] = [];
-        }
+        RollbackObjects = CollectSerializableNodes(playManager).ToArray();
         // Populate current tick
         return;
     }
@@ -42,7 +38,6 @@ public partial class TickManager : Node
             frame += NetworkManager.MAX_ROLLBACK_FRAMES;
         }
         return frame % NetworkManager.MAX_ROLLBACK_FRAMES;
-
     }
 
     public override void _PhysicsProcess(double delta)
@@ -53,7 +48,6 @@ public partial class TickManager : Node
 
     public void Tick()
     {
-
         if (dp_physics_server.GlobalInstance == null || dp_shape_renderer_3d.GlobalInstance == null)
         {return;}
 
@@ -61,55 +55,62 @@ public partial class TickManager : Node
         {
             GD.Print("Physics engine and renderer not ready");
         }
-
-        /*
-        Before handling the current tick, check if you need to rollback
-        */
-
         // Serialize the current tick
         int CurrentStateKey = GetStateKey(CurrentTick);
-
+        inputManager.SerializeCurrentControllerState(CurrentStateKey);
         SerializeCurrentTick(CurrentStateKey);
+
+        // Before handling the current tick, check if you need to rollback
+        if (inputManager.RollbackTargetFrame != null)
+        {
+            int LatestTick = CurrentTick;
+            IsRollingBack = true;
+            Resimulate((int)inputManager.RollbackTargetFrame, CurrentTick - 1);
+            CurrentTick = LatestTick;
+            IsRollingBack = false;
+        }      
+
         // Dispatch Inputs + Call processes
-        CallProcesses(CurrentStateKey);
+        CallProcesses();
         CurrentTick += 1;
+    }
+
+    public void Resimulate(int StartTick, int EndTick)
+    {
+        // Load the world state back to the starting tick
+        LoadTick(StartTick);
+
+        for ( ; CurrentTick <= EndTick; CurrentTick ++)
+        {
+            int CurrentStateKey = GetStateKey(CurrentTick);
+            if (CurrentTick != StartTick)  SerializeCurrentTick(CurrentStateKey);
+            
+        }
     }
 
 
     public void SerializeCurrentTick(int CurrentTickKey)
     {
-        inputManager.SerializeCurrentControllerState(CurrentTickKey);
-
-        Dictionary<Node,Dictionary<String, object>> CurrentTickStates = [];
-        PropogateSerialize(playManager, CurrentTickStates);
-        States[CurrentTickKey] = CurrentTickStates;
+        foreach( ISerializable serializable in RollbackObjects)
+        {
+            serializable.saveHandler.Save(CurrentTickKey);
+        }
     }
 
-    public void CallProcesses(int CurrentTickKey)
+
+    public void CallProcesses()
     {
-        inputManager.SerializeCurrentControllerState(CurrentTickKey );
+        // Call Seperate cause the play manager isn't marked tickable
         playManager.Tick();
         PropogateTick(playManager);
     }
 
-    public void SimulateMultipleTicks(int StartTick, int EndTick)
-    {
-        if (EndTick < StartTick)
-        {
-            throw new ArgumentException("Cannot simulate ticks in negative order");
-        }
-
-        LoadTick(StartTick);
-
-        for (int i = StartTick ; i < EndTick; i++)
-        {
-            Tick();
-        }
-    }
-
     public void LoadTick(int Tick)
     {
-        PropogateLoadState(playManager, States[Tick]);
+        foreach( ISerializable serializable in RollbackObjects)
+        {
+            serializable.saveHandler.Save(Tick);
+        }
     }
 
     // Propogates methods to objects with the tick interface
@@ -125,27 +126,24 @@ public partial class TickManager : Node
             PropogateTick(child);
         }
     }
-
-    public static void PropogateSerialize(Node node, Dictionary<Node,Dictionary<String, object>> SerializationData)
+    // Method that gets a list of all nodes that are serializable.
+    public List<ISerializable> CollectSerializableNodes(Node Root)
     {
-        if (node == null) return;
-        if (node is ISerializable serializable)
-        {SerializationData[node] = serializable.SerializeState();}
-
-        foreach (var child in node.GetChildren())
-        {PropogateSerialize(child, SerializationData);}
+        List<ISerializable> Output = new();
+        PropogateSerialziableCollecting(Root, Output);
+        return Output;
     }
-
-    public static void PropogateLoadState(Node node, Dictionary<Node,Dictionary<String, object>> SerializationData)
+    // Helper method for getting all serializable nodes
+    public void PropogateSerialziableCollecting(Node Parent, List<ISerializable> Output)
     {
-        if (node == null) return;
-        if (node is ISerializable serializable)
+        if (Parent == null) return;
+        if (Parent is ISerializable serializable)
         {
-            serializable.LoadState(SerializationData[node]);
+            Output.Add(serializable);
         }
-        foreach (var child in node.GetChildren())
+        foreach (var child in Parent.GetChildren())
         {
-            PropogateLoadState(child, SerializationData);
+            PropogateSerialziableCollecting(child, Output);
         }
     }
 }
