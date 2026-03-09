@@ -2,8 +2,10 @@ using Godot;
 using Godot.NativeInterop;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 public partial class TickManager : Node
 {
@@ -26,7 +28,9 @@ public partial class TickManager : Node
     [Export] CharacterHolder characterHolder;
     bool ContinuePlay = true;
 
-    public override void _Ready()
+
+    // This must be called once all objects have been instanced
+    public void PrepForRollback()
     {
         RollbackObjects = CollectSerializableNodes(playManager).ToArray();
         foreach (var rollbackObject in RollbackObjects)
@@ -34,6 +38,14 @@ public partial class TickManager : Node
             // Look overr this!! Untested and familiar syntax!!
             Type objectType = rollbackObject.GetType();
             Type stateType = objectType.GetNestedType("SerializedState");
+            if (objectType == null)
+            {
+                GD.Print("This shouldn't happen but testing!");                
+            }
+            if (stateType == null)
+            {
+                GD.Print(objectType, " Does not have 'SerializedState' subclass for saving");
+            }
             Type HandlerType = typeof(SaveHandler<,>).MakeGenericType(objectType,stateType);
             ISaveHandler handler = (ISaveHandler)Activator.CreateInstance(HandlerType, rollbackObject);
             SaveHandlers[rollbackObject] = handler;
@@ -66,10 +78,10 @@ public partial class TickManager : Node
         {
             GD.Print("Physics engine and renderer not ready");
         }
+        
         // Serialize the current tick
         int CurrentStateKey = GetStateKey(CurrentTick);
         inputManager.SerializeCurrentControllerState(CurrentStateKey);
-        SerializeCurrentTick(CurrentStateKey);
 
         // Before handling the current tick, check if you need to rollback
         if (inputManager.RollbackTargetFrame != null)
@@ -79,7 +91,9 @@ public partial class TickManager : Node
             Resimulate((int)inputManager.RollbackTargetFrame, CurrentTick - 1);
             CurrentTick = LatestTick;
             IsRollingBack = false;
-        }      
+        }
+
+        SerializeCurrentTick(CurrentStateKey);
 
         // Dispatch Inputs + Call processes
         CallProcesses();
@@ -88,14 +102,20 @@ public partial class TickManager : Node
 
     public void Resimulate(int StartTick, int EndTick)
     {
+        if (StartTick > EndTick)
+        {
+            GD.PushError("Cannot resimulate ticks in negative order");
+        }
+        
         // Load the world state back to the starting tick
-        LoadTick(StartTick);
+        int startStateKey = GetStateKey(StartTick);
+        LoadTick(startStateKey);
 
         for ( ; CurrentTick <= EndTick; CurrentTick ++)
         {
             int CurrentStateKey = GetStateKey(CurrentTick);
             if (CurrentTick != StartTick)  SerializeCurrentTick(CurrentStateKey);
-            
+            GD.Print("in da loop");
         }
     }
 
@@ -135,6 +155,7 @@ public partial class TickManager : Node
             PropogateTick(child);
         }
     }
+
     // Method that gets a list of all nodes that are serializable.
     public List<ISerializable> CollectSerializableNodes(Node Root)
     {

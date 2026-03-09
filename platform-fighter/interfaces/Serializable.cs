@@ -9,7 +9,7 @@ public interface ISerializable
     public ISaveHandler MakeSaveHandler();
 }
 
-// Note This Type has to be named "SerializedState" 
+// Note: This Type has to be named "SerializedState" and be public!
 public interface ISerializedState<T>
 where T : ISerializable
 {

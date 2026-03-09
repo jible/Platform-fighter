@@ -12,6 +12,7 @@ public partial class InputManager : Node
     // This needs a better name: Its how many frames of inputs you send over the network each time you send a packet
     const int FramesOfInputsToSend = 5;
 
+    // Stores an int of the earliest frame you should rollback to if you need to rollback
     public int? RollbackTargetFrame = null;
     public ControllerState[][] AllControllerStates;
     public ControllerState[] CurrentControllerStates;

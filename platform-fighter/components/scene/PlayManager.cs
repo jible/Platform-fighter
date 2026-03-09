@@ -16,12 +16,15 @@ public partial class PlayManager : Node3D
         dp_shape_renderer_3d.GlobalInstance.configure();
         characterHolder.Config();
         StageHolder.Config();
-
+        tickManager.PrepForRollback();
         
     }
 
     public void Tick()
     {
+        if (Input.IsActionJustPressed("debug_action")){
+            inputManager.RollbackTargetFrame = tickManager.GetCurrentTick() -5;
+        }
         dp_physics_server.GlobalInstance.PhysicsTick();
         if (!tickManager.IsRollingBack )
         {

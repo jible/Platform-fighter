@@ -30,19 +30,21 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 		Position = Position + Velocity;
 	}
 
-    private class SerializedState : ISerializedState<dp_player_body>
+    public class SerializedState : ISerializedState<dp_player_body>
 	{
 		public DM_Vector2 Velocity;
 		public DM_Vector2 Position;
 
-        public void Load(dp_player_body e)
+        public void Load(dp_player_body Owner)
         {
-            throw new NotImplementedException();
+            Owner.Velocity = Velocity;
+			Owner.Position = Position;
         }
 
-        public void Save(dp_player_body e)
+        public void Save(dp_player_body Owner)
         {
-            throw new NotImplementedException();
+            Position = Owner.Position;
+			Velocity = Owner.Velocity;
         }
     }
 
