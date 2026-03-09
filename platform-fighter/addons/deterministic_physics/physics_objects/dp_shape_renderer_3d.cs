@@ -64,14 +64,6 @@ public partial class dp_shape_renderer_3d : Node3D
 		}
 	}
 
-	public override void _PhysicsProcess(double delta)
-	{
-		
-		if (Engine.IsEditorHint() && RenderShapesInEditor)
-		{
-			update_shape_render();
-		}
-	}
 	public void update_shape_render()
 	{
 		

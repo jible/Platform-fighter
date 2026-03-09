@@ -35,7 +35,6 @@ public partial class TickManager : Node
         RollbackObjects = CollectSerializableNodes(playManager).ToArray();
         foreach (var rollbackObject in RollbackObjects)
         {
-            // Look overr this!! Untested and familiar syntax!!
             Type objectType = rollbackObject.GetType();
             Type stateType = objectType.GetNestedType("SerializedState");
             if (objectType == null)
@@ -91,12 +90,15 @@ public partial class TickManager : Node
             Resimulate((int)inputManager.RollbackTargetFrame, CurrentTick - 1);
             CurrentTick = LatestTick;
             IsRollingBack = false;
+            inputManager.RollbackTargetFrame = null;
         }
-
-        SerializeCurrentTick(CurrentStateKey);
-
+        
         // Dispatch Inputs + Call processes
+        
+        SerializeCurrentTick(CurrentStateKey);
         CallProcesses();
+
+        
         CurrentTick += 1;
     }
 
@@ -111,10 +113,13 @@ public partial class TickManager : Node
         int startStateKey = GetStateKey(StartTick);
         LoadTick(startStateKey);
 
+        CurrentTick = StartTick;
+
         for ( ; CurrentTick <= EndTick; CurrentTick ++)
         {
             int CurrentStateKey = GetStateKey(CurrentTick);
-            if (CurrentTick != StartTick)  SerializeCurrentTick(CurrentStateKey);
+            SerializeCurrentTick(CurrentStateKey);
+            CallProcesses();
             GD.Print("in da loop");
         }
     }
