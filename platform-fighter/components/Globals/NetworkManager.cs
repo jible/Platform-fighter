@@ -54,9 +54,8 @@ public partial class NetworkManager : Node
     public static int DefaultTestingPort = 8000;
     public static string DefaultTargetIp = "127.0.0.1";
     int MAX_CLIENTS = 2;
-    public static int FastMessageChannel = 4;
-    public static int NormalMessageChannel = 0;
-    public static int MESSAGE_CHANNEL_COUNT = 5;
+
+    public static int MESSAGE_CHANNEL_COUNT = 1;
     // Runtime Lobby Data --------------------------------------------------------------------------------------------------------------------------
     public LobbyManager lobbyManager;
 
@@ -88,74 +87,25 @@ public partial class NetworkManager : Node
         
     }
 
-
-    public override void _Process(double delta)
-    {
-        GetAllPackets();
-    }
-
-    public void GetAllPackets()
-    {
-        if (connectionType ==ConnectionType.DISCONNECTED) return;
-
-        while (Multiplayer.MultiplayerPeer.GetAvailablePacketCount() > 0)
-        {
-            GD.Print("There are packets");
-            byte [] packet = Multiplayer.MultiplayerPeer.GetPacket();
-            int channel = Multiplayer.MultiplayerPeer.GetPacketChannel();
-            if (channel != FastMessageChannel)
-            {
-                return;
-            }
-            int SenderPeerId = Multiplayer.MultiplayerPeer.GetPacketPeer();
-            HandlePacket(SenderPeerId, packet);
-        }
-    }
-
-
-    public void HandlePacket(long SenderPeerId, byte[] Packet)
-    {
-        if (Packet.Count() < 1) return;
-        int channel = Multiplayer.MultiplayerPeer.GetPacketChannel();
-        if (channel != FastMessageChannel)return;
-        
-        NetworkMessageType messageType = (NetworkMessageType)Packet[0];
-        byte[] ClippedMessageData = Packet[1..];
-        GD.Print("I got it!");
-        EmitSignal("FastMessageReceived", (int)messageType, ClippedMessageData, SenderPeerId);
-    }
-    
     public void SendFastMessage(FastNetworkMessageType messageType, byte[] MessageData, int TargetID)
     {
-        Multiplayer.MultiplayerPeer.SetTargetPeer(TargetID);
-        Multiplayer.MultiplayerPeer.TransferChannel = FastMessageChannel;
-        if (MessageData == null) 
-        {
-            MessageData = [];
-        }
-        byte[] Prepended = new byte[MessageData.Count() + 1];
-        Prepended[0] = (byte)messageType;
-        MessageData.CopyTo(Prepended,1);
-        var err = Multiplayer.MultiplayerPeer.PutPacket(Prepended);
-        if (err != Error.Ok)
-        {
-            GD.PrintErr($"Packet send failed: {err}");
-        }
-        Multiplayer.MultiplayerPeer.SetTargetPeer(0);
-        
-
+        Peer.SetTargetPeer(TargetID);
+        Peer.TransferMode = MultiplayerPeer.TransferModeEnum.Unreliable;
+        Rpc("ReceiveFastMessage",(int) messageType, MessageData);
     }
 
     public void SendMessageSpecificClient(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData, int ClientId)
     {
-        Multiplayer.MultiplayerPeer.TransferChannel = NormalMessageChannel;
-
+        Peer.SetTargetPeer(ClientId);
+        Peer.TransferMode = MultiplayerPeer.TransferModeEnum.Reliable;
         RpcId(ClientId, "ReceiveMessage",(int) messageType, MessageData);
     }
     
     public void SendMessage(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData)
     {
-        Multiplayer.MultiplayerPeer.TransferChannel = NormalMessageChannel;
+        // Peer.SetTargetPeer();
+        Peer.TransferMode = MultiplayerPeer.TransferModeEnum.Reliable;
+    
         Rpc("ReceiveMessage",(int) messageType, MessageData);
     }
 
@@ -167,6 +117,15 @@ public partial class NetworkManager : Node
     {
         int Sender = Multiplayer.GetRemoteSenderId();
         EmitSignal ("MessageReceived", messageID, MessageData, Sender);
+    }
+    [Rpc(
+    MultiplayerApi.RpcMode.AnyPeer,
+    CallLocal = false
+    )]
+    public void ReceiveFastMessage(int messageID, byte[] MessageData)
+    {
+        int Sender = Multiplayer.GetRemoteSenderId();
+        EmitSignal ("FastMessageReceived", messageID, MessageData, Sender);
     }
 
     // Host Methods --------------------------------------------------------------------------------------------------------------------------

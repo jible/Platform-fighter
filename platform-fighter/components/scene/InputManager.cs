@@ -144,10 +144,10 @@ public partial class InputManager : Node
         int PlayersSentCount = RemotePlayersSent.Count();
 
         // Check if there are fewer bytes than expected
-        if (MaxBytes != PlayersSentCount * ControllerState.EncodedSize * FramesOfInputsToSend)
-        {
-            GD.PushError("Received Input Data that does not fit format");
-        }
+        // if (MaxBytes != PlayersSentCount * ControllerState.EncodedSize * FramesOfInputsToSend)
+        // {
+        //     GD.PushError("Received Input Data that does not fit format");
+        // }
         int? EarliestDiffFrame = null;
         int frame = StartFrame;
         for (int Itterator = 0; Itterator < FramesOfInputsToSend; frame ++, Itterator ++)
