@@ -150,7 +150,7 @@ public partial class InputManager : Node
         }
         int? EarliestDiffFrame = null;
         int frame = StartFrame;
-        for (int Itterator = 0; Itterator < FramesOfInputsToSend; frame ++)
+        for (int Itterator = 0; Itterator < FramesOfInputsToSend; frame ++, Itterator ++)
         {
             int FrameIndex = tickManager.GetStateKey(frame);
             for (int j = 0; j < PlayersSentCount; j++)

@@ -54,7 +54,9 @@ public partial class NetworkManager : Node
     public static int DefaultTestingPort = 8000;
     public static string DefaultTargetIp = "127.0.0.1";
     int MAX_CLIENTS = 2;
-
+    public static int FastMessageChannel = 4;
+    public static int NormalMessageChannel = 0;
+    public static int MESSAGE_CHANNEL_COUNT = 5;
     // Runtime Lobby Data --------------------------------------------------------------------------------------------------------------------------
     public LobbyManager lobbyManager;
 
@@ -76,7 +78,6 @@ public partial class NetworkManager : Node
     {
         base._EnterTree();
         GlobalInstance = this;
-
     }
 
     public override void _Ready()
@@ -84,6 +85,7 @@ public partial class NetworkManager : Node
         base._Ready();
         lobbyManager = new();
         lobbyManager.ConfigLobby();
+        
     }
 
 
@@ -98,43 +100,69 @@ public partial class NetworkManager : Node
 
         while (Multiplayer.MultiplayerPeer.GetAvailablePacketCount() > 0)
         {
+            GD.Print("There are packets");
             byte [] packet = Multiplayer.MultiplayerPeer.GetPacket();
+            int channel = Multiplayer.MultiplayerPeer.GetPacketChannel();
+            if (channel != FastMessageChannel)
+            {
+                return;
+            }
             int SenderPeerId = Multiplayer.MultiplayerPeer.GetPacketPeer();
-            HandlePacket(packet, SenderPeerId);
+            HandlePacket(SenderPeerId, packet);
         }
     }
 
 
-    public void HandlePacket(byte[] Packet, int SenderPeerId)
+    public void HandlePacket(long SenderPeerId, byte[] Packet)
     {
         if (Packet.Count() < 1) return;
-
+        int channel = Multiplayer.MultiplayerPeer.GetPacketChannel();
+        if (channel != FastMessageChannel)return;
+        
         NetworkMessageType messageType = (NetworkMessageType)Packet[0];
         byte[] ClippedMessageData = Packet[1..];
-
+        GD.Print("I got it!");
         EmitSignal("FastMessageReceived", (int)messageType, ClippedMessageData, SenderPeerId);
     }
     
     public void SendFastMessage(FastNetworkMessageType messageType, byte[] MessageData, int TargetID)
     {
         Multiplayer.MultiplayerPeer.SetTargetPeer(TargetID);
+        Multiplayer.MultiplayerPeer.TransferChannel = FastMessageChannel;
+        if (MessageData == null) 
+        {
+            MessageData = [];
+        }
         byte[] Prepended = new byte[MessageData.Count() + 1];
         Prepended[0] = (byte)messageType;
         MessageData.CopyTo(Prepended,1);
-        Multiplayer.MultiplayerPeer.PutPacket(Prepended);
+        var err = Multiplayer.MultiplayerPeer.PutPacket(Prepended);
+        if (err != Error.Ok)
+        {
+            GD.PrintErr($"Packet send failed: {err}");
+        }
+        Multiplayer.MultiplayerPeer.SetTargetPeer(0);
+        
+
     }
 
     public void SendMessageSpecificClient(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData, int ClientId)
     {
+        Multiplayer.MultiplayerPeer.TransferChannel = NormalMessageChannel;
+
         RpcId(ClientId, "ReceiveMessage",(int) messageType, MessageData);
     }
     
     public void SendMessage(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData)
     {
+        Multiplayer.MultiplayerPeer.TransferChannel = NormalMessageChannel;
         Rpc("ReceiveMessage",(int) messageType, MessageData);
     }
 
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    [Rpc(
+    MultiplayerApi.RpcMode.AnyPeer,
+    CallLocal = false
+    )]
     public void ReceiveMessage(int messageID, Godot.Collections.Dictionary MessageData)
     {
         int Sender = Multiplayer.GetRemoteSenderId();
@@ -146,7 +174,7 @@ public partial class NetworkManager : Node
     {
         Peer = new ENetMultiplayerPeer();
 
-        var err = Peer.CreateServer(Port, MAX_CLIENTS);
+        var err = Peer.CreateServer(Port, MAX_CLIENTS, MESSAGE_CHANNEL_COUNT);
         if (err != Error.Ok)
         {
             throw new ArgumentException($"Failed to create server: {err}");    
@@ -165,7 +193,7 @@ public partial class NetworkManager : Node
     public void JoinLobby(string _ip, int _port)
     {
         Peer = new ENetMultiplayerPeer();
-        var err = Peer.CreateClient(_ip, _port);
+        var err = Peer.CreateClient(_ip, _port, MESSAGE_CHANNEL_COUNT);
         if (err != Error.Ok)
         {
             throw new ArgumentException ($"Failed to join server");
@@ -173,9 +201,10 @@ public partial class NetworkManager : Node
 
 
         Multiplayer.MultiplayerPeer = Peer;
-        connectionType = ConnectionType.CLIENT;
 
+        connectionType = ConnectionType.CLIENT;
     }
+
 
     // Universal Methods --------------------------------------------------------------------------------------------------------------------------
     public void PrintLobbyStatus()
@@ -300,3 +329,102 @@ public class LobbyManager
 
 
 
+/*
+Message I sent to the discord but may need to send to the forum!
+
+Hello folks! I'm trying to use Godot enet packet peer for a multiplayer game and I'm encountering an issue.
+I have a connection between 2 instances of the game on my computer and they can communicate and successfully make remote procedure calls (rpc's). I use this to configure "lobbies". During the match, I don't need remote function calls, I would like the smallest packets possible by sending the bytes directly. i am successfully sending packets via the function "Multiplayer.MultiplayerPeer.PutPacket". However, when the other instance receives the packet, it perceives it as a an rpc call and gives an error saying that the target node couldn't be found.
+
+This is the method that works (sending data via remote function calls). 
+```
+    public void SendMessage(NetworkMessageType messageType, Godot.Collections.Dictionary MessageData)
+    {
+        Multiplayer.MultiplayerPeer.TransferChannel = NormalMessageChannel;
+        Rpc("ReceiveMessage",(int) messageType, MessageData);
+    }
+
+    [Rpc(
+    MultiplayerApi.RpcMode.AnyPeer,
+    CallLocal = false
+    )]
+    public void ReceiveMessage(int messageID, Godot.Collections.Dictionary MessageData)
+    {
+        int Sender = Multiplayer.GetRemoteSenderId();
+        EmitSignal ("MessageReceived", messageID, MessageData, Sender);
+    }
+```
+
+Then i try to send raw bytes via this method 
+
+```
+ public void SendFastMessage(FastNetworkMessageType messageType, byte[] MessageData, int TargetID)
+    {
+        Multiplayer.MultiplayerPeer.SetTargetPeer(TargetID);
+        Multiplayer.MultiplayerPeer.TransferChannel = FastMessageChannel;
+        if (MessageData == null) 
+        {
+            MessageData = [];
+        }
+        byte[] Prepended = new byte[MessageData.Count() + 1];
+        Prepended[0] = (byte)messageType;
+        MessageData.CopyTo(Prepended,1);
+        var err = Multiplayer.MultiplayerPeer.PutPacket(Prepended);
+        if (err != Error.Ok)
+        {
+            GD.PrintErr($"Packet send failed: {err}");
+        }
+        Multiplayer.MultiplayerPeer.SetTargetPeer(0);
+        
+
+    }
+```
+
+and receive with these methods, which I call everye frame:
+```
+public void GetAllPackets()
+    {
+        if (connectionType ==ConnectionType.DISCONNECTED) return;
+
+        while (Multiplayer.MultiplayerPeer.GetAvailablePacketCount() > 0)
+        {
+            byte [] packet = Multiplayer.MultiplayerPeer.GetPacket();
+            int channel = Multiplayer.MultiplayerPeer.GetPacketChannel();
+            if (channel != FastMessageChannel)
+            {
+                return;
+            }
+            int SenderPeerId = Multiplayer.MultiplayerPeer.GetPacketPeer();
+            HandlePacket(packet, SenderPeerId);
+            
+        }
+    }
+
+
+    public void HandlePacket(byte[] Packet, int SenderPeerId)
+    {
+        if (Packet.Count() < 1) return;
+
+        NetworkMessageType messageType = (NetworkMessageType)Packet[0];
+        byte[] ClippedMessageData = Packet[1..];
+
+        EmitSignal("FastMessageReceived", (int)messageType, ClippedMessageData, SenderPeerId);
+    }
+```
+
+When I send the packets, the instance receiving the packets gives these 2 errors:
+```
+E 0:00:16:716   get_cached_object: ID 45 not found in cache of peer 1.
+  <C++ Error>   Parameter "recv_node" is null.
+  <C++ Source>  modules/multiplayer/scene_cache_interface.cpp:280 @ get_cached_object()
+
+```
+and 
+```
+E 0:00:16:681   process_rpc: Invalid packet received. Requested node was not found.
+  <C++ Error>   Parameter "node" is null.
+  <C++ Source>  modules/multiplayer/scene_rpc_interface.cpp:208 @ process_rpc()
+```
+I poked at the documentation and a forum post or 2 and couldn't find anything!
+I've tried using different "channels" for these calls but that didn't seem to help. Anyone have any ideas?
+
+*/

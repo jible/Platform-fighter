@@ -46,6 +46,7 @@ public partial class CharacterSelect : Control
     public override void _Input(InputEvent @event )
     {
         ConnectionTypeToState[NetworkManager.GlobalInstance.connectionType].HandleInput(@event);
+
     }
 
     public void GoToPlayScene()
