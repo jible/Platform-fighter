@@ -80,7 +80,7 @@ public partial class TickManager : Node
         
         // Serialize the current tick
         int CurrentStateKey = GetStateKey(CurrentTick);
-        inputManager.SerializeCurrentControllerState(CurrentStateKey);
+        inputManager.SerializeCurrentControllerState(CurrentTick);
 
         // Before handling the current tick, check if you need to rollback
         if (inputManager.RollbackTargetFrame != null)

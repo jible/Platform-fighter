@@ -11,6 +11,7 @@ public partial class InputManager : Node
     public float DriftThreshold = .1f;
     // This needs a better name: Its how many frames of inputs you send over the network each time you send a packet
     const int FramesOfInputsToSend = 5;
+    int EncodedInputPacketLength = FramesOfInputsToSend * ControllerState.EncodedSize * PlayerManager.MaxPlayerCount + 4; // The 4 is the uint 32 that stores the starting frame 
 
     // Stores an int of the earliest frame you should rollback to if you need to rollback
     public int? RollbackTargetFrame = null;
@@ -81,101 +82,6 @@ public partial class InputManager : Node
 
     }
 
-    public void ApplyPeerInput(byte[] InputData, int Sender)
-    {
-        // This method is parsing the last "FramesOfInputs" inputs from another machine and 
-        // it will apply those inputs to whatever whatever players aren't on this machine
-
-
-        // Input Data Structure:
-
-        /*
-        
-        4 bytes [Starting Frame]
-
-        Repeat "FramesOfInputsManayTimes{
-            Repeat for each player on the machine that sent the message{
-                [3 Bytes of controller data]
-
-            }            
-
-        }
-        */
-
-        // Decode the starting frame. It is the first 4 bytes of the message, making a uint32
-        int StartFrame = (int)BitConverter.ToUInt32(InputData[..4]);
-        int EndFrame = StartFrame + FramesOfInputsToSend;
-        byte[] InputDataWithNoPrefix = InputData[4..];
-
-        // find what controllers you are listening for by itterating through 
-        // all players and seeing which ones correspond to the given Sender ID 
-        // keep a list of those player numbers
-        List<int> RemotePlayersSent = [];
-        if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
-        {
-            foreach (var player in PlayerManager.GlobalInstance.AllPlayers)
-            {
-                if (player == null) continue;
-                if (player.RemotePeerID == Sender)
-                {
-                    RemotePlayersSent.Add(player.PlayerNumber);
-                }
-            }
-        }
-
-        if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.CLIENT)
-        {
-            foreach (var player in PlayerManager.GlobalInstance.AllPlayers)
-            {
-                if (player == null) continue;
-                // If the player is not local to this system, add it as a controller sent from the host
-                // Check this by seeing if it does not have an input device number (input device number is -1)
-                if (player.InputDeviceNumber == -1)
-                {
-                    RemotePlayersSent.Add(player.PlayerNumber);
-                }
-            }
-        }
-
-        
-
-        // itterate through each of the bytes and make them into seperate controllers for seperate frames
-        int MaxBytes = InputDataWithNoPrefix.Count();
-        int PlayersSentCount = RemotePlayersSent.Count();
-
-        // Check if there are fewer bytes than expected
-        // if (MaxBytes != PlayersSentCount * ControllerState.EncodedSize * FramesOfInputsToSend)
-        // {
-        //     GD.PushError("Received Input Data that does not fit format");
-        // }
-        int? EarliestDiffFrame = null;
-        int frame = StartFrame;
-        for (int Itterator = 0; Itterator < FramesOfInputsToSend; frame ++, Itterator ++)
-        {
-            int FrameIndex = tickManager.GetStateKey(frame);
-            for (int j = 0; j < PlayersSentCount; j++)
-            {
-                int playerNumber = RemotePlayersSent[j];
-                byte[] e = InputDataWithNoPrefix[Itterator.. (Itterator+ControllerState.EncodedSize)];
-                // Need some means to determine if you actually overwrite or not!
-                ControllerState DecodedState = ControllerState.FromEncoded(e);
-                if (AllControllerStates[frame][playerNumber] != DecodedState)
-                {
-                    if  (EarliestDiffFrame == null || frame < EarliestDiffFrame)
-                    {
-                        EarliestDiffFrame = frame;
-                    }
-                    AllControllerStates[FrameIndex][playerNumber] = DecodedState;
-
-                }
-            }
-        }
-
-        // Now the controller history has been modified and the earliest frame has been recorded.
-        // Once all changed from other systems have been applied, 
-        RollbackTargetFrame = null;
-
-    }
     public ControllerState[] GetInputsForTick(int Tick)
     {
         ControllerState[] Inputs = AllControllerStates[Tick];
@@ -227,8 +133,20 @@ public partial class InputManager : Node
         CurrentControllerStates[PlayerNumber].SetButton(Button, KeyEvent.IsPressed());
     }
 
-    public void SerializeCurrentControllerState(int TickKey)
+    public void HandleStickInputs(PlayerProfile playerProfile, int PlayerNumber)
     {
+        float lX = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftX);
+        float ly = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftY);
+        CurrentControllerStates[PlayerNumber].StickStates[0].SetFromVector(new Vector2(lX,ly));
+
+        float rx = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftX);
+        float ry = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftY);
+        CurrentControllerStates[PlayerNumber].StickStates[1].SetFromVector(new Vector2(rx,ry));
+    }
+
+    public void SerializeCurrentControllerState(int Tick)
+    {
+        int TickKey = tickManager.GetStateKey(Tick);
         for (int PlayerNumber = 0; PlayerNumber < CurrentControllerStates.Length; PlayerNumber++)
         {
             PlayerProfile playerProfile = playerManager.AllPlayers[PlayerNumber];
@@ -239,13 +157,7 @@ public partial class InputManager : Node
                 ApplyKeyboardDirectionInputs(playerProfile, PlayerNumber);
             } else if (playerProfile.ControllerType == PlayerProfile.ControllerTypes.CONTROLLER)
             {
-                float lX = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftX);
-                float ly = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftY);
-                CurrentControllerStates[PlayerNumber].StickStates[0].SetFromVector(new Vector2(lX,ly));
-
-                float rx = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftX);
-                float ry = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftY);
-                CurrentControllerStates[PlayerNumber].StickStates[1].SetFromVector(new Vector2(rx,ry));
+                HandleStickInputs(playerProfile, PlayerNumber);
             }
 
             AllControllerStates[TickKey][PlayerNumber] = CurrentControllerStates[PlayerNumber].GetCopy();
@@ -257,40 +169,141 @@ public partial class InputManager : Node
         // Until client packets have been received, but honestly its probably fine just sending them since 
         // the controller array stores whatever it thinks is right at this moment.
         int TargetId = (int)((NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST) ? MultiplayerPeer.TargetPeerBroadcast : MultiplayerPeer.TargetPeerServer);
-        NetworkManager.GlobalInstance.SendFastMessage(NetworkManager.FastNetworkMessageType.Input, EncodeInputs(TickKey), TargetId);
+        NetworkManager.GlobalInstance.SendFastMessage(NetworkManager.FastNetworkMessageType.Input, EncodeInputs(Tick), TargetId);
     }
 
-    public byte[] EncodeInputs( int TickKey )
+    public byte[] EncodeInputs( int Tick )
     {
-        int StartFrame = tickManager.GetStateKey(TickKey - FramesOfInputsToSend);
-        int OutputLength = FramesOfInputsToSend * ControllerState.EncodedSize * PlayerManager.MaxPlayerCount + 4; // The 4 is the uint 32 that stores the starting frame 
+        int StartFrame = Tick - FramesOfInputsToSend;
         int OutputWalker = 0;
-        byte[] output = new byte[OutputLength];
+        byte[] Output = new byte[EncodedInputPacketLength];
 
-        List<int> LocalPlayers = [];
+        List<int> PlayersToEncode = [];
         for ( int j = 0; j < PlayerManager.MaxPlayerCount; j++)
         {
-            var CurrentPlayer = playerManager.AllPlayers[j];
-            if (CurrentPlayer == null
-            || CurrentPlayer.InputDeviceNumber == -1) continue;
-            LocalPlayers.Add(j);
+            PlayerProfile CurrentPlayer = playerManager.AllPlayers[j];
+            if (CurrentPlayer == null) continue;
+
+            // The host should encode all players
+            if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
+            {
+                PlayersToEncode.Add(j);
+                continue;
+            }
+
+            // The client should only encode local players (players with a registered controller on this system )
+            if ( CurrentPlayer.InputDeviceNumber == -1) continue;
+            PlayersToEncode.Add(j);
         }
 
-        byte[] StartFrameBytes = BitConverter.GetBytes((UInt32) StartFrame);
-        StartFrameBytes.CopyTo(output, 0);
+        // Bytes representing the Starting frame number
+        byte[] StartingFrameBytes = BitConverter.GetBytes((UInt32) StartFrame);
+        StartingFrameBytes.CopyTo(Output, 0);
         OutputWalker += 4;
 
-        for (int Frame = 0; Frame < FramesOfInputsToSend; Frame++)
+        for (int Frame = StartFrame; Frame < Tick; Frame++)
         {
-            foreach (var PlayerNumber in LocalPlayers) 
+            foreach (var PlayerNumber in PlayersToEncode) 
             {
-                byte[] controllerState = AllControllerStates[tickManager.GetStateKey(StartFrame + Frame)][PlayerNumber].GetEncoded();
-                controllerState.CopyTo(output, OutputWalker);
+                byte[] controllerState = AllControllerStates[tickManager.GetStateKey(Frame)][PlayerNumber].GetEncoded();
+                controllerState.CopyTo(Output, OutputWalker);
                 OutputWalker += ControllerState.EncodedSize;
             }
         }
-        return output;
+        return Output;
     }
+
+    public void ApplyPeerInput(byte[] InputData, int Sender)
+    {
+        // This method is parsing the last "FramesOfInputs" inputs from another machine and 
+        // it will apply those inputs to whatever players aren't on this machine
+
+
+        // Input Data Structure:
+
+        /*
+        
+        4 bytes [Starting Frame]
+
+        Repeat "FramesOfInputsManayTimes{
+            Repeat for each player on the machine that sent the message{
+                [3 Bytes of controller data]
+
+            }            
+
+        }
+        */
+
+        // Decode the starting frame. It is the first 4 bytes of the message, making a uint32
+        int StartFrame = (int)BitConverter.ToUInt32(InputData[..4]);
+        byte[] InputDataWithNoPrefix = InputData[4..];
+
+        // find what controllers you are listening for by itterating through 
+        // all players and seeing which ones correspond to the given Sender ID 
+        // keep a list of those player numbers
+        List<int> RemotePlayersSent = [];
+        if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
+        {
+            foreach (var player in PlayerManager.GlobalInstance.AllPlayers)
+            {
+                if (player == null) continue;
+                if (player.RemotePeerID == Sender)
+                {
+                    RemotePlayersSent.Add(player.PlayerNumber);
+                }
+            }
+        }
+
+        if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.CLIENT)
+        {
+            foreach (var player in PlayerManager.GlobalInstance.AllPlayers)
+            {
+                if (player == null) continue;
+                // The host broadcasts all active players, so just add all players.
+                RemotePlayersSent.Add(player.PlayerNumber);
+            }
+        }
+
+        // itterate through each of the bytes and make them into seperate controllers for seperate frames
+        int MaxBytes = InputDataWithNoPrefix.Count();
+        int PlayersSentCount = RemotePlayersSent.Count();
+
+        // Check if there are fewer bytes than expected
+        // if (MaxBytes != PlayersSentCount * ControllerState.EncodedSize * FramesOfInputsToSend)
+        // {
+        //     GD.PushError("Received Input Data that does not fit format");
+        // }
+        int? EarliestDiffFrame = null;
+        int frame = StartFrame;
+
+        for (int ByteIndex = 0; ByteIndex < InputDataWithNoPrefix.Count(); frame += 1)
+        {
+            int FrameIndex = tickManager.GetStateKey(frame);
+            foreach (int PlayerNumber in RemotePlayersSent)
+            {
+                byte[] e = InputDataWithNoPrefix[ByteIndex .. (ByteIndex+ControllerState.EncodedSize)];
+                ByteIndex += ControllerState.EncodedSize;
+                // Check if there is a diff
+                ControllerState DecodedState = ControllerState.FromEncoded(e);
+                if (AllControllerStates[frame][PlayerNumber] != DecodedState)
+                {
+                    // If there is, record it to rememeber to rollback
+                    if  (EarliestDiffFrame == null || frame < EarliestDiffFrame)
+                    {
+                        EarliestDiffFrame = frame;
+                    }
+                    AllControllerStates[FrameIndex][PlayerNumber] = DecodedState;
+
+                }
+            }
+        }
+
+        // Now the controller history has been modified and the earliest frame has been recorded.
+        // Once all changed from other systems have been applied, 
+        RollbackTargetFrame = null;
+
+    }
+
 
     public void ApplyKeyboardDirectionInputs(PlayerProfile playerProfile, int PlayerNumber)
     {
