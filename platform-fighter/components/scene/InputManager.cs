@@ -121,7 +121,6 @@ public partial class InputManager : Node
         // This is a cheeky solution to check if the value changed on the x or y axis
         StickState.Axis StickAxis = ((int)Axis % 2 == 0) ? StickState.Axis.X : StickState.Axis.Y;
         Stick.SetAxis(StickAxis, Magnitude);
-        GD.Print(Stick.ToRangedVector().ToStandardVector());
     }
 
     public void HandleKeyboardInput(InputEventKey KeyEvent, PlayerTag playerTag, int PlayerNumber)
@@ -291,12 +290,6 @@ public partial class InputManager : Node
 
                 if (! AllControllerStates[FrameIndex][PlayerNumber].Equals( DecodedState))
                 {
-                    if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
-                    {
-                        GD.Print("diff");
-                        GD.Print("Local:  " + BitConverter.ToString(AllControllerStates[FrameIndex][PlayerNumber].GetEncoded()));
-                        GD.Print("Remote: " + BitConverter.ToString(ControllerStateBytes));
-                    }
                     
                     // If there is, record it to rememeber to rollback
                     if  (RollbackTargetFrame == null || frame < RollbackTargetFrame)

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
-public struct StickState
+public class StickState
 {
     /* 
     Super Proud of this!

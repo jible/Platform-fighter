@@ -83,10 +83,11 @@ public partial class TickManager : Node
         inputManager.SerializeCurrentControllerState(CurrentTick);
 
         // Before handling the current tick, check if you need to rollback
-        if (inputManager.RollbackTargetFrame != null)
+        if (inputManager.RollbackTargetFrame != null && (int)inputManager.RollbackTargetFrame < CurrentTick)
         {
             int LatestTick = CurrentTick;
             IsRollingBack = true;
+
             Resimulate((int)inputManager.RollbackTargetFrame, CurrentTick - 1);
             CurrentTick = LatestTick;
             IsRollingBack = false;
@@ -120,7 +121,6 @@ public partial class TickManager : Node
             int CurrentStateKey = GetStateKey(CurrentTick);
             SerializeCurrentTick(CurrentStateKey);
             CallProcesses();
-            GD.Print("in da loop");
         }
     }
 
