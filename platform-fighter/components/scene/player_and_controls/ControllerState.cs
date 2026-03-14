@@ -122,7 +122,7 @@ public class ControllerState
         {
             output.ButtonStates[Walker] = Encoded [Walker];
         }
-        for (int i = 0; i < output.StickStates.Count(); i++, Walker++)
+        for (int i = 0; i < output.StickStates.Count; i++, Walker++)
         {
             var stick = new StickState();
             stick.Decoded(Encoded[Walker]);
@@ -135,17 +135,11 @@ public class ControllerState
 
     public override bool Equals(object obj)
     {
-        if (obj == null || GetType() != obj.GetType())
-        {
-            return false;
-        }
-        ControllerState Other = (ControllerState)obj;
-        if (Other.ButtonStates !=ButtonStates)
-        {
-            return false;
-        }
+        if (obj is not ControllerState Other)return false;
 
-        for (int i = 0; i < StickStates.Count(); i++)
+        if (!ButtonStates.SequenceEqual(Other.ButtonStates))return false;
+
+        for (int i = 0; i < StickStates.Count; i++)
         {
             if (StickStates[i] != Other.StickStates[i]) return false;
         }

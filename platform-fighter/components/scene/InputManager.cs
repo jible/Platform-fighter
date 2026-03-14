@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Linq;
@@ -11,7 +12,7 @@ public partial class InputManager : Node
     public float DriftThreshold = .1f;
     // This needs a better name: Its how many frames of inputs you send over the network each time you send a packet
     const int FramesOfInputsToSend = 5;
-    int EncodedInputPacketLength = FramesOfInputsToSend * ControllerState.EncodedSize * PlayerManager.MaxPlayerCount + 4; // The 4 is the uint 32 that stores the starting frame 
+    public const int PacketBytesPerPlayer = FramesOfInputsToSend * ControllerState.EncodedSize; 
 
     // Stores an int of the earliest frame you should rollback to if you need to rollback
     public int? RollbackTargetFrame = null;
@@ -176,7 +177,6 @@ public partial class InputManager : Node
     {
         int StartFrame = Tick - FramesOfInputsToSend;
         int OutputWalker = 0;
-        byte[] Output = new byte[EncodedInputPacketLength];
 
         List<int> PlayersToEncode = [];
         for ( int j = 0; j < PlayerManager.MaxPlayerCount; j++)
@@ -196,11 +196,15 @@ public partial class InputManager : Node
             PlayersToEncode.Add(j);
         }
 
-        // Bytes representing the Starting frame number
-        byte[] StartingFrameBytes = BitConverter.GetBytes((UInt32) StartFrame);
-        StartingFrameBytes.CopyTo(Output, 0);
-        OutputWalker += 4;
+        int PacketSize = PlayersToEncode.Count * PacketBytesPerPlayer;
 
+        byte[] Output = new byte[PacketSize + 4];
+
+
+        // Bytes representing the Starting frame number
+
+        BinaryPrimitives.WriteUInt32LittleEndian(Output, (UInt32) StartFrame);
+        OutputWalker += 4;
         for (int Frame = StartFrame; Frame < Tick; Frame++)
         {
             foreach (var PlayerNumber in PlayersToEncode) 
@@ -235,8 +239,7 @@ public partial class InputManager : Node
         */
 
         // Decode the starting frame. It is the first 4 bytes of the message, making a uint32
-        int StartFrame = (int)BitConverter.ToUInt32(InputData[..4]);
-        byte[] InputDataWithNoPrefix = InputData[4..];
+        int StartFrame = (int)BinaryPrimitives.ReadUInt32LittleEndian(InputData[..4]);
 
         // find what controllers you are listening for by itterating through 
         // all players and seeing which ones correspond to the given Sender ID 
@@ -264,44 +267,47 @@ public partial class InputManager : Node
             }
         }
 
-        // itterate through each of the bytes and make them into seperate controllers for seperate frames
-        int MaxBytes = InputDataWithNoPrefix.Count();
-        int PlayersSentCount = RemotePlayersSent.Count();
 
+        int MaxBytes = RemotePlayersSent.Count * PacketBytesPerPlayer; 
         // Check if there are fewer bytes than expected
-        // if (MaxBytes != PlayersSentCount * ControllerState.EncodedSize * FramesOfInputsToSend)
-        // {
-        //     GD.PushError("Received Input Data that does not fit format");
-        // }
-        int? EarliestDiffFrame = null;
-        int frame = StartFrame;
+        if (MaxBytes != RemotePlayersSent.Count * ControllerState.EncodedSize * FramesOfInputsToSend)
+        {
+            GD.PushError("Received Input Data that does not fit format");
+        }
 
-        for (int ByteIndex = 0; ByteIndex < InputDataWithNoPrefix.Count(); frame += 1)
+        int EndFrame = StartFrame + FramesOfInputsToSend - 1;
+        int ByteIndex = 4; // This skips the first 4 bits since those were used to parse the frame number.
+        for (int frame = StartFrame; frame <= EndFrame ; frame += 1)
         {
             int FrameIndex = tickManager.GetStateKey(frame);
             foreach (int PlayerNumber in RemotePlayersSent)
             {
-                byte[] e = InputDataWithNoPrefix[ByteIndex .. (ByteIndex+ControllerState.EncodedSize)];
+                byte[] ControllerStateBytes = InputData[ByteIndex .. (ByteIndex+ControllerState.EncodedSize)]; // assuming the end is not inclusive
                 ByteIndex += ControllerState.EncodedSize;
+
                 // Check if there is a diff
-                ControllerState DecodedState = ControllerState.FromEncoded(e);
-                if (AllControllerStates[frame][PlayerNumber] != DecodedState)
+                ControllerState DecodedState = ControllerState.FromEncoded(ControllerStateBytes);
+
+
+                if (! AllControllerStates[FrameIndex][PlayerNumber].Equals( DecodedState))
                 {
-                    // If there is, record it to rememeber to rollback
-                    if  (EarliestDiffFrame == null || frame < EarliestDiffFrame)
+                    if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
                     {
-                        EarliestDiffFrame = frame;
+                        GD.Print("diff");
+                        GD.Print("Local:  " + BitConverter.ToString(AllControllerStates[FrameIndex][PlayerNumber].GetEncoded()));
+                        GD.Print("Remote: " + BitConverter.ToString(ControllerStateBytes));
+                    }
+                    
+                    // If there is, record it to rememeber to rollback
+                    if  (RollbackTargetFrame == null || frame < RollbackTargetFrame)
+                    {
+                        RollbackTargetFrame = frame;
                     }
                     AllControllerStates[FrameIndex][PlayerNumber] = DecodedState;
 
                 }
             }
         }
-
-        // Now the controller history has been modified and the earliest frame has been recorded.
-        // Once all changed from other systems have been applied, 
-        RollbackTargetFrame = null;
-
     }
 
 

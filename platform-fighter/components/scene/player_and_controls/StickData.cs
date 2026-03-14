@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
-public class StickState
+public struct StickState
 {
     /* 
     Super Proud of this!
@@ -22,13 +22,17 @@ public class StickState
 
     public static int MAX_STICK_AXIS_VALUE = 7;
     const int Buckets= 7;
-    byte XMask = 0x70; 
+    byte XMagnitudeMask = 0x70; 
     byte XSignMask = 0x80;
-    byte YMask = 0x07;
+    byte YMagnitudeMask = 0x07;
     byte YSignMask = 0x08;
     // How Data is stored:
     // [X-Sign, 2nd bit, 1st bit, 0th bit, Y-Sign, 2nd bit, 1st bit, 0th bit]
     byte Data = 0;
+
+    public StickState()
+    {
+    }
 
     public void SetFromVector(Godot.Vector2 V)
     {
@@ -46,21 +50,22 @@ public class StickState
 
     public void SetAxis(Axis axis, float Value)
     {
+        Value = Math.Clamp(Value, -1f , 1f);
         if (axis == Axis.X)
         {
-            Data = (byte)((Data & YMask) |((byte)Math.Round(Value* Buckets) << 4));
+            Data = (byte)(  (Data & YMagnitudeMask) | (Data & YSignMask) | ((byte)Math.Round(Value * Buckets) << 4));
         } else
         {
-            Data = (byte)((Data & XMask) |((byte)Math.Round(Value* Buckets)));
+            Data = (byte)( (Data & XMagnitudeMask) | (Data & XSignMask) |((byte)Math.Round(Value* Buckets)));
         }
     }
 
     public DM_Vector2 ToVector()
     {
          
-        int UX = (Data & XMask) >> 4;
+        int UX = (Data & XMagnitudeMask) >> 4;
         int XSign = (Data & XSignMask) == 0 ? 1 : -1;
-        int UY = Data & YMask;
+        int UY = Data & YMagnitudeMask;
         int YSign = (Data & YSignMask) == 0 ? 1 : -1;
         DM64 X = new DM64(UX) * XSign;
         DM64 Y = new DM64(UY) * YSign;
@@ -114,6 +119,16 @@ public class StickState
     public override int GetHashCode()
     {
         // TODO: write your implementation of GetHashCode() here
-        return Data.GetHashCode();
+        return Data;
+    }
+
+    public static bool operator ==(StickState left, StickState right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(StickState left, StickState right)
+    {
+        return !(left == right);
     }
 }
