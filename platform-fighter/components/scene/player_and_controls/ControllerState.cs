@@ -3,9 +3,10 @@ using Godot.NativeInterop;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
-public class ControllerState
+public struct ControllerState
 {
     
     // Represents what bit a given input corresponds to
@@ -46,64 +47,53 @@ public class ControllerState
     const int ButtonCount = (int)ButtonTypes.SERIALIZABLE_END;
     const int ButtonBytes = (ButtonCount + 7) / 8;
     public const int EncodedSize = (int)(ButtonBytes + StickTypes.COUNT);
-    byte[] ButtonStates = new byte[ButtonBytes];
+    uint ButtonStates = 0;
 
 
-    public List<StickState> StickStates = [
-        new StickState(),
-        new StickState(),
-    ];
+    public StickState LeftStick = new();
+    public StickState RightStick = new();
 
+    public ControllerState()
+    {
+    }
 
     public void SetButton(ButtonTypes Button, bool Value)
     {
-        int ByteIndex = (int)Button / 8;
-        int BitIndex =  (int)Button % 8;
-
         if (Value)
         {
-            byte Mask = (byte)(1 << BitIndex);
-            ButtonStates[ByteIndex] |= Mask;
+            uint Mask = (uint)(1 << (int)Button);
+            ButtonStates |= Mask;
 
         }
         else
         {
-            byte Mask = (byte)((~0 ) ^ 1 << BitIndex);
-            ButtonStates[ByteIndex] &= Mask;
+            uint Mask = ~(1u<< (int)Button);
+            ButtonStates &= Mask;
         }
     }
 
     public bool GetButton (ButtonTypes Button)
     {
-        int ByteIndex = (int)Button / 8;
-        int BitIndex =  (int)Button % 8;
-
-        byte NeededByte = ButtonStates[ByteIndex];
-        byte Mask = (byte)(1 << BitIndex);
-        return (NeededByte & Mask) != 0;
+        uint Mask = (uint)(1 << (int)Button);
+        return (ButtonStates & Mask) != 0;
     }
     
-    public ControllerState GetCopy()
-    {
-        var Copy = new ControllerState();
-        ButtonStates.CopyTo(Copy.ButtonStates, 0);
-        Copy.StickStates[0] = StickStates[0].Copy();
-        Copy.StickStates[1] = StickStates[1].Copy();
-
-        return Copy;
-    }
 
 
     public byte[] GetEncoded()
     {
-        var Output = new byte[ButtonBytes + StickStates.Count];
-        ButtonStates.CopyTo(Output, 0);
-        int OutputWalker = ButtonBytes;
-        foreach (var Stick in StickStates)
+        var Output = new byte[ButtonBytes + 2];
+        int ByteIndex = 0;
+        for ( ;  ByteIndex < ButtonBytes; ByteIndex++)
         {
-            Output[OutputWalker] = Stick.GetEncoded();
-            OutputWalker += 1;
+            int shift = ByteIndex * 8;
+            Output[ByteIndex] = (byte)(ButtonStates  >> shift); 
+
         }
+        Output[ByteIndex] = LeftStick.GetEncoded();
+        ByteIndex += 1;
+        Output[ByteIndex] = RightStick.GetEncoded();
+
         
         return Output;
     }
@@ -111,8 +101,8 @@ public class ControllerState
     public static ControllerState FromEncoded(byte[] Encoded)
     {
         ControllerState output = new();
-        int EncodedSize = ButtonBytes + output.StickStates.Count;
-        if (Encoded.Count() != EncodedSize)
+        int EncodedSize = (int)(ButtonBytes + StickTypes.COUNT);
+        if (Encoded.Length != EncodedSize)
         {
             GD.PushError("Received Input Data of incorrect size");
         }
@@ -120,16 +110,17 @@ public class ControllerState
         int Walker = 0;
         for (; Walker < ButtonBytes;  Walker ++)
         {
-            output.ButtonStates[Walker] = Encoded [Walker];
+            int shift = 8 * Walker;
+            output.ButtonStates |= (uint)Encoded [Walker] << shift;
         }
-        for (int i = 0; i < output.StickStates.Count; i++, Walker++)
-        {
-            var stick = new StickState();
-            stick.Decoded(Encoded[Walker]);
-            output.StickStates[i] = stick;
-        }
+        var LeftStick = new StickState();
+        LeftStick.Decoded(Encoded[Walker]);
+        output.LeftStick = LeftStick;
 
-        
+        Walker++;
+        var RightStick = new StickState();
+        RightStick.Decoded(Encoded[Walker]);
+        output.RightStick = RightStick;
         return output;
     }
 
@@ -137,12 +128,9 @@ public class ControllerState
     {
         if (obj is not ControllerState Other)return false;
 
-        if (!ButtonStates.SequenceEqual(Other.ButtonStates))return false;
+        if (ButtonStates != Other.ButtonStates)return false;
 
-        for (int i = 0; i < StickStates.Count; i++)
-        {
-            if (StickStates[i] != Other.StickStates[i]) return false;
-        }
+        if (LeftStick != Other.LeftStick || RightStick != Other.RightStick) return false;
         
         return true;
     }
@@ -151,17 +139,23 @@ public class ControllerState
     public override int GetHashCode()
     {
         int output = 0;
-        foreach (var stick in StickStates)
-        {
-            output = HashCode.Combine(stick.GetHashCode(), output );
-        }
-        foreach (var item in ButtonStates)
-        {
-            output = HashCode.Combine(item.GetHashCode(), output );
-        }
-        return HashCode.Combine(ButtonStates.GetHashCode(), output );
+        output = HashCode.Combine(LeftStick.GetHashCode(), output );
+        output = HashCode.Combine(RightStick.GetHashCode(), output );
+
+        output = HashCode.Combine(ButtonStates, output );
+        
+        return output;
     }
 
+    public static bool operator ==(ControllerState left, ControllerState right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(ControllerState left, ControllerState right)
+    {
+        return !left.Equals(right);
+    }
 
 }
 

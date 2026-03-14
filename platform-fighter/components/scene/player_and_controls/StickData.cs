@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
-public class StickState
+public struct StickState
 {
     /* 
     Super Proud of this!
@@ -90,12 +90,7 @@ public class StickState
         Data = Coded;
     }
 
-    public StickState Copy()
-    {
-        StickState copy = new();
-        copy.Data = Data;
-        return copy;
-    }
+
 
     public override bool Equals(object obj)
     {

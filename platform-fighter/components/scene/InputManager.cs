@@ -4,6 +4,7 @@ using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 public partial class InputManager : Node
 {
@@ -116,11 +117,17 @@ public partial class InputManager : Node
         }
 
         int StickNumber = (int)Axis / 2;
-
-        StickState Stick = CurrentControllerStates[PlayerNumber].StickStates[StickNumber];
         // This is a cheeky solution to check if the value changed on the x or y axis
         StickState.Axis StickAxis = ((int)Axis % 2 == 0) ? StickState.Axis.X : StickState.Axis.Y;
-        Stick.SetAxis(StickAxis, Magnitude);
+
+        if (StickNumber == 0)
+        {
+            CurrentControllerStates[PlayerNumber].LeftStick.SetAxis(StickAxis, Magnitude);
+        } else
+        {
+            CurrentControllerStates[PlayerNumber].RightStick.SetAxis(StickAxis, Magnitude);
+        }
+
     }
 
     public void HandleKeyboardInput(InputEventKey KeyEvent, PlayerTag playerTag, int PlayerNumber)
@@ -137,11 +144,11 @@ public partial class InputManager : Node
     {
         float lX = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftX);
         float ly = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftY);
-        CurrentControllerStates[PlayerNumber].StickStates[0].SetFromVector(new Vector2(lX,ly));
+        CurrentControllerStates[PlayerNumber].LeftStick.SetFromVector(new Vector2(lX,ly));
 
         float rx = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftX);
         float ry = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftY);
-        CurrentControllerStates[PlayerNumber].StickStates[1].SetFromVector(new Vector2(rx,ry));
+        CurrentControllerStates[PlayerNumber].RightStick.SetFromVector(new Vector2(rx,ry));
     }
 
     public void SerializeCurrentControllerState(int Tick)
@@ -160,7 +167,7 @@ public partial class InputManager : Node
                 HandleStickInputs(playerProfile, PlayerNumber);
             }
 
-            AllControllerStates[TickKey][PlayerNumber] = CurrentControllerStates[PlayerNumber].GetCopy();
+            AllControllerStates[TickKey][PlayerNumber] = CurrentControllerStates[PlayerNumber];
         }
 
         // Once the current controller states have been serialized, send them to the other players
@@ -322,8 +329,8 @@ public partial class InputManager : Node
                 if (RightContains)RightStickDirection  += RightDir;
             }
         }
-        CurrentControllerStates[PlayerNumber].StickStates[0].SetFromVector( LeftStickDirection.Normalized());
-        CurrentControllerStates[PlayerNumber].StickStates[1].SetFromVector( RightStickDirection.Normalized());
+        CurrentControllerStates[PlayerNumber].LeftStick.SetFromVector( LeftStickDirection.Normalized());
+        CurrentControllerStates[PlayerNumber].RightStick.SetFromVector( RightStickDirection.Normalized());
     }
     
 
@@ -337,7 +344,12 @@ public partial class InputManager : Node
     public DM_Vector2 PollForStickState(int StickNumber, int PlayerNumber)
     {
         ControllerState State = AllControllerStates[tickManager.GetStateKey(tickManager.GetCurrentTick() ) ][PlayerNumber];
-        StickState StickState =  State.StickStates[StickNumber];
-        return StickState.ToVector();
+        if (StickNumber == (int)ControllerState.StickTypes.LEFT)
+        {
+            return State.LeftStick.ToVector();
+        }else
+        {
+            return State.RightStick.ToVector();
+        }
     }
 }
