@@ -80,11 +80,12 @@ public partial class TickManager : Node
         
         // Serialize the current tick
         int CurrentStateKey = GetStateKey(CurrentTick);
-        inputManager.SerializeCurrentControllerState(CurrentTick);
+
 
         // Before handling the current tick, check if you need to rollback
         if (inputManager.RollbackTargetFrame != null && (int)inputManager.RollbackTargetFrame < CurrentTick)
         {
+            GD.Print("rolling back to ", inputManager.RollbackTargetFrame);
             int LatestTick = CurrentTick;
             IsRollingBack = true;
 
@@ -93,6 +94,14 @@ public partial class TickManager : Node
             IsRollingBack = false;
             inputManager.RollbackTargetFrame = null;
         }
+
+
+        inputManager.SerializeCurrentControllerState(CurrentTick);
+        if (NetworkManager.GlobalInstance.connectionType != NetworkManager.ConnectionType.DISCONNECTED)
+        {
+            inputManager.PredictRemoteInputs(CurrentTick);
+        }
+
         
         // Dispatch Inputs + Call processes
         
@@ -101,6 +110,18 @@ public partial class TickManager : Node
 
         
         CurrentTick += 1;
+    }
+    public int GetGameHash(int Tick)
+    {
+        int CurrentTickKey = GetStateKey(Tick);
+        HashCode GameHash = new();
+        foreach( ISerializable serializable in RollbackObjects)
+        {
+            GameHash.Add(SaveHandlers[serializable].GetHash(CurrentTickKey));
+        }
+        return GameHash.ToHashCode();
+
+    
     }
 
     public void Resimulate(int StartTick, int EndTick)
@@ -119,6 +140,8 @@ public partial class TickManager : Node
         for ( ; CurrentTick <= EndTick; CurrentTick ++)
         {
             int CurrentStateKey = GetStateKey(CurrentTick);
+            inputManager.PredictRemoteInputs(CurrentTick);
+
             SerializeCurrentTick(CurrentStateKey);
             CallProcesses();
         }

@@ -11,7 +11,6 @@ public partial class OnlineMenu : Control
     public override void _Input(InputEvent @event)
     {
         SelectInputProcess(@event);
-
     }
 
     void SelectInputProcess( InputEvent Event )
@@ -21,6 +20,12 @@ public partial class OnlineMenu : Control
         {
             EventKey = Casted;
         } else return;
+
+        if (EventKey.Keycode == Key.L)
+        {
+            GD.Print(NetworkManager.GlobalInstance.GetLocalIp());
+            return;
+        }
 
         int Port;
         bool isValidPort = int.TryParse(PortField.Text, out Port);

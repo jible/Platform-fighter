@@ -29,6 +29,10 @@ text = "Press H to host"
 layout_mode = 2
 text = "Press J to join"
 
+[node name="Label" type="Label" parent="SelectMode/VBoxContainer"]
+layout_mode = 2
+text = "Press L for local address"
+
 [node name="ConnectionData" type="VBoxContainer" parent="SelectMode/VBoxContainer"]
 layout_mode = 2
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.Intrinsics.Arm;
+using System.Xml;
 
 [GlobalClass]
 [Tool]
@@ -46,6 +47,14 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
             Position = Owner.Position;
 			Velocity = Owner.Velocity;
         }
+		public int GetHash()
+		{
+			HashCode output = new();
+			output.Add(Velocity);
+			output.Add(Position);
+
+			return output.ToHashCode();
+		}
     }
 
 	// public bool IsGrounded()

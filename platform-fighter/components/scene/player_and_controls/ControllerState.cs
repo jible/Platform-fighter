@@ -157,5 +157,12 @@ public struct ControllerState
         return !left.Equals(right);
     }
 
+    // Coppies properties from other state into this state
+    public void CopyFromState( ControllerState OtherState)
+    {
+        ButtonStates = OtherState.ButtonStates;
+        LeftStick = OtherState.LeftStick;
+        RightStick = OtherState.RightStick;
+    }
 }
 

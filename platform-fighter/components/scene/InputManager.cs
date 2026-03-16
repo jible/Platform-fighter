@@ -19,6 +19,7 @@ public partial class InputManager : Node
     public int? RollbackTargetFrame = null;
     public ControllerState[][] AllControllerStates;
     public ControllerState[] CurrentControllerStates;
+    public int[] LatestReceivedFrame;
     public Queue<byte[]> RemoteInputQueue = new();
     [Signal] public delegate void ButtonEventEventHandler(ControllerState.ButtonTypes Button, int PlayerNumber, bool Pressed);
 
@@ -51,9 +52,11 @@ public partial class InputManager : Node
                 AllControllerStates[Frame][PlayerNumber] = new();
             }
         }
+            LatestReceivedFrame = new int[PlayerManager.MaxPlayerCount];
         for (int PlayerNumber = 0; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber++)
         {
             CurrentControllerStates[PlayerNumber] = new();
+            LatestReceivedFrame[PlayerNumber] = -1;
         }
 
         NetworkManager.GlobalInstance.FastMessageReceived += (MessageType, MessageData, Sender) =>
@@ -179,6 +182,28 @@ public partial class InputManager : Node
         NetworkManager.GlobalInstance.SendFastMessage(NetworkManager.FastNetworkMessageType.Input, EncodeInputs(Tick), TargetId);
     }
 
+    public void PredictRemoteInputs(int frame)
+    {
+        int frameIndex = tickManager.GetStateKey(frame);
+        ControllerState[] CurrentStates = AllControllerStates[frameIndex];
+
+        int PrevFrameIndex = tickManager.GetStateKey(frame - 1);
+        ControllerState[] PreviousStates = AllControllerStates[PrevFrameIndex];
+
+        for (int PlayerNumber = 0 ; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber++)
+        {
+            PlayerProfile CurrentPlayer = playerManager.AllPlayers[PlayerNumber];
+            if (CurrentPlayer == null)continue;
+            if (CurrentPlayer.InputDeviceNumber != -1 )continue;
+            // If player exists and is remote:
+            if (LatestReceivedFrame[PlayerNumber] < frame)
+            {
+                // If you haven't received the input for this frame, predict it ( copy the previous state)
+                CurrentStates[PlayerNumber].CopyFromState(PreviousStates[PlayerNumber]);
+            }
+        }
+    }
+
     public byte[] EncodeInputs( int Tick )
     {
         int StartFrame = Tick - FramesOfInputsToSend;
@@ -288,6 +313,13 @@ public partial class InputManager : Node
             int FrameIndex = tickManager.GetStateKey(frame);
             foreach (int PlayerNumber in RemotePlayersSent)
             {
+                LatestReceivedFrame[PlayerNumber] = frame;
+                if (playerManager.AllPlayers[PlayerNumber].InputDeviceNumber != -1)
+                {
+                    // If the player is local, do not read what comes from other player. Just keep walking along the bytes
+                    ByteIndex += ControllerState.EncodedSize;
+                    continue;
+                }
                 byte[] ControllerStateBytes = InputData[ByteIndex .. (ByteIndex+ControllerState.EncodedSize)]; // assuming the end is not inclusive
                 ByteIndex += ControllerState.EncodedSize;
 
@@ -304,7 +336,6 @@ public partial class InputManager : Node
                         RollbackTargetFrame = frame;
                     }
                     AllControllerStates[FrameIndex][PlayerNumber] = DecodedState;
-
                 }
             }
         }

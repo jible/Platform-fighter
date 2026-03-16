@@ -18,13 +18,14 @@ where T : ISerializable
 
     // Given An object, this state applies itself to the object's properties
     public void Load(T e);
-
+    public int GetHash();
 }
 
 public interface ISaveHandler
 {
     public void Save( int Tick);
     public void Load( int Tick);
+    public int GetHash(int Tick);
 }
 
 public class SaveHandler<TObject,TState> : ISaveHandler
@@ -51,6 +52,11 @@ where TState : ISerializedState<TObject>, new()
     public void Save(int Tick)
     {
         States[Tick].Save(Owner);
+    }
+
+    public int GetHash(int Tick)
+    {
+        return States[Tick].GetHash();
     }
 
 }
