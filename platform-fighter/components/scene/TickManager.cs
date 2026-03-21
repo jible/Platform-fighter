@@ -1,7 +1,9 @@
 using Godot;
 using Godot.NativeInterop;
 using System;
+using System.Buffers.Binary;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Linq;
 using System.Reflection;
@@ -27,12 +29,27 @@ public partial class TickManager : Node
     [Export] InputManager inputManager;
     [Export] CharacterHolder characterHolder;
     bool ContinuePlay = true;
+    public List<Byte[]> PeerGameHashes = [];
+    public int[] LocalGameHashes;
+
+    public override void _Ready()
+    {
+        // listen for fast message signal
+        LocalGameHashes = new int[NetworkManager.MAX_ROLLBACK_FRAMES];
+
+        NetworkManager.GlobalInstance.FastMessageReceived += (MessageType, MessageData, Sender) =>
+        {
+            if (MessageType != (int)NetworkManager.FastNetworkMessageType.ShowHash) return;
+            PeerGameHashes.Add(MessageData);
+
+        };
+    }
 
 
     // This must be called once all objects have been instanced
     public void PrepForRollback()
     {
-        RollbackObjects = CollectSerializableNodes(playManager).ToArray();
+        RollbackObjects = CollectSerializableNodes(playManager);
         foreach (var rollbackObject in RollbackObjects)
         {
             Type objectType = rollbackObject.GetType();
@@ -82,6 +99,8 @@ public partial class TickManager : Node
         int CurrentStateKey = GetStateKey(CurrentTick);
 
 
+
+
         // Before handling the current tick, check if you need to rollback
         if (inputManager.RollbackTargetFrame != null && (int)inputManager.RollbackTargetFrame < CurrentTick)
         {
@@ -95,31 +114,78 @@ public partial class TickManager : Node
             inputManager.RollbackTargetFrame = null;
         }
 
-
         inputManager.SerializeCurrentControllerState(CurrentTick);
         if (NetworkManager.GlobalInstance.connectionType != NetworkManager.ConnectionType.DISCONNECTED)
         {
             inputManager.PredictRemoteInputs(CurrentTick);
         }
 
-        
-        // Dispatch Inputs + Call processes
-        
         SerializeCurrentTick(CurrentStateKey);
+        ComparHashes(CurrentStateKey);
         CallProcesses();
 
-        
         CurrentTick += 1;
     }
+
+    public void ComparHashes(int CurrentStateKey)
+    {
+        int GameHash = GetGameHash(CurrentTick); 
+        // if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
+        // {
+        //     GD.Print("Frame: " , CurrentTick, " Host Game Hash: ", GameHash);
+        // }
+        // if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.CLIENT)
+        // {
+        //     GD.Print("Frame: " , CurrentTick, " Client Game Hash: ", GameHash);
+            
+        // }
+
+        if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
+        {   
+            LocalGameHashes [CurrentStateKey] = GameHash;
+
+
+            // Handle State hashes here!
+            foreach (byte[] PeerGameHashBytes in PeerGameHashes)
+            {
+                int Frame = (int)BinaryPrimitives.ReadUInt32LittleEndian(PeerGameHashBytes.AsSpan(0,4));
+                int PeerGameHash = (int)BinaryPrimitives.ReadUInt32LittleEndian(PeerGameHashBytes.AsSpan(4,4));
+
+                int SentStateKey = GetStateKey(Frame);
+                if (PeerGameHash != LocalGameHashes[SentStateKey])
+                {
+                    GD.Print("Game Hash mismatch at frame: ", Frame);
+                }
+
+            }
+            PeerGameHashes.Clear();
+            
+        }
+        if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.CLIENT)
+        {
+            int TargetId = (int)MultiplayerPeer.TargetPeerServer;
+            byte[] GameBytes = new byte[4 + 4]; // 4 for the tick and 4 for the hash 
+            BinaryPrimitives.WriteUInt32LittleEndian(GameBytes.AsSpan(0,4), (UInt32) CurrentTick);
+            BinaryPrimitives.WriteUInt32LittleEndian(GameBytes.AsSpan(4,4), (UInt32) GameHash);
+            
+            NetworkManager.GlobalInstance.SendFastMessage(NetworkManager.FastNetworkMessageType.ShowHash, GameBytes, TargetId);
+        }
+    }
+
+
+
     public int GetGameHash(int Tick)
     {
         int CurrentTickKey = GetStateKey(Tick);
-        HashCode GameHash = new();
+
+        
+
+        List<int> hashes = [];
         foreach( ISerializable serializable in RollbackObjects)
         {
-            GameHash.Add(SaveHandlers[serializable].GetHash(CurrentTickKey));
+            hashes.Add(SaveHandlers[serializable].GetHash(CurrentTickKey));
         }
-        return GameHash.ToHashCode();
+        return DeterministicCombineHashes(hashes.ToArray());
 
     
     }
@@ -185,17 +251,27 @@ public partial class TickManager : Node
     }
 
     // Method that gets a list of all nodes that are serializable.
-    public List<ISerializable> CollectSerializableNodes(Node Root)
+    public ISerializable[] CollectSerializableNodes(Node Root)
     {
         var Collector = new ObjectTypeCollector<ISerializable>();
         return Collector.CollectTargetNodes(Root);
     }
 
     // Method that gets a list of all nodes that are serializable.
-    public List<ITickable> CollectTickableNodes(Node Root)
+    public ITickable[] CollectTickableNodes(Node Root)
     {
         var Collector = new ObjectTypeCollector<ITickable>();
         return Collector.CollectTargetNodes(Root);
+    }
+
+    public static int DeterministicCombineHashes(params int[] Hashes)
+    {
+        uint hash = 2166136261u;
+        foreach (int i  in Hashes)
+        {
+            hash = (uint)((hash ^ i) * 16777619u);
+        }
+        return (int)hash;
     }
 }
 
@@ -204,11 +280,11 @@ public partial class TickManager : Node
 // Helper Class for getting objects of a given type
 public class ObjectTypeCollector<TargetType>
     {
-        public List<TargetType> CollectTargetNodes(Node Root)
+        public TargetType[] CollectTargetNodes(Node Root)
         {
             List<TargetType> Output = new();
             PropogateCollecting(Root, Output);
-            return Output;
+            return Output.OrderBy(n=> n.GetType().Name).ThenBy(n=> n.GetHashCode()).ToArray();
         }
         // Helper method for getting all serializable nodes
         private void PropogateCollecting(Node Parent, List<TargetType> Output)

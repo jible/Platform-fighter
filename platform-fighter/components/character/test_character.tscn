@@ -14,7 +14,6 @@ metadata/_custom_type_script = "uid://0smx527v6br4"
 [node name="dp_player_body" parent="." index="0"]
 EditorPosition = Vector2(0, 2.5)
 Shape = SubResource("Resource_fdi86")
-layer_collision = 1
 mask_collision = 1
 
 [node name="dp_shape_follower" parent="dp_player_body" index="0"]

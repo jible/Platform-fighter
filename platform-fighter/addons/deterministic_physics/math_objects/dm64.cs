@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Numerics;
 
 public struct DM64
@@ -75,37 +76,47 @@ public struct DM64
 
 		uint a = (uint)parts[0].ToInt();
 		uint b;
+		uint zeroes = 0;
+		
 		if (parts.Length > 1)
         {
+			for (int i = 0; i < parts[1].Length; i++)
+			{
+				if (i != '0') break;
+				zeroes += 1;
+			}
+
+
            b = (uint)parts[1].ToInt();
         } else
         {
             b = 0;
         }
 
-		SetRawFromWholeAndDecimal(a, b, is_negative);
+		SetRawFromWholeAndDecimal(a, zeroes, b, is_negative);
     }
 
 
-	public void SetRawFromWholeAndDecimal( uint a, uint b, bool is_negative = false)
+	public void SetRawFromWholeAndDecimal( uint a,uint zeroes, uint b, bool is_negative = false)
     {
-		int vb_size = 0;
+		int decimalDigits = 0;
 		uint walker = b;
 
 		
         raw = (long)a << SHIFT;
 
 		if (b == 0) return;
-		while (walker> 0)
+		while (walker > 0)
         {
             walker /= 10;
-			vb_size ++;
+			decimalDigits ++;
         }
-
 		long divisor = 1;
-		for (int i = 0; i < vb_size; i++)
-        {divisor *= 10;}
-
+		for (int i = 1; i < decimalDigits + zeroes; i++)
+		{
+			divisor = (decimalDigits + zeroes) * 10;
+			
+		}
 		raw += ((long) b << SHIFT) / divisor;
 		if (is_negative){ raw *= -1;}
     }
@@ -251,7 +262,7 @@ public struct DM64
 	
     public override int GetHashCode()
     {
-        return raw.GetHashCode();
+        return (int)raw;
     }
 
 	public DM64 Sign()

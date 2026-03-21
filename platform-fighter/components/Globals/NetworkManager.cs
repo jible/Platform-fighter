@@ -37,12 +37,12 @@ public partial class NetworkManager : Node
 
         // Client Methods
         RequestAddPlayer,
-
     }
 
     public enum FastNetworkMessageType
     {
         Input,
+        ShowHash,
 
     }
     

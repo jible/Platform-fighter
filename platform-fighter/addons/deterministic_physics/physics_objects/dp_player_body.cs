@@ -49,11 +49,7 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
         }
 		public int GetHash()
 		{
-			HashCode output = new();
-			output.Add(Velocity);
-			output.Add(Position);
-
-			return output.ToHashCode();
+			return TickManager.DeterministicCombineHashes(Velocity.GetHashCode(), Position.GetHashCode());
 		}
     }
 

@@ -94,7 +94,7 @@ public partial struct DM_Vector2
 	
     public override int GetHashCode()
     {
-        return HashCode.Combine( x, y );
+        return TickManager.DeterministicCombineHashes( x.GetHashCode(), y.GetHashCode() );
     }
 
 
