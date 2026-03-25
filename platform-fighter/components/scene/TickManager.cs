@@ -30,12 +30,9 @@ public partial class TickManager : Node
     [Export] CharacterHolder characterHolder;
     bool ContinuePlay = true;
     public List<Byte[]> PeerGameHashes = [];
-    public int[] LocalGameHashes;
 
     public override void _Ready()
     {
-        // listen for fast message signal
-        LocalGameHashes = new int[NetworkManager.MAX_ROLLBACK_FRAMES];
 
         NetworkManager.GlobalInstance.FastMessageReceived += (MessageType, MessageData, Sender) =>
         {
@@ -121,69 +118,71 @@ public partial class TickManager : Node
         }
 
         SerializeCurrentTick(CurrentStateKey);
-        ComparHashes(CurrentStateKey);
+        
+        int ?SafeTick = inputManager.GetLatestConfirmedFrame();
+        if 
+        (
+            NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.CLIENT &&
+            SafeTick != null
+        )
+        {
+            SendSafeHash((int)SafeTick);
+        }
+
+        if 
+        (
+            NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST &&
+            SafeTick != null
+        )
+        {
+            ComparHashes();
+        }
+
         CallProcesses();
 
         CurrentTick += 1;
     }
 
-    public void ComparHashes(int CurrentStateKey)
+    public void SendSafeHash(int TargetTick)
     {
-        int GameHash = GetGameHash(CurrentTick); 
-        // if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
-        // {
-        //     GD.Print("Frame: " , CurrentTick, " Host Game Hash: ", GameHash);
-        // }
-        // if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.CLIENT)
-        // {
-        //     GD.Print("Frame: " , CurrentTick, " Client Game Hash: ", GameHash);
-            
-        // }
+        int GameHash = GetGameHash(TargetTick);
 
-        if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST)
-        {   
-            LocalGameHashes [CurrentStateKey] = GameHash;
+        int TargetId = (int)MultiplayerPeer.TargetPeerServer;
+        byte[] GameBytes = new byte[4 + 4]; // 4 for the tick and 4 for the hash 
+        BinaryPrimitives.WriteUInt32LittleEndian(GameBytes.AsSpan(0,4), (UInt32) TargetTick);
+        BinaryPrimitives.WriteUInt32LittleEndian(GameBytes.AsSpan(4,4), (UInt32) GameHash);
+        
+        NetworkManager.GlobalInstance.SendFastMessage(NetworkManager.FastNetworkMessageType.ShowHash, GameBytes, TargetId);
+    }
 
-
-            // Handle State hashes here!
-            foreach (byte[] PeerGameHashBytes in PeerGameHashes)
-            {
-                int Frame = (int)BinaryPrimitives.ReadUInt32LittleEndian(PeerGameHashBytes.AsSpan(0,4));
-                int PeerGameHash = (int)BinaryPrimitives.ReadUInt32LittleEndian(PeerGameHashBytes.AsSpan(4,4));
-
-                int SentStateKey = GetStateKey(Frame);
-                if (PeerGameHash != LocalGameHashes[SentStateKey])
-                {
-                    GD.Print("Game Hash mismatch at frame: ", Frame);
-                }
-
-            }
-            PeerGameHashes.Clear();
-            
-        }
-        if (NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.CLIENT)
+    public void ComparHashes()
+    {
+        // Handle State hashes here!
+        foreach (byte[] PeerGameHashBytes in PeerGameHashes)
         {
-            int TargetId = (int)MultiplayerPeer.TargetPeerServer;
-            byte[] GameBytes = new byte[4 + 4]; // 4 for the tick and 4 for the hash 
-            BinaryPrimitives.WriteUInt32LittleEndian(GameBytes.AsSpan(0,4), (UInt32) CurrentTick);
-            BinaryPrimitives.WriteUInt32LittleEndian(GameBytes.AsSpan(4,4), (UInt32) GameHash);
-            
-            NetworkManager.GlobalInstance.SendFastMessage(NetworkManager.FastNetworkMessageType.ShowHash, GameBytes, TargetId);
+            int Frame = (int)BinaryPrimitives.ReadUInt32LittleEndian(PeerGameHashBytes.AsSpan(0,4));
+            int PeerGameHash = (int)BinaryPrimitives.ReadUInt32LittleEndian(PeerGameHashBytes.AsSpan(4,4));
+
+            int SentStateKey = GetStateKey(Frame);
+
+            if (PeerGameHash != GetGameHash(SentStateKey))
+            {
+                GD.Print("Game Hash mismatch at frame: ", Frame);
+            }
+
         }
+        PeerGameHashes.Clear();   
     }
 
 
 
     public int GetGameHash(int Tick)
     {
-        int CurrentTickKey = GetStateKey(Tick);
-
-        
-
+        int TargetTickKey = GetStateKey(Tick);
         List<int> hashes = [];
         foreach( ISerializable serializable in RollbackObjects)
         {
-            hashes.Add(SaveHandlers[serializable].GetHash(CurrentTickKey));
+            hashes.Add(SaveHandlers[serializable].GetHash(TargetTickKey));
         }
         return DeterministicCombineHashes(hashes.ToArray());
 

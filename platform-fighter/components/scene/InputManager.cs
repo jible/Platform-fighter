@@ -19,7 +19,7 @@ public partial class InputManager : Node
     public int? RollbackTargetFrame = null;
     public ControllerState[][] AllControllerStates;
     public ControllerState[] CurrentControllerStates;
-    public int[] LatestReceivedFrame;
+    public int?[] LatestReceivedFrame;
     public Queue<byte[]> RemoteInputQueue = new();
     [Signal] public delegate void ButtonEventEventHandler(ControllerState.ButtonTypes Button, int PlayerNumber, bool Pressed);
 
@@ -52,11 +52,11 @@ public partial class InputManager : Node
                 AllControllerStates[Frame][PlayerNumber] = new();
             }
         }
-            LatestReceivedFrame = new int[PlayerManager.MaxPlayerCount];
+        LatestReceivedFrame = new int?[PlayerManager.MaxPlayerCount];
         for (int PlayerNumber = 0; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber++)
         {
             CurrentControllerStates[PlayerNumber] = new();
-            LatestReceivedFrame[PlayerNumber] = -1;
+            LatestReceivedFrame[PlayerNumber] = null;
         }
 
         NetworkManager.GlobalInstance.FastMessageReceived += (MessageType, MessageData, Sender) =>
@@ -68,6 +68,18 @@ public partial class InputManager : Node
         };
     }
 
+    public int? GetLatestConfirmedFrame()
+    {
+        int? output = null;
+        foreach (int? Frame in LatestReceivedFrame)
+        {
+            if (Frame != null && (output == null || output < Frame))
+            {
+                output = Frame;
+            }
+        }
+        return output;
+    }
 
     public override void _Input(InputEvent @event)
     {
@@ -196,7 +208,7 @@ public partial class InputManager : Node
             if (CurrentPlayer == null)continue;
             if (CurrentPlayer.InputDeviceNumber != -1 )continue;
             // If player exists and is remote:
-            if (LatestReceivedFrame[PlayerNumber] < frame)
+            if (LatestReceivedFrame[PlayerNumber] == null || LatestReceivedFrame[PlayerNumber] < frame)
             {
                 // If you haven't received the input for this frame, predict it ( copy the previous state)
                 CurrentStates[PlayerNumber].CopyFromState(PreviousStates[PlayerNumber]);
