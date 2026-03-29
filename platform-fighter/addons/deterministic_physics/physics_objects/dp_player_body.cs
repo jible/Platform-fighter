@@ -12,11 +12,10 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 {
 	public DM_Vector2 Velocity = new();
 	[Export] InputHandler inputHandler;
-	[Export] float EditorAcceleration = new();
+	[Export] string EditorAcceleration = "0";
 	DM64 Acceleration = new(.0025f);
 
-	[Export] float EditorMaxVelocityX = new();
-	[Export] float EditorMaxVelocityY = new();
+	[Export] Vector2I EditorMaxVelocity = new();
 	
 	DM64 MaxVelocity = new();
 

@@ -11,9 +11,9 @@ using System.Text.RegularExpressions;
 public partial class dp_object : Node
 {
 	// World Space
-	private Vector2 _editorPosition = new();
+	private Vector2I _editorPosition = new();
 	
-	[Export] public Vector2 EditorPosition {
+	[Export] public Vector2I EditorPosition {
 		set
 		{
 			_editorPosition = value;
@@ -24,7 +24,7 @@ public partial class dp_object : Node
 			return _editorPosition;
 		}
 	}
-	public Vector2 EditorGlobalPosition = new();
+	public Vector2I EditorGlobalPosition = new();
 	private DM_Vector2 _position = new();
 	public DM_Vector2 Position
 	{
@@ -110,7 +110,7 @@ public partial class dp_object : Node
 	Dictionary<String, Object>[] RollbackData;
 	public static dp_physics_server GlobalPhysicsServer;
 
-	public DM64 Epsilon = new(.0001f);
+	public DM64 Epsilon = new(".0001");
 
 	// Collision Data
 	[Export]public bool is_active = true;

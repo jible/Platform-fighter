@@ -23,6 +23,15 @@ public partial class dp_shape_renderer_3d : Node3D
 		GetTree().SceneChanged += () => configure();
 	}
 
+    public override void _Process(double delta)
+	{
+		if (Engine.IsEditorHint())
+		{
+			update_shape_render();
+		}
+	}
+
+
 	public Node GetRoot()
 	{
 		Node root= Engine.IsEditorHint() 
@@ -79,9 +88,9 @@ public partial class dp_shape_renderer_3d : Node3D
 			PhysicsServer = dp_physics_server.GlobalInstance;
 			if (PhysicsServer == null) return;
 		}
+
 		foreach (dp_object PhysicsObject in PhysicsServer.AllEntities)
 		{
-			
 			if (PhysicsObject == null || !IsInstanceValid(PhysicsObject) || PhysicsObject.Shape == null || !IsInstanceValid(PhysicsObject.Shape))
 			{
 				continue;
@@ -150,7 +159,7 @@ public partial class dp_shape_renderer_3d : Node3D
 		if (Engine.IsEditorHint())
 		{
 			ObjPosition = VectorUp(obj.EditorGlobalPosition, shape_layer);
-			ObjRadius = circle.EditorRadius;
+			ObjRadius = circle.EditorRadius.ToFloat();
 		}else
 		{
 			ObjPosition = VectorUp(obj.GlobalPosition.ToStandardVector(), shape_layer);
@@ -190,6 +199,7 @@ public partial class dp_shape_renderer_3d : Node3D
 		Vector2 ObjSize;
 		Vector3 ObjPos;
 		if (Engine.IsEditorHint()){
+
 			ObjSize = rectangle.EditorSize;
 			ObjPos = VectorUp(obj.EditorGlobalPosition, shape_layer);
 		} else{

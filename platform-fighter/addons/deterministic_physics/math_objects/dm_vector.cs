@@ -6,7 +6,6 @@ public partial struct DM_Vector2
 {
     public DM64 x;
     public DM64 y;
-    private Tuple<string, string> value;
 
 
     // Constructors
