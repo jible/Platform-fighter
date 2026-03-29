@@ -22,9 +22,6 @@ public partial class PlayManager : Node3D
 
     public void Tick()
     {
-        if (Input.IsActionJustPressed("debug_action")){
-            inputManager.RollbackTargetFrame = tickManager.GetCurrentTick() -5;
-        }
         dp_physics_server.GlobalInstance.PhysicsTick();
         if (!tickManager.IsRollingBack )
         {

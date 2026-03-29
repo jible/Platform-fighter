@@ -74,7 +74,17 @@ public struct DM64
 
 		String[] parts = unsigned.Split('.');
 
-		uint a = (uint)parts[0].ToInt();
+
+
+		uint a ;
+		if (parts[0].Length == 0)
+		{
+			a = 0;
+
+		} else
+		{
+			a = (uint)parts[0].ToInt();
+		}
 		uint b;
 		uint zeroes = 0;
 		
@@ -82,12 +92,12 @@ public struct DM64
         {
 			for (int i = 0; i < parts[1].Length; i++)
 			{
-				if (i != '0') break;
+				if (parts[1][i] != '0') break;
 				zeroes += 1;
 			}
 
 
-           b = (uint)parts[1].ToInt();
+			b = (uint)parts[1].ToInt();
         } else
         {
             b = 0;

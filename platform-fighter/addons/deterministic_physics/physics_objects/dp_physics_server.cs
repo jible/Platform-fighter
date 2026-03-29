@@ -11,7 +11,8 @@ using System.Security.AccessControl;
 public partial class dp_physics_server : Node
 {
 	public List<dp_object> AllEntities = new List<dp_object>();
-
+	public string EditorEpsilon = "0.0001";
+	public DM64 Epsilon = new(0);
 
 
 	// Play with these for optimizing!!
@@ -20,6 +21,11 @@ public partial class dp_physics_server : Node
 
 	public override void _Ready()
 	{
+		if (!Engine.IsEditorHint())
+		{
+			Epsilon = new DM64(EditorEpsilon);
+			GD.Print("epsilon: " ,Epsilon.ToFloat());
+		}
 		GlobalInstance = this;
 		configure();
 		GetTree().SceneChanged += () => configure();

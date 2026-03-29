@@ -110,9 +110,7 @@ public partial class dp_object : Node
 	Dictionary<String, Object>[] RollbackData;
 	public static dp_physics_server GlobalPhysicsServer;
 
-	[Export]
-	public string EditorEpsilon = ".0001";
-	public DM64 Epsilon = new(0);
+	
 
 	// Collision Data
 	[Export]public bool is_active = true;
@@ -342,7 +340,7 @@ public partial class dp_object : Node
 				if (enter > exit ||enter > 1 || enter < 0) {return false;}
 				GlobalPosition = PrevPos + (vel * enter);
 				DM_Vector2 normal = EnteredOnX? new DM_Vector2(vel.x.Sign() * -1, new( 0)) : new DM_Vector2( new( 0), vel.y.Sign() * -1);
-				GlobalPosition += normal * Epsilon;
+				GlobalPosition += normal * dp_physics_server.GlobalInstance.Epsilon;
 
 				// Sliding
 				if (EnteredOnX)
@@ -367,7 +365,7 @@ public partial class dp_object : Node
 		// Gonna get a little creative with this for now! Instead of finding the nearest edge,
 		//  im gonna take the minecraft approach and always push things up!
 
-		DM64 newY = Other.Position.y +(OtherCastedShape.Size.y/2) + (CastedShape.Size.y/2) + Epsilon; 
+		DM64 newY = Other.Position.y +(OtherCastedShape.Size.y/2) + (CastedShape.Size.y/2) + dp_physics_server.GlobalInstance.Epsilon; 
 		SetPositionY(newY);
 		return true;
 	}
