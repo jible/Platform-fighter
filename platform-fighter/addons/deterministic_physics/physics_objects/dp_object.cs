@@ -110,7 +110,9 @@ public partial class dp_object : Node
 	Dictionary<String, Object>[] RollbackData;
 	public static dp_physics_server GlobalPhysicsServer;
 
-	public DM64 Epsilon = new(".0001");
+	[Export]
+	public string EditorEpsilon = ".0001";
+	public DM64 Epsilon = new(0);
 
 	// Collision Data
 	[Export]public bool is_active = true;
