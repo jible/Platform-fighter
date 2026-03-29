@@ -84,7 +84,6 @@ public partial class dm_server : Node
         CollectDM_Nodes(RootNode);
 
         string Prefix = "Editor";
-        List<string> Postfixes = ["X", "Y"];
 
         
         foreach (object obj in DM_objects)
@@ -101,11 +100,11 @@ public partial class dm_server : Node
                 bool IsDM64 = typeof(DM64) == FieldType;
                 bool IsVector = typeof(DM_Vector2) == FieldType;
 
+                string TargetFieldName = Prefix + FieldName; 
 
 
                 if (IsDM64)
                 {
-                    string TargetFieldName = Prefix + FieldName; 
                     System.Reflection.FieldInfo TargetField = type.GetField(TargetFieldName);
                     if (TargetField == null) continue;
                     Type TargetFieldType = TargetField.FieldType;
@@ -120,25 +119,17 @@ public partial class dm_server : Node
 
                 if (IsVector)
                 {
-                    string BaseTargetFieldName = Prefix + FieldName;
-                    string[] values = new string[2];
-                    for (int i = 0; i < values.Length; i ++)
+                    System.Reflection.FieldInfo TargetField = type.GetField(TargetFieldName);
+                    if (TargetField == null) continue;
+                    Type TargetFieldType = TargetField.FieldType;
+
+                    if (TargetFieldType != typeof(Vector2I))
                     {
-                        string postfix = Postfixes[i];
-                        string TargetFieldName = BaseTargetFieldName + postfix;
+                        GD.PushError(TargetField , " field has wrong type to modify: ", FieldName);
+                    }
 
-                        System.Reflection.FieldInfo TargetField = type.GetField(TargetFieldName);
-                        if (TargetField == null) continue;
-                        Type TargetFieldType = TargetField.FieldType;
-
-                        if (TargetFieldType != typeof(string))
-                        {
-                            GD.PushError(TargetField , " field has wrong type to modify: ", FieldName);
-                        }
-
-                        values[i] = (string)TargetField.GetValue(obj);
-                    } 
-                    field.SetValue(obj, new DM_Vector2(values[0], values[1]));
+                    
+                    field.SetValue(obj, new DM_Vector2((Vector2I)TargetField.GetValue(obj)));
                     
                 }
             }
