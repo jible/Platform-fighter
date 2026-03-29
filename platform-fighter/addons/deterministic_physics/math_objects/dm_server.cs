@@ -83,40 +83,67 @@ public partial class dm_server : Node
 
         CollectDM_Nodes(RootNode);
 
-        List<string> Prefixes = ["editor_", "Editor"];
-        foreach (var Prefix in Prefixes)
+        string Prefix = "Editor";
+        List<string> Postfixes = ["X", "Y"];
+
+        
+        foreach (object obj in DM_objects)
         {
-            int PrefixLength = Prefix.Length;
-
-            foreach (object obj in DM_objects)
+            var type = obj.GetType();
+            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
-                var type = obj.GetType();
-                foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                string FieldName = field.Name;
+
+                Type FieldType = field.FieldType;
+                object value = field.GetValue(obj);
+
+
+                bool IsDM64 = typeof(DM64) == FieldType;
+                bool IsVector = typeof(DM_Vector2) == FieldType;
+
+
+
+                if (IsDM64)
                 {
-                    string FieldName = field.Name;
+                    string TargetFieldName = Prefix + FieldName; 
+                    System.Reflection.FieldInfo TargetField = type.GetField(TargetFieldName);
+                    if (TargetField == null) continue;
+                    Type TargetFieldType = TargetField.FieldType;
 
-                    Type FieldType = field.FieldType;
-                    object value = field.GetValue(obj);
-
-                    if (!FieldName.StartsWith(Prefix)){continue;}
-                    string ToBeUpdatedFieldName = FieldName[PrefixLength..];
-
-                    System.Reflection.FieldInfo ToBeUpdatedField = type.GetField(ToBeUpdatedFieldName);
-
-                    if (ToBeUpdatedField == null){ continue;}
-                    Type ToBeUpdateFieldType = ToBeUpdatedField.FieldType;
-                    if (ToBeUpdatedField == null){ continue;}
-                    if ( FieldType == typeof(float) && ToBeUpdateFieldType == typeof(DM64) )
+                    if (TargetFieldType != typeof(string))
                     {
-                        ToBeUpdatedField.SetValue(obj, new DM64((float)value));
+                        GD.PushError(TargetField , " field has wrong type to modify: ", FieldName);
                     }
-                    else if (FieldType == typeof(Vector2) && ToBeUpdateFieldType == typeof(DM_Vector2)){
-                        ToBeUpdatedField.SetValue(obj, new DM_Vector2((Vector2)value));
-                        
-                    }
+
+                    field.SetValue(obj, new DM64((string)TargetField.GetValue(obj)));
+                }
+
+                if (IsVector)
+                {
+                    string BaseTargetFieldName = Prefix + FieldName;
+                    string[] values = new string[2];
+                    for (int i = 0; i < values.Length; i ++)
+                    {
+                        string postfix = Postfixes[i];
+                        string TargetFieldName = BaseTargetFieldName + postfix;
+
+                        System.Reflection.FieldInfo TargetField = type.GetField(TargetFieldName);
+                        if (TargetField == null) continue;
+                        Type TargetFieldType = TargetField.FieldType;
+
+                        if (TargetFieldType != typeof(string))
+                        {
+                            GD.PushError(TargetField , " field has wrong type to modify: ", FieldName);
+                        }
+
+                        values[i] = (string)TargetField.GetValue(obj);
+                    } 
+                    field.SetValue(obj, new DM_Vector2(values[0], values[1]));
+                    
                 }
             }
         }
+        
        
     }
 }

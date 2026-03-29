@@ -6,15 +6,22 @@ public partial struct DM_Vector2
 {
     public DM64 x;
     public DM64 y;
-    
+    private Tuple<string, string> value;
+
 
     // Constructors
+
     public DM_Vector2(float v)
     {
         x = new DM64();
         y = new DM64();
     }
 
+    public DM_Vector2(String _x, String _y)
+    {
+        x = new DM64(_x);
+        y = new DM64(_y);
+    }
     public DM_Vector2(DM64 _x, DM64 _y)
     {
         x = _x.copy();
@@ -32,6 +39,13 @@ public partial struct DM_Vector2
         x = new DM64(a.X);
         y = new DM64(a.Y);
     }
+
+    public DM_Vector2(Tuple<string, string> value) : this()
+    {
+         x = new DM64(value.Item1);
+        y = new DM64(value.Item1);
+    }
+
 
     public DM_Vector2 copy()
     {

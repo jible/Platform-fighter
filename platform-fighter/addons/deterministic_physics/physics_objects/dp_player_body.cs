@@ -15,7 +15,9 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 	[Export] float EditorAcceleration = new();
 	DM64 Acceleration = new(.0025f);
 
-	[Export] float EditorMaxVelocity = new();
+	[Export] float EditorMaxVelocityX = new();
+	[Export] float EditorMaxVelocityY = new();
+	
 	DM64 MaxVelocity = new();
 
     public ISaveHandler MakeSaveHandler()

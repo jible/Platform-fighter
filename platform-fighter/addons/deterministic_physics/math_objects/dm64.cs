@@ -114,7 +114,7 @@ public struct DM64
 		long divisor = 1;
 		for (int i = 1; i < decimalDigits + zeroes; i++)
 		{
-			divisor = (decimalDigits + zeroes) * 10;
+			divisor *= 10;
 			
 		}
 		raw += ((long) b << SHIFT) / divisor;
