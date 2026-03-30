@@ -105,7 +105,10 @@ public partial class dm_server : Node
                 {
                     System.Reflection.FieldInfo TargetField = type.GetField(TargetFieldName);
 
+                    // If this target field is on the object, but returning as null,
+                    // Make sure the export is a public var.
                     if (TargetField == null) continue;
+                    
                     Type TargetFieldType = TargetField.FieldType;
 
                     if (TargetFieldType != typeof(string))

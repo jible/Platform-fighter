@@ -12,7 +12,6 @@ public partial class dp_object : Node
 {
 	// World Space
 	private Vector2I _editorPosition = new();
-	
 	[Export] public Vector2I EditorPosition {
 		set
 		{
@@ -140,14 +139,15 @@ public partial class dp_object : Node
 	Dictionary<dp_object, bool>[] overlaps = [];
 	
 	// Helper for getting key of position and overlap
-	public static ulong GetCurrentBufferPosition() { return GetBufferPositionAt(Godot.Engine.GetPhysicsFrames()); }
-	public static ulong GetPrevBufferPosition() { return GetBufferPositionAt(Godot.Engine.GetPhysicsFrames() - 1); }
+	public static TickManager tickManager = new();
 
-	public static ulong GetBufferPositionAt(ulong frame) { return frame % (ulong)MaxDataBufferSize; }
+	public static ulong GetCurrentBufferPosition() { return (ulong) tickManager.GetStateKey(tickManager.GetCurrentTick()) ; }
+	public static ulong GetPrevBufferPosition() { return (ulong) tickManager.GetStateKey(tickManager.GetCurrentTick() - 1) ; }
+
+	public static ulong GetBufferPositionAt(ulong frame) { return (ulong) tickManager.GetStateKey((int)frame) ; }
 	
 		// Position buffer
-	static int max_physics_rollback = 50;
-	static int MaxDataBufferSize = max_physics_rollback + 1;
+	static int MaxDataBufferSize = NetworkManager.MAX_ROLLBACK_FRAMES;
 	DM_Vector2[] position_buffer = [];
 
 	[Signal] public delegate void ObjectEnteredEventHandler(dp_object other);
@@ -285,7 +285,7 @@ public partial class dp_object : Node
 			case dp_rectangle otherRectangle  when Shape is dp_rectangle thisRectangle:
 
 				Object PrevPosFromDict;
-				Dictionary<String, Object> FrameData = GetFrameData(Godot.Engine.GetPhysicsFrames() - 1);
+				Dictionary<String, Object> FrameData = GetFrameData( Godot.Engine.GetPhysicsFrames() - 1);
 
 				if (!FrameData.TryGetValue("position", out PrevPosFromDict) || (DM_Vector2)PrevPosFromDict == GlobalPosition)
 				{
