@@ -104,7 +104,6 @@ public partial class dm_server : Node
                 if (IsDM64)
                 {
                     System.Reflection.FieldInfo TargetField = type.GetField(TargetFieldName);
-                    GD.Print(TargetFieldName);
 
                     if (TargetField == null) continue;
                     Type TargetFieldType = TargetField.FieldType;

@@ -12,8 +12,7 @@ metadata/_custom_type_script = "uid://0smx527v6br4"
 [node name="TestCharacter" instance=ExtResource("1_jxsvq")]
 
 [node name="dp_player_body" parent="." index="0"]
-EditorAcceleration = ".0025"
-EditorMaxVelocity = Vector2i(5, 5)
+EditorAcceleration = "0.00025"
 EditorPosition = Vector2i(0, 2)
 Shape = SubResource("Resource_fdi86")
 mask_collision = 1

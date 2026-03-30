@@ -24,7 +24,6 @@ public partial class dp_physics_server : Node
 		if (!Engine.IsEditorHint())
 		{
 			Epsilon = new DM64(EditorEpsilon);
-			GD.Print("epsilon: " ,Epsilon.ToFloat());
 		}
 		GlobalInstance = this;
 		configure();
