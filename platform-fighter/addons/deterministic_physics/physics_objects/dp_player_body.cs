@@ -12,8 +12,8 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 {
 	public DM_Vector2 Velocity = new();
 	[Export] InputHandler inputHandler;
-	[Export] string EditorAcceleration = "0";
-	DM64 Acceleration = new(.0025f);
+	[Export] string EditorAcceleration = "0.0025";
+	DM64 Acceleration = new();
 
 	[Export] Vector2I EditorMaxVelocity = new();
 	
@@ -26,8 +26,9 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 
     public void Tick()
 	{
+		GD.Print(Acceleration.ToFloat());
 		DM_Vector2 dirVector = inputHandler.PollForStickState(0);
-		dirVector.y =dirVector.y * -1;
+		dirVector.y = dirVector.y * -1;
 		Velocity += Acceleration * dirVector;
 		Position = Position + Velocity;
 	}

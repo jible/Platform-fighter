@@ -107,7 +107,7 @@ public struct DM64
     }
 
 
-	public void SetRawFromWholeAndDecimal( uint a,uint zeroes, uint b, bool is_negative = false)
+	public void SetRawFromWholeAndDecimal( uint a, uint zeroes, uint b, bool is_negative = false)
     {
 		int decimalDigits = 0;
 		uint walker = b;

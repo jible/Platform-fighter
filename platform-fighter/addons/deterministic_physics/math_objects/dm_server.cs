@@ -94,8 +94,6 @@ public partial class dm_server : Node
                 string FieldName = field.Name;
 
                 Type FieldType = field.FieldType;
-                object value = field.GetValue(obj);
-
 
                 bool IsDM64 = typeof(DM64) == FieldType;
                 bool IsVector = typeof(DM_Vector2) == FieldType;
@@ -106,6 +104,8 @@ public partial class dm_server : Node
                 if (IsDM64)
                 {
                     System.Reflection.FieldInfo TargetField = type.GetField(TargetFieldName);
+                    GD.Print(TargetFieldName);
+
                     if (TargetField == null) continue;
                     Type TargetFieldType = TargetField.FieldType;
 
