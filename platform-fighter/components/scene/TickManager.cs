@@ -33,7 +33,7 @@ public partial class TickManager : Node
 
     public override void _Ready()
     {
-
+        dp_object.tickManager = this;
         NetworkManager.GlobalInstance.FastMessageReceived += (MessageType, MessageData, Sender) =>
         {
             if (MessageType != (int)NetworkManager.FastNetworkMessageType.ShowHash) return;

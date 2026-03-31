@@ -14,15 +14,9 @@ public partial class dp_rectangle : dp_shape
         return DM64.Max(Size.x, Size.y) / 2;
     }
 
-    public override Dictionary<String, object> ExtractData()
-    {
-        return new Dictionary<String, object> {{"size", Size.copy()}};
-    }
+  
 
 
-    public override void LoadData(Dictionary<String, object> Data)
-    {
-        Size = ((DM_Vector2)Data["size"]).copy();
-    }
 
+    
 }

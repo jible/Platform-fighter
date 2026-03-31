@@ -106,7 +106,7 @@ public partial class dp_object : Node
 	}
 
 	// Rollback Data
-	Dictionary<String, Object>[] RollbackData;
+	PhysicsObjectData?[] RollbackData;
 	public static dp_physics_server GlobalPhysicsServer;
 
 	
@@ -139,7 +139,7 @@ public partial class dp_object : Node
 	Dictionary<dp_object, bool>[] overlaps = [];
 	
 	// Helper for getting key of position and overlap
-	public static TickManager tickManager = new();
+	public static TickManager tickManager;
 
 	public static ulong GetCurrentBufferPosition() { return (ulong) tickManager.GetStateKey(tickManager.GetCurrentTick()) ; }
 	public static ulong GetPrevBufferPosition() { return (ulong) tickManager.GetStateKey(tickManager.GetCurrentTick() - 1) ; }
@@ -169,10 +169,10 @@ public partial class dp_object : Node
 		GlobalPhysicsServer.RegisterObj(this);
 		if (Engine.IsEditorHint()) {return;}
 		overlaps = new Dictionary<dp_object, bool>[MaxDataBufferSize];
-		RollbackData = new Dictionary<String, Object>[MaxDataBufferSize];
+		RollbackData = new PhysicsObjectData?[MaxDataBufferSize];
 		for (int i = 0; i < MaxDataBufferSize; i++)
 		{
-			RollbackData[i] = [];
+			RollbackData[i] = null;
 			overlaps[i] = [];
 		}
 	}
@@ -180,7 +180,7 @@ public partial class dp_object : Node
 	// This needs to be called every frame before starting to collect overlap data.
 	public void CleanseBuffers()
 	{
-		RollbackData[GetCurrentBufferPosition()].Clear();
+		RollbackData[GetCurrentBufferPosition()] = null;
 		overlaps[GetCurrentBufferPosition()].Clear();
 
 	}
@@ -284,15 +284,22 @@ public partial class dp_object : Node
 				break;
 			case dp_rectangle otherRectangle  when Shape is dp_rectangle thisRectangle:
 
-				Object PrevPosFromDict;
-				Dictionary<String, Object> FrameData = GetFrameData( Godot.Engine.GetPhysicsFrames() - 1);
+				PhysicsObjectData? NullablePreviousFrameData = RollbackData[ GetPrevBufferPosition()];
 
-				if (!FrameData.TryGetValue("position", out PrevPosFromDict) || (DM_Vector2)PrevPosFromDict == GlobalPosition)
+
+				if (NullablePreviousFrameData == null )
 				{
 					return HandleStaticRectRectCollision(thisRectangle, other, otherRectangle);
 				}
 
-				DM_Vector2 PrevPos = (DM_Vector2)PrevPosFromDict; 
+				PhysicsObjectData PreviousFrameData = (PhysicsObjectData)NullablePreviousFrameData;
+				DM_Vector2 PrevPos = PreviousFrameData.Position; 
+				
+				if (PrevPos == GlobalPosition)
+				{
+					return HandleStaticRectRectCollision(thisRectangle, other, otherRectangle);
+				}
+
 				DM_Vector2 vel = GlobalPosition - PrevPos;
 				if (vel.x == new DM64(0) && vel.y == new DM64(0)){ 
 					// GD.Print("Still need to handle case with no velocity");
@@ -369,17 +376,20 @@ public partial class dp_object : Node
 		SetPositionY(newY);
 		return true;
 	}
-	
-	public Dictionary<String, Object> GetFrameData(ulong frame)
-	{
-		return RollbackData[GetBufferPositionAt(frame)];
-		
-	}
 
 	public void PopulateCurrentFrame()
 	{
-		Dictionary<String, Object> Data = Shape.ExtractData();
-		Data["position"] = Position;
+		PhysicsObjectData Data = new(GlobalPosition);
 		RollbackData[GetCurrentBufferPosition()] = Data;
+	}
+
+	public struct PhysicsObjectData
+	{
+		public DM_Vector2 Position = new();
+		// public dp_shape.ShapeData ShapeData;
+		public PhysicsObjectData(DM_Vector2 _position)
+		{
+			Position = _position;
+		}
 	}
 }

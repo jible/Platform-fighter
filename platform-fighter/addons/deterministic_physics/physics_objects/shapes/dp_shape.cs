@@ -10,9 +10,9 @@ public abstract partial class dp_shape : Resource
     // Owner
     public dp_object PhysicsObject;
     // Extend this method in extension classes and add to this array if you need to add more properties.
-    public abstract Dictionary<String, object> ExtractData();
 
     public abstract DM64 GetMaxSize();
 
-    public abstract void LoadData(Dictionary<String, object> Data);
+
+    public interface ShapeData{}
 }
