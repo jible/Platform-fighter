@@ -30,6 +30,7 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 		dirVector.y = dirVector.y * -1;
 		Velocity += Acceleration * dirVector;
 		Position = Position + Velocity;
+
 	}
 
     public class SerializedState : ISerializedState<dp_player_body>

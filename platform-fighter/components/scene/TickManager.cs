@@ -87,10 +87,6 @@ public partial class TickManager : Node
         if (dp_physics_server.GlobalInstance == null || dp_shape_renderer_3d.GlobalInstance == null)
         {return;}
 
-        if (dp_physics_server.GlobalInstance == null || dp_shape_renderer_3d.GlobalInstance == null)
-        {
-            GD.Print("Physics engine and renderer not ready");
-        }
         
         // Serialize the current tick
         int CurrentStateKey = GetStateKey(CurrentTick);
@@ -119,7 +115,9 @@ public partial class TickManager : Node
 
         SerializeCurrentTick(CurrentStateKey);
         
-        int ?SafeTick = inputManager.GetLatestConfirmedFrame();
+        CallProcesses();
+
+        int? SafeTick = inputManager.GetLatestConfirmedFrame();
         if 
         (
             NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.CLIENT &&
@@ -135,10 +133,9 @@ public partial class TickManager : Node
             SafeTick != null
         )
         {
-            ComparHashes();
+            CompareHashes();
         }
 
-        CallProcesses();
 
         CurrentTick += 1;
     }
@@ -155,7 +152,7 @@ public partial class TickManager : Node
         NetworkManager.GlobalInstance.SendFastMessage(NetworkManager.FastNetworkMessageType.ShowHash, GameBytes, TargetId);
     }
 
-    public void ComparHashes()
+    public void CompareHashes()
     {
         // Handle State hashes here!
         foreach (byte[] PeerGameHashBytes in PeerGameHashes)
@@ -163,11 +160,13 @@ public partial class TickManager : Node
             int Frame = (int)BinaryPrimitives.ReadUInt32LittleEndian(PeerGameHashBytes.AsSpan(0,4));
             int PeerGameHash = (int)BinaryPrimitives.ReadUInt32LittleEndian(PeerGameHashBytes.AsSpan(4,4));
 
-            int SentStateKey = GetStateKey(Frame);
-
-            if (PeerGameHash != GetGameHash(SentStateKey))
+            int HostHash = GetGameHash(Frame);
+            if (PeerGameHash != HostHash)
             {
                 GD.Print("Game Hash mismatch at frame: ", Frame);
+                // GD.Print("Hash for client: ", PeerGameHash);
+                // GD.Print("Hash for host: ", HostHash);
+
             }
 
         }
@@ -180,8 +179,12 @@ public partial class TickManager : Node
     {
         int TargetTickKey = GetStateKey(Tick);
         List<int> hashes = [];
+        // GD.Print(NetworkManager.GlobalInstance.connectionType == NetworkManager.ConnectionType.HOST ? "Host" : "Client");
         foreach( ISerializable serializable in RollbackObjects)
         {
+            // GD.Print(((Node)serializable).Name);
+
+
             hashes.Add(SaveHandlers[serializable].GetHash(TargetTickKey));
         }
         return DeterministicCombineHashes(hashes.ToArray());
@@ -283,7 +286,7 @@ public class ObjectTypeCollector<TargetType>
         {
             List<TargetType> Output = new();
             PropogateCollecting(Root, Output);
-            return Output.OrderBy(n=> n.GetType().Name).ThenBy(n=> n.GetHashCode()).ToArray();
+            return Output.ToArray();
         }
         // Helper method for getting all serializable nodes
         private void PropogateCollecting(Node Parent, List<TargetType> Output)
@@ -293,7 +296,7 @@ public class ObjectTypeCollector<TargetType>
             {
                 Output.Add(serializable);
             }
-            foreach (var child in Parent.GetChildren())
+            foreach (var child in Parent.GetChildren().OrderBy(n=> n.GetType().Name))
             {
                 PropogateCollecting(child, Output);
             }
