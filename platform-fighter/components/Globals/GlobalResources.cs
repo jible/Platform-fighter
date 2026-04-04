@@ -32,4 +32,15 @@ public partial class GlobalResources : Node
         PLAYER_3_HURTBOX,
         PLAYER_4_HURTBOX,
     }
+
+    
+
+}
+public static class DebugPrintColors
+{
+    public static Color ErrorColor = new Color("#f54266");
+    public static Color SuccessColor = new Color("#42f56f");
+    public static Color ExtraColor = new Color("#6c2cd3");
+
+
 }

@@ -97,7 +97,7 @@ public partial class TickManager : Node
         // Before handling the current tick, check if you need to rollback
         if (inputManager.RollbackTargetFrame != null && (int)inputManager.RollbackTargetFrame < CurrentTick)
         {
-            GD.Print("rolling back to ", inputManager.RollbackTargetFrame);
+            // GD.Print("rolling back to ", inputManager.RollbackTargetFrame);
             int LatestTick = CurrentTick;
             IsRollingBack = true;
 
@@ -163,7 +163,7 @@ public partial class TickManager : Node
             int HostHash = GetGameHash(Frame);
             if (PeerGameHash != HostHash)
             {
-                GD.Print("Game Hash mismatch at frame: ", Frame);
+                GD.PrintRich("Game Hash mismatch at frame: ", Frame, DebugPrintColors.ErrorColor);
                 // GD.Print("Hash for client: ", PeerGameHash);
                 // GD.Print("Hash for host: ", HostHash);
 
