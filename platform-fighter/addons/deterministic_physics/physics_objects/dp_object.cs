@@ -23,6 +23,8 @@ public partial class dp_object : Node
 			return _editorPosition;
 		}
 	}
+	[Export]
+
 	public Vector2I EditorGlobalPosition = new();
 	private DM_Vector2 _position = new();
 	public DM_Vector2 Position

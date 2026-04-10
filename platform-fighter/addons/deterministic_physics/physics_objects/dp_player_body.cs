@@ -15,6 +15,10 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 	[Export] public string EditorAcceleration = "0.0025";
 	public DM64 Acceleration = new();
 
+	[Export]
+	public string EditorGravity = "0.01";
+	public DM64 Gravity;
+
 	[Export] public string EditorMaxVelocity = "0.0";
 	
 	public DM64 MaxVelocity = new();
@@ -29,6 +33,7 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 		DM_Vector2 dirVector = inputHandler.PollForStickState(0);
 		dirVector.y = dirVector.y * -1;
 		Velocity += Acceleration * dirVector;
+		Velocity.y -= Gravity;
 		Position = Position + Velocity;
 
 	}

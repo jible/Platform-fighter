@@ -13,7 +13,9 @@ metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [node name="dp_player_body" parent="." index="0"]
 EditorAcceleration = "0.00025"
+EditorGravity = "0.0001"
 EditorPosition = Vector2i(0, 2)
+EditorGlobalPosition = Vector2i(0, 2)
 Shape = SubResource("Resource_fdi86")
 mask_collision = 1
 
@@ -22,3 +24,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="StylizedCharacter" parent="dp_player_body/dp_shape_follower" index="0" instance=ExtResource("3_fdi86")]
 transform = Transform3D(-1.0927847e-08, 0, 0.25, 0, 0.25, 0, -0.25, 0, -1.0927847e-08, 0, 0, 0)
+
+[node name="Hurt" parent="CharacterStateMachine" index="4"]
+StateTitle = 7
+
+[node name="Jump" parent="CharacterStateMachine" index="5"]
+StateTitle = 4
+
+[node name="ArielJump" parent="CharacterStateMachine" index="6"]
+StateTitle = 5
+
+[node name="Attack1" parent="CharacterStateMachine" index="7"]
+StateTitle = 8
+
+[node name="Attack2" parent="CharacterStateMachine" index="8"]
+StateTitle = 9
