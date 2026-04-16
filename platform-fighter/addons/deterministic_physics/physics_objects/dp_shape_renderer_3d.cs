@@ -49,10 +49,7 @@ public partial class dp_shape_renderer_3d : Node3D
 		}
 		GlobalInstance = this;
 
-		foreach (var mesh in ObjectToMesh.Values)
-		{
-			mesh.QueueFree();
-		}
+		
 		ObjectToMesh.Clear();
 		PreviousData.Clear();
 		ShapeFollowers.Clear();

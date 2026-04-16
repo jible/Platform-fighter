@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bv57u8g75hkaj"]
+[gd_scene format=3 uid="uid://bv57u8g75hkaj"]
 
 [ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/deterministic_physics/physics_objects/dp_object.cs" id="1_8kaqf"]
 [ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="2_q6b3p"]
@@ -12,9 +12,17 @@ metadata/_custom_type_script = "uid://0smx527v6br4"
 [sub_resource type="BoxMesh" id="BoxMesh_day66"]
 size = Vector3(30, 0.25, 0.7)
 
-[node name="TestStage" type="Node3D"]
+[sub_resource type="Resource" id="Resource_8kaqf"]
+script = ExtResource("2_q6b3p")
+EditorSize = Vector2i(1, 5)
+metadata/_custom_type_script = "uid://0smx527v6br4"
 
-[node name="dp_object" type="Node" parent="."]
+[sub_resource type="BoxMesh" id="BoxMesh_q6b3p"]
+size = Vector3(1, 4.665, 1)
+
+[node name="TestStage" type="Node3D" unique_id=1635795555]
+
+[node name="dp_object" type="Node" parent="." unique_id=1024399818]
 script = ExtResource("1_8kaqf")
 Shape = SubResource("Resource_txm6t")
 layer_collision = 1
@@ -22,9 +30,24 @@ mask_collision = 1
 is_static = true
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 
-[node name="dp_shape_follower" type="Node3D" parent="dp_object"]
+[node name="dp_shape_follower" type="Node3D" parent="dp_object" unique_id=853629134]
 script = ExtResource("3_8gf4l")
 metadata/_custom_type_script = "uid://dskjpbfkcglab"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="dp_object/dp_shape_follower"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="dp_object/dp_shape_follower" unique_id=709142432]
 mesh = SubResource("BoxMesh_day66")
+
+[node name="dp_object2" type="Node" parent="." unique_id=260817897]
+script = ExtResource("1_8kaqf")
+EditorPosition = Vector2i(0, 2)
+EditorGlobalPosition = Vector2i(0, 3)
+Shape = SubResource("Resource_8kaqf")
+metadata/_custom_type_script = "uid://c4qq7jgy73oan"
+
+[node name="dp_shape_follower" type="Node3D" parent="dp_object2" unique_id=2056291279]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+script = ExtResource("3_8gf4l")
+metadata/_custom_type_script = "uid://dskjpbfkcglab"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="dp_object2/dp_shape_follower" unique_id=2134466535]
+mesh = SubResource("BoxMesh_q6b3p")
