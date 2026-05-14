@@ -1,41 +1,62 @@
-[gd_scene load_steps=5 format=3 uid="uid://due8lbighr0jf"]
+[gd_scene format=3 uid="uid://due8lbighr0jf"]
 
 [ext_resource type="PackedScene" uid="uid://db2kvp6c4fwm2" path="res://characters/base_character_3d.tscn" id="1_jxsvq"]
+[ext_resource type="Script" uid="uid://d17uol54jluxw" path="res://addons/deterministic_physics/math_objects/DM_Vector.cs" id="2_5qabm"]
 [ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="2_ixxai"]
 [ext_resource type="PackedScene" uid="uid://c6d267iqscydu" path="res://assets/3DModels/StylizedCharacter.glb" id="3_fdi86"]
+[ext_resource type="Script" uid="uid://dnix7o5miqdut" path="res://addons/deterministic_physics/math_objects/DM64.cs" id="3_x0wbg"]
+
+[sub_resource type="Resource" id="Resource_5nvc4"]
+script = ExtResource("3_x0wbg")
+
+[sub_resource type="Resource" id="Resource_cd2ut"]
+script = ExtResource("3_x0wbg")
+metadata/_custom_type_script = "uid://dnix7o5miqdut"
+
+[sub_resource type="Resource" id="Resource_joox1"]
+script = ExtResource("2_5qabm")
+x = SubResource("Resource_5nvc4")
+y = SubResource("Resource_cd2ut")
+metadata/_custom_type_script = "uid://d17uol54jluxw"
+
+[sub_resource type="Resource" id="Resource_jr4jd"]
+script = ExtResource("3_x0wbg")
+EditorValue = 2.5
+
+[sub_resource type="Resource" id="Resource_phh05"]
+script = ExtResource("3_x0wbg")
+EditorValue = 5.0
+
+[sub_resource type="Resource" id="Resource_5qmmu"]
+script = ExtResource("2_5qabm")
+x = SubResource("Resource_jr4jd")
+y = SubResource("Resource_phh05")
 
 [sub_resource type="Resource" id="Resource_fdi86"]
 script = ExtResource("2_ixxai")
-EditorSize = Vector2i(1, 5)
+Size = SubResource("Resource_5qmmu")
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
-[node name="TestCharacter" instance=ExtResource("1_jxsvq")]
+[node name="TestCharacter" unique_id=106379500 instance=ExtResource("1_jxsvq")]
 
-[node name="dp_player_body" parent="." index="0"]
+[node name="dp_player_body" parent="." index="0" unique_id=1008797031]
 EditorAcceleration = "0.00025"
 EditorGravity = "0.0001"
-EditorPosition = Vector2i(0, 2)
-EditorGlobalPosition = Vector2i(0, 2)
+Position = SubResource("Resource_joox1")
 Shape = SubResource("Resource_fdi86")
 mask_collision = 1
 
-[node name="dp_shape_follower" parent="dp_player_body" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
-
-[node name="StylizedCharacter" parent="dp_player_body/dp_shape_follower" index="0" instance=ExtResource("3_fdi86")]
+[node name="StylizedCharacter" parent="dp_player_body/dp_shape_follower" parent_id_path=PackedInt32Array(1531696153) index="0" unique_id=80886288 instance=ExtResource("3_fdi86")]
 transform = Transform3D(-1.0927847e-08, 0, 0.25, 0, 0.25, 0, -0.25, 0, -1.0927847e-08, 0, 0, 0)
 
-[node name="Hurt" parent="CharacterStateMachine" index="4"]
+[node name="Hurt" parent="CharacterStateMachine" parent_id_path=PackedInt32Array(472395283) index="4" unique_id=1397347547]
 StateTitle = 7
 
-[node name="Jump" parent="CharacterStateMachine" index="5"]
-StateTitle = 4
-
-[node name="ArielJump" parent="CharacterStateMachine" index="6"]
+[node name="ArielJump" parent="CharacterStateMachine" parent_id_path=PackedInt32Array(472395283) index="6" unique_id=761846924]
 StateTitle = 5
 
-[node name="Attack1" parent="CharacterStateMachine" index="7"]
+[node name="Attack1" parent="CharacterStateMachine" parent_id_path=PackedInt32Array(472395283) index="7" unique_id=1816863096]
 StateTitle = 8
 
-[node name="Attack2" parent="CharacterStateMachine" index="8"]
+[node name="Attack2" parent="CharacterStateMachine" parent_id_path=PackedInt32Array(472395283) index="8" unique_id=552912844]
 StateTitle = 9

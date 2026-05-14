@@ -60,7 +60,7 @@ public struct StickState
         }
     }
 
-    public DM_Vector2 ToVector()
+    public DM_Vector ToVector()
     {
          
         int UX = (Data & XMagnitudeMask) >> 4;
@@ -69,14 +69,14 @@ public struct StickState
         int YSign = (Data & YSignMask) == 0 ? 1 : -1;
         DM64 X = new DM64(UX) * XSign;
         DM64 Y = new DM64(UY) * YSign;
-        return new DM_Vector2( X,  Y);
+        return new DM_Vector( X,  Y);
     }
 
     // Returns input vector, who's magnitude is squished into the range [0,1] (Not normalized)
-    public DM_Vector2 ToRangedVector()
+    public DM_Vector ToRangedVector()
     {
          
-        DM_Vector2 LargeVector =  ToVector();
+        DM_Vector LargeVector =  ToVector();
         return LargeVector/7;
     }
 

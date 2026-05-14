@@ -11,10 +11,9 @@ using System.Text.RegularExpressions;
 public partial class dp_object : Node
 {
 	// World Space
-	[Export] public Vector2I EditorPosition= new();
-	[Export]public DM_Vector2 Position;
+	[Export]public DM_Vector Position = new();
 
-	public DM_Vector2 GlobalPosition;
+	public DM_Vector GlobalPosition = new();
 
 	public void ComputeGlobalRuntimePosition()
 	{
@@ -76,7 +75,7 @@ public partial class dp_object : Node
 	
 		// Position buffer
 	static int MaxDataBufferSize = NetworkManager.MAX_ROLLBACK_FRAMES;
-	DM_Vector2[] position_buffer = [];
+	DM_Vector[] position_buffer = [];
 
 	[Signal] public delegate void ObjectEnteredEventHandler(dp_object other);
 	[Signal] public delegate void ObjectExitedEventHandler(dp_object other);
@@ -221,25 +220,25 @@ public partial class dp_object : Node
 				}
 
 				PhysicsObjectData PreviousFrameData = (PhysicsObjectData)NullablePreviousFrameData;
-				DM_Vector2 PrevPos = PreviousFrameData.Position; 
+				DM_Vector PrevPos = PreviousFrameData.Position; 
 				
 				if (PrevPos == GlobalPosition)
 				{
 					return HandleStaticRectRectCollision(thisRectangle, other, otherRectangle);
 				}
 
-				DM_Vector2 vel = GlobalPosition - PrevPos;
+				DM_Vector vel = GlobalPosition - PrevPos;
 				if (vel.x == new DM64(0) && vel.y == new DM64(0)){ 
 					// GD.Print("Still need to handle case with no velocity");
 					return false;
 				}
-				DM_Vector2 ProjectedPosition = GlobalPosition.copy();
+				DM_Vector ProjectedPosition = GlobalPosition.copy();
 
-				DM_Vector2 ThisHalfSize = thisRectangle.Size / 2;
-				DM_Vector2 OtherHalfSize = otherRectangle.Size / 2;
+				DM_Vector ThisHalfSize = thisRectangle.Size / 2;
+				DM_Vector OtherHalfSize = otherRectangle.Size / 2;
 
-				DM_Vector2 other_expanded_min = other.GlobalPosition - OtherHalfSize - ThisHalfSize;
-				DM_Vector2 other_expanded_max = other.GlobalPosition + OtherHalfSize + ThisHalfSize;
+				DM_Vector other_expanded_min = other.GlobalPosition - OtherHalfSize - ThisHalfSize;
+				DM_Vector other_expanded_max = other.GlobalPosition + OtherHalfSize + ThisHalfSize;
 
 				
 				DM64 enterX;
@@ -274,16 +273,16 @@ public partial class dp_object : Node
 
 				if (enter > exit ||enter > 1 || enter < 0) {return false;}
 				GlobalPosition = PrevPos + (vel * enter);
-				DM_Vector2 normal = EnteredOnX? new DM_Vector2(vel.x.Sign() * -1, new( 0)) : new DM_Vector2( new( 0), vel.y.Sign() * -1);
+				DM_Vector normal = EnteredOnX? new DM_Vector(vel.x.Sign() * -1, new( 0)) : new DM_Vector( new( 0), vel.y.Sign() * -1);
 				GlobalPosition += normal * dp_physics_server.GlobalInstance.Epsilon;
 
 				// Sliding
 				if (EnteredOnX)
 				{
-					GlobalPosition = new DM_Vector2(GlobalPosition.x, ProjectedPosition.y);
+					GlobalPosition = new DM_Vector(GlobalPosition.x, ProjectedPosition.y);
 				} else
 				{
-					GlobalPosition = new DM_Vector2(ProjectedPosition.x, GlobalPosition.y);
+					GlobalPosition = new DM_Vector(ProjectedPosition.x, GlobalPosition.y);
 				}
 
 				return true;
@@ -313,9 +312,9 @@ public partial class dp_object : Node
 
 	public struct PhysicsObjectData
 	{
-		public DM_Vector2 Position = new();
+		public DM_Vector Position = new();
 		// public dp_shape.ShapeData ShapeData;
-		public PhysicsObjectData(DM_Vector2 _position)
+		public PhysicsObjectData(DM_Vector _position)
 		{
 			Position = _position;
 		}

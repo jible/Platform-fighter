@@ -20,5 +20,5 @@ func _enter_tree():
 
 func _on_scene_changed(root: Node):
 	if (! root): return
-	DpPhysicsServer.configure(root)
-	DpShapeRenderer3d.configure(root)
+	physics_server.configure(root)
+	physics_renderer.configure(root)

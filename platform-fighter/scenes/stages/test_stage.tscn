@@ -1,49 +1,28 @@
 [gd_scene format=3 uid="uid://bv57u8g75hkaj"]
 
 [ext_resource type="Script" uid="uid://c4qq7jgy73oan" path="res://addons/deterministic_physics/physics_objects/dp_object.cs" id="1_8kaqf"]
+[ext_resource type="Script" uid="uid://d17uol54jluxw" path="res://addons/deterministic_physics/math_objects/DM_Vector.cs" id="2_8gf4l"]
+[ext_resource type="Script" uid="uid://dnix7o5miqdut" path="res://addons/deterministic_physics/math_objects/DM64.cs" id="2_q6b3p"]
 [ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/deterministic_physics/physics_objects/dp_shape_follower.cs" id="3_8gf4l"]
-
-[sub_resource type="CSharpScript" id="CSharpScript_u63yl"]
-
-[sub_resource type="CSharpScript" id="CSharpScript_8kaqf"]
-
-[sub_resource type="Resource" id="Resource_q6b3p"]
-script = SubResource("CSharpScript_8kaqf")
-raw = 0
-sign_bit = -9223372036854775808
-whole_bits = 9223372032559808512
-decimal_bits = 4294967295
-
-[sub_resource type="Resource" id="Resource_8gf4l"]
-script = SubResource("CSharpScript_8kaqf")
-raw = 0
-sign_bit = -9223372036854775808
-whole_bits = 9223372032559808512
-decimal_bits = 4294967295
-
-[sub_resource type="Resource" id="Resource_txm6t"]
-script = SubResource("CSharpScript_u63yl")
-x = SubResource("Resource_q6b3p")
-y = SubResource("Resource_8gf4l")
+[ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="4_txm6t"]
 
 [sub_resource type="Resource" id="Resource_day66"]
-script = SubResource("CSharpScript_8kaqf")
-raw = 0
-sign_bit = -9223372036854775808
-whole_bits = 9223372032559808512
-decimal_bits = 4294967295
+script = ExtResource("2_q6b3p")
+EditorValue = 50.0
 
 [sub_resource type="Resource" id="Resource_v3f42"]
-script = SubResource("CSharpScript_8kaqf")
-raw = 0
-sign_bit = -9223372036854775808
-whole_bits = 9223372032559808512
-decimal_bits = 4294967295
+script = ExtResource("2_q6b3p")
+EditorValue = 50.0
 
 [sub_resource type="Resource" id="Resource_q0aiw"]
-script = SubResource("CSharpScript_u63yl")
+script = ExtResource("2_8gf4l")
 x = SubResource("Resource_day66")
 y = SubResource("Resource_v3f42")
+
+[sub_resource type="Resource" id="Resource_hb3ta"]
+script = ExtResource("4_txm6t")
+Size = SubResource("Resource_q0aiw")
+metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [sub_resource type="BoxMesh" id="BoxMesh_day66"]
 size = Vector3(30, 0.25, 0.7)
@@ -52,18 +31,11 @@ size = Vector3(30, 0.25, 0.7)
 
 [node name="dp_object" type="Node" parent="." unique_id=1024399818]
 script = ExtResource("1_8kaqf")
-Position = SubResource("Resource_txm6t")
-GlobalPosition = SubResource("Resource_q0aiw")
-_editorPosition = Vector2i(0, 0)
-_position = SubResource("Resource_txm6t")
-_globalPosition = SubResource("Resource_q0aiw")
-_shape = null
-position_buffer = []
+Shape = SubResource("Resource_hb3ta")
 metadata/_custom_type_script = "uid://c4qq7jgy73oan"
 
-[node name="dp_shape_follower" type="Node3D" parent="dp_object" unique_id=853629134 node_paths=PackedStringArray("Target")]
+[node name="dp_shape_follower" type="Node3D" parent="dp_object" unique_id=853629134]
 script = ExtResource("3_8gf4l")
-Target = NodePath("..")
 metadata/_custom_type_script = "uid://dskjpbfkcglab"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="dp_object/dp_shape_follower" unique_id=709142432]

@@ -384,7 +384,7 @@ public partial class InputManager : Node
         return AllControllerStates[tickManager.GetStateKey(tickManager.GetCurrentTick() ) ][PlayerNumber].GetButton(Button);
     }
 
-    public DM_Vector2 PollForStickState(int StickNumber, int PlayerNumber)
+    public DM_Vector PollForStickState(int StickNumber, int PlayerNumber)
     {
         ControllerState State = AllControllerStates[tickManager.GetStateKey(tickManager.GetCurrentTick() ) ][PlayerNumber];
         if (StickNumber == (int)ControllerState.StickTypes.LEFT)
