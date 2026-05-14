@@ -1,10 +1,14 @@
 using Godot;
 using System;
+using System.Runtime.CompilerServices;
 
-public partial struct DM_Vector2
+[GlobalClass]
+public partial class DM_Vector2: Godot.Resource
 
 {
+    [Export]
     public DM64 x;
+    [Export]
     public DM64 y;
 
 
@@ -39,12 +43,17 @@ public partial struct DM_Vector2
         y = new DM64(a.Y);
     }
 
-    public DM_Vector2(Tuple<string, string> value) : this()
+    public DM_Vector2(Tuple<string, string> value)
     {
          x = new DM64(value.Item1);
         y = new DM64(value.Item1);
     }
 
+    public DM_Vector2()
+    {
+        x = new DM64(0);
+        y = new DM64(0);
+    }
 
     public DM_Vector2 copy()
     {

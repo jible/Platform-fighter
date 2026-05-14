@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [GlobalClass]
 public partial class dp_circle : dp_shape
 {
-    [Export] public string EditorRadius = "50";
+    [Export] 
     public DM64 Radius = new(50);
     
     public override DM64 GetMaxSize()

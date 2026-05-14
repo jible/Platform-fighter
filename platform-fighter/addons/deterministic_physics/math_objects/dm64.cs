@@ -3,7 +3,8 @@ using System;
 using System.Linq;
 using System.Numerics;
 
-public struct DM64
+[GlobalClass]
+public partial class DM64: Godot.Resource
 {
 	// 1 sign bit 31 bits of in and 32 bits of decimal
 	static int SHIFT = 32;
@@ -25,7 +26,18 @@ public struct DM64
     //         SetRawFromString(value);
     //     }
     // }
-
+    [Export]
+	float EditorValue
+	{
+		get
+		{
+			return ToFloat();
+		}
+		set
+		{
+			raw = raw = (long)(value * SCALE);
+		}
+	}
 	// Constructors
 	public DM64()
 	{
@@ -49,6 +61,7 @@ public struct DM64
 		o.raw = r;
 		return o;
     }
+
 	public void SetRawFromString(String value)
     {
         if (string.IsNullOrWhiteSpace(value))
