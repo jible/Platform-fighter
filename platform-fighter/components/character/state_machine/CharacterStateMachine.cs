@@ -8,8 +8,12 @@ using Godot;
 [GlobalClass]
 public partial class CharacterStateMachine: Node
 {
+    [Export]
+    public AnimationPlayer animationPlayer;
     public Dictionary<States, State> StateTitleToState;
     public State CurrentState = null;
+    [Export]
+    public States StartingState;
     public enum States
     {
         IDLE,
@@ -34,10 +38,17 @@ public partial class CharacterStateMachine: Node
         Actionable,
     }
     // This method populates the StateTitleToState dictionary with all of the children of the node. 
-    public void CollectStates()
+    public override void _Ready()
+    {
+        // Config();
+    }
+        
+    public void Config()
     {
         StateTitleToState = new();
         CollectStateRecursion(this);
+        ChangeState(StartingState);
+        GD.Print("readying");
     }
 
 
@@ -77,7 +88,6 @@ public partial class CharacterStateMachine: Node
             {
                 output.Add(state);
                 continue;
-                
             }
 
             foreach (var i in state.Tags)
@@ -112,6 +122,11 @@ public partial class CharacterStateMachine: Node
         CurrentState.LeaveState();
 
         CurrentState = NewStateObject;
+        var NextAnimation = CurrentState.AnimationName;
+        if (NextAnimation != null && animationPlayer != null)
+        {
+            animationPlayer.Play(NextAnimation);
+        }
         CurrentState.EnterState();
 
     }

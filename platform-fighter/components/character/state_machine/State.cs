@@ -15,11 +15,11 @@ public abstract partial class State: Node
     /// </summary>
     [Export] public Godot.Collections.Array<CharacterStateMachine.StateTags> AccessibleTags = new();
     [Export] public Godot.Collections.Array<CharacterStateMachine.StateTags> Tags = new();
-    public Animation MyAnimation;
     // TODO: Establish these references:
     public CharacterStateMachine stateMachine; 
     public InputHandler inputHandler;
-    
+    [Export]
+    public string AnimationName = null;
     public abstract bool GeneralCondition();
     public abstract void EnterState();
     public abstract void LeaveState();
