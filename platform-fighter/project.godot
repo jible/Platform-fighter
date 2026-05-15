@@ -21,6 +21,7 @@ config/icon="res://assets/images/icon.svg"
 
 [autoload]
 
+DmServer="*res://addons/deterministic_physics/math_objects/dm_server.cs"
 DpShapeRenderer3d="*res://addons/deterministic_physics/physics_objects/dp_shape_renderer_3d.cs"
 DpPhysicsServer="*res://addons/deterministic_physics/physics_objects/dp_physics_server.cs"
 PlayerManager="*res://components/Globals/PlayerManager.cs"

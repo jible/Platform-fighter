@@ -11,10 +11,68 @@ using System.Text.RegularExpressions;
 public partial class dp_object : Node
 {
 	// World Space
-	[Export] public Vector2I EditorPosition= new();
-	[Export]public DM_Vector2 Position;
+	private Vector2I _editorPosition = new();
+	[Export] public Vector2I EditorPosition {
+		set
+		{
+			_editorPosition = value;
+			ComputeGlobalEditorPosition(); 
+		}
+		get
+		{
+			return _editorPosition;
+		}
+	}
+	[Export]
 
-	public DM_Vector2 GlobalPosition;
+	public Vector2I EditorGlobalPosition = new();
+	private DM_Vector2 _position = new();
+	public DM_Vector2 Position
+	{
+		set
+		{
+			_position = value;
+			ComputeGlobalRuntimePosition();
+		}
+		get
+		{
+			return _position;
+		}
+	}
+	public DM_Vector2 _globalPosition = new();
+
+	public DM_Vector2 GlobalPosition
+	{
+		get
+		{
+			return _globalPosition;
+		}
+		set
+		{
+			dp_object parent = GetParent() as dp_object;
+
+			_globalPosition = value.copy();
+			_position =  parent ==null? value: parent.GlobalPosition - value ;
+			foreach (Node child in GetChildren())
+			{
+				if (child is dp_object CastedChild)
+				{
+					CastedChild.ComputeGlobalRuntimePosition();
+				}
+			}
+		}
+	}
+
+	public void SetPositionX(DM64 a)
+	{
+		_position.x = a;
+		ComputeGlobalRuntimePosition();
+	}
+	public void SetPositionY(DM64 a)
+	{
+		_position.y = a;
+		ComputeGlobalRuntimePosition();
+	}
 
 	public void ComputeGlobalRuntimePosition()
 	{
@@ -29,6 +87,22 @@ public partial class dp_object : Node
 			if (Child is dp_object CastedChild)
 			{
 				CastedChild.ComputeGlobalRuntimePosition();
+			}
+		}
+	}
+
+	public void ComputeGlobalEditorPosition()
+	{
+		dp_object Parent = GetParent() as dp_object;
+		EditorGlobalPosition = (Parent != null)?
+		Parent.EditorGlobalPosition + EditorPosition:
+		EditorPosition;
+		
+		foreach ( Node Child in GetChildren())
+		{
+			if (Child is dp_object CastedChild)
+			{
+				CastedChild.ComputeGlobalEditorPosition();
 			}
 		}
 	}
@@ -301,7 +375,7 @@ public partial class dp_object : Node
 		//  im gonna take the minecraft approach and always push things up!
 
 		DM64 newY = Other.Position.y +(OtherCastedShape.Size.y/2) + (CastedShape.Size.y/2) + dp_physics_server.GlobalInstance.Epsilon; 
-		Position.y = newY;
+		SetPositionY(newY);
 		return true;
 	}
 
