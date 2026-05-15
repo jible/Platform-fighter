@@ -40,7 +40,7 @@ public partial class CharacterStateMachine: Node
     // This method populates the StateTitleToState dictionary with all of the children of the node. 
     public override void _Ready()
     {
-        Config();
+        // Config();
     }
         
     public void Config()
@@ -58,9 +58,8 @@ public partial class CharacterStateMachine: Node
         {
             // Give it a reference to this state machine
             CastedParent.stateMachine = this;
-            State populatedState;
-            StateTitleToState.TryGetValue(CastedParent.StateTitle, out populatedState);
-            if ( populatedState == null)
+            State PopulatedStateReference = StateTitleToState[CastedParent.StateTitle];
+            if ( PopulatedStateReference == null)
             {
                 StateTitleToState[CastedParent.StateTitle] = CastedParent;
             }
@@ -119,10 +118,8 @@ public partial class CharacterStateMachine: Node
             return;
         }
 
-        if (CurrentState != null)
-        {        
-            CurrentState.LeaveState();
-        }
+
+        CurrentState.LeaveState();
 
         CurrentState = NewStateObject;
         var NextAnimation = CurrentState.AnimationName;
