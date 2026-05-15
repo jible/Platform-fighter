@@ -12,6 +12,7 @@ EditorValue = 0.003
 
 [sub_resource type="Resource" id="Resource_5nvc4"]
 script = ExtResource("3_x0wbg")
+EditorValue = 0.05
 
 [sub_resource type="Resource" id="Resource_cd2ut"]
 script = ExtResource("3_x0wbg")
@@ -49,10 +50,13 @@ Position = SubResource("Resource_joox1")
 Shape = SubResource("Resource_fdi86")
 mask_collision = 1
 
-[node name="StylizedCharacter" parent="dp_player_body/dp_shape_follower" parent_id_path=PackedInt32Array(1531696153) index="0" unique_id=80886288 instance=ExtResource("3_fdi86")]
+[node name="dp_shape_follower" parent="dp_player_body" index="0" unique_id=1531696153]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 0, 0)
+
+[node name="StylizedCharacter" parent="dp_player_body/dp_shape_follower" index="0" unique_id=80886288 instance=ExtResource("3_fdi86")]
 transform = Transform3D(-1.0927847e-08, 0, 0.25, 0, 0.25, 0, -0.25, 0, -1.0927847e-08, 0, 0, 0)
 
-[node name="Skeleton3D" parent="dp_player_body/dp_shape_follower/StylizedCharacter/Armature" parent_id_path=PackedInt32Array(80886288, 483127788) index="0" unique_id=709007059]
+[node name="Skeleton3D" parent="dp_player_body/dp_shape_follower/StylizedCharacter/Armature" parent_id_path=PackedInt32Array(80886288, 25901892) index="0" unique_id=897808167]
 bones/3/rotation = Quaternion(0, 0, 0, 1)
 bones/6/rotation = Quaternion(0.41515502, 0.08255097, -0.47018084, 0.77444285)
 bones/7/rotation = Quaternion(0.6783917, 1.5690573e-09, -6.8567225e-08, 0.73470044)
