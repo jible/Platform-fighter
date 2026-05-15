@@ -242,7 +242,7 @@ public partial class TickManager : Node
     public static void PropogateTick(Node node)
     {
         if (node == null) return;
-        if (node is ITickable tickable)
+        if (node is ICanBeTicked tickable)
         {
             tickable.Tick();
         }
@@ -260,9 +260,9 @@ public partial class TickManager : Node
     }
 
     // Method that gets a list of all nodes that are serializable.
-    public ITickable[] CollectTickableNodes(Node Root)
+    public ICanBeTicked[] CollectTickableNodes(Node Root)
     {
-        var Collector = new ObjectTypeCollector<ITickable>();
+        var Collector = new ObjectTypeCollector<ICanBeTicked>();
         return Collector.CollectTargetNodes(Root);
     }
 

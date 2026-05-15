@@ -6,6 +6,7 @@ public partial class Idle : State
 {
     public override void EnterState()
     {
+        GD.Print("entered idle");
     }
 
     public override bool GeneralCondition()
