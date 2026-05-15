@@ -4,18 +4,18 @@ using System.Collections.Generic;
 
 [Tool]
 [GlobalClass]
-public partial class DP_ShapeRenderer3D : Node3D
+public partial class dp_shape_renderer_3d : Node3D
 {
-	public static DP_ShapeRenderer3D GlobalInstance;
-	[Export] public DP_PhysicsServer PhysicsServer;
+	public static dp_shape_renderer_3d GlobalInstance;
+	[Export] public dp_physics_server PhysicsServer;
 	[Export] public bool RenderShapesInEditor = true;
 	[Export] public bool RenderShapesInPlay = true;
 	public int shape_layer = 0;
 	public float BuildBoardThickness = 0.1f;
-	public Dictionary<DP_Object,MeshInstance3D> ObjectToMesh = [];
-	private Dictionary<DP_Object,RenderState> PreviousData = [];
+	public Dictionary<dp_object,MeshInstance3D> ObjectToMesh = [];
+	private Dictionary<dp_object,RenderState> PreviousData = [];
 
-	public List<DP_ShapeFollower> ShapeFollowers = [];
+	public List<dp_shape_follower> ShapeFollowers = [];
 
 	public override void _Ready()
 	{
@@ -59,7 +59,7 @@ public partial class DP_ShapeRenderer3D : Node3D
 	public void GetAllFollowers(Node Parent)
 	{
 		if (Parent == null) { return; }
-		if (Parent is DP_ShapeFollower CastedParent) {
+		if (Parent is dp_shape_follower CastedParent) {
 			if (!ShapeFollowers.Contains(CastedParent)) {
 				ShapeFollowers.Add(CastedParent); 
 			}
@@ -79,21 +79,21 @@ public partial class DP_ShapeRenderer3D : Node3D
 
 		Node CurrentScene = Engine.IsEditorHint() ? GetTree().EditedSceneRoot: GetTree().CurrentScene;
 
-		var seenShapes = new HashSet<DP_Object>();
+		var seenShapes = new HashSet<dp_object>();
 
 		if (PhysicsServer == null) { 
-			PhysicsServer = DP_PhysicsServer.GlobalInstance;
+			PhysicsServer = dp_physics_server.GlobalInstance;
 			if (PhysicsServer == null) return;
 		}
 
-		foreach (DP_Object PhysicsObject in PhysicsServer.AllEntities)
+		foreach (dp_object PhysicsObject in PhysicsServer.AllEntities)
 		{
 			if (PhysicsObject == null || !IsInstanceValid(PhysicsObject) || PhysicsObject.Shape == null || !IsInstanceValid(PhysicsObject.Shape))
 			{
 				continue;
 			}
 
-			DP_Shape Shape = PhysicsObject.Shape;
+			dp_shape Shape = PhysicsObject.Shape;
 			seenShapes.Add(PhysicsObject);
 			MeshInstance3D mesh;
 
@@ -105,12 +105,12 @@ public partial class DP_ShapeRenderer3D : Node3D
 				ObjectToMesh[PhysicsObject] = mesh;
 			}
 
-			if (Shape is DP_Circle c) { 
+			if (Shape is dp_circle c) { 
 				draw_collision_circle(PhysicsObject, c, mesh); }
-			else if (Shape is DP_Rectangle r) { 
+			else if (Shape is dp_rectangle r) { 
 				draw_collision_rectangle(PhysicsObject, r, mesh); }
 		}
-		var toRemove = new List<DP_Object>();
+		var toRemove = new List<dp_object>();
 
 		foreach (var PhysicsObject in ObjectToMesh.Keys)
 		{
@@ -127,7 +127,7 @@ public partial class DP_ShapeRenderer3D : Node3D
 		}
 	}
 
-	public void RegisterFollower(DP_ShapeFollower newItem)
+	public void RegisterFollower(dp_shape_follower newItem)
 	{
 		if ( ShapeFollowers.Contains(newItem)) return;
 		ShapeFollowers.Add(newItem);
@@ -149,7 +149,7 @@ public partial class DP_ShapeRenderer3D : Node3D
 
 	}
 
-	public void draw_collision_circle(DP_Object obj, DP_Circle circle, MeshInstance3D MeshInstance)
+	public void draw_collision_circle(dp_object obj, dp_circle circle, MeshInstance3D MeshInstance)
 	{
 		Vector3 ObjPosition;
 		float ObjRadius;
@@ -184,7 +184,7 @@ public partial class DP_ShapeRenderer3D : Node3D
 
 	}
 
-	public void draw_collision_rectangle(DP_Object obj, DP_Rectangle rectangle, MeshInstance3D meshInstance)
+	public void draw_collision_rectangle(dp_object obj, dp_rectangle rectangle, MeshInstance3D meshInstance)
 	{
 		Vector2 ObjSize;
 		Vector3 ObjPos;

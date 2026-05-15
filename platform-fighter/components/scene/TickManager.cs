@@ -33,7 +33,7 @@ public partial class TickManager : Node
 
     public override void _Ready()
     {
-        DP_Object.tickManager = this;
+        dp_object.tickManager = this;
         NetworkManager.GlobalInstance.FastMessageReceived += (MessageType, MessageData, Sender) =>
         {
             if (MessageType != (int)NetworkManager.FastNetworkMessageType.ShowHash) return;
@@ -84,7 +84,7 @@ public partial class TickManager : Node
 
     public void Tick()
     {
-        if (DP_PhysicsServer.GlobalInstance == null || DP_ShapeRenderer3D.GlobalInstance == null)
+        if (dp_physics_server.GlobalInstance == null || dp_shape_renderer_3d.GlobalInstance == null)
         {return;}
 
         

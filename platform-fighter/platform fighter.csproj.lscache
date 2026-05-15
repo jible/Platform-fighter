@@ -55,6 +55,21 @@ TemporaryDependencyNodeTargetIdentifier=net8.0
 .godot/mono/temp/obj/Debug/
  .NETCoreApp,Version=v8.0.AssemblyAttributes.cs
  platform fighter.AssemblyInfo.cs
+addons/deterministic_physics/math_objects/
+ DM64.cs
+ DM_Base.cs
+ DM_Vector.cs
+addons/deterministic_physics/physics_objects/
+ dp_object.cs
+ dp_physics_server.cs
+ dp_player_body.cs
+ dp_shape_follower.cs
+ dp_shape_renderer_3d.cs
+ shapes/
+  dp_circle.cs
+  dp_convex.cs
+  dp_rectangle.cs
+  dp_shape.cs
 components/character/
  BaseCharacter3d.cs
  CharacterController.cs

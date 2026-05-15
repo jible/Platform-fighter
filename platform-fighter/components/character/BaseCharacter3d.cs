@@ -5,7 +5,7 @@ using System;
 public partial class BaseCharacter3d : Node3D
 {
     [Export] InputHandler inputHandler;
-    [Export] DP_PlayerBody playerBody;
+    [Export] dp_player_body playerBody;
     public int PlayerNumber;
     public PlayerProfile playerProfile;
 

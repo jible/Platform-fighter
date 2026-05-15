@@ -8,7 +8,7 @@ using System.Xml;
 
 [GlobalClass]
 [Tool]
-public partial class DP_PlayerBody : DP_Object, ICanBeTicked, ISerializable
+public partial class dp_player_body : dp_object, ICanBeTicked, ISerializable
 {
 	public DM_Vector Velocity = new();
 	[Export] InputHandler inputHandler;
@@ -21,7 +21,7 @@ public partial class DP_PlayerBody : DP_Object, ICanBeTicked, ISerializable
 
     public ISaveHandler MakeSaveHandler()
     {
-        return new SaveHandler<DP_PlayerBody, SerializedState> (this);
+        return new SaveHandler<dp_player_body, SerializedState> (this);
     }
 
     public void Tick()
@@ -33,18 +33,18 @@ public partial class DP_PlayerBody : DP_Object, ICanBeTicked, ISerializable
 		Position = Position + Velocity;
 	}
 
-    public class SerializedState : ISerializedState<DP_PlayerBody>
+    public class SerializedState : ISerializedState<dp_player_body>
 	{
 		public DM_Vector Velocity = new();
 		public DM_Vector Position = new();
 
-        public void Load(DP_PlayerBody Owner)
+        public void Load(dp_player_body Owner)
         {
             Owner.Velocity = Velocity;
 			Owner.Position = Position;
         }
 
-        public void Save(DP_PlayerBody Owner)
+        public void Save(dp_player_body Owner)
         {
             Position = Owner.Position;
 			Velocity = Owner.Velocity;

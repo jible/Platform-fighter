@@ -10,7 +10,7 @@ public partial class CharacterStateMachine: Node, ICanBeTicked/*, ISerializable*
 {
     [Export]
     public AnimationPlayer animationPlayer;
-    [Export] public DP_PlayerBody PlayerBody;
+    [Export] public dp_player_body PlayerBody;
     public Dictionary<States, State> StateTitleToState;
     public State CurrentState = null;
     [Export]

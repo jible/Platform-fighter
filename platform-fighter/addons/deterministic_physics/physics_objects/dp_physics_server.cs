@@ -8,9 +8,9 @@ using System.Security.AccessControl;
 
 [GlobalClass]
 [Tool]
-public partial class DP_PhysicsServer : Node
+public partial class dp_physics_server : Node
 {
-	public List<DP_Object> AllEntities = new List<DP_Object>();
+	public List<dp_object> AllEntities = new List<dp_object>();
 	public string EditorEpsilon = "0.0001";
 	public DM64 Epsilon = new(0);
 
@@ -39,7 +39,7 @@ public partial class DP_PhysicsServer : Node
 		return root;
 	}
 	
-	public static DP_PhysicsServer GlobalInstance;
+	public static dp_physics_server GlobalInstance;
 	public void configure(Node SceneRoot = null)
 	{
 		if (SceneRoot == null)
@@ -58,16 +58,16 @@ public partial class DP_PhysicsServer : Node
 	{
 		if (Engine.IsEditorHint()) { return; }
 		// Spacial Hashing
-		Dictionary<Vector2I, List<DP_Object>> Grid = [];
-		Dictionary<DP_Object, List<Vector2I>> ObjectCells =[];
+		Dictionary<Vector2I, List<dp_object>> Grid = [];
+		Dictionary<dp_object, List<Vector2I>> ObjectCells =[];
 
 		HashObjects(Grid, ObjectCells);
 
 		// Itterate through all objects
 		// Use Spacial Hashing to decide what objects to check
-		foreach (DP_Object Entity in AllEntities)
+		foreach (dp_object Entity in AllEntities)
 		{
-			HashSet<DP_Object> interacted = [];
+			HashSet<dp_object> interacted = [];
 			HandleObjectProcess(Entity, Grid, ObjectCells, interacted);
 		}
 	}
@@ -75,10 +75,10 @@ public partial class DP_PhysicsServer : Node
 	// Itterates through all physics objects and populates the grid with all 
 	// tile positions they overlap 
 	public void HashObjects(
-		Dictionary<Vector2I, List<DP_Object>> Grid, 
-		Dictionary<DP_Object, List<Vector2I>> ObjectCells)
+		Dictionary<Vector2I, List<dp_object>> Grid, 
+		Dictionary<dp_object, List<Vector2I>> ObjectCells)
 	{
-		foreach (DP_Object Entity in AllEntities)
+		foreach (dp_object Entity in AllEntities)
 		{
 			if (!Entity.is_active || Entity.Shape == null) continue;
 			ObjectCells[Entity] = GetCoveredCells(Entity);
@@ -94,10 +94,10 @@ public partial class DP_PhysicsServer : Node
 	// For a given object, itterate through all other physics objects and checks if they potentially overlap on
 	// any hashed tiles. if they do, it check 
 	public void HandleObjectProcess( 
-		DP_Object EntityA,
-		Dictionary<Vector2I, List<DP_Object>> Grid, 
-		Dictionary<DP_Object, List<Vector2I>> EntityCells,
-		HashSet<DP_Object> interacted)
+		dp_object EntityA,
+		Dictionary<Vector2I, List<dp_object>> Grid, 
+		Dictionary<dp_object, List<Vector2I>> EntityCells,
+		HashSet<dp_object> interacted)
 	{
 		EntityA.CleanseBuffers();
 		if (!EntityA.is_active || EntityA.Shape ==null){return;} 
@@ -118,16 +118,16 @@ public partial class DP_PhysicsServer : Node
 		EntityA.PopulateCurrentFrame();
 	}
 
-	private Vector2I GetGridPos(DP_Object Entity)
+	private Vector2I GetGridPos(dp_object Entity)
 	{
 		DM_Vector DM_GridPos = Entity.GlobalPosition / HashGridSize;
 		return new(DM_GridPos.x.Round().to_int(), DM_GridPos.y.Round().to_int());
 	}
 
-	private List<Vector2I> GetCoveredCells(DP_Object Entity)
+	private List<Vector2I> GetCoveredCells(dp_object Entity)
 	{
 		List<Vector2I> Output = [];
-		DP_Shape shape = Entity.Shape;
+		dp_shape shape = Entity.Shape;
 		if (shape == null)
 		{
 			return Output;
@@ -150,7 +150,7 @@ public partial class DP_PhysicsServer : Node
 		return Output;
 	}
 
-	public void HandleIndividualInteraction(DP_Object EntityA, DP_Object EntityB)
+	public void HandleIndividualInteraction(dp_object EntityA, dp_object EntityB)
 	{
 		if (EntityA == EntityB) return;
 		if (EntityA.is_static) return;
@@ -167,7 +167,7 @@ public partial class DP_PhysicsServer : Node
 		EntityA.CheckCollision(EntityB);    
 	}
 
-	public void RegisterObj( DP_Object target)
+	public void RegisterObj( dp_object target)
 	{
 		if (!AllEntities.Contains(target))
 		{
@@ -179,7 +179,7 @@ public partial class DP_PhysicsServer : Node
 	public void GetAllEntities(Node Parent)
 	{
 		if (Parent == null) { return; }
-		if (Parent is DP_Object CastedParent) {
+		if (Parent is dp_object CastedParent) {
 			RegisterObj(CastedParent);
 		}
 		foreach (var ChildNode in Parent.GetChildren())

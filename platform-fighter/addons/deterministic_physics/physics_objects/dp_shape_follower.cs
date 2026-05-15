@@ -3,19 +3,19 @@ using System;
 
 [GlobalClass]
 [Tool]
-public partial class DP_ShapeFollower : Node3D
+public partial class dp_shape_follower : Node3D
 {
-	DP_Object Target;
+	dp_object Target;
 	[Export] float ZIndex = 0f;
 	public void UpdatePosition()
 	{
 		if (Target == null)
 		{
 			Node Parent = GetParent();
-			if ( Parent is DP_Object casted)Target = casted;
+			if ( Parent is dp_object casted)Target = casted;
 			else return;
 		}
-		DP_Shape shape = Target.Shape;
+		dp_shape shape = Target.Shape;
 		if (shape == null) return;
 		Position = VectorUp(Target.GlobalPosition.ToStandardVector(), ZIndex);
 	}
@@ -27,7 +27,7 @@ public partial class DP_ShapeFollower : Node3D
 
 	public override void _Ready()
 	{
-		DP_ShapeRenderer3D renderer = DP_ShapeRenderer3D.GlobalInstance;
+		dp_shape_renderer_3d renderer = dp_shape_renderer_3d.GlobalInstance;
 		if ( renderer == null) { return;}
 		renderer.RegisterFollower(this);
 	}

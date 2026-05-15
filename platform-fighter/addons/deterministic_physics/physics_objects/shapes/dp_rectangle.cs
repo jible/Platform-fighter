@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 [GlobalClass]
 [Tool]
-public partial class DP_Rectangle : DP_Shape
+public partial class dp_rectangle : dp_shape
 {
     [Export] 
     public DM_Vector Size = new(50,50);
@@ -13,5 +13,10 @@ public partial class DP_Rectangle : DP_Shape
     {
         return DM64.Max(Size.x, Size.y) / 2;
     }
+
+  
+
+
+
     
 }

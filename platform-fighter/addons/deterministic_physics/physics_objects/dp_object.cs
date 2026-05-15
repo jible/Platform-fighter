@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 [Tool]
 [GlobalClass]
-public partial class DP_Object : Node
+public partial class dp_object : Node
 {
 	// World Space
 	[Export]public DM_Vector Position = new();
@@ -19,7 +19,7 @@ public partial class DP_Object : Node
 		{
 			var parent = GetParent();
 			var ParentPosition = new DM_Vector(0,0);
-			if (parent != null && (parent is DP_Object castedParent))
+			if (parent != null && (parent is dp_object castedParent))
 			{
 				ParentPosition = castedParent.GlobalPosition;
 			}
@@ -27,7 +27,7 @@ public partial class DP_Object : Node
 		}
 		set
 		{
-			var parent = GetParent() as DP_Object;
+			var parent = GetParent() as dp_object;
 			var ParentPosition = parent?.GlobalPosition ?? new DM_Vector(0,0);
 			Position = value - ParentPosition;
 		}
@@ -37,14 +37,14 @@ public partial class DP_Object : Node
 
 	// Rollback Data
 	PhysicsObjectData?[] RollbackData;
-	public static DP_PhysicsServer GlobalPhysicsServer;
+	public static dp_physics_server GlobalPhysicsServer;
 
 	
 
 	// Collision Data
 	[Export]public bool is_active = true;
-	private DP_Shape _shape;
-	[Export]public DP_Shape Shape
+	private dp_shape _shape;
+	[Export]public dp_shape Shape
 	{
 		get => _shape;
 		set
@@ -66,7 +66,7 @@ public partial class DP_Object : Node
 	[Export]public Color color = new Color((float)0.188, (float)0.569, (float)0.341, (float)0.773);
 
 	// Trigger overlap handling
-	Dictionary<DP_Object, bool>[] overlaps = [];
+	Dictionary<dp_object, bool>[] overlaps = [];
 	
 	// Helper for getting key of position and overlap
 	public static TickManager tickManager;
@@ -80,16 +80,16 @@ public partial class DP_Object : Node
 	static int MaxDataBufferSize = NetworkManager.MAX_ROLLBACK_FRAMES;
 	DM_Vector[] position_buffer = [];
 
-	[Signal] public delegate void ObjectEnteredEventHandler(DP_Object other);
-	[Signal] public delegate void ObjectExitedEventHandler(DP_Object other);
-	[Signal] public delegate void ObjectCollidedEventHandler(DP_Object other);
+	[Signal] public delegate void ObjectEnteredEventHandler(dp_object other);
+	[Signal] public delegate void ObjectExitedEventHandler(dp_object other);
+	[Signal] public delegate void ObjectCollidedEventHandler(dp_object other);
 
 	public override void _Ready()
 	{
 		// Fill overlaps and position buffer with 
 		if (GlobalPhysicsServer == null)
 		{
-			GlobalPhysicsServer = DP_PhysicsServer.GlobalInstance;
+			GlobalPhysicsServer = dp_physics_server.GlobalInstance;
 			if (GlobalPhysicsServer == null)
 			{
 				GD.Print("No Physics Server");
@@ -98,7 +98,7 @@ public partial class DP_Object : Node
 		}
 		GlobalPhysicsServer.RegisterObj(this);
 		if (Engine.IsEditorHint()) {return;}
-		overlaps = new Dictionary<DP_Object, bool>[MaxDataBufferSize];
+		overlaps = new Dictionary<dp_object, bool>[MaxDataBufferSize];
 		RollbackData = new PhysicsObjectData?[MaxDataBufferSize];
 		for (int i = 0; i < MaxDataBufferSize; i++)
 		{
@@ -115,16 +115,16 @@ public partial class DP_Object : Node
 
 	}
 	// Overlap Detection
-	public bool CheckOverlap(DP_Object other)
+	public bool CheckOverlap(dp_object other)
 	{
 		bool is_overlapping = false;
 
 		switch (Shape)
 		{
-			case DP_Circle:
+			case dp_circle:
 				is_overlapping = detect_circle_overlap(other);
 				break;
-			case DP_Rectangle:
+			case dp_rectangle:
 				is_overlapping = detect_rect_overlap(other);
 				break;
 			default:
@@ -143,29 +143,29 @@ public partial class DP_Object : Node
 		return is_overlapping;
 	}
 
-	public bool detect_circle_overlap(DP_Object other)
+	public bool detect_circle_overlap(dp_object other)
 	{
 		switch (other.Shape)
 		{
-			case DP_Circle otherCircle when Shape is DP_Circle thisCircle:
+			case dp_circle otherCircle when Shape is dp_circle thisCircle:
 				DM64 max_distance = thisCircle.Radius + otherCircle.Radius;
 				DM64 distance = (GlobalPosition - other.GlobalPosition).GetMagnitude(); 
 				return distance < max_distance;
-			case DP_Rectangle:
+			case dp_rectangle:
 				GD.Print("circle rect overlap not programmed");
 				break;
 		}
 		return false;
 	}
 
-	public bool detect_rect_overlap(DP_Object other)
+	public bool detect_rect_overlap(dp_object other)
 	{
 		switch (other.Shape)
 		{
-			case DP_Circle:
+			case dp_circle:
 				GD.Print("circle rect overlap not programmed");
 				break;
-			case DP_Rectangle otherRectangle when Shape is DP_Rectangle thisRectangle:
+			case dp_rectangle otherRectangle when Shape is dp_rectangle thisRectangle:
 				DM64 AL = GlobalPosition.x;
 				DM64 AR = GlobalPosition.x + thisRectangle.Size.x;
 				DM64 AB = GlobalPosition.y;
@@ -187,14 +187,14 @@ public partial class DP_Object : Node
 	}
 
 	// Collision Detection and handling.
-	public void CheckCollision(DP_Object other)
+	public void CheckCollision(dp_object other)
 	{
 		bool collided = false;
 		switch (other.Shape)
 		{
-			case DP_Circle:
+			case dp_circle:
 				break;
-			case DP_Rectangle:
+			case dp_rectangle:
 				collided = HandleRectCollision(other);
 				break;
 		}
@@ -206,13 +206,13 @@ public partial class DP_Object : Node
 		return;
 	}
 
-	public bool HandleRectCollision(DP_Object other)
+	public bool HandleRectCollision(dp_object other)
 	{
 		switch (other.Shape)
 		{
-			case DP_Circle:
+			case dp_circle:
 				break;
-			case DP_Rectangle otherRectangle  when Shape is DP_Rectangle thisRectangle:
+			case dp_rectangle otherRectangle  when Shape is dp_rectangle thisRectangle:
 
 				PhysicsObjectData? NullablePreviousFrameData = RollbackData[ GetPrevBufferPosition()];
 
@@ -277,7 +277,7 @@ public partial class DP_Object : Node
 				if (enter > exit ||enter > 1 || enter < 0) {return false;}
 				GlobalPosition = PrevPos + (vel * enter);
 				DM_Vector normal = EnteredOnX? new DM_Vector(vel.x.Sign() * -1, new( 0)) : new DM_Vector( new( 0), vel.y.Sign() * -1);
-				GlobalPosition += normal * DP_PhysicsServer.GlobalInstance.Epsilon;
+				GlobalPosition += normal * dp_physics_server.GlobalInstance.Epsilon;
 
 				// Sliding
 				if (EnteredOnX)
@@ -293,7 +293,7 @@ public partial class DP_Object : Node
 		return false;
 	}
 
-	public bool HandleStaticRectRectCollision(DP_Rectangle CastedShape, DP_Object Other, DP_Rectangle OtherCastedShape)
+	public bool HandleStaticRectRectCollision(dp_rectangle CastedShape, dp_object Other, dp_rectangle OtherCastedShape)
 	{
 		bool overlapping = detect_rect_overlap(Other);
 
@@ -302,7 +302,7 @@ public partial class DP_Object : Node
 		// Gonna get a little creative with this for now! Instead of finding the nearest edge,
 		//  im gonna take the minecraft approach and always push things up!
 
-		DM64 newY = Other.Position.y +(OtherCastedShape.Size.y/2) + (CastedShape.Size.y/2) + DP_PhysicsServer.GlobalInstance.Epsilon; 
+		DM64 newY = Other.Position.y +(OtherCastedShape.Size.y/2) + (CastedShape.Size.y/2) + dp_physics_server.GlobalInstance.Epsilon; 
 		Position.y = newY;
 		return true;
 	}
