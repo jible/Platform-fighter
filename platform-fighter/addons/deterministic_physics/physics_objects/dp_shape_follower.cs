@@ -17,7 +17,8 @@ public partial class dp_shape_follower : Node3D
 		}
 		dp_shape shape = Target.Shape;
 		if (shape == null) return;
-		Position = VectorUp(Target.GlobalPosition.ToStandardVector(), ZIndex);
+		if (Engine.IsEditorHint()) Position = VectorUp(Target.GlobalPosition.ToStandardVector(), ZIndex);
+		else Position = VectorUp(Target.GlobalPosition.ToStandardVector(), ZIndex);
 	}
 
 	private Vector3 VectorUp(Vector2 v, float z)

@@ -29,9 +29,13 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 	{
 		DM_Vector dirVector = inputHandler.PollForStickState(0);
 		dirVector.y = dirVector.y * -1;
+		GD.Print("input", dirVector.ToStandardVector());
 		Velocity += Acceleration * dirVector;
+		GD.Print("velocity", Velocity.ToStandardVector());
+		GD.Print("acceleration", Acceleration.ToFloat());
 		Velocity.y -= Gravity;
 		Position = Position + Velocity;
+
 	}
 
     public class SerializedState : ISerializedState<dp_player_body>
