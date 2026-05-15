@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 [Tool]
 [GlobalClass]
-public partial class dp_circle : dp_shape
+public partial class DP_Circle : DP_Shape
 {
     [Export] 
     public DM64 Radius = new(50);

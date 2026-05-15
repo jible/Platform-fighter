@@ -12,8 +12,8 @@ public partial class PlayManager : Node3D
 
     public override void _Ready()
     {
-        dp_physics_server.GlobalInstance.configure();
-        dp_shape_renderer_3d.GlobalInstance.configure();
+        DP_PhysicsServer.GlobalInstance.configure();
+        DP_ShapeRenderer3D.GlobalInstance.configure();
         characterHolder.Config();
         StageHolder.Config();
         tickManager.PrepForRollback();
@@ -22,10 +22,10 @@ public partial class PlayManager : Node3D
 
     public void Tick()
     {
-        dp_physics_server.GlobalInstance.PhysicsTick();
+        DP_PhysicsServer.GlobalInstance.PhysicsTick();
         if (!tickManager.IsRollingBack )
         {
-            dp_shape_renderer_3d.GlobalInstance.update_shape_render();
+            DP_ShapeRenderer3D.GlobalInstance.update_shape_render();
         } 
         return;
     }
