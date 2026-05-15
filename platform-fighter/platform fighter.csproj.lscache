@@ -57,6 +57,7 @@ TemporaryDependencyNodeTargetIdentifier=net8.0
  platform fighter.AssemblyInfo.cs
 addons/deterministic_physics/math_objects/
  DM64.cs
+ DM_Base.cs
  DM_Vector.cs
 addons/deterministic_physics/physics_objects/
  dp_object.cs
