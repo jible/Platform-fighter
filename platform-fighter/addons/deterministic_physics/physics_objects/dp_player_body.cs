@@ -8,13 +8,14 @@ using System.Xml;
 
 [GlobalClass]
 [Tool]
-public partial class dp_player_body : dp_object, ICanBeTicked, ISerializable
+public partial class dp_player_body : dp_object, ITickable, ISerializable
 {
 	public DM_Vector Velocity = new();
 	[Export] InputHandler inputHandler;
 	[Export] public DM64 Acceleration = new();
-	
-	[Export] public DM64 Gravity = new();
+
+
+	public DM64 Gravity = new();
 
 	
 	public DM64 MaxVelocity = new();

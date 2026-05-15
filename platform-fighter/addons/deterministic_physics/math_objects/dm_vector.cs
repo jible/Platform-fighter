@@ -8,32 +8,9 @@ public partial class DM_Vector: Godot.Resource
 
 {
     [Export]
-    public float EditorX
-    {
-        get
-        {
-            return x.ToFloat();
-        }
-        set
-        {
-            x = new DM64(value);
-        }
-    }
-    public DM64 x = new();
-    
+    public DM64 x;
     [Export]
-    public float EditorY
-    {
-        get
-        {
-            return y.ToFloat();
-        }
-        set
-        {
-            y = new DM64(value);
-        }
-    }
-    public DM64 y = new();
+    public DM64 y;
 
 
     // Constructors

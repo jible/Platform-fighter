@@ -6,11 +6,11 @@ public partial class Jump : State
 {
     public override void EnterState()
     {
+        throw new NotImplementedException();
     }
 
     public override bool GeneralCondition()
     {
-        GD.Print("checking conditions");
 
         return inputHandler.PollForInput(ControllerState.ButtonTypes.JUMP);
 
@@ -18,16 +18,17 @@ public partial class Jump : State
     
     public override void LeaveState()
     {
+        throw new NotImplementedException();
     }
 
     public override void OnAnimationFinished()
     {
-        stateMachine.ChangeState(CharacterStateMachine.States.IDLE);
-
+        throw new NotImplementedException();
     }
 
     public override void Tick()
     {
+        throw new NotImplementedException();
     }
 
 }

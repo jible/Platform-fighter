@@ -6,11 +6,10 @@ using System.Runtime.CompilerServices;
 using Godot;
 
 [GlobalClass]
-public partial class CharacterStateMachine: Node, ICanBeTicked/*, ISerializable*/
+public partial class CharacterStateMachine: Node
 {
     [Export]
     public AnimationPlayer animationPlayer;
-    [Export] public dp_player_body PlayerBody;
     public Dictionary<States, State> StateTitleToState;
     public State CurrentState = null;
     [Export]
@@ -49,7 +48,7 @@ public partial class CharacterStateMachine: Node, ICanBeTicked/*, ISerializable*
         StateTitleToState = new();
         CollectStateRecursion(this);
         ChangeState(StartingState);
-        animationPlayer.AnimationFinished += (e) => {OnAnimationFinished();};
+        GD.Print("readying");
     }
 
 
@@ -77,13 +76,13 @@ public partial class CharacterStateMachine: Node, ICanBeTicked/*, ISerializable*
     private SortedSet<State> CollectAvailableStates(State Target)
     {
         var output = new SortedSet<State>();
- 
+
+
+        // Itterate through each available 
         
         for (int StateTitle = 0; StateTitle < (int)States.COUNT; StateTitle++)
         {
-            State state;
-            StateTitleToState.TryGetValue((States)StateTitle, out state);
-            if (state == null ) continue;
+            var state = StateTitleToState[(States)StateTitle];
             if (state == Target) continue;
             
             if (Target.AccessibleStates.Contains(state.StateTitle))
@@ -106,8 +105,11 @@ public partial class CharacterStateMachine: Node, ICanBeTicked/*, ISerializable*
         
         return output;
     }
+
+
     
-    SortedSet<State> AvailableStates = new();
+    
+    public Dictionary<StateTags, States[]> StateBuckets = new();
     public void ChangeState(States StateArg)
     {
         State NewStateObject = StateTitleToState[StateArg];
@@ -123,7 +125,6 @@ public partial class CharacterStateMachine: Node, ICanBeTicked/*, ISerializable*
         }
 
         CurrentState = NewStateObject;
-        AvailableStates = CollectAvailableStates(CurrentState);
         var NextAnimation = CurrentState.AnimationName;
         if (NextAnimation != null && animationPlayer != null)
         {
@@ -137,29 +138,17 @@ public partial class CharacterStateMachine: Node, ICanBeTicked/*, ISerializable*
     public void OnAnimationFinished()
     {
         CurrentState.OnAnimationFinished();
+
     }
 
     public void Tick()
     {
         CurrentState.Tick();
-        foreach (var state in AvailableStates)
-        {
-            GD.Print(state);
-            if (state.GeneralCondition())
-            {
-                ChangeState(state.StateTitle);
-                return;
-            }
-        }
+
+
 
 
     }
-
-    public ISaveHandler MakeSaveHandler()
-    {
-        throw new NotImplementedException();
-    }
-
 }
 
 

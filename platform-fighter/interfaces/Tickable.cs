@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public interface ICanBeTicked
+public interface ITickable
 {
     public void Tick();
 }
