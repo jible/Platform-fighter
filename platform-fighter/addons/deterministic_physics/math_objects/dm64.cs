@@ -4,7 +4,6 @@ using System.Linq;
 using System.Numerics;
 
 [GlobalClass]
-[Tool]
 public partial class DM64: Godot.Resource
 {
 	// 1 sign bit 31 bits of in and 32 bits of decimal
@@ -15,6 +14,18 @@ public partial class DM64: Godot.Resource
 	public ulong whole_bits = 0x7FFFFFFF00000000;
 	public ulong decimal_bits = 0x0000000FFFFFFFF;
 
+	// // Exports with getter and setter
+	// [Export] public string editor_value
+    // {
+    //     get
+    //     {
+    //         return ToFloat().ToString();
+    //     }
+    //     set
+    //     {
+    //         SetRawFromString(value);
+    //     }
+    // }
     [Export]
 	float EditorValue
 	{
@@ -24,7 +35,7 @@ public partial class DM64: Godot.Resource
 		}
 		set
 		{
-			raw = (long)(value * SCALE);
+			raw = raw = (long)(value * SCALE);
 		}
 	}
 	// Constructors

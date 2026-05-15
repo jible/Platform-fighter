@@ -153,8 +153,15 @@ public partial class dp_shape_renderer_3d : Node3D
 	{
 		Vector3 ObjPosition;
 		float ObjRadius;
-		ObjPosition = VectorUp(obj.GlobalPosition.ToStandardVector(), shape_layer);
-		ObjRadius = circle.Radius.ToFloat();
+		if (Engine.IsEditorHint())
+		{
+			ObjPosition = VectorUp(obj.EditorGlobalPosition, shape_layer);
+			ObjRadius = circle.EditorRadius.ToFloat();
+		}else
+		{
+			ObjPosition = VectorUp(obj.GlobalPosition.ToStandardVector(), shape_layer);
+			ObjRadius = circle.Radius.ToFloat();
+		}
 		
 
 		RenderState ObjPrevData;
@@ -190,8 +197,8 @@ public partial class dp_shape_renderer_3d : Node3D
 		Vector3 ObjPos;
 		if (Engine.IsEditorHint()){
 
-			ObjSize = rectangle.Size.ToStandardVector();
-			ObjPos = VectorUp(obj.GlobalPosition.ToStandardVector(), shape_layer);
+			ObjSize = rectangle.EditorSize;
+			ObjPos = VectorUp(obj.EditorGlobalPosition, shape_layer);
 		} else{
 			ObjSize = rectangle.Size.ToStandardVector();
 			ObjPos = VectorUp(obj.GlobalPosition.ToStandardVector(), shape_layer);

@@ -1,11 +1,9 @@
-[gd_scene format=3 uid="uid://db2kvp6c4fwm2"]
+[gd_scene load_steps=16 format=3 uid="uid://db2kvp6c4fwm2"]
 
 [ext_resource type="Script" uid="uid://bmo5fsex1xcio" path="res://components/character/BaseCharacter3d.cs" id="1_1xapf"]
 [ext_resource type="Script" uid="uid://dbrqeh8cf0vgv" path="res://addons/deterministic_physics/physics_objects/dp_player_body.cs" id="2_dn0l0"]
 [ext_resource type="Script" uid="uid://dskjpbfkcglab" path="res://addons/deterministic_physics/physics_objects/dp_shape_follower.cs" id="3_dn0l0"]
-[ext_resource type="Script" uid="uid://d17uol54jluxw" path="res://addons/deterministic_physics/math_objects/DM_Vector.cs" id="3_mbejc"]
 [ext_resource type="Script" uid="uid://qdb0pgmidjtk" path="res://components/character/InputHandler.cs" id="4_7sj80"]
-[ext_resource type="Script" uid="uid://dnix7o5miqdut" path="res://addons/deterministic_physics/math_objects/DM64.cs" id="4_msbiy"]
 [ext_resource type="Script" uid="uid://blscnryetxh34" path="res://components/character/CharacterController.cs" id="5_5ggak"]
 [ext_resource type="Script" uid="uid://ckt0vymjju17m" path="res://components/character/state_machine/CharacterStateMachine.cs" id="6_dn0l0"]
 [ext_resource type="Script" uid="uid://4t7r61df6hgv" path="res://components/character/state_machine/default_state_processes/Idle.cs" id="7_ldp7p"]
@@ -18,81 +16,68 @@
 [ext_resource type="Script" uid="uid://bhdtwj4ofi68e" path="res://components/character/state_machine/default_state_processes/Attack1.cs" id="14_8ph2c"]
 [ext_resource type="Script" uid="uid://cudkwko2k2sj4" path="res://components/character/state_machine/default_state_processes/Attack2.cs" id="15_xfj4i"]
 
-[sub_resource type="Resource" id="Resource_q3qux"]
-script = ExtResource("4_msbiy")
-
-[sub_resource type="Resource" id="Resource_vfhrb"]
-script = ExtResource("4_msbiy")
-
-[sub_resource type="Resource" id="Resource_3i4w2"]
-script = ExtResource("3_mbejc")
-x = SubResource("Resource_q3qux")
-y = SubResource("Resource_vfhrb")
-metadata/_custom_type_script = "uid://d17uol54jluxw"
-
-[node name="BaseCharacter3d" type="Node3D" unique_id=418936144 node_paths=PackedStringArray("inputHandler", "playerBody")]
+[node name="BaseCharacter3d" type="Node3D" node_paths=PackedStringArray("inputHandler", "playerBody")]
 script = ExtResource("1_1xapf")
 inputHandler = NodePath("InputHandler")
 playerBody = NodePath("dp_player_body")
 
-[node name="dp_player_body" type="Node" parent="." unique_id=1008797031 node_paths=PackedStringArray("inputHandler")]
+[node name="dp_player_body" type="Node" parent="." node_paths=PackedStringArray("inputHandler")]
 script = ExtResource("2_dn0l0")
 inputHandler = NodePath("../InputHandler")
-Position = SubResource("Resource_3i4w2")
 metadata/_custom_type_script = "uid://dbrqeh8cf0vgv"
 
-[node name="dp_shape_follower" type="Node3D" parent="dp_player_body" unique_id=1531696153]
+[node name="dp_shape_follower" type="Node3D" parent="dp_player_body"]
 script = ExtResource("3_dn0l0")
 metadata/_custom_type_script = "uid://dskjpbfkcglab"
 
-[node name="InputHandler" type="Node" parent="." unique_id=1824469660 node_paths=PackedStringArray("baseCharacter")]
+[node name="InputHandler" type="Node" parent="." node_paths=PackedStringArray("baseCharacter")]
 script = ExtResource("4_7sj80")
 baseCharacter = NodePath("..")
 
-[node name="CharacterController" type="Node" parent="." unique_id=1868389080]
+[node name="CharacterController" type="Node" parent="."]
 script = ExtResource("5_5ggak")
 
-[node name="CharacterStateMachine" type="Node" parent="." unique_id=472395283]
+[node name="CharacterStateMachine" type="Node" parent="."]
 script = ExtResource("6_dn0l0")
 metadata/_custom_type_script = "uid://ckt0vymjju17m"
 
-[node name="Idle" type="Node" parent="CharacterStateMachine" unique_id=2101252349]
+[node name="Idle" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("7_ldp7p")
 metadata/_custom_type_script = "uid://4t7r61df6hgv"
 
-[node name="Walk" type="Node" parent="CharacterStateMachine" unique_id=1373520011]
+[node name="Walk" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("8_mbejc")
 StateTitle = 1
 metadata/_custom_type_script = "uid://eo37w5370tx6"
 
-[node name="Run" type="Node" parent="CharacterStateMachine" unique_id=1238955131]
+[node name="Run" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("9_msbiy")
 StateTitle = 2
 AccessibleStates = Array[int]([0, 1])
 metadata/_custom_type_script = "uid://65rsruhajgy8"
 
-[node name="Crouch" type="Node" parent="CharacterStateMachine" unique_id=1038135947]
+[node name="Crouch" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("10_q3qux")
 StateTitle = 3
 metadata/_custom_type_script = "uid://b600o5uiswy6y"
 
-[node name="Hurt" type="Node" parent="CharacterStateMachine" unique_id=1397347547]
+[node name="Hurt" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("11_vfhrb")
 metadata/_custom_type_script = "uid://cocg4s4xar7v0"
 
-[node name="Jump" type="Node" parent="CharacterStateMachine" unique_id=1715057800]
+[node name="Jump" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("12_3i4w2")
 StateTitle = 4
 metadata/_custom_type_script = "uid://deg7wa622aiot"
 
-[node name="ArielJump" type="Node" parent="CharacterStateMachine" unique_id=761846924]
+[node name="ArielJump" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("13_1yjbf")
 metadata/_custom_type_script = "uid://dl8lbh2hgq5ig"
 
-[node name="Attack1" type="Node" parent="CharacterStateMachine" unique_id=1816863096]
+[node name="Attack1" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("14_8ph2c")
 metadata/_custom_type_script = "uid://bhdtwj4ofi68e"
 
-[node name="Attack2" type="Node" parent="CharacterStateMachine" unique_id=552912844]
+[node name="Attack2" type="Node" parent="CharacterStateMachine"]
 script = ExtResource("15_xfj4i")
 metadata/_custom_type_script = "uid://cudkwko2k2sj4"

@@ -120,7 +120,7 @@ public partial class dp_physics_server : Node
 
 	private Vector2I GetGridPos(dp_object Entity)
 	{
-		DM_Vector DM_GridPos = Entity.GlobalPosition / HashGridSize;
+		DM_Vector2 DM_GridPos = Entity.GlobalPosition / HashGridSize;
 		return new(DM_GridPos.x.Round().to_int(), DM_GridPos.y.Round().to_int());
 	}
 

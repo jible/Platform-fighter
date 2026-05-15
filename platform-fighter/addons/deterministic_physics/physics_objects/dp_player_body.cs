@@ -10,14 +10,16 @@ using System.Xml;
 [Tool]
 public partial class dp_player_body : dp_object, ITickable, ISerializable
 {
-	public DM_Vector Velocity = new();
+	public DM_Vector2 Velocity = new();
 	[Export] InputHandler inputHandler;
 	[Export] public string EditorAcceleration = "0.0025";
 	public DM64 Acceleration = new();
 
+	[Export]
+	public string EditorGravity = "0.01";
+	public DM64 Gravity;
 
-	public DM64 Gravity = new();
-
+	[Export] public string EditorMaxVelocity = "0.0";
 	
 	public DM64 MaxVelocity = new();
 
@@ -28,7 +30,7 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 
     public void Tick()
 	{
-		DM_Vector dirVector = inputHandler.PollForStickState(0);
+		DM_Vector2 dirVector = inputHandler.PollForStickState(0);
 		dirVector.y = dirVector.y * -1;
 		Velocity += Acceleration * dirVector;
 		Velocity.y -= Gravity;
@@ -38,8 +40,8 @@ public partial class dp_player_body : dp_object, ITickable, ISerializable
 
     public class SerializedState : ISerializedState<dp_player_body>
 	{
-		public DM_Vector Velocity;
-		public DM_Vector Position;
+		public DM_Vector2 Velocity;
+		public DM_Vector2 Position;
 
         public void Load(dp_player_body Owner)
         {

@@ -28,7 +28,7 @@ public partial class InputHandler : Node
        return inputManager.PollForInput(Button, PlayerNumber);
     }
 
-    public DM_Vector PollForStickState(int StickNumber)
+    public DM_Vector2 PollForStickState(int StickNumber)
     {
        return inputManager.PollForStickState(StickNumber,PlayerNumber);
     }

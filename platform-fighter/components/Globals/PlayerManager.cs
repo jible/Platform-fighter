@@ -33,7 +33,9 @@ public partial class PlayerManager : Node
     }
 
 
-        public override void _Process(double delta)
+    
+    // Not related to what im doing right now, but proccess is misspelled So fix this <- TODO 
+    public override void _Process(double delta)
     {
         if (Input.IsActionJustPressed("debug_slow_game"))
         {
