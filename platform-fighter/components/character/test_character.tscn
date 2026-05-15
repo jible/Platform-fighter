@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://due8lbighr0jf"]
 
 [ext_resource type="PackedScene" uid="uid://db2kvp6c4fwm2" path="res://characters/base_character_3d.tscn" id="1_jxsvq"]
+[ext_resource type="Script" uid="uid://d17uol54jluxw" path="res://addons/deterministic_physics/math_objects/DM_Vector.cs" id="2_5qabm"]
 [ext_resource type="PackedScene" uid="uid://c6d267iqscydu" path="res://assets/3DModels/StylizedCharacter.glb" id="3_fdi86"]
 [ext_resource type="Script" uid="uid://dnix7o5miqdut" path="res://addons/deterministic_physics/math_objects/DM64.cs" id="3_x0wbg"]
 [ext_resource type="Script" uid="uid://0smx527v6br4" path="res://addons/deterministic_physics/physics_objects/shapes/dp_rectangle.cs" id="4_5qabm"]
@@ -9,49 +10,35 @@
 script = ExtResource("3_x0wbg")
 EditorValue = 0.003
 
-[sub_resource type="CSharpScript" id="CSharpScript_s5475"]
-
 [sub_resource type="Resource" id="Resource_5qabm"]
 script = ExtResource("3_x0wbg")
 
 [sub_resource type="Resource" id="Resource_x0wbg"]
-script = ExtResource("3_x0wbg")
+script = ExtResource("2_5qabm")
 
 [sub_resource type="Resource" id="Resource_5nvc4"]
-script = SubResource("CSharpScript_s5475")
-x = SubResource("Resource_5qabm")
-y = SubResource("Resource_x0wbg")
-
-[sub_resource type="Resource" id="Resource_joox1"]
-script = ExtResource("3_x0wbg")
-EditorValue = 50.0
-
-[sub_resource type="Resource" id="Resource_jr4jd"]
-script = ExtResource("3_x0wbg")
-EditorValue = 50.0
-
-[sub_resource type="Resource" id="Resource_phh05"]
-script = SubResource("CSharpScript_s5475")
-x = SubResource("Resource_joox1")
-y = SubResource("Resource_jr4jd")
+script = ExtResource("2_5qabm")
+EditorX = 3.0
+EditorY = 5.0
 
 [sub_resource type="Resource" id="Resource_cd2ut"]
 script = ExtResource("4_5qabm")
-Size = SubResource("Resource_phh05")
+Size = SubResource("Resource_5nvc4")
 metadata/_custom_type_script = "uid://0smx527v6br4"
 
 [node name="TestCharacter" unique_id=106379500 instance=ExtResource("1_jxsvq")]
 
 [node name="dp_player_body" parent="." index="0" unique_id=1008797031]
 Acceleration = SubResource("Resource_s5475")
-Position = SubResource("Resource_5nvc4")
+Gravity = SubResource("Resource_5qabm")
+Position = SubResource("Resource_x0wbg")
 Shape = SubResource("Resource_cd2ut")
 mask_collision = 1
 
 [node name="StylizedCharacter" parent="dp_player_body/dp_shape_follower" parent_id_path=PackedInt32Array(1531696153) index="0" unique_id=80886288 instance=ExtResource("3_fdi86")]
 transform = Transform3D(-1.0927847e-08, 0, 0.25, 0, 0.25, 0, -0.25, 0, -1.0927847e-08, 0, 0, 0)
 
-[node name="Skeleton3D" parent="dp_player_body/dp_shape_follower/StylizedCharacter/Armature" parent_id_path=PackedInt32Array(80886288, 1980676239) index="0" unique_id=263628400]
+[node name="Skeleton3D" parent="dp_player_body/dp_shape_follower/StylizedCharacter/Armature" parent_id_path=PackedInt32Array(80886288, 918319542) index="0" unique_id=395011723]
 bones/3/rotation = Quaternion(0, 0, 0, 1)
 bones/6/rotation = Quaternion(0.41515502, 0.08255097, -0.47018084, 0.77444285)
 bones/7/rotation = Quaternion(0.6783917, 1.5690573e-09, -6.8567225e-08, 0.73470044)
@@ -106,20 +93,27 @@ bones/68/position = Vector3(0.95876884, 2.5790958, 2.428752)
 bones/68/rotation = Quaternion(0.42264566, 0.51460785, 0.47114864, -0.5784189)
 bones/68/scale = Vector3(1.0000001, 1, 0.9999999)
 
-[node name="Idle" parent="CharacterStateMachine" parent_id_path=PackedInt32Array(472395283) index="0" unique_id=2101252349]
+[node name="CharacterStateMachine" parent="." index="3" unique_id=472395283 node_paths=PackedStringArray("animationPlayer")]
+animationPlayer = NodePath("../dp_player_body/dp_shape_follower/StylizedCharacter/AnimationPlayer")
+
+[node name="Idle" parent="CharacterStateMachine" index="0" unique_id=2101252349]
 AccessibleTags = Array[int]([0])
 Tags = Array[int]([0])
+AnimationName = "Iddle"
 
-[node name="Hurt" parent="CharacterStateMachine" parent_id_path=PackedInt32Array(472395283) index="4" unique_id=1397347547]
+[node name="Hurt" parent="CharacterStateMachine" index="4" unique_id=1397347547]
 StateTitle = 7
 
-[node name="ArielJump" parent="CharacterStateMachine" parent_id_path=PackedInt32Array(472395283) index="6" unique_id=761846924]
+[node name="Jump" parent="CharacterStateMachine" index="5" unique_id=1715057800]
+AnimationName = "Jump"
+
+[node name="ArielJump" parent="CharacterStateMachine" index="6" unique_id=761846924]
 StateTitle = 5
 
-[node name="Attack1" parent="CharacterStateMachine" parent_id_path=PackedInt32Array(472395283) index="7" unique_id=1816863096]
+[node name="Attack1" parent="CharacterStateMachine" index="7" unique_id=1816863096]
 StateTitle = 8
 
-[node name="Attack2" parent="CharacterStateMachine" parent_id_path=PackedInt32Array(472395283) index="8" unique_id=552912844]
+[node name="Attack2" parent="CharacterStateMachine" index="8" unique_id=552912844]
 StateTitle = 9
 
 [editable path="dp_player_body/dp_shape_follower/StylizedCharacter"]

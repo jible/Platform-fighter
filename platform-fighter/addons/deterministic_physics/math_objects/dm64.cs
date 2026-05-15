@@ -1,86 +1,427 @@
 using Godot;
 using System;
+using System.Linq;
+using System.Numerics;
 
-[Tool]
 [GlobalClass]
-public partial class DM64 : Godot.Resource
+[Tool]
+public partial class DM64: Godot.Resource
 {
-    // The actual math struct
-    private DM_Base _value;
-    
-    // Constructor forwarding
-    public DM64() => _value = new DM_Base();
-    public DM64(int value) => _value = new DM_Base(value);
-    public DM64(long value) => _value = new DM_Base(value);
-    public DM64(float value) => _value = new DM_Base(value);
-    public DM64(string value) => _value = new DM_Base(value);
-    
-    // Export for serialization (store the raw value)
-    [Export]
-    public long RawValue
-    {
-        get => _value.raw;
-        set => _value = DM_Base.FromRaw(value);
-    }
-    
-    // For convenience in editor
-    [Export]
-    public float EditorValue
-    {
-        get => _value.ToFloat();
-        set => _value = new DM_Base(value);
-    }
-    
-    // Forward all properties and methods
-    public long raw { get => _value.raw; set => _value.raw = value; }
-    public float ToFloat() => _value.ToFloat();
-    public long to_long() => _value.to_long();
-    public int to_int() => _value.to_int();
-    public DM64 copy() => new DM64 { _value = _value.copy() };
-    public DM64 Sign() => new DM64 { _value = _value.Sign() };
-    public DM64 Abs() => new DM64 { _value = _value.Abs() };
-    public DM64 Round() => new DM64 { _value = _value.Round() };
-    public DM64 Ceil() => new DM64 { _value = _value.Ceil() };
-    public DM64 Floor() => new DM64 { _value = _value.Floor() };
-    public DM64 Sqrt() => new DM64 { _value = _value.Sqrt() };
-    public DM64 Pow(DM64 b) => new DM64 { _value = _value.Pow(b._value) };
-    public DM64 Pow(int b) => new DM64 { _value = _value.Pow(b) };
-    public static DM64 Max(DM64 a, DM64 b) => new DM64 { _value = DM_Base.Max(a._value, b._value) };
+	// 1 sign bit 31 bits of in and 32 bits of decimal
+	static int SHIFT = 32;
+	static long SCALE = 1L << SHIFT;
+	public long raw = 0;
+	public ulong sign_bit = 0x8000000000000000;
+	public ulong whole_bits = 0x7FFFFFFF00000000;
+	public ulong decimal_bits = 0x0000000FFFFFFFF;
 
-    
-    // Operators - just wrap the struct operators
-    public static DM64 operator +(DM64 a, DM64 b) => new DM64 { _value = a._value + b._value };
-    public static DM64 operator -(DM64 a, DM64 b) => new DM64 { _value = a._value - b._value };
-    public static DM64 operator *(DM64 a, DM64 b) => new DM64 { _value = a._value * b._value };
-    public static DM64 operator /(DM64 a, DM64 b) => new DM64 { _value = a._value / b._value };
-    public static DM64 operator %(DM64 a, DM64 b) => new DM64 { _value = a._value % b._value };
-    
-    // Operations with ints
-    public static DM64 operator +(DM64 a, int b) => new DM64 { _value = a._value + b };
-    public static DM64 operator -(DM64 a, int b) => new DM64 { _value = a._value - b };
-    public static DM64 operator *(DM64 a, int b) => new DM64 { _value = a._value * b };
-    public static DM64 operator /(DM64 a, int b) => new DM64 { _value = a._value / b };
-    public static DM64 operator +(int a, DM64 b) => new DM64 { _value = a + b._value };
-    public static DM64 operator -(int a, DM64 b) => new DM64 { _value = a - b._value };
-    public static DM64 operator *(int a, DM64 b) => new DM64 { _value = a * b._value };
-    public static DM64 operator /(int a, DM64 b) => new DM64 { _value = a / b._value };
-    
-    // Comparisons
-    public static bool operator >(DM64 a, DM64 b) => a._value > b._value;
-    public static bool operator <(DM64 a, DM64 b) => a._value < b._value;
-    public static bool operator >=(DM64 a, DM64 b) => a._value >= b._value;
-    public static bool operator <=(DM64 a, DM64 b) => a._value <= b._value;
-    public static bool operator ==(DM64 a, DM64 b) => a._value == b._value;
-    public static bool operator !=(DM64 a, DM64 b) => a._value != b._value;
-    
-    public static bool operator >(DM64 a, int b) => a._value > b;
-    public static bool operator <(DM64 a, int b) => a._value < b;
-    public static bool operator >=(DM64 a, int b) => a._value >= b;
-    public static bool operator <=(DM64 a, int b) => a._value <= b;
-    public static bool operator ==(DM64 a, int b) => a._value == b;
-    public static bool operator !=(DM64 a, int b) => a._value != b;
-    
-    public override bool Equals(object obj) => obj is DM64 other && _value.Equals(other._value);
-    public override int GetHashCode() => _value.GetHashCode();
-    public override string ToString() => _value.ToFloat().ToString();
+    [Export]
+	float EditorValue
+	{
+		get
+		{
+			return ToFloat();
+		}
+		set
+		{
+			raw = (long)(value * SCALE);
+		}
+	}
+	// Constructors
+	public DM64()
+	{
+		raw = 0;
+	}
+
+	public DM64(int value)
+	{
+		raw = (long)value << SHIFT;
+	}
+	
+
+	public DM64 (string value)
+    {
+        SetRawFromString(value);
+		return;
+    }
+	public static DM64 FromRaw(long r)
+    {
+        DM64 o = new();
+		o.raw = r;
+		return o;
+    }
+
+	public void SetRawFromString(String value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+		value = value.Trim();
+
+		bool is_negative = false;
+		String unsigned = value;
+
+
+		if (value [0] == '-')
+        {
+            is_negative = true;
+			unsigned = value[1..];
+			if (unsigned.Length == 0)
+            {
+                raw = 0;
+				return;
+            }
+        }
+
+		String[] parts = unsigned.Split('.');
+
+
+
+		uint a ;
+		if (parts[0].Length == 0)
+		{
+			a = 0;
+
+		} else
+		{
+			a = (uint)parts[0].ToInt();
+		}
+		uint b;
+		uint zeroes = 0;
+		
+		if (parts.Length > 1)
+        {
+			for (int i = 0; i < parts[1].Length; i++)
+			{
+				if (parts[1][i] != '0') break;
+				zeroes += 1;
+			}
+
+
+			b = (uint)parts[1].ToInt();
+        } else
+        {
+            b = 0;
+        }
+
+		SetRawFromWholeAndDecimal(a, zeroes, b, is_negative);
+    }
+
+
+	public void SetRawFromWholeAndDecimal( uint a, uint zeroes, uint b, bool is_negative = false)
+    {
+		int decimalDigits = 0;
+		uint walker = b;
+
+		
+        raw = (long)a << SHIFT;
+
+		if (b == 0) return;
+		while (walker > 0)
+        {
+            walker /= 10;
+			decimalDigits ++;
+        }
+		long divisor = 1;
+		for (int i = 1; i < decimalDigits + zeroes; i++)
+		{
+			divisor *= 10;
+			
+		}
+		raw += ((long) b << SHIFT) / divisor;
+		if (is_negative){ raw *= -1;}
+    }
+
+	public DM64(long value)
+	{
+		raw = value << SHIFT;
+	}
+	public DM64(float value)
+	{
+		raw = (long)(value * (float)SCALE);
+	}
+
+	public DM64 copy()
+	{
+		DM64 o = new DM64();
+		o.raw = raw;
+		return o;
+	}
+
+	// Extractors
+	public long to_long()
+	{
+		return raw / SCALE;
+	}
+	public int to_int()
+    {
+        return (int)to_long();
+    }
+	
+	public float ToFloat()
+	{
+		float output = ((float)raw) / ((float)SCALE);
+		return output;
+	}
+
+	// Basic Math overwrites
+	public static DM64 operator +(DM64 a, DM64 b)
+    {
+        DM64 o = new DM64();
+        o.raw = a.raw + b.raw;
+        return o;
+    }
+	public static DM64 operator -(DM64 a, DM64 b) {
+        DM64 o = new DM64();
+        o.raw = a.raw - b.raw;
+        return o;
+    }
+	public static DM64 operator *(DM64 a, DM64 b)
+	{
+		DM64 f = new DM64();
+		f.raw = (long)(((BigInteger)a.raw * (BigInteger)b.raw) >> SHIFT);
+		return f;
+	}
+	 
+	public static DM64 operator /(DM64 a, DM64 b)
+	{
+        if (b.raw == 0)
+        {
+            GD.Print("0 div");
+            throw new DivideByZeroException();
+        }
+		ulong n = (ulong)(a.raw < 0? -a.raw: a.raw);
+        ulong d = (ulong)(b.raw < 0? -b.raw: b.raw);
+        bool negative = (a.raw < 0) ^ (b.raw < 0);
+		long q;
+        
+		int n_leading_bit = GetLeadingBitNum(n);
+
+		int bit_diff = 63 - n_leading_bit;
+        if (bit_diff > 0)
+        {
+            n = n << bit_diff;
+        }
+        q = (long)(n / d);
+        if (negative)
+        {
+            q = -q;
+        }
+        int final_shift = bit_diff - SHIFT;
+        DM64 f = new DM64(0);
+        if (final_shift > 0){
+            f.raw = q >> final_shift;
+        }else
+        {
+            f.raw = q << -final_shift;
+        }
+        return f;
+	}
+	public static DM64 operator %(DM64 a, DM64 b)
+    {
+        if (b== 0){throw new DivideByZeroException();}
+
+		long r = a.raw % b.raw;
+		DM64 o = new();
+		o.raw = r;
+		return o;
+
+    }
+
+	// Supporting math with ints
+	public static DM64 operator +(DM64 a, int b) => a + new DM64(b);
+	public static DM64 operator -(DM64 a, int b) => a - new DM64(b);
+	public static DM64 operator *(DM64 a, int b)
+    {
+		return a * new DM64(b);
+    }
+	public static DM64 operator /(DM64 a, int b) => a / new DM64(b);
+
+
+	public static DM64 operator +(int a, DM64 b) => b + a;
+	public static DM64 operator -(int a, DM64 b) => b - a;
+	public static DM64 operator *(int a, DM64 b) => b * a;
+	public static DM64 operator /(int a, DM64 b) => new DM64(a) / b;
+
+
+	// Comparison operators
+	public static bool operator > (DM64 a, int b) => a.raw > ((long)b << SHIFT);
+	public static bool operator < (DM64 a, int b) => a.raw < ((long)b << SHIFT);
+	public static bool operator >= (DM64 a, int b) => a.raw >= ((long)b << SHIFT);
+	public static bool operator <=(DM64 a, int b) => a.raw <= ((long)b << SHIFT);
+	public static bool operator ==(DM64 a, int b) => a.raw == ((long)b << SHIFT);
+	public static bool operator !=(DM64 a, int b) => a.raw != ((long)b << SHIFT);
+
+
+	
+	public static bool operator > (DM64 a, DM64 b) => a.raw > b.raw;
+	public static bool operator < (DM64 a, DM64 b) => a.raw < b.raw;
+	public static bool operator >= (DM64 a, DM64 b) => a.raw >= b.raw;
+	public static bool operator <=(DM64 a, DM64 b) => a.raw <= b.raw;
+	public static bool operator ==(DM64 a, DM64 b) => a.raw == b.raw;
+	public static bool operator !=(DM64 a, DM64 b) => a.raw != b.raw;
+
+
+    public override bool Equals(object obj)
+	{
+		if (obj is DM64 other)
+		{
+			return this.raw == other.raw;
+		}
+		return false;
+	}
+	
+    public override int GetHashCode()
+    {
+        return (int)raw;
+    }
+
+	public DM64 Sign()
+    {
+        if (raw > 0) return new DM64 (1);
+		if (raw < 0) return new DM64 (-1);
+		return new DM64(0);
+    }
+
+	public DM64 Abs()
+    {
+		DM64 o = new ();
+		o.raw = raw < 0? - raw : raw;
+		return o;
+    }
+
+	public DM64 Round()
+    {
+        DM64 o = new();
+		if (raw >= 0)
+        	o.raw = ((raw + (SCALE>>1)) >> SHIFT) << SHIFT;
+		else
+        	o.raw = (( (raw - (SCALE>>1)) >> SHIFT) << SHIFT) + SCALE;
+		return o;
+    }
+
+	public DM64 Ceil()
+    {
+        DM64 o = new();
+		long truncated = (raw >> SHIFT) << SHIFT;
+		if (raw <= 0)
+        {
+            return DM64.FromRaw(truncated);
+        }
+        else
+        {
+            if ( raw == truncated) return DM64.FromRaw(truncated);
+			return DM64.FromRaw(truncated + SCALE);
+        }
+    }
+
+	public DM64 Floor()
+	{
+        DM64 o = new();
+		long truncated = (raw >> SHIFT) << SHIFT;
+		if (raw >= 0)
+        {
+            return DM64.FromRaw(truncated);
+        }
+        else
+        {
+            if ( raw == truncated) return DM64.FromRaw(truncated);
+			return DM64.FromRaw(truncated - SCALE);
+        }
+    }
+
+	public static DM64  Max(DM64 a, DM64 b)
+    {
+        return a > b ? a.copy() : b.copy();
+    }
+
+// Powers
+	public DM64 Pow(DM64 b)
+	{
+		DM64 c = new DM64(1);
+		long ib = b.to_long();
+		for (int i = 0; i < ib; i++)
+		{
+			c = c * this;
+		}
+		return c;
+	}
+	public DM64 Pow(int b)
+	{
+		DM64 c = new DM64(1);
+		for (int i = 0; i < b; i++)
+		{
+			c = c * this;
+		}
+		return c;
+	}
+
+// Squre root
+	public DM64 Sqrt()
+	{
+		if (raw <= 0)
+		{
+			return new DM64(0);
+		}
+
+		int precision = 5;
+        // Guess something with about half the leading bits of the radicand
+        int guessBits = GetLeadingBitNum((ulong)to_long()) / 2;
+
+        DM64 output = new DM64(1 << guessBits);
+		// Use the Raphson Newton method
+		for (int i = 0; i < precision; i++)
+        {
+            output = (output + (this / output)) / 2;
+		}
+		return output;
+	}
+
+// Helper for div and square root
+	static private int GetLeadingBitNum(ulong a)
+	{
+		if (a == 0)
+		{
+			return 0;
+		}
+		int bit = 0;	
+		while ((a >> (bit + 1)) != 0)
+		{
+			bit += 1;
+		}
+		return bit;
+	}
+
+	public static void UnitTest()
+    {
+        // GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + new DM64(5)).ToFloat());
+        // GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + 5).ToFloat());
+        // GD.Print("Expected ", 4 + 5, " output ", (new DM64(4) + new DM64(5)).ToFloat());
+        // GD.Print("Expected ", 4 * 5, " output ", (new DM64(4) * 5). ToFloat());
+        // GD.Print("Expected ", 2 * 50, " output ", (new DM64(2) * 50). ToFloat());
+
+
+        GD.Print("Expected ", 2 % 50, " output ", (new DM64(2) % new DM64(50)). ToFloat());
+        GD.Print("Expected ", 7 % 3, " output ", (new DM64(7) % new DM64(3)). ToFloat());
+        GD.Print("Expected ", 50 % 12, " output ", (new DM64(50) % new DM64(12)). ToFloat());
+        GD.Print("Expected ", 100 % 9, " output ", (new DM64(100) % new DM64(9)). ToFloat());
+        GD.Print("Expected ", 500 % 9, " output ", (new DM64(100) % new DM64(9)). ToFloat());
+
+
+		// int [][] tests = [
+        //     [100, 10],
+		// 	[9,2]
+        // ];
+
+		// foreach (int[] test in tests)
+		// {
+		// 	int a = test[0];
+		// 	int b = test[1];
+		// 	GD.Print("Add ", a, " ", b, " Expected ", a + b, " output ", (new DM64(a) + new DM64(b)).ToFloat());
+		// 	GD.Print("Add ", a, " ", b, " Expected ", a + b, " output ", (a + new DM64(b)).ToFloat());
+		// 	GD.Print("Add ", a, " ", b, " Expected ", a + b, " output ", (new DM64(a) + new DM64(b)).ToFloat());
+
+		// }
+    } 
 }
