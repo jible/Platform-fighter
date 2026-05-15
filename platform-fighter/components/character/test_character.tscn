@@ -6,10 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://c6d267iqscydu" path="res://assets/3DModels/StylizedCharacter.glb" id="3_fdi86"]
 [ext_resource type="Script" uid="uid://dnix7o5miqdut" path="res://addons/deterministic_physics/math_objects/DM64.cs" id="3_x0wbg"]
 
-[sub_resource type="Resource" id="Resource_5qabm"]
-script = ExtResource("3_x0wbg")
-EditorValue = 0.003
-
 [sub_resource type="Resource" id="Resource_5nvc4"]
 script = ExtResource("3_x0wbg")
 
@@ -44,7 +40,8 @@ metadata/_custom_type_script = "uid://0smx527v6br4"
 [node name="TestCharacter" unique_id=106379500 instance=ExtResource("1_jxsvq")]
 
 [node name="dp_player_body" parent="." index="0" unique_id=1008797031]
-Acceleration = SubResource("Resource_5qabm")
+EditorAcceleration = "0.00025"
+EditorGravity = "0.0001"
 Position = SubResource("Resource_joox1")
 Shape = SubResource("Resource_fdi86")
 mask_collision = 1

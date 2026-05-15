@@ -13,27 +13,24 @@ public partial class dp_object : Node
 	// World Space
 	[Export]public DM_Vector Position = new();
 
-	public DM_Vector GlobalPosition 
+	public DM_Vector GlobalPosition = new();
+
+	public void ComputeGlobalRuntimePosition()
 	{
-		get
+		
+		dp_object Parent = GetParent() as dp_object;
+		GlobalPosition = (Parent != null)?
+		Parent.GlobalPosition + Position:
+		Position;
+
+		foreach ( Node Child in GetChildren())
 		{
-			var parent = GetParent();
-			var ParentPosition = new DM_Vector(0,0);
-			if (parent != null && (parent is dp_object castedParent))
+			if (Child is dp_object CastedChild)
 			{
-				ParentPosition = castedParent.GlobalPosition;
+				CastedChild.ComputeGlobalRuntimePosition();
 			}
-			return Position + ParentPosition;
-		}
-		set
-		{
-			var parent = GetParent() as dp_object;
-			var ParentPosition = parent?.GlobalPosition ?? new DM_Vector(0,0);
-			Position = value - ParentPosition;
 		}
 	}
-
-	
 
 	// Rollback Data
 	PhysicsObjectData?[] RollbackData;
