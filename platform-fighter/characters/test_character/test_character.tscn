@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dy4tuhm6pr8b3"]
+[gd_scene format=3 uid="uid://dy4tuhm6pr8b3"]
 
 [ext_resource type="PackedScene" uid="uid://e6cxo5jrheb1" path="res://characters/base_character.tscn" id="1_ka262"]
 [ext_resource type="Script" uid="uid://4un0nbayrgqj" path="res://characters/test_character/behaviors/punch_behavior.gd" id="2_ka262"]
@@ -9,8 +9,8 @@
 [ext_resource type="Script" uid="uid://bm3an7ro8eqsd" path="res://components/for_characters/hitbox_hurtbox/hurtbox.gd" id="14_lo27l"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fecar"]
-radius = 100.0
-height = 250.0
+radius = 500.0
+height = 1000.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fecar"]
 
@@ -131,13 +131,13 @@ tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:position")
-tracks/0/interp = 0
+tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector2(150, 80)]
+"times": PackedFloat32Array(2, 6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(200, 70)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -146,7 +146,7 @@ tracks/1/path = NodePath("SpriteManager/StateMachine/Punch/hitbox:visible")
 tracks/1/interp = 0
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(3, 5),
+"times": PackedFloat32Array(2, 7),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
@@ -158,7 +158,7 @@ tracks/2/path = NodePath("SpriteManager/StateMachine/Punch/hitbox")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(3, 5),
+"times": PackedFloat32Array(2, 7),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
 "args": [],
@@ -236,10 +236,13 @@ _data = {
 &"Walk": SubResource("Animation_m32lo")
 }
 
-[node name="TestCharacter" instance=ExtResource("1_ka262")]
+[node name="TestCharacter" unique_id=1733709129 instance=ExtResource("1_ka262")]
 scale = Vector2(15, 15)
 
-[node name="PunchBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="0" node_paths=PackedStringArray("base_character", "state_machine")]
+[node name="CollisionShape2D" parent="CharacterBody" index="0"]
+visible = false
+
+[node name="PunchBehavior" type="Node" parent="CharacterBody/BehaviorManager" index="0" unique_id=1924195955 node_paths=PackedStringArray("base_character", "state_machine")]
 script = ExtResource("2_ka262")
 priority = 2
 valid_states = Array[String](["Idle", "Aerial", "Walk"])
@@ -250,9 +253,10 @@ metadata/_custom_type_script = "uid://ujvf0lqqpayc"
 [node name="SpriteManager" parent="." index="1"]
 sprite_frames = ExtResource("3_6ropc")
 animation = &"Punch"
+frame = 6
 snap = true
 
-[node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="0" node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
+[node name="Punch" type="Node2D" parent="SpriteManager/StateMachine" index="0" unique_id=566795449 node_paths=PackedStringArray("base_character", "state_machine", "character_body")]
 script = ExtResource("3_cu1ws")
 base_character = NodePath("../../..")
 state_machine = NodePath("..")
@@ -262,18 +266,20 @@ can_turn_around = false
 anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
-[node name="hitbox" parent="SpriteManager/StateMachine/Punch" index="0" node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
-position = Vector2(150, 80)
+[node name="hitbox" parent="SpriteManager/StateMachine/Punch" index="0" unique_id=1238400002 node_paths=PackedStringArray("collision_shape", "base_character") instance=ExtResource("5_ktjrq")]
+visible = false
+position = Vector2(200, 70)
 collision_shape = NodePath("collision")
 base_character = NodePath("../../../..")
-knockback_magnitude = 1000.0
-knockback_vector = Vector2(0.71, -0.71)
+damage = 100.0
+knockback_magnitude = 5000.0
+knockback_vector = Vector2(0, -1)
 
-[node name="collision" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox" index="1"]
+[node name="collision" type="CollisionShape2D" parent="SpriteManager/StateMachine/Punch/hitbox" index="1" unique_id=1997466450]
 shape = SubResource("CapsuleShape2D_fecar")
 debug_color = Color(0.180392, 0.627451, 0.423529, 0.47451)
 
-[node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" index="1" node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
+[node name="Dash" type="Node2D" parent="SpriteManager/StateMachine" index="1" unique_id=381482758 node_paths=PackedStringArray("input_handler", "base_character", "state_machine", "character_body")]
 script = ExtResource("7_ey8be")
 input_handler = NodePath("../../../InputHandler")
 base_character = NodePath("../../..")
@@ -284,7 +290,8 @@ can_turn_around = false
 anim_target_frame_rate = 12.0
 metadata/_custom_type_script = "uid://cmitgdh8qbd2q"
 
-[node name="Hurtbox" type="Area2D" parent="SpriteManager" index="1" node_paths=PackedStringArray("base_character", "character_body")]
+[node name="Hurtbox" type="Area2D" parent="SpriteManager" index="1" unique_id=1007828090 node_paths=PackedStringArray("base_character", "character_body")]
+visible = false
 position = Vector2(-0.69, 2.365)
 scale = Vector2(0.585, 0.585)
 script = ExtResource("14_lo27l")
@@ -292,13 +299,11 @@ base_character = NodePath("../..")
 character_body = NodePath("../../CharacterBody")
 metadata/_custom_type_script = "uid://bm3an7ro8eqsd"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SpriteManager/Hurtbox" index="0"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpriteManager/Hurtbox" index="0" unique_id=814915763]
 shape = SubResource("CircleShape2D_fecar")
 debug_color = Color(0.78017, 0.368825, 0.61371, 0.42)
 
 [node name="AnimationPlayer" parent="." index="2"]
-libraries = {
-&"": SubResource("AnimationLibrary_kwm21")
-}
+libraries/ = SubResource("AnimationLibrary_kwm21")
 
 [connection signal="button_pressed" from="InputHandler" to="CharacterBody/BehaviorManager/PunchBehavior" method="_on_input_handler_button_pressed"]
