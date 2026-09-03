@@ -10,7 +10,7 @@ public struct StickState
 {
     /* 
     Super Proud of this!
-    This Stores the data for a stick into just a single bit! 
+    This Stores the data for a stick into just a single byte! 
     And it makes it super easy to do conversion back to Vectors  
     */
 
