@@ -23,8 +23,6 @@ public partial class CharacterStateMachine: Node
         
         ATTACK1,
         ATTACK2,
-        
-        
         COUNT
     };
 
