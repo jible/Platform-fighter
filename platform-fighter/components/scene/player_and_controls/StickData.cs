@@ -48,19 +48,7 @@ public struct StickState
             );
     }
 
-    public void SetAxis(Axis axis, float Value)
-    {
-        Value = Math.Clamp(Value, -1f , 1f);
-        if (axis == Axis.X)
-        {
-            Data = (byte)(  (Data & YMagnitudeMask) | (Data & YSignMask) | ((byte)Math.Round(Value * Buckets) << 4));
-        } else
-        {
-            Data = (byte)( (Data & XMagnitudeMask) | (Data & XSignMask) |((byte)Math.Round(Value* Buckets)));
-        }
-    }
-
-    public DM_Vector2 ToVector()
+    public DMVector ToVector()
     {
          
         int UX = (Data & XMagnitudeMask) >> 4;
@@ -69,14 +57,14 @@ public struct StickState
         int YSign = (Data & YSignMask) == 0 ? 1 : -1;
         DM64 X = new DM64(UX) * XSign;
         DM64 Y = new DM64(UY) * YSign;
-        return new DM_Vector2( X,  Y);
+        return new DMVector( X,  Y);
     }
 
     // Returns input vector, who's magnitude is squished into the range [0,1] (Not normalized)
-    public DM_Vector2 ToRangedVector()
+    public DMVector ToRangedVector()
     {
          
-        DM_Vector2 LargeVector =  ToVector();
+        DMVector LargeVector =  ToVector();
         return LargeVector/7;
     }
 

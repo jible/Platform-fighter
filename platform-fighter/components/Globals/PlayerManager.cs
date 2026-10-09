@@ -26,6 +26,15 @@ public partial class PlayerManager : Node
 
     public override void _Ready()
     {
+        // Before any player picks a tag
+        TagManager.Load();
+        TagManager.TagDeleted += tagId =>
+        {
+            foreach (var player in AllPlayers)
+            {
+                if (player != null && player.TagId == tagId) player.UseDefaultTag();
+            }
+        };
         for (int i = 0; i < MaxPlayerCount; i++)
         {
             AllPlayers.Add(null);

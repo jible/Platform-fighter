@@ -36,6 +36,13 @@ public partial class GlobalResources : Node
     
 
 }
+// Bits for PhysicsObject.Layer and Mask
+public static class CollisionLayers
+{
+    public const int Stage = 1 << 0;
+    public const int Characters = 1 << 1;
+}
+
 public static class DebugPrintColors
 {
     public static Color ErrorColor = new Color("#f54266");

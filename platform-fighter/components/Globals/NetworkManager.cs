@@ -261,7 +261,8 @@ public class LobbyManager
             {
               {"PlayerNumber", i},
               {"PeerId", playerProfile.RemotePeerID},
-              {"PlayerTag", playerProfile.playerTag}  
+              // Tag ids only mean something on this machine, so only the name is sent, for display
+              {"TagName", TagManager.Get(playerProfile.TagId)?.Name ?? ""}
             };
             LobbyStateData.Add(PlayerDataDict);
         }

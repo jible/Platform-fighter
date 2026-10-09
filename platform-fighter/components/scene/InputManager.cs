@@ -6,43 +6,36 @@ using System.Formats.Asn1;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+// Collects every player's input once per tick and keeps it for rollback and the network.
+// Local players are polled through their tag's binds: keyboard players read the keyboard, controller players read their own device.
+// Remote players come in through the network instead, and are predicted until they arrive
 public partial class InputManager : Node
 {
     PlayerManager playerManager;
-    [Export] TickManager tickManager;
-    public float DriftThreshold = .1f;
+    // Set by whatever builds the match, since the tick manager is a plain C# object and can't be exported
+    public TickManager tickManager;
     // This needs a better name: Its how many frames of inputs you send over the network each time you send a packet
     const int FramesOfInputsToSend = 5;
-    public const int PacketBytesPerPlayer = FramesOfInputsToSend * ControllerState.EncodedSize; 
+    public const int PacketBytesPerPlayer = FramesOfInputsToSend * ControllerState.EncodedSize;
 
     // Stores an int of the earliest frame you should rollback to if you need to rollback
     public int? RollbackTargetFrame = null;
     public ControllerState[][] AllControllerStates;
-    public ControllerState[] CurrentControllerStates;
     public int?[] LatestReceivedFrame;
     public Queue<byte[]> RemoteInputQueue = new();
-    [Signal] public delegate void ButtonEventEventHandler(ControllerState.ButtonTypes Button, int PlayerNumber, bool Pressed);
 
+    // The actions that are buttons, and the button each sets
+    private static readonly (GameAction Action, ControllerState.ButtonTypes Button)[] ButtonActions =
+    {
+        (GameAction.Jump, ControllerState.ButtonTypes.JUMP),
+        (GameAction.Light, ControllerState.ButtonTypes.LIGHT),
+        (GameAction.Special, ControllerState.ButtonTypes.SPECIAL),
+        (GameAction.Grab, ControllerState.ButtonTypes.GRAB),
+    };
 
-    Dictionary< ControllerState.ButtonTypes, Vector2> LeftStickInputToDirection = new()
-    {
-        {ControllerState.ButtonTypes.LEFT_DOWN, Vector2.Down},
-        {ControllerState.ButtonTypes.LEFT_LEFT, Vector2.Left},
-        {ControllerState.ButtonTypes.LEFT_RIGHT, Vector2.Right},
-        {ControllerState.ButtonTypes.LEFT_UP, Vector2.Up},
-    };
-    Dictionary< ControllerState.ButtonTypes, Vector2> RightStickInputToDirection = new()
-    {
-        {ControllerState.ButtonTypes.RIGHT_DOWN, Vector2.Down},
-        {ControllerState.ButtonTypes.RIGHT_LEFT, Vector2.Left},
-        {ControllerState.ButtonTypes.RIGHT_RIGHT, Vector2.Right},
-        {ControllerState.ButtonTypes.RIGHT_UP, Vector2.Up},
-    };
-    
     public override void _Ready()
     {
         playerManager = PlayerManager.GlobalInstance;
-        CurrentControllerStates = new ControllerState[PlayerManager.MaxPlayerCount];
         AllControllerStates = new ControllerState[NetworkManager.MAX_ROLLBACK_FRAMES][];
         for (int Frame = 0; Frame <NetworkManager.MAX_ROLLBACK_FRAMES; Frame++)
         {
@@ -55,7 +48,6 @@ public partial class InputManager : Node
         LatestReceivedFrame = new int?[PlayerManager.MaxPlayerCount];
         for (int PlayerNumber = 0; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber++)
         {
-            CurrentControllerStates[PlayerNumber] = new();
             LatestReceivedFrame[PlayerNumber] = null;
         }
 
@@ -81,108 +73,23 @@ public partial class InputManager : Node
         return output;
     }
 
-    public override void _Input(InputEvent @event)
-    {
-        if (!(@event is InputEventKey || @event is InputEventJoypadButton || @event is InputEventJoypadMotion))
-        {return;}
-        
-
-        int PlayerNumber = playerManager.GetPlayerNumberFromInput(@event);
-        if (PlayerNumber == -1 ) return;
-
-        PlayerProfile playerProfile = playerManager.AllPlayers[PlayerNumber];
-        PlayerTag playerTag = playerProfile.playerTag; 
-
-        if (@event is InputEventJoypadButton JoyEvent) HandleJoypadButton( JoyEvent, playerTag, PlayerNumber);
-        else if (@event is InputEventJoypadMotion StickMotion) HandleJoypadMotion(StickMotion, PlayerNumber);
-        else if (@event is InputEventKey KeyEvent) HandleKeyboardInput(KeyEvent, playerTag, PlayerNumber);
-
-    }
-
-    public ControllerState[] GetInputsForTick(int Tick)
-    {
-        ControllerState[] Inputs = AllControllerStates[Tick];
-        return Inputs;
-    }
-
-    public void HandleJoypadButton( InputEventJoypadButton JoyEvent, PlayerTag playerTag, int player_number)
-    {
-        ControllerState.ButtonTypes Button; 
-        bool Success = playerTag.ReverseMap.TryGetValue(JoyEvent.ButtonIndex, out Button);
-        if (!Success) return;
-        CurrentControllerStates[player_number].SetButton(Button, JoyEvent.IsPressed());
-    }
-
-    public void HandleJoypadMotion(InputEventJoypadMotion StickMotion, int PlayerNumber)
-    {
-        JoyAxis Axis = StickMotion.Axis;
-        if (Axis == JoyAxis.TriggerLeft || Axis == JoyAxis.TriggerRight)
-        {
-            return;
-            // TODO: Add code for parsing triggers and treating them as normal input
-
-        }
-
-        // This is the case where it is actual stick handling
-
-        float Magnitude = StickMotion.AxisValue;
-        if (Math.Abs(Magnitude) < DriftThreshold)
-        {
-            Magnitude = 0;
-        }
-
-        int StickNumber = (int)Axis / 2;
-        // This is a cheeky solution to check if the value changed on the x or y axis
-        StickState.Axis StickAxis = ((int)Axis % 2 == 0) ? StickState.Axis.X : StickState.Axis.Y;
-
-        if (StickNumber == 0)
-        {
-            CurrentControllerStates[PlayerNumber].LeftStick.SetAxis(StickAxis, Magnitude);
-        } else
-        {
-            CurrentControllerStates[PlayerNumber].RightStick.SetAxis(StickAxis, Magnitude);
-        }
-
-    }
-
-    public void HandleKeyboardInput(InputEventKey KeyEvent, PlayerTag playerTag, int PlayerNumber)
-    {
-
-        ControllerState.ButtonTypes Button;
-        bool Success = playerTag.ReverseMap.TryGetValue(KeyEvent.Keycode, out Button);
-        if (!Success) return;
-        if ((int) Button > (int) ControllerState.ButtonTypes.SERIALIZABLE_END) return;
-        CurrentControllerStates[PlayerNumber].SetButton(Button, KeyEvent.IsPressed());
-    }
-
-    public void HandleStickInputs(PlayerProfile playerProfile, int PlayerNumber)
-    {
-        float lX = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftX);
-        float ly = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftY);
-        CurrentControllerStates[PlayerNumber].LeftStick.SetFromVector(new Vector2(lX,ly));
-
-        float rx = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftX);
-        float ry = Input.GetJoyAxis(playerProfile.InputDeviceNumber, JoyAxis.LeftY);
-        CurrentControllerStates[PlayerNumber].RightStick.SetFromVector(new Vector2(rx,ry));
-    }
-
+    // Polls every local player into this tick's saved input. Remote players are left alone,
+    // since their input comes from the network and may already be here for this tick
     public void SerializeCurrentControllerState(int Tick)
     {
-        int TickKey = tickManager.GetStateKey(Tick);
-        for (int PlayerNumber = 0; PlayerNumber < CurrentControllerStates.Length; PlayerNumber++)
+        int TickKey = TickManager.GetStateKey(Tick);
+        for (int PlayerNumber = 0; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber++)
         {
             PlayerProfile playerProfile = playerManager.AllPlayers[PlayerNumber];
-            // If keyboard, build input vector
             if (playerProfile == null) continue;
+            InputTag tag = TagManager.Get(playerProfile.TagId);
             if (playerProfile.ControllerType == PlayerProfile.ControllerTypes.KEYBOARD)
             {
-                ApplyKeyboardDirectionInputs(playerProfile, PlayerNumber);
+                AllControllerStates[TickKey][PlayerNumber] = PollKeyboard(tag);
             } else if (playerProfile.ControllerType == PlayerProfile.ControllerTypes.CONTROLLER)
             {
-                HandleStickInputs(playerProfile, PlayerNumber);
+                AllControllerStates[TickKey][PlayerNumber] = PollController(tag, playerProfile.InputDeviceNumber);
             }
-
-            AllControllerStates[TickKey][PlayerNumber] = CurrentControllerStates[PlayerNumber];
         }
 
         // Once the current controller states have been serialized, send them to the other players
@@ -194,12 +101,75 @@ public partial class InputManager : Node
         NetworkManager.GlobalInstance.SendFastMessage(NetworkManager.FastNetworkMessageType.Input, EncodeInputs(Tick), TargetId);
     }
 
+    // Keyboard players only read their tag's keys, since Godot treats every keyboard as one device.
+    // Two players can share a keyboard as long as their tags bind different keys
+    private static ControllerState PollKeyboard(InputTag tag)
+    {
+        return Poll(tag, bind => bind.Type == BindType.Key && Input.IsPhysicalKeyPressed((Key)bind.Code) ? 1 : 0);
+    }
+
+    // Controller players only read their own device's buttons and sticks
+    private static ControllerState PollController(InputTag tag, int device)
+    {
+        return Poll(tag, bind => bind.Type switch
+        {
+            BindType.JoyButton => Input.IsJoyButtonPressed(device, (JoyButton)bind.Code) ? 1 : 0,
+            BindType.JoyAxis => AxisStrength(Input.GetJoyAxis(device, (JoyAxis)bind.Code) * bind.Direction, tag.Deadzone),
+            _ => 0,
+        });
+    }
+
+    // Builds a tick's input from how strongly each of the tag's binds is held, from 0 to 1.
+    // The sticks come from the move and aim actions, so keys, d-pads and sticks all drive them the same way.
+    // Up is +y, matching the simulation: up minus down, so Godot's screen space y never gets in
+    private static ControllerState Poll(InputTag tag, Func<Bind, float> strength)
+    {
+        var state = new ControllerState();
+        // Can't happen while deleted tags fall back to a default, but reads as nothing held if it does
+        if (tag == null) return state;
+
+        foreach (var (action, button) in ButtonActions)
+        {
+            state.SetButton(button, ActionStrength(tag, action, strength) > 0);
+        }
+        state.LeftStick.SetFromVector(StickVector(tag, GameAction.MoveUp, GameAction.MoveDown, GameAction.MoveLeft, GameAction.MoveRight, strength));
+        state.RightStick.SetFromVector(StickVector(tag, GameAction.AimUp, GameAction.AimDown, GameAction.AimLeft, GameAction.AimRight, strength));
+        return state;
+    }
+
+    // The strongest of the action's binds
+    private static float ActionStrength(InputTag tag, GameAction action, Func<Bind, float> strength)
+    {
+        float strongest = 0;
+        foreach (Bind bind in tag.BindsFor(action))
+        {
+            if (bind.Code == Bind.InvalidCode) continue;
+            strongest = Math.Max(strongest, strength(bind));
+        }
+        return strongest;
+    }
+
+    private static Vector2 StickVector(InputTag tag, GameAction up, GameAction down, GameAction left, GameAction right, Func<Bind, float> strength)
+    {
+        var stick = new Vector2(
+            ActionStrength(tag, right, strength) - ActionStrength(tag, left, strength),
+            ActionStrength(tag, up, strength) - ActionStrength(tag, down, strength));
+        // Two keys at once would reach past the edge of a real stick
+        return stick.LengthSquared() > 1 ? stick.Normalized() : stick;
+    }
+
+    // How far the axis is pushed in the bind's direction past the deadzone, rescaled so the deadzone's edge is 0
+    private static float AxisStrength(float pushed, float deadzone)
+    {
+        return pushed <= deadzone ? 0 : Math.Min(1, (pushed - deadzone) / (1 - deadzone));
+    }
+
     public void PredictRemoteInputs(int frame)
     {
-        int frameIndex = tickManager.GetStateKey(frame);
+        int frameIndex = TickManager.GetStateKey(frame);
         ControllerState[] CurrentStates = AllControllerStates[frameIndex];
 
-        int PrevFrameIndex = tickManager.GetStateKey(frame - 1);
+        int PrevFrameIndex = TickManager.GetStateKey(frame - 1);
         ControllerState[] PreviousStates = AllControllerStates[PrevFrameIndex];
 
         for (int PlayerNumber = 0 ; PlayerNumber < PlayerManager.MaxPlayerCount; PlayerNumber++)
@@ -252,7 +222,7 @@ public partial class InputManager : Node
         {
             foreach (var PlayerNumber in PlayersToEncode) 
             {
-                byte[] controllerState = AllControllerStates[tickManager.GetStateKey(Frame)][PlayerNumber].GetEncoded();
+                byte[] controllerState = AllControllerStates[TickManager.GetStateKey(Frame)][PlayerNumber].GetEncoded();
                 controllerState.CopyTo(Output, OutputWalker);
                 OutputWalker += ControllerState.EncodedSize;
             }
@@ -322,7 +292,7 @@ public partial class InputManager : Node
         int ByteIndex = 4; // This skips the first 4 bits since those were used to parse the frame number.
         for (int frame = StartFrame; frame <= EndFrame ; frame += 1)
         {
-            int FrameIndex = tickManager.GetStateKey(frame);
+            int FrameIndex = TickManager.GetStateKey(frame);
             foreach (int PlayerNumber in RemotePlayersSent)
             {
                 LatestReceivedFrame[PlayerNumber] = frame;
@@ -354,39 +324,17 @@ public partial class InputManager : Node
     }
 
 
-    public void ApplyKeyboardDirectionInputs(PlayerProfile playerProfile, int PlayerNumber)
+    // TicksAgo reads an earlier tick's saved input, like the tick before for a just pressed check
+    public bool PollForInput(ControllerState.ButtonTypes Button, int PlayerNumber, int TicksAgo = 0)
     {
-        Vector2 LeftStickDirection = new();
-        Vector2 RightStickDirection = new();
-        
-        for (int StickInputs = (int)ControllerState.ButtonTypes.SERIALIZABLE_END + 1; StickInputs < (int)ControllerState.ButtonTypes.COUNT; StickInputs++)
-        {
-            foreach (var action in playerProfile.playerTag.ActionMap[(ControllerState.ButtonTypes)StickInputs])
-            {
-                Vector2 LeftDir;
-                Vector2 RightDir;
-                if (!Input.IsKeyPressed((Key)action)) { continue; }
-                bool LeftContains = LeftStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out LeftDir);
-                if (LeftContains) LeftStickDirection += LeftDir;
-                bool RightContains = RightStickInputToDirection.TryGetValue(  (ControllerState.ButtonTypes)StickInputs, out RightDir);
-                if (RightContains)RightStickDirection  += RightDir;
-            }
-        }
-        CurrentControllerStates[PlayerNumber].LeftStick.SetFromVector( LeftStickDirection.Normalized());
-        CurrentControllerStates[PlayerNumber].RightStick.SetFromVector( RightStickDirection.Normalized());
-    }
-    
-
-    public bool PollForInput(ControllerState.ButtonTypes Button, int PlayerNumber)
-    {
-        // Not gonna put safety checks over this since it 
+        // Not gonna put safety checks over this since it
         // should only error here when player number management is wrong.
-        return AllControllerStates[tickManager.GetStateKey(tickManager.GetCurrentTick() ) ][PlayerNumber].GetButton(Button);
+        return AllControllerStates[TickManager.GetStateKey(tickManager.CurrentTick - TicksAgo) ][PlayerNumber].GetButton(Button);
     }
 
-    public DM_Vector2 PollForStickState(int StickNumber, int PlayerNumber)
+    public DMVector PollForStickState(int StickNumber, int PlayerNumber)
     {
-        ControllerState State = AllControllerStates[tickManager.GetStateKey(tickManager.GetCurrentTick() ) ][PlayerNumber];
+        ControllerState State = AllControllerStates[TickManager.GetStateKey(tickManager.CurrentTick) ][PlayerNumber];
         if (StickNumber == (int)ControllerState.StickTypes.LEFT)
         {
             return State.LeftStick.ToVector();

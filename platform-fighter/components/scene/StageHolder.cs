@@ -1,31 +1,50 @@
 using Godot;
-using System;
-using System.Numerics;
 
-public partial class StageHolder : Node
+// Builds the stage for the play manager and holds it. Sits under the world root, so the world collects the stage's blocks,
+// but the world never builds or knows about the stage itself
+public partial class StageHolder : Node3D
 {
+    // How deep the blocks are drawn. Display only
+    private const float BlockDepth = 2;
 
-    [Export] String StagePath = "uid://bv57u8g75hkaj";
-    Node Stage;
-
-    public void Config()
+    // For stages that don't store their own, in player number order
+    private static readonly DMVector[] DefaultSpawnPoints =
     {
-        InstanceStage();
+        new DMVector(-3, 2),
+        new DMVector(3, 2),
+        new DMVector(-6, 2),
+        new DMVector(6, 2),
+    };
+
+    private StageData data;
+
+    // Called by the play manager before the world is built
+    public void LoadStage(StageId stageId)
+    {
+        data = Stages.Get(stageId);
+        for (int i = 0; i < data.Blocks.Count; i++)
+        {
+            StageBlock block = data.Blocks[i];
+            var blockObject = new PhysicsObject
+            {
+                Name = $"Block {i}",
+                shape = new Square { size = block.Size },
+                objectType = PhysicsObject.ObjectType.CollisionObject,
+                isStatic = true,
+                Layer = CollisionLayers.Stage,
+                // The mesh already shows it
+                renderShape = false,
+            };
+            blockObject.SimTransform.LocalPosition = block.Center;
+            blockObject.AddChild(new MeshInstance3D { Mesh = new BoxMesh { Size = block.Size.ToVector3(BlockDepth) } });
+            AddChild(blockObject);
+        }
     }
 
-    public void InstanceStage()
+    // Where a player starts. Past the stage's own spawn points, the defaults are used
+    public DMVector SpawnPoint(int playerNumber)
     {
-        PackedScene scene = (PackedScene)GD.Load(StagePath);
-        Node3D Instance = (Node3D)scene.Instantiate(); 
-
-        AddChild(Instance);
-        Instance.Name = "stage";
-        Instance.Position = Godot.Vector3.Zero;
-        Stage = Instance;
-    }
-
-    public void Tick()
-    {
-        return;
+        if (data != null && playerNumber < data.SpawnPoints.Count) return data.SpawnPoints[playerNumber];
+        return DefaultSpawnPoints[playerNumber % DefaultSpawnPoints.Length];
     }
 }

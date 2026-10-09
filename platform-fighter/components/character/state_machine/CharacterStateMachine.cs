@@ -1,187 +1,119 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Dynamic;
-using System.Runtime.CompilerServices;
-using Godot;
 
-[GlobalClass]
-public partial class CharacterStateMachine: Node
+// Every character state. Values must stay contiguous starting at 0, since they index the state table
+public enum CharacterStateId : byte
 {
-    public Dictionary<States, State> StateTitleToState;
-    public State CurrentState = null;
-    public enum States
-    {
-        IDLE,
-        WALK,
-        RUN,
-        CROUCH,
-        JUMP,
-        ARIEL_JUMP,
-        FALLING,
-        HURT,
-        
-        ATTACK1,
-        ATTACK2,
-        COUNT
-    };
+    Idle,
+    Walk,
+    Jump,
+    Fall,
+    Turn
+}
 
-    public enum StateTags {
-        AllStates,
-        Attack,
-        Actionable,
+// Everything the state machine needs to roll back. Kept unmanaged so it fits in a SerializableProperty
+public struct CharacterStateData
+{
+    public CharacterStateId Id;
+    public uint TicksInState;
+}
+
+// Runs a character's states. Plain C#, made and owned by the character.
+// The states are handed in by the character, one per CharacterStateId. They must not hold data:
+// per character data belongs on the Character, so the only rollback state is the current id and its tick count
+public class CharacterStateMachine
+{
+    public readonly Character Character;
+    // Indexed by CharacterStateId
+    private readonly CharacterState[] states;
+    private readonly SerializableProperty<CharacterStateData> data = new();
+    // Only lives for the duration of a tick, so it doesn't need to be rolled back
+    private bool changedThisTick;
+    public Action<CharacterStateId> StateChanged;
+    public CharacterStateId CurrentStateId => data.Value.Id;
+    public uint TicksInState => data.Value.TicksInState;
+    public CharacterState CurrentState => states[(int)data.Value.Id];
+
+    public CharacterStateMachine(Character character, CharacterState[] stateList, CharacterStateId startingState)
+    {
+        Character = character;
+        states = BuildStateTable(stateList);
+        data.Value = new CharacterStateData { Id = startingState, TicksInState = 0 };
+        CurrentState.EnterState(this);
     }
-    // This method populates the StateTitleToState dictionary with all of the children of the node. 
-    public void CollectStates()
-    {
-        StateTitleToState = new();
-        CollectStateRecursion(this);
-    }
 
-
-    private void CollectStateRecursion(Node Parent)
+    // Every CharacterStateId must have exactly one state, so a missing one fails when the character is made, not mid match
+    private static CharacterState[] BuildStateTable(CharacterState[] stateList)
     {
-        if (Parent is State CastedParent)
+        var table = new CharacterState[Enum.GetValues<CharacterStateId>().Length];
+        foreach (var state in stateList)
         {
-            // Give it a reference to this state machine
-            CastedParent.stateMachine = this;
-            State PopulatedStateReference = StateTitleToState[CastedParent.StateTitle];
-            if ( PopulatedStateReference == null)
+            if (table[(int)state.Id] != null)
             {
-                StateTitleToState[CastedParent.StateTitle] = CastedParent;
+                throw new InvalidOperationException($"Two states registered for {state.Id}");
+            }
+            table[(int)state.Id] = state;
+        }
+        for (int i = 0; i < table.Length; i++)
+        {
+            if (table[i] == null)
+            {
+                throw new InvalidOperationException($"No state registered for {(CharacterStateId)i}");
             }
         }
-
-        foreach (var child in Parent.GetChildren())
-        {
-            CollectStateRecursion(child);
-        }
+        return table;
     }
 
-    // Collects all states who's conditions need to be checked while in the given state
-    private SortedSet<State> CollectAvailableStates(State Target)
+    public bool IsInState(CharacterStateId id) { return data.Value.Id == id; }
+
+    public void ChangeState(CharacterStateId id)
     {
-        var output = new SortedSet<State>();
+        if (IsInState(id)) return;
 
-
-        // Itterate through each available 
-        
-        for (int StateTitle = 0; StateTitle < (int)States.COUNT; StateTitle++)
-        {
-            var state = StateTitleToState[(States)StateTitle];
-            if (state == Target) continue;
-            
-            if (Target.AccessibleStates.Contains(state.StateTitle))
-            {
-                output.Add(state);
-                continue;
-                
-            }
-
-            foreach (var i in state.Tags)
-            {
-                if (Target.AccessibleTags.Contains(i))
-                {
-                    output.Add(state);
-                    continue;
-                }
-            }
-            
-        }
-        
-        
-        return output;
-    }
-
-
-    
-    
-    public Dictionary<StateTags, States[]> StateBuckets = new();
-    public void ChangeState(States StateArg)
-    {
-        State NewStateObject = StateTitleToState[StateArg];
-        if (StateTitleToState[StateArg] == CurrentState)
-        {
-            // Don't change to a state you're already in
-            return;
-        }
-
-
-        CurrentState.LeaveState();
-
-        CurrentState = NewStateObject;
-        CurrentState.EnterState();
-
-    }
-
-
-    public void OnAnimationFinished()
-    {
-        CurrentState.OnAnimationFinished();
-
+        CurrentState.ExitState(this);
+        data.Value = new CharacterStateData { Id = id, TicksInState = 0 };
+        changedThisTick = true;
+        CurrentState.EnterState(this);
+        StateChanged?.Invoke(id);
     }
 
     public void Tick()
     {
-        CurrentState.Tick();
+        changedThisTick = false;
+        CurrentState.Tick(this);
 
+        // A state entered this tick sees TicksInState == 0 on its first tick
+        if (!changedThisTick)
+        {
+            data.Value.TicksInState++;
 
-
-
+            // Timing comes from the state's data, never the art, so it is the same on every machine
+            StateDefinition state = Character.Definition.GetState(CurrentStateId);
+            bool loops = state != null && state.Loop;
+            int length = state != null ? state.Length : Character.Data.DefaultStateLength;
+            // Fires once, on the tick the animation runs out. Looping states never finish
+            if (!loops && data.Value.TicksInState == length)
+            {
+                CurrentState.OnAnimFinished(this);
+            }
+        }
     }
 }
 
+public abstract class CharacterState
+{
+    public abstract CharacterStateId Id { get; }
+    public virtual void EnterState(CharacterStateMachine machine) { }
+    public virtual void ExitState(CharacterStateMachine machine) { }
+    public virtual void Tick(CharacterStateMachine machine) { }
+    public virtual void OnAnimFinished(CharacterStateMachine machine) { }
+    public abstract bool ApplyGravity {get;}
+    /*
+    Paste this into a class to get the defaults:
 
-
-
-
-
-/*
-Imagined workflow:
-
-
-Making a new character
-you manually add a new state machine? (This is a little annoying since it doesn't inherit the references)
-
-
-
-Ideally: You can add a new character and their default input flow already 
-works for the state machine and you don't need to set references. You just 
-have to attatch animation and set properties like movement attributes.
-
-You won't need to change anything about the statemachine, just the states, which have exportable properties for everything.
-- Acceleration
-- Max Velocity
-- Animation
-
-- Apply color?
-- Particles?
-
-
-How is this achieveable?
-
-Base character state machine already comes with all of the states.
-Somehow, you can add new methods to each state?
-
-- What methods would you need?
-    - instancing projectiles? Can this be done in the animation?
-    - recoil damage? <- This can be done in the animation with generalized method
-    - Set (super/heavy) armor? <- this can be done in the animation
-
-
-
-
-If states are nodes, you can put export properties on them! This makes nodes a good candidate for states.
-you would export animation references( or just use naming conventions)?
-
-How do states respond to inputs? 
-Signal based? 
-
-
-Got it:
-
-States are nodes with exportable properties: including their method resoucres
-They default to a reference with no methods, however you can make a new one 
-'and replace that resource with a different version that has the mthods you need!
-
-*/
+    public override CharacterStateId Id => CharacterStateId.;
+    public override bool ApplyGravity => ;
+    public override void EnterState(CharacterStateMachine machine) { }
+    public override void ExitState(CharacterStateMachine machine) { }
+    public override void Tick(CharacterStateMachine machine) { }
+     */
+}

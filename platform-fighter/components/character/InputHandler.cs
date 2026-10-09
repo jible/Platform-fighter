@@ -1,35 +1,24 @@
-using Godot;
-using System;
-
-[GlobalClass]
-[Tool]
-public partial class InputHandler : Node
+// One player's controller, as the simulation sees it. Everything is read from the inputs saved for the
+// current tick, so a rollback resimulation sees exactly what the first run saw.
+// Plain C#, owned by the character
+public class InputHandler
 {
-    /* 
-    This Node is basically a middle man between the player nodes and the input manager. 
-    Rather than all player nodes needing to establish a reference to the  
-    input manager, just this one does. All of the other nodes can just get export
-    references to this node and have it call the poll for inputs function.
-    */
-    [Export] BaseCharacter3d baseCharacter;
-    InputManager inputManager;
-    PlayManager playManager;
-    int PlayerNumber;
+    public readonly int PlayerNumber;
+    private readonly InputManager inputManager;
 
-    public void Configure()
+    public InputHandler(int playerNumber, InputManager inputManager)
     {
-        PlayerNumber = baseCharacter.PlayerNumber;
-        playManager = baseCharacter.playManager;
-        inputManager = playManager.inputManager;
+        PlayerNumber = playerNumber;
+        this.inputManager = inputManager;
     }
 
-    public bool PollForInput(ControllerState.ButtonTypes Button)
-    {
-       return inputManager.PollForInput(Button, PlayerNumber);
-    }
+    public bool IsDown(ControllerState.ButtonTypes button) => inputManager.PollForInput(button, PlayerNumber);
+    // Down this tick, up the tick before
+    public bool JustPressed(ControllerState.ButtonTypes button) => IsDown(button) && !inputManager.PollForInput(button, PlayerNumber, 1);
+    // Up this tick, down the tick before
+    public bool JustReleased(ControllerState.ButtonTypes button) => !IsDown(button) && inputManager.PollForInput(button, PlayerNumber, 1);
 
-    public DM_Vector2 PollForStickState(int StickNumber)
-    {
-       return inputManager.PollForStickState(StickNumber,PlayerNumber);
-    }
+    // Each axis is in whole steps from -StickState.MAX_STICK_AXIS_VALUE to MAX_STICK_AXIS_VALUE
+    public DMVector LeftStick() => inputManager.PollForStickState((int)ControllerState.StickTypes.LEFT, PlayerNumber);
+    public DMVector RightStick() => inputManager.PollForStickState((int)ControllerState.StickTypes.RIGHT, PlayerNumber);
 }

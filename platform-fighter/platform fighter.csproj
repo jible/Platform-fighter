@@ -6,6 +6,6 @@
     <RootNamespace>platformfighter</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FixedMath.NET" Version="1.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 </Project>
