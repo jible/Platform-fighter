@@ -8,6 +8,9 @@ public interface ICharacterView
     // frame is a tick within the animation, already looped or held by the state.
     // length is the state's length in ticks, or 0 when the state has no authored data
     void Show(string animation, int frame, int length, Character.Direction facing);
+    // Distinct images the animation steps through, like a sprite sheet's frames, so an editor can step one at a time.
+    // 0 when the animation has none, or doesn't step, as with a model
+    int FrameCount(string animation);
 }
 
 // Owns a character's state machine and holds every reference its states need.
@@ -61,7 +64,8 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         Mask = CollisionLayers.Stage;
         SimTransform.LocalPosition = spawnPosition;
 
-        View = CreateView(characterId);
+        View = CharacterViews.Create(characterId);
+        if (View is Node viewNode) AddChild(viewNode);
         InputHandler = new InputHandler(playerIndex, inputManager);
         Movement = new CharacterMovement(this);
         // Last, since entering the first state can use everything above
@@ -108,22 +112,6 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         {
             // No authored data yet, so play the sheet named after the state
             View.Show(stateId.ToString(), (int)StateMachine.TicksInState, 0, direction);
-        }
-    }
-
-    // Each VisualKind gets its own view node, so a model view can be added here without touching the rest
-    private ICharacterView CreateView(CharacterId characterId)
-    {
-        switch (Data.Visuals.Kind)
-        {
-            case VisualKind.Sprite:
-                var view = new SpriteCharacterView { Name = "View" };
-                view.Configure(CharacterFiles.ResourceFolder(characterId), Data.Visuals);
-                AddChild(view);
-                return view;
-            default:
-                GD.PushError($"{characterId} uses {Data.Visuals.Kind} visuals, which aren't supported yet");
-                return null;
         }
     }
 }

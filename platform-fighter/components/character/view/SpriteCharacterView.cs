@@ -53,7 +53,7 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
     }
 
     // Frames Show spreads over the state for this animation, or 0 when there is no sheet and no default
-    public int SpriteCount(string animation)
+    public int FrameCount(string animation)
     {
         Texture2D sheet = ResolveSheet(animation);
         return sheet != null ? FrameCount(sheet) : 0;

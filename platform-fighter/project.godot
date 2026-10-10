@@ -17,12 +17,8 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="platform fighter"
 run/main_scene="uid://by514r3mafxn4"
 config/features=PackedStringArray("4.7", "C#", "Forward Plus")
+run/max_fps=60
 config/icon="res://assets/images/icon.svg"
-
-[autoload]
-
-PlayerManager="*res://components/Globals/PlayerManager.cs"
-NetworkManager="*res://components/Globals/NetworkManager.cs"
 
 [display]
 
@@ -32,6 +28,10 @@ window/vsync/vsync_mode=0
 [dotnet]
 
 project/assembly_name="platform fighter"
+
+[editor_plugins]
+
+enabled=PackedStringArray()
 
 [global_group]
 

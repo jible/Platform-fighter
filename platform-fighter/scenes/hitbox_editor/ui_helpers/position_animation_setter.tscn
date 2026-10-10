@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://cf88wknxp7vkr"]
+
+[node name="PositionAnimationSetter" type="HBoxContainer"]
+
+[node name="FrameLabel" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Frame:"
+
+[node name="Frame" type="SpinBox" parent="."]
+layout_mode = 2
+rounded = true
+
+[node name="XLabel" type="Label" parent="."]
+layout_mode = 2
+text = "x:"
+
+[node name="X" type="SpinBox" parent="."]
+layout_mode = 2
+min_value = -500.0
+max_value = 5000.0
+allow_greater = true
+allow_lesser = true
+update_on_text_changed = true
+
+[node name="YLabel" type="Label" parent="."]
+layout_mode = 2
+text = "y:"
+
+[node name="Y" type="SpinBox" parent="."]
+layout_mode = 2
+min_value = -500.0
+max_value = 500.0
+allow_greater = true
+allow_lesser = true

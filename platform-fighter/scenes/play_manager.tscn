@@ -1,31 +1,31 @@
-[gd_scene load_steps=5 format=3 uid="uid://t16aulelxjm1"]
+[gd_scene format=3 uid="uid://t16aulelxjm1"]
 
-[ext_resource type="Script" path="res://components/scene/PlayManager.cs" id="1_play"]
+[ext_resource type="Script" uid="uid://ci3aih3ftovyf" path="res://components/scene/PlayManager.cs" id="1_play"]
+[ext_resource type="Script" uid="uid://bd0yg580st5ge" path="res://components/scene/StageHolder.cs" id="2_stage"]
+[ext_resource type="Script" uid="uid://caw412lgns31w" path="res://components/scene/CharacterHolder.cs" id="3_chars"]
 [ext_resource type="Script" uid="uid://c3tmsr2hf5rlu" path="res://components/scene/InputManager.cs" id="5_lxgt1"]
-[ext_resource type="Script" path="res://components/scene/StageHolder.cs" id="2_stage"]
-[ext_resource type="Script" path="res://components/scene/CharacterHolder.cs" id="3_chars"]
 
-[node name="Play" type="Node3D" node_paths=PackedStringArray("InputManager", "WorldRoot", "StageHolder", "CharacterHolder")]
+[node name="Play" type="Node3D" unique_id=693341415 node_paths=PackedStringArray("InputManager", "WorldRoot", "StageHolder", "CharacterHolder")]
 script = ExtResource("1_play")
 InputManager = NodePath("Input Manager")
 WorldRoot = NodePath("World")
 StageHolder = NodePath("World/Stage Holder")
 CharacterHolder = NodePath("World/Character Holder")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=599953160]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1033600136]
 transform = Transform3D(1, 0, 0, 0, 0.955464, 0.2951078, 0, -0.2951078, 0.955464, 0, 8.026318, 16.686108)
 
-[node name="Input Manager" type="Node" parent="."]
+[node name="Input Manager" type="Node" parent="." unique_id=853946275]
 script = ExtResource("5_lxgt1")
 
-[node name="World" type="Node3D" parent="."]
+[node name="World" type="Node3D" parent="." unique_id=16235546]
 
-[node name="Stage Holder" type="Node3D" parent="World"]
+[node name="Stage Holder" type="Node3D" parent="World" unique_id=1845963046]
 script = ExtResource("2_stage")
 
-[node name="Character Holder" type="Node3D" parent="World"]
+[node name="Character Holder" type="Node3D" parent="World" unique_id=768234374]
 script = ExtResource("3_chars")

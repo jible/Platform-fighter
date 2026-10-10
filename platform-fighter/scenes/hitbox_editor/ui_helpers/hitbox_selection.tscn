@@ -1,0 +1,129 @@
+[gd_scene format=3 uid="uid://dsca2owypdldv"]
+
+[ext_resource type="PackedScene" uid="uid://cqa5hbka73wi" path="res://scenes/hitbox_editor/ui_helpers/add_remove_field.tscn" id="2_k4a0x"]
+
+[node name="HitboxSelection" type="VBoxContainer"]
+offset_right = 143.0
+offset_bottom = 178.0
+size_flags_horizontal = 2
+size_flags_vertical = 2
+
+[node name="SectionLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Hitbox Info"
+
+[node name="Interpolate" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Interpolate"]
+layout_mode = 2
+text = "Interpolate Pos:"
+
+[node name="CheckBox" type="CheckBox" parent="Interpolate"]
+layout_mode = 2
+button_pressed = true
+
+[node name="Offset" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Offset"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Offsets:"
+
+[node name="AddRemoveField" parent="Offset" instance=ExtResource("2_k4a0x")]
+layout_mode = 2
+
+[node name="TurnOnFrames" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TurnOnFrames"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Turn on Frames:"
+
+[node name="TurnOnFrameField" type="SpinBox" parent="TurnOnFrames"]
+layout_mode = 2
+
+[node name="TurnOffFrames" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TurnOffFrames"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Turn off Frames:"
+
+[node name="TurnOffFrameField" type="SpinBox" parent="TurnOffFrames"]
+layout_mode = 2
+
+[node name="Damage" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Damage"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Damage:"
+
+[node name="Damage" type="SpinBox" parent="Damage"]
+layout_mode = 2
+step = 0.1
+
+[node name="Knockback Angle" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Knockback Angle"]
+layout_mode = 2
+text = "Knockback Vector:"
+
+[node name="XLabel" type="Label" parent="Knockback Angle"]
+layout_mode = 2
+text = "X:"
+
+[node name="KnockbackX" type="SpinBox" parent="Knockback Angle"]
+layout_mode = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+
+[node name="YLabel" type="Label" parent="Knockback Angle"]
+layout_mode = 2
+text = "Y:"
+
+[node name="KnockbackY" type="SpinBox" parent="Knockback Angle"]
+layout_mode = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+
+[node name="Normalize" type="Button" parent="Knockback Angle"]
+layout_mode = 2
+text = "Normalize KB Angle"
+
+[node name="Knockback Magnitude" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Knockback Magnitude"]
+layout_mode = 2
+text = "Knockback Magnitude:"
+
+[node name="Knockback Magnitude Value" type="SpinBox" parent="Knockback Magnitude"]
+layout_mode = 2
+max_value = 9000.0
+allow_greater = true
+allow_lesser = true
+
+[node name="Size" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Size"]
+layout_mode = 2
+text = "Radius:"
+
+[node name="Radius" type="SpinBox" parent="Size"]
+layout_mode = 2
+step = 0.1
+allow_greater = true

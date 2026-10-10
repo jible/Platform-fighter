@@ -1,0 +1,530 @@
+[gd_scene format=3 uid="uid://cq55gwn8bibb6"]
+
+[ext_resource type="Script" uid="uid://ca6lukejfr4bf" path="res://components/hitbox_editor/KnockbackPicker.cs" id="1_knockback"]
+[ext_resource type="Script" path="res://components/hitbox_editor/HitboxEditor.cs" id="2_editor"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_box_type"]
+
+[node name="Node" type="Node" unique_id=216545646]
+script = ExtResource("2_editor")
+
+[node name="HitboxEditor" type="PanelContainer" parent="." unique_id=446062831]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margins" type="MarginContainer" parent="HitboxEditor" unique_id=984094693]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Columns" type="HBoxContainer" parent="HitboxEditor/Margins" unique_id=810025843]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="UISection" type="VBoxContainer" parent="HitboxEditor/Margins/Columns" unique_id=899355381]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection" unique_id=1142432153]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HitboxEditor/Margins/Columns/UISection/TitleRow" unique_id=2132471997]
+layout_mode = 2
+text = "HITBOX EDITOR"
+
+[node name="Spacer" type="Control" parent="HitboxEditor/Margins/Columns/UISection/TitleRow" unique_id=203445536]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="UnsavedLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/TitleRow" unique_id=592188935]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.1, 1)
+text = "Unsaved changes"
+
+[node name="FileRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection" unique_id=787196533]
+layout_mode = 2
+
+[node name="ReloadButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/FileRow" unique_id=1015381838]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Reload"
+
+[node name="SaveButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/FileRow" unique_id=1129984922]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save"
+
+[node name="Rows" type="ScrollContainer" parent="HitboxEditor/Margins/Columns/UISection" unique_id=483473797]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Content" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows" unique_id=497948775]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CharacterRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1159621559]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CharacterRow" unique_id=805770952]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Character:"
+
+[node name="CharacterDropdown" type="OptionButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CharacterRow" unique_id=987572844]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StateRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=969467651]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/StateRow" unique_id=1086886636]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "State:"
+
+[node name="StateDropdown" type="OptionButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/StateRow" unique_id=729321306]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LengthRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1572372371]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/LengthRow" unique_id=2099990207]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Length:"
+
+[node name="LengthInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/LengthRow" unique_id=893363504]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LengthWarning" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/LengthRow" unique_id=1705223265]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.1, 1)
+text = "Sprite Frame Length Mismatch"
+
+[node name="LoopRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=127020479]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/LoopRow" unique_id=1630255095]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Loop:"
+
+[node name="LoopToggle" type="CheckBox" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/LoopRow" unique_id=1766444287]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AnimationRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=293758594]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationRow" unique_id=1820892985]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Animation Path:"
+
+[node name="AnimationInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationRow" unique_id=581895225]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StateDivider" type="HSeparator" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1252173892]
+layout_mode = 2
+
+[node name="BoxTypeRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=2138756420]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxTypeRow" unique_id=1004768162]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Box type:"
+
+[node name="PushboxTypeButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxTypeRow" unique_id=487924331]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_box_type")
+text = "Pushbox"
+
+[node name="HitboxTypeButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxTypeRow" unique_id=1215920085]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+button_group = SubResource("ButtonGroup_box_type")
+text = "Hitbox"
+
+[node name="HurtboxTypeButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxTypeRow" unique_id=1252897035]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_group = SubResource("ButtonGroup_box_type")
+text = "Hurtbox"
+
+[node name="BoxRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1747224213]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxRow" unique_id=1954591622]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Box:"
+
+[node name="BoxDropdown" type="OptionButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxRow" unique_id=207392109]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RemoveBoxButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxRow" unique_id=1250925920]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+text = "-"
+
+[node name="AddBoxButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxRow" unique_id=72517284]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+text = "+"
+
+[node name="SharedProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=686608676]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Header" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties" unique_id=600576540]
+layout_mode = 2
+text = "PROPERTIES"
+
+[node name="NameRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties" unique_id=532353591]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/NameRow" unique_id=1826320468]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Name:"
+
+[node name="NameInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/NameRow" unique_id=924103061]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ParentRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties" unique_id=1164094364]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/ParentRow" unique_id=1498144072]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Parent:"
+
+[node name="ParentDropdown" type="OptionButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/ParentRow" unique_id=946488696]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SizeRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties" unique_id=432523070]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/SizeRow" unique_id=390164036]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Size:"
+
+[node name="WLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/SizeRow" unique_id=2067908733]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "W:"
+
+[node name="WidthInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/SizeRow" unique_id=197476631]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/SizeRow" unique_id=227509622]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "H:"
+
+[node name="HeightInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/SizeRow" unique_id=305693180]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HitboxProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=602454052]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Header" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties" unique_id=1403754019]
+layout_mode = 2
+text = "HITBOX"
+
+[node name="HitGroupRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties" unique_id=1564476284]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/HitGroupRow" unique_id=1416835818]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Hit group:"
+
+[node name="HitGroupDropdown" type="OptionButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/HitGroupRow" unique_id=1666797253]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RemoveHitGroupButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/HitGroupRow" unique_id=1639790727]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+text = "-"
+
+[node name="AddHitGroupButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/HitGroupRow" unique_id=612650053]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+text = "+"
+
+[node name="DamageRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties" unique_id=2136253322]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/DamageRow" unique_id=529887589]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Damage:"
+
+[node name="DamageInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/DamageRow" unique_id=630004442]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+
+[node name="HitstunRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties" unique_id=274092091]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/HitstunRow" unique_id=1693750481]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Hitstun:"
+
+[node name="HitstunInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/HitstunRow" unique_id=861933150]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+
+[node name="KnockbackRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties" unique_id=1055827124]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackRow" unique_id=1813171939]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+size_flags_vertical = 0
+text = "Knockback:"
+
+[node name="Fields" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackRow" unique_id=1638362666]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="XRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackRow/Fields" unique_id=823326507]
+layout_mode = 2
+
+[node name="XLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackRow/Fields/XRow" unique_id=1925426332]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "X:"
+
+[node name="KnockbackXInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackRow/Fields/XRow" unique_id=443553850]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+
+[node name="YRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackRow/Fields" unique_id=753016976]
+layout_mode = 2
+
+[node name="YLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackRow/Fields/YRow" unique_id=83071310]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "Y:"
+
+[node name="KnockbackYInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackRow/Fields/YRow" unique_id=631755423]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+
+[node name="KnockbackPicker" type="Control" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackRow" unique_id=1992697411 node_paths=PackedStringArray("XInput", "YInput")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+script = ExtResource("1_knockback")
+XInput = NodePath("../Fields/XRow/KnockbackXInput")
+YInput = NodePath("../Fields/YRow/KnockbackYInput")
+FillColor = Color(0.105608426, 0.10348002, 0.102565356, 1)
+
+[node name="HurtboxProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=251383149]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Header" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HurtboxProperties" unique_id=948952712]
+layout_mode = 2
+text = "HURTBOX"
+
+[node name="PushboxProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=552131858]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Header" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PushboxProperties" unique_id=1645060560]
+layout_mode = 2
+text = "PUSHBOX"
+
+[node name="DisplaySection" type="VBoxContainer" parent="HitboxEditor/Margins/Columns" unique_id=1839318914]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.25
+
+[node name="CharacterDisplay" type="ColorRect" parent="HitboxEditor/Margins/Columns/DisplaySection" unique_id=1635736078]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.12, 0.12, 0.14, 1)
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="HitboxEditor/Margins/Columns/DisplaySection/CharacterDisplay" unique_id=1921555507]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -2.0
+offset_bottom = -3.0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="HitboxEditor/Margins/Columns/DisplaySection/CharacterDisplay/SubViewportContainer" unique_id=904972865]
+unique_name_in_owner = true
+own_world_3d = true
+size = Vector2i(623, 462)
+
+[node name="Camera3D" type="Camera3D" parent="HitboxEditor/Margins/Columns/DisplaySection/CharacterDisplay/SubViewportContainer/SubViewport" unique_id=1671775570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+projection = 1
+size = 4.0
+
+[node name="TimelineRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection" unique_id=2087546098]
+layout_mode = 2
+
+[node name="FrameSlider" type="HSlider" parent="HitboxEditor/Margins/Columns/DisplaySection/TimelineRow" unique_id=194443385]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 0.0
+rounded = true
+
+[node name="FrameLabel" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/TimelineRow" unique_id=1753902411]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
+text = "0 / 0"
+horizontal_alignment = 2
+
+[node name="PlaybackRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection" unique_id=1640333302]
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="HitboxEditor/Margins/Columns/DisplaySection/PlaybackRow" unique_id=1505980526]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
+text = "Play"
+
+[node name="PauseButton" type="Button" parent="HitboxEditor/Margins/Columns/DisplaySection/PlaybackRow" unique_id=1791593997]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 0)
+layout_mode = 2
+text = "Pause"
+
+[node name="PreviousFrameButton" type="Button" parent="HitboxEditor/Margins/Columns/DisplaySection/PlaybackRow" unique_id=792153377]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(36, 0)
+layout_mode = 2
+text = "<-"
+
+[node name="NextFrameButton" type="Button" parent="HitboxEditor/Margins/Columns/DisplaySection/PlaybackRow" unique_id=382301571]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(36, 0)
+layout_mode = 2
+text = "->"
+
+[node name="FrameDivider" type="HSeparator" parent="HitboxEditor/Margins/Columns/DisplaySection" unique_id=1822703831]
+layout_mode = 2
+
+[node name="FrameHeader" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection" unique_id=662910277]
+unique_name_in_owner = true
+layout_mode = 2
+text = "FRAME 0"
+
+[node name="PositionRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection" unique_id=1253145984]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/PositionRow" unique_id=1547334989]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Position:"
+
+[node name="XLabel" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/PositionRow" unique_id=1158147549]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "X:"
+
+[node name="PositionXInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/DisplaySection/PositionRow" unique_id=1205401452]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="YLabel" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/PositionRow" unique_id=763099904]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "Y:"
+
+[node name="PositionYInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/DisplaySection/PositionRow" unique_id=486418222]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ActiveRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection" unique_id=884596548]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/ActiveRow" unique_id=1339659538]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "Active:"
+
+[node name="ActiveToggle" type="CheckBox" parent="HitboxEditor/Margins/Columns/DisplaySection/ActiveRow" unique_id=704009126]
+unique_name_in_owner = true
+layout_mode = 2
+text = "On this frame"
+
+[node name="Spacer" type="Control" parent="HitboxEditor/Margins/Columns/DisplaySection/ActiveRow" unique_id=225777856]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="KeyStateLabel" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/ActiveRow" unique_id=1967003478]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Keyed"
+
+[node name="RemoveKeyButton" type="Button" parent="HitboxEditor/Margins/Columns/DisplaySection/ActiveRow" unique_id=1479148711]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "Remove Key"
