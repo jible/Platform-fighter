@@ -1,4 +1,5 @@
 using Godot;
+using System.Linq;
 
 // Sets up a match and runs it: fills the holders under the world root, then builds the deterministic world
 // from them and drives it every frame. The world only simulates what it's given; deciding what's in the match is this class's job
@@ -33,6 +34,11 @@ public partial class PlayManager : Node3D
 
         world = new DeterministicWorld(WorldRoot, InputManager);
         InputManager.tickManager = world.TickManager;
+
+        // Game systems the world doesn't know about. Hits resolve in player number order, wherever the characters sit in the tree
+        var hitboxManager = new HitboxManager(world.All<Character>().OrderBy(character => character.PlayerIndex).ToArray());
+        world.AddSystem(hitboxManager);
+        world.AddRenderer(new RuntimeBoxRenderer(hitboxManager, world.BoxDrawer));
     }
 
     public override void _Process(double delta)

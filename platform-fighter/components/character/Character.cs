@@ -45,7 +45,7 @@ public partial class Character : PhysicsObject, ITickable, IEntity
 
     // Who this character's current state has already hit, one per hit group index of the current state.
     // Sized by the definition when configured. Written by the HitboxManager and cleared when a state is entered
-    // public HitGroup[] HitGroups { get; private set; }
+    public HitGroup[] HitGroups { get; private set; }
 
     // Called by whatever spawns the character, before it's added under the world root.
     // spawnPosition is in world space, since a character is always a root
@@ -54,7 +54,7 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         Data = Roster.Get(characterId);
         Definition = CharacterFiles.LoadDefinition(characterId);
         // Rollback state, so made here, before the world is built, and never resized
-        // HitGroups = HitGroup.CreateSet(Definition.MaxHitGroups);
+        HitGroups = HitGroup.CreateSet(Definition.MaxHitGroups);
         PlayerIndex = playerIndex;
 
         // The physics server reads these when the world is built

@@ -20,6 +20,12 @@ config/features=PackedStringArray("4.7", "C#", "Forward Plus")
 run/max_fps=60
 config/icon="res://assets/images/icon.svg"
 
+[autoload]
+
+GlobalResources="*uid://csf2dxhknjg6m"
+NetworkManager="*uid://d3ni3and6p2q1"
+PlayerManager="*uid://q4w1p8f8b6rb"
+
 [display]
 
 window/stretch/aspect="expand"

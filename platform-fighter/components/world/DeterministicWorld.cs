@@ -133,10 +133,10 @@ public class DeterministicWorld : IDisposable
     private static IEntity[] AssignEntityIds(IEntity[] entities)
     {
         // Hit groups remember who they hit with one bit per entity
-        // if (entities.Length > HitGroup.MaxEntities)
-        // {
-        //     GD.PushError($"The world has {entities.Length} entities, past the {HitGroup.MaxEntities} hit groups can track");
-        // }
+        if (entities.Length > HitGroup.MaxEntities)
+        {
+            GD.PushError($"The world has {entities.Length} entities, past the {HitGroup.MaxEntities} hit groups can track");
+        }
         for (int i = 0; i < entities.Length; i++)
         {
             entities[i].EntityId = (byte)i;
