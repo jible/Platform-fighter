@@ -22,7 +22,7 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
         this.folder = folder;
         defaultAnimation = visuals.DefaultAnimation;
         frameWidth = visuals.SpriteFrameWidth;
-        PixelSize = visuals.PixelSize;
+        PixelSize = visuals.PixelSize.ToFloat();
         // Pixel art, so no blurring between pixels
         TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest;
         // Sheets from a previous folder don't apply any more

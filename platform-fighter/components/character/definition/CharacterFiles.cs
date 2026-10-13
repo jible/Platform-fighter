@@ -62,7 +62,7 @@ public static class CharacterFiles
     // Read fresh on every call, so edits made in the hitbox editor show up on the next match
     public static CharacterDefinition LoadDefinition(CharacterId id)
     {
-        return CharacterDefinitionBuilder.Build(ReadCharacter(id), ReadSkeleton(id));
+        return CharacterDefinitionBuilder.Build(ReadCharacter(id), Roster.Get(id).Visuals.BoxUnit, ReadSkeleton(id));
     }
 
     // Null when the file doesn't exist

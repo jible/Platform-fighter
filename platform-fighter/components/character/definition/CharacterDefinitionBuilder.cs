@@ -4,20 +4,21 @@ using Godot;
 
 // Turns the authored and baked files into a CharacterDefinition.
 // Keyframes are expanded here with DM64 math, so interpolation stays deterministic.
+// Boxes are converted from their authored units (pixels for sprites) to world units here, so play never sees pixels.
 public static class CharacterDefinitionBuilder
 {
-    // skeleton is null for sprite characters
-    public static CharacterDefinition Build(CharacterFile file, BakedSkeletonFile skeleton = null)
+    // boxUnit is world units per authored box unit, see VisualData.BoxUnit. skeleton is null for sprite characters
+    public static CharacterDefinition Build(CharacterFile file, DM64 boxUnit, BakedSkeletonFile skeleton = null)
     {
         var states = new List<StateDefinition>(file.States.Count);
         foreach (var entry in file.States)
         {
-            states.Add(BuildState(entry.Key, entry.Value, skeleton));
+            states.Add(BuildState(entry.Key, entry.Value, boxUnit, skeleton));
         }
         return new CharacterDefinition(states.ToArray());
     }
 
-    private static StateDefinition BuildState(string name, StateFile state, BakedSkeletonFile skeleton)
+    private static StateDefinition BuildState(string name, StateFile state, DM64 boxUnit, BakedSkeletonFile skeleton)
     {
         int length = Math.Max(1, state.Length);
         BakedAnimation animation = null;
@@ -47,7 +48,7 @@ public static class CharacterDefinitionBuilder
                 hitGroupIndex = nextOwnGroupIndex++;
             }
 
-            ExpandKeys(box, length, out DMVector[] offsets, out DMVector[] sizes, $"{name} box {box.Id}");
+            ExpandKeys(box, length, boxUnit, out DMVector[] offsets, out DMVector[] sizes, $"{name} box {box.Id}");
             boxes[i] = new BoxDefinition(
                 box.Id,
                 box.Type,
@@ -62,7 +63,7 @@ public static class CharacterDefinitionBuilder
         return new StateDefinition(name, state.Animation, length, state.Loop, boxes);
     }
 
-    private static void ExpandKeys(BoxFile box, int length, out DMVector[] offsets, out DMVector[] sizes, string context)
+    private static void ExpandKeys(BoxFile box, int length, DM64 boxUnit, out DMVector[] offsets, out DMVector[] sizes, string context)
     {
         offsets = new DMVector[length];
         sizes = new DMVector[length];
@@ -78,6 +79,9 @@ public static class CharacterDefinitionBuilder
         for (int frame = 0; frame < length; frame++)
         {
             BoxKeyMath.Sample(keys, frame, out offsets[frame], out sizes[frame]);
+            // Scaled after blending, which gives the same result since blending is linear
+            offsets[frame] *= boxUnit;
+            sizes[frame] *= boxUnit;
         }
     }
 

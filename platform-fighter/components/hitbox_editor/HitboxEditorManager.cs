@@ -20,7 +20,18 @@ public class HitboxEditorManager
 
     // Rebuilt lazily after edits, so the preview draws exactly what play would use
     private CharacterDefinition definition;
-    public CharacterDefinition Definition => definition ??= CharacterDefinitionBuilder.Build(Loaded, Skeleton);
+    public CharacterDefinition Definition => definition ??=
+        CharacterDefinitionBuilder.Build(Loaded, Roster.Get(characterId).Visuals.BoxUnit, Skeleton);
+
+    // New boxes start about a world unit across, in the character's box units, so they're visible at any pixel size
+    private DMVector NewBoxSize
+    {
+        get
+        {
+            DM64 side = DM64.Max(new DM64(1), (new DM64(1) / Roster.Get(characterId).Visuals.BoxUnit).Round());
+            return new DMVector(side, side);
+        }
+    }
 
     // Every state the game has, whether or not it has data yet
     public static string[] AllStateNames => Enum.GetNames(typeof(CharacterStateId));
@@ -129,7 +140,7 @@ public class HitboxEditorManager
             Type = type,
             Bone = bone ?? "",
         };
-        box.Keys.Add(new BoxKey { Frame = 0, Size = new DMVector(1, 1) });
+        box.Keys.Add(new BoxKey { Frame = 0, Size = NewBoxSize });
         state.Boxes.Add(box);
         MarkChanged();
         return box;
@@ -240,7 +251,7 @@ public class HitboxEditorManager
         {
             // New keys start from the values the box already had on this frame,
             // and blend the same way as the key they split
-            var key = new BoxKey { Frame = frame, Size = new DMVector(1, 1) };
+            var key = new BoxKey { Frame = frame, Size = NewBoxSize };
             if (box.Keys.Count > 0)
             {
                 BoxKeyMath.Sample(box.Keys, frame, out key.Offset, out key.Size);

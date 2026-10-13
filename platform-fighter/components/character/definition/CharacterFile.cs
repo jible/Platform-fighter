@@ -5,6 +5,8 @@ using System.Collections.Generic;
 // built into a CharacterDefinition. Nothing reads these classes during a tick.
 // Read and written with Newtonsoft through CharacterFileJson, which saves enums by name and DM64 as decimals.
 // Positions are authored facing right and mirrored at runtime.
+// Box offsets and sizes are in the character's box units: sprite pixels (y up, 0,0 at the sprite's center)
+// for sprite characters, world units for models. The builder converts them, see VisualData.BoxUnit.
 
 [Serializable]
 public class CharacterFile

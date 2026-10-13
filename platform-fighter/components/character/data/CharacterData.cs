@@ -32,7 +32,7 @@ public enum VisualKind
     Model,
 }
 
-// How the character is drawn. Display only, nothing here affects the game, so plain floats are fine.
+// How the character is drawn. Mostly display only, except PixelSize, which also scales a sprite character's boxes.
 // The art lives with the character's other files, see CharacterFiles
 [Serializable]
 public class VisualData
@@ -42,8 +42,12 @@ public class VisualData
     public string DefaultAnimation;
     // Width of one frame in a sprite sheet. 0 means square frames, as wide as the sheet is tall
     public int SpriteFrameWidth = 0;
-    // World units per pixel of a sprite sheet
-    public float PixelSize = 0.01f;
+    // World units per pixel of a sprite sheet. A sprite character's boxes are authored in the same pixels,
+    // so this also sizes them in play and must be a DM64. Changing it rescales art and boxes together
+    public DM64 PixelSize = new DM64(1) / 100;
+
+    // World units per unit of an authored box offset or size: pixels for sprites, world units for models
+    public DM64 BoxUnit => Kind == VisualKind.Sprite ? PixelSize : new DM64(1);
 }
 
 [Serializable]
