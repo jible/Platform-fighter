@@ -2,7 +2,246 @@
   "Version": 1,
   "States": {
     "Idle": {
-      "Animation": "BallGamePlayerSpriteSheetV1.png",
+      "Animation": "Anims/idle.png",
+      "Sprite": {
+        "Columns": 2,
+        "Rows": 1,
+        "FrameRate": 20,
+        "Sequence": [
+          0,
+          1
+        ]
+      },
+      "Length": 120,
+      "Loop": true,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 3,
+      "NextHitGroupId": 3
+    },
+    "Fall": {
+      "Animation": "Anims/fall.png",
+      "Sprite": null,
+      "Length": 30,
+      "Loop": true,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "Walk": {
+      "Animation": "Anims/walk",
+      "Sprite": {
+        "Columns": 2,
+        "Rows": 1,
+        "FrameRate": 20,
+        "Sequence": [
+          0,
+          1
+        ]
+      },
+      "Length": 20,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "JumpSquat": {
+      "Animation": "Anims/jumpSquat",
+      "Sprite": {
+        "Columns": 1,
+        "Rows": 1,
+        "FrameRate": 60,
+        "Sequence": [
+          0
+        ]
+      },
+      "Length": 1,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "Jump": {
+      "Animation": "Anims/jump",
+      "Sprite": {
+        "Columns": 4,
+        "Rows": 1,
+        "FrameRate": 30,
+        "Sequence": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "Length": 16,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "Land": {
+      "Animation": "Anims/land",
+      "Sprite": {
+        "Columns": 2,
+        "Rows": 1,
+        "FrameRate": 10,
+        "Sequence": [
+          0,
+          1
+        ]
+      },
+      "Length": 30,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "Turn": {
+      "Animation": "Anims/turn",
+      "Sprite": {
+        "Columns": 2,
+        "Rows": 1,
+        "FrameRate": 10,
+        "Sequence": [
+          0,
+          1
+        ]
+      },
+      "Length": 30,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    }
+  },
+  "Attacks": {
+    "UTilt": {
+      "Input": {
+        "Button": "A",
+        "Direction": "Up",
+        "Context": "Ground"
+      },
+      "Movement": "IgnoreInput",
+      "Animation": "Anims/uTilt.png",
+      "Sprite": null,
+      "Length": 30,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "BTilt": {
+      "Input": {
+        "Button": "A",
+        "Direction": "Back",
+        "Context": "Ground"
+      },
+      "Movement": "IgnoreInput",
+      "Animation": "Anims/bTilt.png",
+      "Sprite": null,
+      "Length": 30,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "FTilt": {
+      "Input": {
+        "Button": "A",
+        "Direction": "Forward",
+        "Context": "Ground"
+      },
+      "Movement": "IgnoreInput",
+      "Animation": "Anims/fTilt.png",
+      "Sprite": null,
+      "Length": 30,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "DTilt": {
+      "Input": {
+        "Button": "A",
+        "Direction": "Down",
+        "Context": "Ground"
+      },
+      "Movement": "IgnoreInput",
+      "Animation": "Anims/dTilt.png",
+      "Sprite": null,
+      "Length": 30,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "FAir": {
+      "Input": {
+        "Button": "A",
+        "Direction": "Forward",
+        "Context": "Air"
+      },
+      "Movement": "IgnoreInput",
+      "Animation": "Anims/fAir.png",
+      "Sprite": null,
+      "Length": 30,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "BAir": {
+      "Input": {
+        "Button": "A",
+        "Direction": "Back",
+        "Context": "Air"
+      },
+      "Movement": "IgnoreInput",
+      "Animation": "Anims/bAir.png",
+      "Sprite": null,
+      "Length": 30,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "NAir": {
+      "Input": {
+        "Button": "A",
+        "Direction": "Neutral",
+        "Context": "Air"
+      },
+      "Movement": "IgnoreInput",
+      "Animation": "Anims/nAir.png",
+      "Sprite": null,
+      "Length": 30,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "DAir": {
+      "Input": {
+        "Button": "A",
+        "Direction": "Down",
+        "Context": "Air"
+      },
+      "Movement": "IgnoreInput",
+      "Animation": "Anims/dAir.png",
       "Sprite": {
         "Columns": 8,
         "Rows": 1,
@@ -18,70 +257,12 @@
           7
         ]
       },
-      "Length": 120,
-      "Loop": true,
+      "Length": 50,
+      "Loop": false,
       "HitGroups": [],
-      "Boxes": [
-        {
-          "Id": 1,
-          "Name": "Hitbox 1",
-          "Type": "Hitbox",
-          "Bone": "",
-          "HitGroup": -1,
-          "Damage": 0,
-          "Hitstun": 0,
-          "Knockback": {
-            "x": 5.294118,
-            "y": 4.705883
-          },
-          "Keys": [
-            {
-              "Frame": 0,
-              "Offset": {
-                "x": 20,
-                "y": 0
-              },
-              "Size": {
-                "x": 20,
-                "y": 20
-              },
-              "Interpolation": "Hold"
-            },
-            {
-              "Frame": 15,
-              "Offset": {
-                "x": 20,
-                "y": 10
-              },
-              "Size": {
-                "x": 30,
-                "y": 30
-              },
-              "Interpolation": "Hold"
-            },
-            {
-              "Frame": 30,
-              "Offset": {
-                "x": 20,
-                "y": 20
-              },
-              "Size": {
-                "x": 30,
-                "y": 30
-              },
-              "Interpolation": "Hold"
-            }
-          ],
-          "Active": [
-            [
-              0,
-              44
-            ]
-          ]
-        }
-      ],
-      "NextBoxId": 3,
-      "NextHitGroupId": 3
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
     }
   }
 }

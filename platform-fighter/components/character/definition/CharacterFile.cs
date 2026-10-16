@@ -15,6 +15,9 @@ public class CharacterFile
     public int Version = 1;
     // Keyed by the CharacterStateId name, not its number, so reordering the enum does not remap data
     public Dictionary<string, StateFile> States = new();
+    // Keyed by attack name, which also names the sheet when Animation is empty, like a state.
+    // Names are shared with states, so an attack can't be named after a CharacterStateId
+    public Dictionary<string, AttackFile> Attacks = new();
 }
 
 [Serializable]
@@ -32,6 +35,76 @@ public class StateFile
     // Handed to the next box created in this state, so ids stay stable when boxes are renamed or deleted
     public int NextBoxId;
     public int NextHitGroupId;
+}
+
+// A move, played by the shared Attack state. Everything a state has, plus what starts it
+[Serializable]
+public class AttackFile : StateFile
+{
+    public AttackInput Input;
+    // Not read by CharacterMovement yet
+    public MovementType Movement = MovementType.IgnoreInput;
+}
+
+// The input that starts an attack. Each input starts at most one of a character's attacks
+[Serializable]
+public struct AttackInput : IEquatable<AttackInput>
+{
+    public AttackButton Button;
+    // Relative to facing, so the data never deals with sides
+    public StickDirection Direction;
+    public AttackContext Context;
+
+    public AttackInput(AttackButton button, StickDirection direction, AttackContext context)
+    {
+        Button = button;
+        Direction = direction;
+        Context = context;
+    }
+
+    public bool Equals(AttackInput other) => Button == other.Button && Direction == other.Direction && Context == other.Context;
+    public override bool Equals(object obj) => obj is AttackInput other && Equals(other);
+    public override int GetHashCode() => ((int)Button * 8 + (int)Direction) * 8 + (int)Context;
+    public override string ToString() => $"{Context} {Direction} {Button}";
+}
+
+// Saved by name, so renaming a value breaks existing files
+public enum AttackButton
+{
+    // Light, see ControllerState.ButtonTypes.LIGHT
+    A,
+    // Special. Wins when both are pressed on the same tick
+    B,
+}
+
+// Saved by name, so renaming a value breaks existing files
+public enum StickDirection
+{
+    Neutral,
+    Up,
+    Down,
+    Forward,
+    Back,
+}
+
+// Saved by name, so renaming a value breaks existing files
+public enum AttackContext
+{
+    Ground,
+    Air,
+}
+
+// How a state moves the character. Saved by name, so renaming a value breaks existing files
+public enum MovementType
+{
+    // Stick input, drag and gravity as normal
+    Standard,
+    // Velocity held at zero
+    Freeze,
+    // Drag and gravity, but the stick does nothing
+    IgnoreInput,
+    // Directional influence: the stick nudges knockback
+    DI,
 }
 
 // The state's sheet (StateFile.Animation) as a grid of frames, numbered left to right then top to bottom from 0.

@@ -33,8 +33,23 @@ public class HitboxEditorManager
         }
     }
 
-    // Every state the game has, whether or not it has data yet
-    public static string[] AllStateNames => Enum.GetNames(typeof(CharacterStateId));
+    // Every state the game has, whether or not it has data yet. Not Attack, which plays each attack's data instead of its own
+    public static string[] AllStateNames => Array.FindAll(Enum.GetNames(typeof(CharacterStateId)), name => name != nameof(CharacterStateId.Attack));
+
+    // Every state, then the loaded character's attacks in the order the game numbers them.
+    // Attacks are edited like any other state, since an AttackFile is a StateFile. They're only added in the file
+    public string[] StateNames
+    {
+        get
+        {
+            var names = new List<string>(AllStateNames);
+            if (Loaded == null) return names.ToArray();
+            var attacks = new List<string>(Loaded.Attacks.Keys);
+            attacks.Sort(StringComparer.Ordinal);
+            names.AddRange(attacks);
+            return names.ToArray();
+        }
+    }
 
     // ---------- Files ----------
 
@@ -58,15 +73,14 @@ public class HitboxEditorManager
 
     // ---------- States ----------
 
-    public bool HasState(string stateName) => Loaded.States.ContainsKey(stateName);
+    // States and attacks share names, so either can be passed anywhere a state name is taken
+    public bool HasState(string stateName) => Loaded.States.ContainsKey(stateName) || Loaded.Attacks.ContainsKey(stateName);
 
     public StateFile GetState(string stateName)
     {
-        if (!Loaded.States.TryGetValue(stateName, out StateFile state))
-        {
-            throw new ArgumentException($"No state named '{stateName}'");
-        }
-        return state;
+        if (Loaded.States.TryGetValue(stateName, out StateFile state)) return state;
+        if (Loaded.Attacks.TryGetValue(stateName, out AttackFile attack)) return attack;
+        throw new ArgumentException($"No state or attack named '{stateName}'");
     }
 
     public StateFile AddState(string stateName)

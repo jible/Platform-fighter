@@ -84,7 +84,7 @@ public class HitboxManager : IWorldSystem
 
     private void GatherBoxes(Character character)
     {
-        StateDefinition state = character.Definition.GetState(character.StateMachine.CurrentStateId);
+        StateDefinition state = character.StateMachine.CurrentDefinition;
         if (state == null) return;
         int frame = state.FrameAt(character.StateMachine.TicksInState);
         DMVector root = character.SimTransform.GlobalPosition;

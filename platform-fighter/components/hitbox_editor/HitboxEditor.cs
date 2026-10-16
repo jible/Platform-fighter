@@ -270,7 +270,7 @@ public partial class HitboxEditor : Node
 
     private void OnStateSelected(int index)
     {
-        SelectedState = HitboxEditorManager.AllStateNames[index];
+        SelectedState = manager.StateNames[index];
         SelectedBoxId = NoBox;
         SelectedEntry = NoEntry;
         CurrentFrame = 0;
@@ -614,7 +614,8 @@ public partial class HitboxEditor : Node
         unsavedLabel.Visible = manager.HasUnsavedChanges;
 
         Fill(characterDropdown, Characters.Select(id => id.ToString()), Array.IndexOf(Characters, manager.CharacterId));
-        Fill(stateDropdown, HitboxEditorManager.AllStateNames, Array.IndexOf(HitboxEditorManager.AllStateNames, SelectedState));
+        string[] stateNames = manager.StateNames;
+        Fill(stateDropdown, stateNames, Array.IndexOf(stateNames, SelectedState));
 
         // State properties. Always editable, since editing a state with no data creates it
         StateFile state = manager.HasState(SelectedState) ? manager.GetState(SelectedState) : null;
@@ -814,7 +815,7 @@ public partial class HitboxEditor : Node
         get
         {
             if (manager.Loaded == null || !manager.HasState(SelectedState)) return 0;
-            StateDefinition state = manager.Definition.GetState(SelectedState);
+            StateDefinition state = manager.Definition.GetStateOrAttack(SelectedState);
             return preview.FrameCount(state != null ? state.AnimationName : SelectedState);
         }
     }
@@ -888,6 +889,13 @@ public partial class HitboxEditor : Node
     private void ValidateSelection()
     {
         if (manager.Loaded == null) return;
+        // An attack is only listed while the loaded character has it
+        if (Array.IndexOf(manager.StateNames, SelectedState) < 0)
+        {
+            SelectedState = HitboxEditorManager.AllStateNames[0];
+            SelectedBoxId = NoBox;
+            SelectedEntry = NoEntry;
+        }
         if (!EditingAnimation && (!TryGetBox(out BoxFile box) || box.Type != SelectedType))
         {
             List<BoxFile> boxes = BoxesOfSelectedType();

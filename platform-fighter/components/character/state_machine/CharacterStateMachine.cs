@@ -5,9 +5,15 @@ public enum CharacterStateId : byte
 {
     Idle,
     Walk,
+    // Crouch before leaving the ground. The jump itself happens when it ends
+    JumpSquat,
     Jump,
     Fall,
-    Turn
+    // Touching down from the air
+    Land,
+    Turn,
+    // Plays whichever attack the AttackHandler started. Its data is the attack's, not its own
+    Attack,
 }
 
 // Everything the state machine needs to roll back. Kept unmanaged so it fits in a SerializableProperty
@@ -32,6 +38,8 @@ public class CharacterStateMachine
     public CharacterStateId CurrentStateId => data.Value.Id;
     public uint TicksInState => data.Value.TicksInState;
     public CharacterState CurrentState => states[(int)data.Value.Id];
+    // The data the current state plays: its length, boxes and animation. Null when it has no authored data
+    public StateDefinition CurrentDefinition => CurrentState.GetDefinition(Character);
 
     public CharacterStateMachine(Character character, CharacterState[] stateList, CharacterStateId startingState)
     {
@@ -79,6 +87,9 @@ public class CharacterStateMachine
     public void Tick()
     {
         changedThisTick = false;
+        // Before the state runs, so an attack started here plays its first frame this tick and still sees
+        // TicksInState == 0, which is what clears its hit memory
+        if (CurrentState.Cancellable) Character.Attacks.TryStartAttack();
         CurrentState.Tick(this);
 
         // A state entered this tick sees TicksInState == 0 on its first tick
@@ -87,7 +98,7 @@ public class CharacterStateMachine
             data.Value.TicksInState++;
 
             // Timing comes from the state's data, never the art, so it is the same on every machine
-            StateDefinition state = Character.Definition.GetState(CurrentStateId);
+            StateDefinition state = CurrentDefinition;
             bool loops = state != null && state.Loop;
             int length = state != null ? state.Length : Character.Data.DefaultStateLength;
             // Fires once, on the tick the animation runs out. Looping states never finish
@@ -107,11 +118,16 @@ public abstract class CharacterState
     public virtual void Tick(CharacterStateMachine machine) { }
     public virtual void OnAnimFinished(CharacterStateMachine machine) { }
     public abstract bool ApplyGravity {get;}
+    // An attack input can start an attack from this state. Whole state for now
+    public abstract bool Cancellable { get; }
+    // The data this state plays. Most states play their own, the Attack state plays the current attack's
+    public virtual StateDefinition GetDefinition(Character character) => character.Definition.GetState(Id);
     /*
     Paste this into a class to get the defaults:
 
     public override CharacterStateId Id => CharacterStateId.;
     public override bool ApplyGravity => ;
+    public override bool Cancellable => ;
     public override void EnterState(CharacterStateMachine machine) { }
     public override void ExitState(CharacterStateMachine machine) { }
     public override void Tick(CharacterStateMachine machine) { }

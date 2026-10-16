@@ -35,6 +35,8 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     public ICharacterView View { get; private set; }
     public CharacterStateMachine StateMachine { get; private set; }
     public CharacterMovement Movement { get; private set; }
+    // Starts attacks from input, and remembers which one the Attack state is playing
+    public AttackHandler Attacks { get; private set; }
 
     // Set when the character is configured
     private readonly SerializableProperty<Direction> _direction = new();
@@ -69,6 +71,7 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         if (View is Node viewNode) AddChild(viewNode);
         InputHandler = new InputHandler(playerIndex, inputManager);
         Movement = new CharacterMovement(this);
+        Attacks = new AttackHandler(this, InputHandler);
         // Last, since entering the first state can use everything above
         StateMachine = new CharacterStateMachine(this, CreateStates(), CharacterStateId.Idle);
         this.direction = direction;
@@ -79,9 +82,12 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     {
         new IdleState(),
         new WalkState(),
+        new JumpSquatState(),
         new JumpState(),
         new FallState(),
+        new LandState(),
         new TurnState(),
+        new AttackState(),
     };
 
     public void Tick()
@@ -104,7 +110,7 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         if (View == null) return;
 
         CharacterStateId stateId = StateMachine.CurrentStateId;
-        StateDefinition state = Definition.GetState(stateId);
+        StateDefinition state = StateMachine.CurrentDefinition;
         if (state != null)
         {
             View.Show(state.AnimationName, state.FrameAt(StateMachine.TicksInState), state.Length, state.Sprite, direction);

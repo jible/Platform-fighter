@@ -48,7 +48,7 @@ public class HitboxPreview : IDisposable
     // stateName is any CharacterStateId name. A state with no data plays the sheet named after it, like the game does
     public void Show(CharacterDefinition definition, string stateName, int frame, int selectedBoxId)
     {
-        StateDefinition state = definition.GetState(stateName);
+        StateDefinition state = definition.GetStateOrAttack(stateName);
         if (state == null)
         {
             view?.Show(stateName, frame, 0, null, Character.Direction.Right);

@@ -3,12 +3,13 @@ public class IdleState : CharacterState
 {
     public override CharacterStateId Id => CharacterStateId.Idle;
     public override bool ApplyGravity => false;
+    public override bool Cancellable => true;
 
     public override void Tick(CharacterStateMachine machine)
     {
         if (machine.Character.InputHandler.JustPressed(ControllerState.ButtonTypes.JUMP))
         {
-            machine.ChangeState(CharacterStateId.Jump);
+            machine.ChangeState(CharacterStateId.JumpSquat);
         }
         else if (machine.Character.InputHandler.LeftStick() != DMVector.zero)
         {
@@ -22,13 +23,14 @@ public class WalkState : CharacterState
     public override CharacterStateId Id => CharacterStateId.Walk;
 
     public override bool ApplyGravity => false;
+    public override bool Cancellable => true;
 
     public override void Tick(CharacterStateMachine machine)
     {
         Character character = machine.Character;
         if (character.InputHandler.JustPressed(ControllerState.ButtonTypes.JUMP))
         {
-            machine.ChangeState(CharacterStateId.Jump);
+            machine.ChangeState(CharacterStateId.JumpSquat);
         }
         else if (character.InputHandler.LeftStick() == DMVector.zero)
         {
@@ -42,10 +44,24 @@ public class WalkState : CharacterState
     }
 }
 
+// Not cancellable, so an attack pressed during the crouch doesn't come out as a tilt
+public class JumpSquatState : CharacterState
+{
+    public override CharacterStateId Id => CharacterStateId.JumpSquat;
+    public override bool ApplyGravity => false;
+    public override bool Cancellable => false;
+
+    public override void OnAnimFinished(CharacterStateMachine machine)
+    {
+        machine.ChangeState(CharacterStateId.Jump);
+    }
+}
+
 public class JumpState : CharacterState
 {
     public override CharacterStateId Id => CharacterStateId.Jump;
     public override bool ApplyGravity => true;
+    public override bool Cancellable => true;
 
     public override void EnterState(CharacterStateMachine machine)
     {
@@ -56,27 +72,41 @@ public class JumpState : CharacterState
     {
         if (machine.Character.Movement.IsGrounded)
         {
-            machine.ChangeState(CharacterStateId.Idle);
+            machine.ChangeState(CharacterStateId.Land);
         }
-        // Placeholder until there's a jump animation to end on
-        else if (machine.Character.velocity.Value.y < 0)
-        {
-            machine.ChangeState(CharacterStateId.Fall);
-        }
+    }
+
+    public override void OnAnimFinished(CharacterStateMachine machine)
+    {
+        machine.ChangeState(CharacterStateId.Fall);
     }
 }
 
+// Ends on landing, so its data should loop
 public class FallState : CharacterState
 {
     public override CharacterStateId Id => CharacterStateId.Fall;
     public override bool ApplyGravity => true;
+    public override bool Cancellable => true;
 
     public override void Tick(CharacterStateMachine machine)
     {
         if (machine.Character.Movement.IsGrounded)
         {
-            machine.ChangeState(CharacterStateId.Idle);
+            machine.ChangeState(CharacterStateId.Land);
         }
+    }
+}
+
+public class LandState : CharacterState
+{
+    public override CharacterStateId Id => CharacterStateId.Land;
+    public override bool ApplyGravity => false;
+    public override bool Cancellable => false;
+
+    public override void OnAnimFinished(CharacterStateMachine machine)
+    {
+        machine.ChangeState(CharacterStateId.Idle);
     }
 }
 
@@ -84,12 +114,17 @@ public class TurnState : CharacterState
 {
     public override CharacterStateId Id => CharacterStateId.Turn;
     public override bool ApplyGravity => false;
+    public override bool Cancellable => true;
 
 
+    // Faces the way the stick points, and gives the kick. A stick with no sideways push keeps the old facing
     public override void EnterState(CharacterStateMachine machine)
     {
-        // give the kick
-        machine.Character.Movement.GroundedTurnAroundKick();
+        Character character = machine.Character;
+        DM64 stickX = character.InputHandler.LeftStick().x;
+        if (stickX > 0) character.direction = Character.Direction.Right;
+        else if (stickX < 0) character.direction = Character.Direction.Left;
+        character.Movement.GroundedTurnAroundKick();
     }
     public override void OnAnimFinished(CharacterStateMachine machine)
     {
@@ -98,4 +133,21 @@ public class TurnState : CharacterState
     }
 
     // When the anim ends
+}
+
+// Plays the attack the AttackHandler started. Shared by every attack, so what each one does is in its data
+public class AttackState : CharacterState
+{
+    public override CharacterStateId Id => CharacterStateId.Attack;
+    // Gravity does nothing on the ground, so aerials and ground attacks can share this
+    public override bool ApplyGravity => true;
+    public override bool Cancellable => false;
+
+    public override StateDefinition GetDefinition(Character character) => character.Attacks.Current;
+
+    // An attack set to loop never gets here, so it plays until something else changes the state
+    public override void OnAnimFinished(CharacterStateMachine machine)
+    {
+        machine.ChangeState(machine.Character.Movement.IsGrounded ? CharacterStateId.Idle : CharacterStateId.Fall);
+    }
 }

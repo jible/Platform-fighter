@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 // Runtime form of a character, built once from its files by CharacterDefinitionBuilder.
@@ -7,21 +8,28 @@ using System.Collections.Generic;
 public sealed class CharacterDefinition
 {
     public readonly StateDefinition[] States;
-    // Most hit groups any one state uses, counting hitboxes that hit on their own.
+    // Sorted by name, and each one's Index is its place here, so every machine numbers them the same
+    public readonly AttackDefinition[] Attacks;
+    // Most hit groups any one state or attack uses, counting hitboxes that hit on their own.
     // Each character holds this many HitGroups, reused by whichever state it's in
     public readonly int MaxHitGroups;
     private readonly Dictionary<string, StateDefinition> statesByName = new();
+    private readonly Dictionary<AttackInput, AttackDefinition> attacksByInput = new();
 
-    public CharacterDefinition(StateDefinition[] states)
+    // attacks must be sorted by name with unique inputs, as the builder makes them
+    public CharacterDefinition(StateDefinition[] states, AttackDefinition[] attacks)
     {
         States = states;
+        Attacks = attacks;
         foreach (var state in states)
         {
             statesByName[state.Name] = state;
-            foreach (var box in state.Boxes)
-            {
-                if (box.HitGroupIndex + 1 > MaxHitGroups) MaxHitGroups = box.HitGroupIndex + 1;
-            }
+            MaxHitGroups = Math.Max(MaxHitGroups, HitGroupsUsed(state));
+        }
+        foreach (var attack in attacks)
+        {
+            attacksByInput[attack.Input] = attack;
+            MaxHitGroups = Math.Max(MaxHitGroups, HitGroupsUsed(attack));
         }
     }
 
@@ -34,9 +42,39 @@ public sealed class CharacterDefinition
 
     // Looked up by name, matching how the file stores it. Cache the result if this gets hot
     public StateDefinition GetState(CharacterStateId id) => GetState(id.ToString());
+
+    // A state or attack by name, for the editor, which lists both together. Null when neither has data
+    public StateDefinition GetStateOrAttack(string name)
+    {
+        StateDefinition state = GetState(name);
+        if (state != null) return state;
+        foreach (var attack in Attacks)
+        {
+            if (attack.Name == name) return attack;
+        }
+        return null;
+    }
+
+    // Null when the character has no attack for the input
+    public AttackDefinition FindAttack(AttackInput input)
+    {
+        attacksByInput.TryGetValue(input, out AttackDefinition attack);
+        return attack;
+    }
+
+    private static int HitGroupsUsed(StateDefinition state)
+    {
+        int used = 0;
+        foreach (var box in state.Boxes)
+        {
+            used = Math.Max(used, box.HitGroupIndex + 1);
+        }
+        return used;
+    }
 }
 
-public sealed class StateDefinition
+// Not sealed, since an attack is a state with more to it
+public class StateDefinition
 {
     public readonly string Name;
     public readonly string Animation;
@@ -64,6 +102,23 @@ public sealed class StateDefinition
     {
         if (Loop) return (int)(ticksInState % (uint)Length);
         return ticksInState >= Length ? Length - 1 : (int)ticksInState;
+    }
+}
+
+// A move. Played through the shared Attack state, which hands this to everything that reads the current state
+public sealed class AttackDefinition : StateDefinition
+{
+    // Place in CharacterDefinition.Attacks, which is what rollback stores
+    public readonly int Index;
+    public readonly AttackInput Input;
+    public readonly MovementType Movement;
+
+    public AttackDefinition(int index, AttackInput input, MovementType movement, StateDefinition state)
+        : base(state.Name, state.Animation, state.Length, state.Loop, state.Boxes, state.Sprite)
+    {
+        Index = index;
+        Input = input;
+        Movement = movement;
     }
 }
 

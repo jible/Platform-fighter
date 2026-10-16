@@ -15,7 +15,37 @@ public static class CharacterDefinitionBuilder
         {
             states.Add(BuildState(entry.Key, entry.Value, boxUnit, skeleton));
         }
-        return new CharacterDefinition(states.ToArray());
+        return new CharacterDefinition(states.ToArray(), BuildAttacks(file, boxUnit, skeleton));
+    }
+
+    // Sorted by name with ordinal compare, so the indexes rollback stores are the same on every machine.
+    // An attack that can't be told apart from another is left out with an error, so one bad entry doesn't stop the load
+    private static AttackDefinition[] BuildAttacks(CharacterFile file, DM64 boxUnit, BakedSkeletonFile skeleton)
+    {
+        var names = new List<string>(file.Attacks.Keys);
+        names.Sort(StringComparer.Ordinal);
+
+        var attacks = new List<AttackDefinition>(names.Count);
+        var nameByInput = new Dictionary<AttackInput, string>();
+        foreach (string name in names)
+        {
+            AttackFile attack = file.Attacks[name];
+            // A state without data still plays the sheet named after it, so every state name is taken
+            if (file.States.ContainsKey(name) || Enum.IsDefined(typeof(CharacterStateId), name))
+            {
+                GD.PushError($"Attack {name} has the same name as a state, so it's left out");
+                continue;
+            }
+            if (nameByInput.TryGetValue(attack.Input, out string other))
+            {
+                GD.PushError($"Attacks {other} and {name} both start on {attack.Input}, so {name} is left out");
+                continue;
+            }
+            nameByInput[attack.Input] = name;
+            StateDefinition state = BuildState(name, attack, boxUnit, skeleton);
+            attacks.Add(new AttackDefinition(attacks.Count, attack.Input, attack.Movement, state));
+        }
+        return attacks.ToArray();
     }
 
     private static StateDefinition BuildState(string name, StateFile state, DM64 boxUnit, BakedSkeletonFile skeleton)
