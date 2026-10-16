@@ -6,25 +6,34 @@ using System.Linq;
 
 // Connects the hitbox editor scene's controls to the HitboxEditorManager.
 // Controls raise edits, which go to the manager, and its Changed event redraws everything.
-// Selection, the selected box type and the current frame live here, since the manager only holds file data.
+// Selection, the selected property and the current frame live here, since the manager only holds file data.
 // Controls are found by their unique names, and signals are connected in _Ready
 public partial class HitboxEditor : Node
 {
     private const int NoBox = -1;
+    private const int NoEntry = -1;
     // DM64's fractional bits, for converting typed text without passing through a float, like CharacterFileJson
     private const decimal DMScale = 4294967296m;
+    // Sequence entries that never show or aren't in the sheet
+    private static readonly Color WarningColor = new(1f, 0.55f, 0.35f);
 
     [Export] public int PlaybackFramesPerSecond = 60;
     // Write the character file after every edit
     [Export] public bool AutoSave = true;
 
     private static readonly CharacterId[] Characters = Enum.GetValues<CharacterId>();
+    // In property dropdown order. The animation follows them, at index BoxTypes.Length
+    private static readonly BoxType[] BoxTypes = { BoxType.Pushbox, BoxType.Hitbox, BoxType.Hurtbox };
 
     // A state with no data yet can still be selected, and is created on the first edit to it
     public string SelectedState { get; private set; } = HitboxEditorManager.AllStateNames[0];
     // Only boxes of this type are listed, and new boxes are made with it
     public BoxType SelectedType { get; private set; } = BoxType.Hitbox;
+    // Editing the state's sprite sequence instead of its boxes. SelectedType is kept for switching back
+    public bool EditingAnimation { get; private set; }
     public int SelectedBoxId { get; private set; } = NoBox;
+    // Index into the sprite sequence, or NoEntry. Follows the timeline, and picking one moves the timeline to it
+    public int SelectedEntry { get; private set; } = NoEntry;
     // Always a tick. When stepping by sprite it is the first tick of the current sprite, except mid playback
     public int CurrentFrame { get; private set; }
     public bool Playing { get; private set; }
@@ -39,14 +48,15 @@ public partial class HitboxEditor : Node
     private Label unsavedLabel;
     private Button reloadButton, saveButton;
     // Pickers
-    private OptionButton characterDropdown, stateDropdown, boxDropdown;
+    private OptionButton characterDropdown, stateDropdown, propertyDropdown, boxDropdown;
+    private Control boxRow;
     private Button addBoxButton, removeBoxButton;
-    private readonly Dictionary<BoxType, Button> typeButtons = new();
     // State properties
-    private LineEdit lengthInput, animationInput;
+    private LineEdit lengthInput;
     private Label lengthWarning;
     private CheckBox loopToggle;
     // Shared box properties
+    private Control sharedProperties;
     private LineEdit nameInput, widthInput, heightInput;
     private OptionButton parentDropdown;
     // One section per box type, only the selected type's shown
@@ -56,6 +66,13 @@ public partial class HitboxEditor : Node
     private Button addHitGroupButton, removeHitGroupButton;
     private LineEdit damageInput, hitstunInput;
     private KnockbackPicker knockbackPicker;
+    // Animation properties
+    private Control animationProperties;
+    private Button setAnimButton, addEntryButton, removeEntryButton;
+    private Label sheetSummaryLabel;
+    private SequenceList sequenceList;
+    private LineEdit entrySpriteInput;
+    private SpriteSheetDialog sheetDialog;
     // Timeline
     private HSlider frameSlider;
     private Label frameLabel;
@@ -70,6 +87,10 @@ public partial class HitboxEditor : Node
     {
         FindControls();
         ConnectControls();
+
+        sheetDialog = new SpriteSheetDialog { Name = "SpriteSheetDialog" };
+        AddChild(sheetDialog);
+        sheetDialog.Submitted += OnSheetSubmitted;
 
         var characterRoot = new Node3D { Name = "CharacterRoot" };
         GetNode<SubViewport>("%SubViewport").AddChild(characterRoot);
@@ -97,6 +118,7 @@ public partial class HitboxEditor : Node
             playbackTime -= frameTime;
             CurrentFrame = (CurrentFrame + 1) % StateLength;
         }
+        FollowFrame();
         Refresh();
     }
 
@@ -110,18 +132,17 @@ public partial class HitboxEditor : Node
 
         characterDropdown = GetNode<OptionButton>("%CharacterDropdown");
         stateDropdown = GetNode<OptionButton>("%StateDropdown");
+        propertyDropdown = GetNode<OptionButton>("%PropertyDropdown");
+        boxRow = GetNode<Control>("%BoxRow");
         boxDropdown = GetNode<OptionButton>("%BoxDropdown");
         addBoxButton = GetNode<Button>("%AddBoxButton");
         removeBoxButton = GetNode<Button>("%RemoveBoxButton");
-        typeButtons[BoxType.Pushbox] = GetNode<Button>("%PushboxTypeButton");
-        typeButtons[BoxType.Hitbox] = GetNode<Button>("%HitboxTypeButton");
-        typeButtons[BoxType.Hurtbox] = GetNode<Button>("%HurtboxTypeButton");
 
         lengthInput = GetNode<LineEdit>("%LengthInput");
         lengthWarning = GetNode<Label>("%LengthWarning");
         loopToggle = GetNode<CheckBox>("%LoopToggle");
-        animationInput = GetNode<LineEdit>("%AnimationInput");
 
+        sharedProperties = GetNode<Control>("%SharedProperties");
         nameInput = GetNode<LineEdit>("%NameInput");
         parentDropdown = GetNode<OptionButton>("%ParentDropdown");
         widthInput = GetNode<LineEdit>("%WidthInput");
@@ -136,6 +157,14 @@ public partial class HitboxEditor : Node
         damageInput = GetNode<LineEdit>("%DamageInput");
         hitstunInput = GetNode<LineEdit>("%HitstunInput");
         knockbackPicker = GetNode<KnockbackPicker>("%KnockbackPicker");
+
+        animationProperties = GetNode<Control>("%AnimationProperties");
+        setAnimButton = GetNode<Button>("%SetAnimButton");
+        sheetSummaryLabel = GetNode<Label>("%SheetSummaryLabel");
+        sequenceList = GetNode<SequenceList>("%SequenceList");
+        entrySpriteInput = GetNode<LineEdit>("%EntrySpriteInput");
+        addEntryButton = GetNode<Button>("%AddEntryButton");
+        removeEntryButton = GetNode<Button>("%RemoveEntryButton");
 
         frameSlider = GetNode<HSlider>("%FrameSlider");
         frameLabel = GetNode<Label>("%FrameLabel");
@@ -159,17 +188,13 @@ public partial class HitboxEditor : Node
 
         characterDropdown.ItemSelected += index => OnCharacterSelected((int)index);
         stateDropdown.ItemSelected += index => OnStateSelected((int)index);
-        foreach (var (type, button) in typeButtons)
-        {
-            button.Toggled += pressed => { if (pressed) OnTypeSelected(type); };
-        }
+        propertyDropdown.ItemSelected += index => OnPropertySelected((int)index);
         boxDropdown.ItemSelected += index => OnBoxSelected((int)index);
         addBoxButton.Pressed += OnAddBoxClicked;
         removeBoxButton.Pressed += OnRemoveBoxClicked;
 
         OnEndEdit(lengthInput, OnLengthEdited);
         loopToggle.Toggled += OnLoopToggled;
-        OnEndEdit(animationInput, OnAnimationEdited);
 
         OnEndEdit(nameInput, OnBoxNameEdited);
         parentDropdown.ItemSelected += index => OnBoxParentSelected((int)index);
@@ -183,6 +208,13 @@ public partial class HitboxEditor : Node
         OnEndEdit(hitstunInput, OnHitstunEdited);
         // The picker keeps its own X and Y fields in sync, so only its result is connected
         knockbackPicker.ValueChanged += OnKnockbackChanged;
+
+        setAnimButton.Pressed += OnSetAnimClicked;
+        sequenceList.ItemSelected += index => OnEntrySelected((int)index);
+        sequenceList.ItemMoved += OnEntryMoved;
+        OnEndEdit(entrySpriteInput, OnEntrySpriteEdited);
+        addEntryButton.Pressed += OnAddEntryClicked;
+        removeEntryButton.Pressed += OnRemoveEntryClicked;
 
         frameSlider.Step = 1;
         frameSlider.ValueChanged += value => OnFrameChanged((int)Math.Round(value));
@@ -231,6 +263,7 @@ public partial class HitboxEditor : Node
     private void OnCharacterSelected(int index)
     {
         SelectedBoxId = NoBox;
+        SelectedEntry = NoEntry;
         CurrentFrame = 0;
         manager.LoadCharacter(Characters[index]);
     }
@@ -239,17 +272,21 @@ public partial class HitboxEditor : Node
     {
         SelectedState = HitboxEditorManager.AllStateNames[index];
         SelectedBoxId = NoBox;
+        SelectedEntry = NoEntry;
         CurrentFrame = 0;
         ValidateSelection();
         Refresh();
     }
 
-    // Picks the type's first box, since the old selection was another type
-    private void OnTypeSelected(BoxType type)
+    // A new box type picks its first box, since the old selection was another type
+    private void OnPropertySelected(int index)
     {
-        if (type == SelectedType) return;
-        SelectedType = type;
-        SelectedBoxId = NoBox;
+        EditingAnimation = index == BoxTypes.Length;
+        if (!EditingAnimation && BoxTypes[index] != SelectedType)
+        {
+            SelectedType = BoxTypes[index];
+            SelectedBoxId = NoBox;
+        }
         ValidateSelection();
         Refresh();
     }
@@ -297,12 +334,6 @@ public partial class HitboxEditor : Node
     {
         manager.AddState(SelectedState);
         manager.SetStateLoop(SelectedState, on);
-    }
-
-    private void OnAnimationEdited(string text)
-    {
-        manager.AddState(SelectedState);
-        manager.SetStateAnimation(SelectedState, text);
     }
 
     // ---------- Shared box properties ----------
@@ -400,12 +431,100 @@ public partial class HitboxEditor : Node
         manager.SetBoxHit(SelectedState, SelectedBoxId, box.Damage, box.Hitstun, new DMVector(ToDM64(knockback.X), ToDM64(knockback.Y)));
     }
 
+    // ---------- Animation properties ----------
+
+    // A state with no sequence yet starts from its sheet cut into square frames, as the view guesses
+    private void OnSetAnimClicked()
+    {
+        StateFile state = manager.HasState(SelectedState) ? manager.GetState(SelectedState) : null;
+        SpriteFile sprite = state?.Sprite;
+        string sheet = state != null && state.Animation != "" ? state.Animation : SelectedState;
+        sheetDialog.Open(
+            CharacterFiles.ResourceFolder(manager.CharacterId),
+            sheet,
+            sprite?.Columns ?? Math.Max(1, preview.FrameCount(sheet)),
+            sprite?.Rows ?? 1,
+            sprite?.FrameRate ?? new SpriteFile().FrameRate);
+    }
+
+    private void OnSheetSubmitted(string sheet, int columns, int rows, int frameRate)
+    {
+        manager.AddState(SelectedState);
+        manager.SetSprite(SelectedState, sheet, columns, rows, frameRate);
+    }
+
+    private void OnEntrySelected(int index)
+    {
+        SelectEntry(index);
+        Refresh();
+    }
+
+    private void OnEntryMoved(int from, int to)
+    {
+        SelectEntry(to);
+        manager.MoveSequenceEntry(SelectedState, from, to);
+    }
+
+    // Bad text, or a sprite the sheet doesn't have, puts the old value back
+    private void OnEntrySpriteEdited(string text)
+    {
+        SpriteFile sprite = SelectedSprite;
+        if (sprite == null || SelectedEntry == NoEntry
+            || !int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
+            || value < 0 || value >= sprite.Columns * sprite.Rows)
+        {
+            Refresh();
+            return;
+        }
+        manager.SetSequenceEntry(SelectedState, SelectedEntry, value);
+    }
+
+    // Adds a copy of the selected entry after it, so holding a sprite longer is one click.
+    // Works on an emptied sequence too, so SelectedSprite isn't used
+    private void OnAddEntryClicked()
+    {
+        SpriteFile sprite = manager.HasState(SelectedState) ? manager.GetSprite(SelectedState) : null;
+        if (sprite == null) return;
+        bool hasEntry = SelectedEntry != NoEntry && SelectedEntry < sprite.Sequence.Count;
+        int index = hasEntry ? SelectedEntry + 1 : sprite.Sequence.Count;
+        int value = hasEntry ? sprite.Sequence[SelectedEntry] : 0;
+        SelectEntry(index);
+        manager.AddSequenceEntry(SelectedState, index, value);
+    }
+
+    private void OnRemoveEntryClicked()
+    {
+        if (SelectedSprite == null || SelectedEntry == NoEntry) return;
+        manager.RemoveSequenceEntry(SelectedState, SelectedEntry);
+    }
+
+    // Moves the timeline to the entry's first tick. An entry the state is too short to reach is still selected
+    private void SelectEntry(int index)
+    {
+        Playing = false;
+        SelectedEntry = index;
+        SpriteFile sprite = manager.HasState(SelectedState) ? manager.GetSprite(SelectedState) : null;
+        if (sprite == null) return;
+        int start = SpriteSequenceMath.EntryStart(index, sprite.FrameRate);
+        if (start < StateLength) CurrentFrame = start;
+    }
+
+    // Selects the entry showing on the current frame, after the timeline moves
+    private void FollowFrame()
+    {
+        SpriteFile sprite = SelectedSprite;
+        SelectedEntry = sprite == null
+            ? NoEntry
+            : SpriteSequenceMath.EntryAt(CurrentFrame, sprite.FrameRate, sprite.Sequence.Count, StateLoops);
+    }
+
     // ---------- Timeline ----------
 
     // The slider is in steps, which are sprites or ticks
     private void OnFrameChanged(int step)
     {
         CurrentFrame = StepStart(Math.Clamp(step, 0, StepCount - 1));
+        FollowFrame();
         Refresh();
     }
 
@@ -421,6 +540,7 @@ public partial class HitboxEditor : Node
     {
         Playing = false;
         CurrentFrame = StepStart(StepOf(CurrentFrame));
+        FollowFrame();
         Refresh();
     }
 
@@ -428,6 +548,7 @@ public partial class HitboxEditor : Node
     {
         Playing = false;
         CurrentFrame = StepStart((StepOf(CurrentFrame) - 1 + StepCount) % StepCount);
+        FollowFrame();
         Refresh();
     }
 
@@ -435,6 +556,7 @@ public partial class HitboxEditor : Node
     {
         Playing = false;
         CurrentFrame = StepStart((StepOf(CurrentFrame) + 1) % StepCount);
+        FollowFrame();
         Refresh();
     }
 
@@ -498,16 +620,15 @@ public partial class HitboxEditor : Node
         StateFile state = manager.HasState(SelectedState) ? manager.GetState(SelectedState) : null;
         ShowText(lengthInput, state != null ? state.Length.ToString(CultureInfo.InvariantCulture) : "", true);
         loopToggle.SetPressedNoSignal(state != null && state.Loop);
-        ShowText(animationInput, state != null ? state.Animation : "", true);
         string warning = LengthWarning();
         lengthWarning.Visible = warning != "";
         lengthInput.TooltipText = warning;
 
-        // Box type and box
-        foreach (var (type, button) in typeButtons)
-        {
-            button.SetPressedNoSignal(type == SelectedType);
-        }
+        // Property and box. The box controls are hidden while editing the animation
+        Fill(propertyDropdown, BoxTypes.Select(type => type.ToString()).Append("Animation"),
+            EditingAnimation ? BoxTypes.Length : Array.IndexOf(BoxTypes, SelectedType));
+        boxRow.Visible = !EditingAnimation;
+        sharedProperties.Visible = !EditingAnimation;
         List<BoxFile> boxes = BoxesOfSelectedType();
         Fill(boxDropdown, boxes.Select(b => b.Name), boxes.FindIndex(b => b.Id == SelectedBoxId));
         boxDropdown.Disabled = boxes.Count == 0;
@@ -536,9 +657,11 @@ public partial class HitboxEditor : Node
         // Only the selected type's own properties
         foreach (var (type, section) in typeSections)
         {
-            section.Visible = type == SelectedType;
+            section.Visible = !EditingAnimation && type == SelectedType;
         }
         ShowHitboxProperties(hasBox ? box : null);
+        animationProperties.Visible = EditingAnimation;
+        ShowAnimationProperties(state);
 
         // Timeline. Key notches aren't drawn yet, see the scene's FrameSlider
         int stepCount = StepCount;
@@ -589,6 +712,57 @@ public partial class HitboxEditor : Node
         knockbackPicker.YInput.Editable = hasBox;
     }
 
+    // state is null when the state has no data yet
+    private void ShowAnimationProperties(StateFile state)
+    {
+        SpriteFile sprite = state?.Sprite;
+        sheetSummaryLabel.Text = sprite == null
+            ? "No sequence, the sheet is spread evenly over the state"
+            : $"{state.Animation}: {sprite.Columns} x {sprite.Rows}, {sprite.FrameRate} fps";
+
+        // Only rebuilt when an entry changes, so the list keeps its scroll while the timeline plays
+        var items = new List<string>();
+        var problems = new List<bool>();
+        if (sprite != null)
+        {
+            for (int i = 0; i < sprite.Sequence.Count; i++)
+            {
+                int start = SpriteSequenceMath.EntryStart(i, sprite.FrameRate);
+                int end = SpriteSequenceMath.EntryStart(i + 1, sprite.FrameRate) - 1;
+                bool inSheet = sprite.Sequence[i] >= 0 && sprite.Sequence[i] < sprite.Columns * sprite.Rows;
+                bool shows = start < StateLength;
+                string note = !inSheet ? "  (not in sheet)" : !shows ? "  (never shows)" : "";
+                items.Add($"{i}:  sprite {sprite.Sequence[i]}    ticks {start}-{end}{note}");
+                problems.Add(!inSheet || !shows);
+            }
+        }
+        bool same = items.Count == sequenceList.ItemCount;
+        for (int i = 0; same && i < items.Count; i++) same = sequenceList.GetItemText(i) == items[i];
+        if (!same)
+        {
+            sequenceList.Clear();
+            for (int i = 0; i < items.Count; i++)
+            {
+                sequenceList.AddItem(items[i]);
+                if (problems[i]) sequenceList.SetItemCustomFgColor(i, WarningColor);
+            }
+        }
+
+        bool hasEntry = sprite != null && SelectedEntry != NoEntry && SelectedEntry < sprite.Sequence.Count;
+        if (hasEntry)
+        {
+            sequenceList.Select(SelectedEntry);
+            sequenceList.EnsureCurrentIsVisible();
+        }
+        else
+        {
+            sequenceList.DeselectAll();
+        }
+        ShowText(entrySpriteInput, hasEntry ? sprite.Sequence[SelectedEntry].ToString(CultureInfo.InvariantCulture) : "", hasEntry);
+        addEntryButton.Disabled = sprite == null;
+        removeEntryButton.Disabled = !hasEntry;
+    }
+
     private void ShowText(LineEdit field, string text, bool editable)
     {
         field.Text = text;
@@ -609,6 +783,19 @@ public partial class HitboxEditor : Node
     // 1 for a state with no data yet
     private int StateLength => manager.Loaded != null && manager.HasState(SelectedState) ? manager.GetState(SelectedState).Length : 1;
 
+    private bool StateLoops => manager.Loaded != null && manager.HasState(SelectedState) && manager.GetState(SelectedState).Loop;
+
+    // The selected state's sprite sequence. Null when it has none, or it's empty, since an empty one isn't played
+    private SpriteFile SelectedSprite
+    {
+        get
+        {
+            if (manager.Loaded == null || !manager.HasState(SelectedState)) return null;
+            SpriteFile sprite = manager.GetSprite(SelectedState);
+            return sprite != null && sprite.Sequence.Count > 0 ? sprite : null;
+        }
+    }
+
     // In file order, for the box dropdown
     private List<BoxFile> BoxesOfSelectedType()
     {
@@ -617,8 +804,9 @@ public partial class HitboxEditor : Node
     }
 
     // ---------- Steps ----------
-    // The timeline moves one step at a time. For a sprite animation a step is one sprite, covering every tick
-    // it's shown for, since boxes never need to change mid sprite. Otherwise a step is one tick
+    // The timeline moves one step at a time. For a sprite animation a step is one sprite, or one sequence entry,
+    // covering every tick it's shown for, since boxes never need to change mid sprite. Otherwise a step is one tick.
+    // Steps are numbered from 0 and grow by at most one a tick, so StepOf alone defines them
 
     // 0 when there's no data for the state, no sheet, or the view doesn't step
     private int SpriteCount
@@ -634,22 +822,41 @@ public partial class HitboxEditor : Node
     // A state shorter than its sheet can't give every sprite a tick, so it steps per tick instead
     private bool StepsBySprite => SpriteCount > 0 && SpriteCount < StateLength;
 
-    private int StepCount => StepsBySprite ? SpriteCount : StateLength;
+    private int StepCount => StepOf(StateLength - 1) + 1;
 
-    // First tick showing the step's sprite. The inverse of SpriteCharacterView's frame * sprites / length,
-    // so it holds when the length doesn't divide evenly. StepStart(StepCount) is the state's length
-    private int StepStart(int step)
+    // A loop's later passes through the sequence are steps of their own, so every entry shown can be keyed.
+    // Without a sequence this matches SpriteCharacterView's frame * sprites / length
+    private int StepOf(int frame)
     {
-        if (!StepsBySprite) return step;
-        int sprites = SpriteCount;
-        return (step * StateLength + sprites - 1) / sprites;
+        SpriteFile sprite = SelectedSprite;
+        if (sprite != null) return SpriteSequenceMath.PositionAt(frame, sprite.FrameRate, sprite.Sequence.Count, StateLoops);
+        return StepsBySprite ? frame * SpriteCount / StateLength : frame;
     }
 
-    private int StepOf(int frame) => StepsBySprite ? frame * SpriteCount / StateLength : frame;
+    // First tick of the step. StepStart(StepCount) is the state's length
+    private int StepStart(int step)
+    {
+        for (int frame = 0; frame < StateLength; frame++)
+        {
+            if (StepOf(frame) >= step) return frame;
+        }
+        return StateLength;
+    }
 
-    // Empty when the length splits evenly over the sprites, or there are no sprites
+    // Empty when the length fits the sequence, or splits evenly over the sprites, or there are no sprites
     private string LengthWarning()
     {
+        SpriteFile sprite = SelectedSprite;
+        if (sprite != null)
+        {
+            int duration = SpriteSequenceMath.Duration(sprite.Sequence.Count, sprite.FrameRate);
+            int stateLength = StateLength;
+            if (stateLength < duration) return $"{stateLength} ticks is shorter than the sequence's {duration}, so its last entries never show";
+            if (!StateLoops && stateLength > duration) return $"The sequence lasts {duration} ticks, so its last sprite holds for {stateLength - duration} more";
+            if (StateLoops && stateLength % duration != 0) return $"The sequence lasts {duration} ticks, so the loop restarts partway through it";
+            return "";
+        }
+
         int sprites = SpriteCount;
         int length = StateLength;
         if (sprites == 0 || length % sprites == 0) return "";
@@ -657,9 +864,11 @@ public partial class HitboxEditor : Node
         return $"{length} ticks don't divide evenly into {sprites} sprites, so some show longer than others";
     }
 
+    // Never while editing the animation, so box controls and edits are off without losing the selection
     private bool TryGetBox(out BoxFile box)
     {
         box = null;
+        if (EditingAnimation) return false;
         if (SelectedBoxId == NoBox || manager.Loaded == null || !manager.HasState(SelectedState)) return false;
         foreach (var candidate in manager.GetState(SelectedState).Boxes)
         {
@@ -675,17 +884,22 @@ public partial class HitboxEditor : Node
     private bool TryGetHitbox(out BoxFile box) => TryGetBox(out box) && box.Type == BoxType.Hitbox;
 
     // After a load, removal or type change the selected box may be gone, so the type's first box is picked instead.
-    // The state may also have shrunk past the current frame
+    // The state may also have shrunk past the current frame, or its sequence past the selected entry
     private void ValidateSelection()
     {
         if (manager.Loaded == null) return;
-        if (!TryGetBox(out BoxFile box) || box.Type != SelectedType)
+        if (!EditingAnimation && (!TryGetBox(out BoxFile box) || box.Type != SelectedType))
         {
             List<BoxFile> boxes = BoxesOfSelectedType();
             SelectedBoxId = boxes.Count > 0 ? boxes[0].Id : NoBox;
         }
         CurrentFrame = Math.Clamp(CurrentFrame, 0, StateLength - 1);
         if (!Playing) CurrentFrame = StepStart(StepOf(CurrentFrame));
+
+        SpriteFile sprite = SelectedSprite;
+        if (sprite == null) SelectedEntry = NoEntry;
+        else if (SelectedEntry >= sprite.Sequence.Count) SelectedEntry = sprite.Sequence.Count - 1;
+        else if (SelectedEntry == NoEntry) FollowFrame();
     }
 
     // "Root", then the bones baked for the state. The box's own bone is kept even when it has no bake

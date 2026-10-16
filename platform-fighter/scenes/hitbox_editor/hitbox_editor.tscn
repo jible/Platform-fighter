@@ -2,8 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ca6lukejfr4bf" path="res://components/hitbox_editor/KnockbackPicker.cs" id="1_knockback"]
 [ext_resource type="Script" path="res://components/hitbox_editor/HitboxEditor.cs" id="2_editor"]
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_box_type"]
+[ext_resource type="Script" path="res://components/hitbox_editor/SequenceList.cs" id="3_sequence"]
 
 [node name="Node" type="Node" unique_id=216545646]
 script = ExtResource("2_editor")
@@ -129,19 +128,6 @@ text = "Loop:"
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="AnimationRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=293758594]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationRow" unique_id=1820892985]
-custom_minimum_size = Vector2(110, 0)
-layout_mode = 2
-text = "Animation Path:"
-
-[node name="AnimationInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationRow" unique_id=581895225]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
 [node name="StateDivider" type="HSeparator" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1252173892]
 layout_mode = 2
 
@@ -151,34 +137,15 @@ layout_mode = 2
 [node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxTypeRow" unique_id=1004768162]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
-text = "Box type:"
+text = "Property:"
 
-[node name="PushboxTypeButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxTypeRow" unique_id=487924331]
+[node name="PropertyDropdown" type="OptionButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxTypeRow" unique_id=487924331]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-toggle_mode = true
-button_group = SubResource("ButtonGroup_box_type")
-text = "Pushbox"
-
-[node name="HitboxTypeButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxTypeRow" unique_id=1215920085]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-button_pressed = true
-button_group = SubResource("ButtonGroup_box_type")
-text = "Hitbox"
-
-[node name="HurtboxTypeButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxTypeRow" unique_id=1252897035]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-button_group = SubResource("ButtonGroup_box_type")
-text = "Hurtbox"
 
 [node name="BoxRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1747224213]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/BoxRow" unique_id=1954591622]
@@ -389,6 +356,64 @@ layout_mode = 2
 [node name="Header" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PushboxProperties" unique_id=1645060560]
 layout_mode = 2
 text = "PUSHBOX"
+
+[node name="AnimationProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1418230957]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Header" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationProperties" unique_id=1418230958]
+layout_mode = 2
+text = "ANIMATION"
+
+[node name="SheetRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationProperties" unique_id=1418230959]
+layout_mode = 2
+
+[node name="SetAnimButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationProperties/SheetRow" unique_id=1418230960]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Set Anim"
+
+[node name="SheetSummaryLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationProperties/SheetRow" unique_id=1418230961]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 3
+
+[node name="SequenceList" type="ItemList" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationProperties" unique_id=1418230962]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+tooltip_text = "Sprites in the order they play. Drag to reorder"
+script = ExtResource("3_sequence")
+
+[node name="EntryRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationProperties" unique_id=1418230963]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationProperties/EntryRow" unique_id=1418230964]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Sprite:"
+
+[node name="EntrySpriteInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationProperties/EntryRow" unique_id=1418230965]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RemoveEntryButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationProperties/EntryRow" unique_id=1418230966]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+tooltip_text = "Remove the selected entry"
+text = "-"
+
+[node name="AddEntryButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/AnimationProperties/EntryRow" unique_id=1418230967]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
+tooltip_text = "Repeat the selected entry after it"
+text = "+"
 
 [node name="DisplaySection" type="VBoxContainer" parent="HitboxEditor/Margins/Columns" unique_id=1839318914]
 layout_mode = 2

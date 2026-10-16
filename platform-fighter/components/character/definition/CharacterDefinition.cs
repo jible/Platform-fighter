@@ -43,14 +43,17 @@ public sealed class StateDefinition
     public readonly int Length;
     public readonly bool Loop;
     public readonly BoxDefinition[] Boxes;
+    // Null when the state has no sprite sequence, so the view spreads the sheet evenly instead
+    public readonly SpriteTrack Sprite;
 
-    public StateDefinition(string name, string animation, int length, bool loop, BoxDefinition[] boxes)
+    public StateDefinition(string name, string animation, int length, bool loop, BoxDefinition[] boxes, SpriteTrack sprite)
     {
         Name = name;
         Animation = animation;
         Length = length;
         Loop = loop;
         Boxes = boxes;
+        Sprite = sprite;
     }
 
     // The sheet or clip to play. A state with no animation set plays the one named after it
@@ -62,6 +65,25 @@ public sealed class StateDefinition
         if (Loop) return (int)(ticksInState % (uint)Length);
         return ticksInState >= Length ? Length - 1 : (int)ticksInState;
     }
+}
+
+// Which frame of the state's sheet shows on each frame of the state, with the sequence already expanded
+public sealed class SpriteTrack
+{
+    // The sheet's grid, for Sprite3D's Hframes and Vframes
+    public readonly int Columns;
+    public readonly int Rows;
+    // Indexed by frame and as long as the state. Always within the grid
+    private readonly int[] sprites;
+
+    public SpriteTrack(int columns, int rows, int[] sprites)
+    {
+        Columns = columns;
+        Rows = rows;
+        this.sprites = sprites;
+    }
+
+    public int SpriteAt(int frame) => sprites[frame];
 }
 
 // What a hitbox deals. Each hitbox has its own, so a sweet spot and a sour spot in one hit group can differ

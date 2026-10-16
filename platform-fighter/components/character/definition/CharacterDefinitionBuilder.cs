@@ -60,7 +60,31 @@ public static class CharacterDefinitionBuilder
                 FindBoneTrack(animation, box.Bone, $"{name} box {box.Id}"));
         }
 
-        return new StateDefinition(name, state.Animation, length, state.Loop, boxes);
+        return new StateDefinition(name, state.Animation, length, state.Loop, boxes, BuildSprite(name, state.Sprite, length, state.Loop));
+    }
+
+    // Null when there's no sequence to play
+    private static SpriteTrack BuildSprite(string name, SpriteFile file, int length, bool loop)
+    {
+        if (file == null || file.Sequence.Count == 0) return null;
+        int columns = Math.Max(1, file.Columns);
+        int rows = Math.Max(1, file.Rows);
+        int spriteCount = columns * rows;
+
+        var sprites = new int[length];
+        bool warned = false;
+        for (int frame = 0; frame < length; frame++)
+        {
+            int sprite = file.Sequence[SpriteSequenceMath.EntryAt(frame, file.FrameRate, file.Sequence.Count, loop)];
+            // The grid may have been made smaller after the sequence was set
+            if ((sprite < 0 || sprite >= spriteCount) && !warned)
+            {
+                GD.PushWarning($"{name} plays sprite {sprite}, but its {columns}x{rows} sheet only has {spriteCount}");
+                warned = true;
+            }
+            sprites[frame] = Math.Clamp(sprite, 0, spriteCount - 1);
+        }
+        return new SpriteTrack(columns, rows, sprites);
     }
 
     private static void ExpandKeys(BoxFile box, int length, DM64 boxUnit, out DMVector[] offsets, out DMVector[] sizes, string context)

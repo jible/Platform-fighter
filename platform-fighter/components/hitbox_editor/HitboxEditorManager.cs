@@ -116,6 +116,78 @@ public class HitboxEditorManager
         MarkChanged();
     }
 
+    // ---------- Sprite ----------
+
+    // Null when the state plays its sheet without a sequence
+    public SpriteFile GetSprite(string stateName) => GetState(stateName).Sprite;
+
+    // Sets the sheet and how it's cut up and played. A sequence that still plays every frame in order is
+    // remade for the new grid, but one that was edited is kept, so changing the grid never loses work
+    public void SetSprite(string stateName, string sheet, int columns, int rows, int frameRate)
+    {
+        StateFile state = GetState(stateName);
+        SpriteFile sprite = state.Sprite ??= new SpriteFile();
+        bool playsAllFrames = sprite.Sequence.Count == 0 || IsAllFrames(sprite.Sequence, sprite.Columns * sprite.Rows);
+
+        state.Animation = sheet ?? "";
+        sprite.Columns = Math.Max(1, columns);
+        sprite.Rows = Math.Max(1, rows);
+        sprite.FrameRate = SpriteSequenceMath.ClampFrameRate(frameRate);
+        if (playsAllFrames)
+        {
+            sprite.Sequence.Clear();
+            for (int i = 0; i < sprite.Columns * sprite.Rows; i++) sprite.Sequence.Add(i);
+        }
+        MarkChanged();
+    }
+
+    // Inserted before index, so passing the count adds to the end
+    public void AddSequenceEntry(string stateName, int index, int sprite)
+    {
+        List<int> sequence = GetSequence(stateName);
+        sequence.Insert(Math.Clamp(index, 0, sequence.Count), sprite);
+        MarkChanged();
+    }
+
+    public void RemoveSequenceEntry(string stateName, int index)
+    {
+        GetSequence(stateName).RemoveAt(index);
+        MarkChanged();
+    }
+
+    public void SetSequenceEntry(string stateName, int index, int sprite)
+    {
+        GetSequence(stateName)[index] = sprite;
+        MarkChanged();
+    }
+
+    // The entry ends up at index to, with the ones between shifted over
+    public void MoveSequenceEntry(string stateName, int from, int to)
+    {
+        List<int> sequence = GetSequence(stateName);
+        int sprite = sequence[from];
+        sequence.RemoveAt(from);
+        sequence.Insert(Math.Clamp(to, 0, sequence.Count), sprite);
+        MarkChanged();
+    }
+
+    private List<int> GetSequence(string stateName)
+    {
+        SpriteFile sprite = GetSprite(stateName);
+        if (sprite == null) throw new ArgumentException($"State '{stateName}' has no sprite sequence");
+        return sprite.Sequence;
+    }
+
+    private static bool IsAllFrames(List<int> sequence, int count)
+    {
+        if (sequence.Count != count) return false;
+        for (int i = 0; i < count; i++)
+        {
+            if (sequence[i] != i) return false;
+        }
+        return true;
+    }
+
     // ---------- Boxes ----------
 
     public BoxFile GetBox(string stateName, int boxId)

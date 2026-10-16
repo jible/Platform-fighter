@@ -6,8 +6,9 @@ using Godot;
 public interface ICharacterView
 {
     // frame is a tick within the animation, already looped or held by the state.
-    // length is the state's length in ticks, or 0 when the state has no authored data
-    void Show(string animation, int frame, int length, Character.Direction facing);
+    // length is the state's length in ticks, or 0 when the state has no authored data.
+    // sprite is the state's sprite sequence, or null to spread the animation evenly over length
+    void Show(string animation, int frame, int length, SpriteTrack sprite, Character.Direction facing);
     // Distinct images the animation steps through, like a sprite sheet's frames, so an editor can step one at a time.
     // 0 when the animation has none, or doesn't step, as with a model
     int FrameCount(string animation);
@@ -106,12 +107,12 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         StateDefinition state = Definition.GetState(stateId);
         if (state != null)
         {
-            View.Show(state.AnimationName, state.FrameAt(StateMachine.TicksInState), state.Length, direction);
+            View.Show(state.AnimationName, state.FrameAt(StateMachine.TicksInState), state.Length, state.Sprite, direction);
         }
         else
         {
             // No authored data yet, so play the sheet named after the state
-            View.Show(stateId.ToString(), (int)StateMachine.TicksInState, 0, direction);
+            View.Show(stateId.ToString(), (int)StateMachine.TicksInState, 0, null, direction);
         }
     }
 }

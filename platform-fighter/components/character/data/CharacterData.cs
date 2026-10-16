@@ -26,7 +26,7 @@ public class BodyData
 
 public enum VisualKind
 {
-    // One sheet per animation, a single row of frames in order
+    // One sheet per animation, cut into a grid by the state's sprite sequence, see SpriteFile
     Sprite,
     // Not supported yet
     Model,
@@ -40,7 +40,7 @@ public class VisualData
     public VisualKind Kind = VisualKind.Sprite;
     // Played for any animation the character has no art for yet. Null shows nothing new
     public string DefaultAnimation;
-    // Width of one frame in a sprite sheet. 0 means square frames, as wide as the sheet is tall
+    // Width of one frame in a sheet played without a sprite sequence. 0 means square frames, as wide as the sheet is tall
     public int SpriteFrameWidth = 0;
     // World units per pixel of a sprite sheet. A sprite character's boxes are authored in the same pixels,
     // so this also sizes them in play and must be a DM64. Changing it rescales art and boxes together

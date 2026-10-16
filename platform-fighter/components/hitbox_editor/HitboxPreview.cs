@@ -51,13 +51,13 @@ public class HitboxPreview : IDisposable
         StateDefinition state = definition.GetState(stateName);
         if (state == null)
         {
-            view?.Show(stateName, frame, 0, Character.Direction.Right);
+            view?.Show(stateName, frame, 0, null, Character.Direction.Right);
             drawer.Submit();
             return;
         }
 
         frame = Math.Clamp(frame, 0, state.Length - 1);
-        view?.Show(state.AnimationName, frame, state.Length, Character.Direction.Right);
+        view?.Show(state.AnimationName, frame, state.Length, state.Sprite, Character.Direction.Right);
 
         // The selected box last, so it draws over the rest
         BoxDefinition selected = null;

@@ -22,6 +22,8 @@ public class StateFile
 {
     // Sprite animation path or model clip name. Also picks which baked bone tracks the boxes follow
     public string Animation = "";
+    // How a sprite sheet is cut up and played. Null spreads a single row sheet evenly over the state
+    public SpriteFile Sprite;
     // Ticks in one play through of the state
     public int Length = 1;
     public bool Loop;
@@ -30,6 +32,18 @@ public class StateFile
     // Handed to the next box created in this state, so ids stay stable when boxes are renamed or deleted
     public int NextBoxId;
     public int NextHitGroupId;
+}
+
+// The state's sheet (StateFile.Animation) as a grid of frames, numbered left to right then top to bottom from 0.
+// Sequence is the frames in the order they play, each shown for the same time, so a repeated frame holds longer
+[Serializable]
+public class SpriteFile
+{
+    public int Columns = 1;
+    public int Rows = 1;
+    // Sequence entries per second. Rates that don't divide TicksPerSecond show some entries a tick longer
+    public int FrameRate = 10;
+    public List<int> Sequence = new();
 }
 
 // Boxes in one group share a single hit, so a multi box attack only connects once per target.

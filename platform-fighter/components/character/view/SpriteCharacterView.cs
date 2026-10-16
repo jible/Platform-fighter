@@ -2,8 +2,9 @@ using Godot;
 using System.Collections.Generic;
 
 // Draws a sprite character. It is the sprite itself, so a character's view is one node.
-// Each animation is its own sheet in the character's folder: one row of frames in order, SpriteFrameWidth wide.
-// The sheet's frames are spread evenly over the state's length
+// Each animation is a sheet in the character's folder. A state with a sprite sequence cuts its sheet into the
+// sequence's grid and shows whichever frame the sequence has on the tick. Otherwise the sheet is one row of
+// frames, SpriteFrameWidth wide, spread evenly over the state's length
 public partial class SpriteCharacterView : Sprite3D, ICharacterView
 {
     // Used when the state has no authored length, so new art plays before its state is set up
@@ -29,27 +30,34 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
         sheets.Clear();
     }
 
-    public void Show(string animation, int frame, int length, Character.Direction facing)
+    public void Show(string animation, int frame, int length, SpriteTrack sprite, Character.Direction facing)
     {
         // Art is drawn facing right
         FlipH = facing == Character.Direction.Left;
 
-        Texture2D sheet = ResolveSheet(animation);
+        Texture2D sheet = GetSheet(animation);
+        // The sequence's grid is for its own sheet, not the default standing in for it
+        if (sheet == null) sprite = null;
+        sheet ??= GetSheet(defaultAnimation);
         // No sheet and no default keeps whatever was showing, so a missing animation is visible but not blank
         if (sheet == null) return;
 
-        if (Texture != sheet)
+        int columns = sprite?.Columns ?? FrameCount(sheet);
+        int rows = sprite?.Rows ?? 1;
+        if (Texture != sheet || Hframes != columns || Vframes != rows)
         {
-            // Reset first, since the old frame may be past the end of the new sheet
+            // Reset first, since the old frame may be past the end of the new grid
             Frame = 0;
             Texture = sheet;
-            Hframes = FrameCount(sheet);
+            Hframes = columns;
+            Vframes = rows;
         }
 
-        int index = length > 0
-            ? frame * Hframes / length
-            : frame / UnauthoredTicksPerSprite % Hframes;
-        Frame = Mathf.Clamp(index, 0, Hframes - 1);
+        int index;
+        if (sprite != null) index = sprite.SpriteAt(frame);
+        else if (length > 0) index = frame * columns / length;
+        else index = frame / UnauthoredTicksPerSprite % columns;
+        Frame = Mathf.Clamp(index, 0, columns * rows - 1);
     }
 
     // Frames Show spreads over the state for this animation, or 0 when there is no sheet and no default
@@ -67,14 +75,19 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
 
     private Texture2D ResolveSheet(string animation) => GetSheet(animation) ?? GetSheet(defaultAnimation);
 
+    // Where an animation's sheet lives. Animations can be named with or without the extension
+    public static string SheetPath(string folder, string animation)
+    {
+        string path = $"{folder}/{animation}";
+        return path.GetExtension() == "" ? path + ".png" : path;
+    }
+
     private Texture2D GetSheet(string animation)
     {
         if (string.IsNullOrEmpty(animation)) return null;
         if (sheets.TryGetValue(animation, out Texture2D sheet)) return sheet;
 
-        // Animations can be named with or without the extension
-        string path = $"{folder}/{animation}";
-        if (path.GetExtension() == "") path += ".png";
+        string path = SheetPath(folder, animation);
         sheet = ResourceLoader.Exists(path) ? GD.Load<Texture2D>(path) : null;
         if (sheet == null)
         {
