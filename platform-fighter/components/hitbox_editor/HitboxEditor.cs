@@ -60,6 +60,9 @@ public partial class HitboxEditor : Node
     private LineEdit lengthInput;
     private Label lengthWarning;
     private CheckBox loopToggle;
+    // Attacks only, so the row is hidden for states
+    private Control cancelOnLandRow;
+    private CheckBox cancelOnLandToggle;
     // Shared box properties
     private Control sharedProperties;
     private LineEdit nameInput, widthInput, heightInput;
@@ -149,6 +152,8 @@ public partial class HitboxEditor : Node
         lengthInput = GetNode<LineEdit>("%LengthInput");
         lengthWarning = GetNode<Label>("%LengthWarning");
         loopToggle = GetNode<CheckBox>("%LoopToggle");
+        cancelOnLandRow = GetNode<Control>("%CancelOnLandRow");
+        cancelOnLandToggle = GetNode<CheckBox>("%CancelOnLandToggle");
 
         sharedProperties = GetNode<Control>("%SharedProperties");
         nameInput = GetNode<LineEdit>("%NameInput");
@@ -209,6 +214,7 @@ public partial class HitboxEditor : Node
 
         OnEndEdit(lengthInput, OnLengthEdited);
         loopToggle.Toggled += OnLoopToggled;
+        cancelOnLandToggle.Toggled += on => manager.SetAttackCancelOnLand(SelectedState, on);
 
         OnEndEdit(nameInput, OnBoxNameEdited);
         parentDropdown.ItemSelected += index => OnBoxParentSelected((int)index);
@@ -671,6 +677,9 @@ public partial class HitboxEditor : Node
         StateFile state = manager.HasState(SelectedState) ? manager.GetState(SelectedState) : null;
         ShowText(lengthInput, state != null ? state.Length.ToString(CultureInfo.InvariantCulture) : "", true);
         loopToggle.SetPressedNoSignal(state != null && state.Loop);
+        AttackFile attack = manager.GetAttack(SelectedState);
+        cancelOnLandRow.Visible = attack != null;
+        cancelOnLandToggle.SetPressedNoSignal(attack != null && attack.CancelOnLand);
         string warning = LengthWarning();
         lengthWarning.Visible = warning != "";
         lengthInput.TooltipText = warning;

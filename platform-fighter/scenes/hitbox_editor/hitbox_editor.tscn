@@ -128,6 +128,19 @@ text = "Loop:"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="CancelOnLandRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CancelOnLandRow"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Cancel On Land:"
+
+[node name="CancelOnLandToggle" type="CheckBox" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CancelOnLandRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="StateDivider" type="HSeparator" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1252173892]
 layout_mode = 2
 

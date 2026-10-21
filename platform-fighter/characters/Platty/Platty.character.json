@@ -319,6 +319,7 @@
         "Context": "Air"
       },
       "Movement": "IgnoreInput",
+      "CancelOnLand": true,
       "Animation": "Anims/fAir.png",
       "Sprite": {
         "Columns": 8,
@@ -406,6 +407,7 @@
         "Context": "Air"
       },
       "Movement": "IgnoreInput",
+      "CancelOnLand": true,
       "Animation": "Anims/bAir.png",
       "Sprite": {
         "Columns": 11,
@@ -438,6 +440,7 @@
         "Context": "Air"
       },
       "Movement": "IgnoreInput",
+      "CancelOnLand": true,
       "Animation": "Anims/nAir.png",
       "Sprite": {
         "Columns": 7,
@@ -467,6 +470,7 @@
         "Context": "Air"
       },
       "Movement": "IgnoreInput",
+      "CancelOnLand": true,
       "Animation": "Anims/dAir.png",
       "Sprite": {
         "Columns": 8,

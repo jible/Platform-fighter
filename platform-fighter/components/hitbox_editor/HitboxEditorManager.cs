@@ -158,6 +158,18 @@ public class HitboxEditorManager
         MarkChanged();
     }
 
+    // Null when the name is a state's, or has no data
+    public AttackFile GetAttack(string name) => Loaded.Attacks.TryGetValue(name, out AttackFile attack) ? attack : null;
+
+    // Attacks only, since they're only added in the file
+    public void SetAttackCancelOnLand(string attackName, bool cancel)
+    {
+        AttackFile attack = GetAttack(attackName);
+        if (attack == null) return;
+        attack.CancelOnLand = cancel;
+        MarkChanged();
+    }
+
     public void SetStateAnimation(string stateName, string animation)
     {
         GetState(stateName).Animation = animation ?? "";

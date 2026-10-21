@@ -43,7 +43,7 @@ public static class CharacterDefinitionBuilder
             }
             nameByInput[attack.Input] = name;
             StateDefinition state = BuildState(name, attack, boxUnit, skeleton);
-            attacks.Add(new AttackDefinition(attacks.Count, attack.Input, attack.Movement, state));
+            attacks.Add(new AttackDefinition(attacks.Count, attack.Input, attack.Movement, attack.CancelOnLand, state));
         }
         return attacks.ToArray();
     }

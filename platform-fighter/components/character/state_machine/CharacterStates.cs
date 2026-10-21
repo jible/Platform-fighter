@@ -94,9 +94,15 @@ public class FallState : CharacterState
 
     public override void Tick(CharacterStateMachine machine)
     {
-        if (machine.Character.Movement.IsGrounded)
+        Character character = machine.Character;
+        if (character.Movement.IsGrounded)
         {
             machine.ChangeState(CharacterStateId.Land);
+        }
+        // An air jump. The Jump state's enter does the jump and counts it
+        else if (character.InputHandler.JustPressed(ControllerState.ButtonTypes.JUMP) && character.Movement.CanJump)
+        {
+            machine.ChangeState(CharacterStateId.Jump);
         }
     }
 }
@@ -148,6 +154,15 @@ public class AttackState : CharacterState
     public override bool Cancellable => false;
 
     public override StateDefinition GetDefinition(Character character) => character.Attacks.Current;
+
+    public override void Tick(CharacterStateMachine machine)
+    {
+        Character character = machine.Character;
+        if (character.Attacks.Current.CancelOnLand && character.Movement.IsGrounded)
+        {
+            machine.ChangeState(CharacterStateId.Land);
+        }
+    }
 
     // An attack set to loop never gets here, so it plays until something else changes the state
     public override void OnAnimFinished(CharacterStateMachine machine)

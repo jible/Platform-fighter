@@ -3,7 +3,7 @@
 public class RuntimePhysicsShapeRenderer : IWorldRenderer
 {
     public bool Visible = true;
-    public float RenderZAxis = 0;
+    public float RenderZAxis = -.01f;
     public float RenderThickness = .5f;
 
     private readonly PhysicsObject[] objects;

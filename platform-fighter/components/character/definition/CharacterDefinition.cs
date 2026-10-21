@@ -112,13 +112,16 @@ public sealed class AttackDefinition : StateDefinition
     public readonly int Index;
     public readonly AttackInput Input;
     public readonly MovementType Movement;
+    // Ends in the Land state on touching the ground
+    public readonly bool CancelOnLand;
 
-    public AttackDefinition(int index, AttackInput input, MovementType movement, StateDefinition state)
+    public AttackDefinition(int index, AttackInput input, MovementType movement, bool cancelOnLand, StateDefinition state)
         : base(state.Name, state.Animation, state.Length, state.Loop, state.Boxes, state.Sprite)
     {
         Index = index;
         Input = input;
         Movement = movement;
+        CancelOnLand = cancelOnLand;
     }
 }
 

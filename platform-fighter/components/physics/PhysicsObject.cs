@@ -16,7 +16,7 @@ public partial class PhysicsObject : DeterministicNode3D
     public int Mask;
     /// <summary>
     /// The Layer is what layer this object exists on.
-    /// For collision, the static object should be masked by the static one
+    /// For collision, the static object should be masked by the non-static one
     /// </summary>
     public int Layer;
     public bool isStatic = false;

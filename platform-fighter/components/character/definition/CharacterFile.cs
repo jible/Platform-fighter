@@ -54,6 +54,9 @@ public class AttackFile : StateFile
     public AttackInput Input;
     // Not read by CharacterMovement yet
     public MovementType Movement = MovementType.IgnoreInput;
+    // Ends the attack in the Land state on touching the ground, for aerials. Anything special on landing,
+    // like a landing hitbox, is up to whatever plays after it
+    public bool CancelOnLand;
 }
 
 // The input that starts an attack. Each input starts at most one of a character's attacks
