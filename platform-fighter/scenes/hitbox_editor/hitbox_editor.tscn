@@ -415,6 +415,75 @@ layout_mode = 2
 tooltip_text = "Repeat the selected entry after it"
 text = "+"
 
+[node name="CollisionProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1418231101]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Header" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties" unique_id=1418231102]
+layout_mode = 2
+text = "COLLISION"
+
+[node name="BodySizeRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties" unique_id=1418231103]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties/BodySizeRow" unique_id=1418231104]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+tooltip_text = "The physics body that collides with the stage, in world units. The same in every state"
+mouse_filter = 1
+text = "Body size:"
+
+[node name="WLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties/BodySizeRow" unique_id=1418231105]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "W:"
+
+[node name="BodyWidthInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties/BodySizeRow" unique_id=1418231106]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties/BodySizeRow" unique_id=1418231107]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "H:"
+
+[node name="BodyHeightInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties/BodySizeRow" unique_id=1418231108]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SpriteOffsetRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties" unique_id=1418231109]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties/SpriteOffsetRow" unique_id=1418231110]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+tooltip_text = "Where the art sits relative to the character, in pixels like the boxes. The same in every state"
+mouse_filter = 1
+text = "Sprite offset:"
+
+[node name="XLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties/SpriteOffsetRow" unique_id=1418231111]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "X:"
+
+[node name="SpriteOffsetXInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties/SpriteOffsetRow" unique_id=1418231112]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="YLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties/SpriteOffsetRow" unique_id=1418231113]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "Y:"
+
+[node name="SpriteOffsetYInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CollisionProperties/SpriteOffsetRow" unique_id=1418231114]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="DisplaySection" type="VBoxContainer" parent="HitboxEditor/Margins/Columns" unique_id=1839318914]
 layout_mode = 2
 size_flags_horizontal = 3

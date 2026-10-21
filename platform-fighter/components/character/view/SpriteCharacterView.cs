@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 // Draws a sprite character. It is the sprite itself, so a character's view is one node.
 // Each animation is a sheet in the character's folder. A state with a sprite sequence cuts its sheet into the
-// sequence's grid and shows whichever frame the sequence has on the tick. Otherwise the sheet is one row of
+// sequence's grid and spreads the sequence evenly over the length. Otherwise the sheet is one row of
 // frames, SpriteFrameWidth wide, spread evenly over the state's length
 public partial class SpriteCharacterView : Sprite3D, ICharacterView
 {
@@ -11,6 +11,8 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
     private const int UnauthoredTicksPerSprite = 6;
 
     private string folder;
+    // Kept, so the offset is read on every Show and the editor can move it
+    private VisualData visuals;
     // Stands in for any animation with no sheet
     private string defaultAnimation;
     // 0 means square frames
@@ -21,6 +23,7 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
     public void Configure(string folder, VisualData visuals)
     {
         this.folder = folder;
+        this.visuals = visuals;
         defaultAnimation = visuals.DefaultAnimation;
         frameWidth = visuals.SpriteFrameWidth;
         PixelSize = visuals.PixelSize.ToFloat();
@@ -28,12 +31,22 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
         TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest;
         // Sheets from a previous folder don't apply any more
         sheets.Clear();
+        PlaceAtOffset(Character.Direction.Right);
+    }
+
+    // In box units, so it's scaled by the pixel size like the boxes are
+    private void PlaceAtOffset(Character.Direction facing)
+    {
+        Vector3 offset = (visuals.Offset * visuals.BoxUnit).ToVector3();
+        if (facing == Character.Direction.Left) offset.X = -offset.X;
+        Position = offset;
     }
 
     public void Show(string animation, int frame, int length, SpriteTrack sprite, Character.Direction facing)
     {
         // Art is drawn facing right
         FlipH = facing == Character.Direction.Left;
+        PlaceAtOffset(facing);
 
         Texture2D sheet = GetSheet(animation);
         // The sequence's grid is for its own sheet, not the default standing in for it
@@ -54,7 +67,7 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
         }
 
         int index;
-        if (sprite != null) index = sprite.SpriteAt(frame);
+        if (sprite != null) index = length > 0 ? sprite.SpriteAt(frame, length) : 0;
         else if (length > 0) index = frame * columns / length;
         else index = frame / UnauthoredTicksPerSprite % columns;
         Frame = Mathf.Clamp(index, 0, columns * rows - 1);

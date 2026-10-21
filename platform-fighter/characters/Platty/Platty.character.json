@@ -6,7 +6,6 @@
       "Sprite": {
         "Columns": 2,
         "Rows": 1,
-        "FrameRate": 20,
         "Sequence": [
           0,
           1
@@ -15,14 +14,55 @@
       "Length": 120,
       "Loop": true,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 3,
+      "Boxes": [
+        {
+          "Id": 3,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              119
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 4,
       "NextHitGroupId": 3
     },
     "Fall": {
       "Animation": "Anims/fall.png",
-      "Sprite": null,
-      "Length": 30,
+      "Sprite": {
+        "Columns": 2,
+        "Rows": 1,
+        "Sequence": [
+          0,
+          1
+        ]
+      },
+      "Length": 18,
       "Loop": true,
       "HitGroups": [],
       "Boxes": [],
@@ -34,14 +74,13 @@
       "Sprite": {
         "Columns": 2,
         "Rows": 1,
-        "FrameRate": 20,
         "Sequence": [
           0,
           1
         ]
       },
-      "Length": 20,
-      "Loop": false,
+      "Length": 30,
+      "Loop": true,
       "HitGroups": [],
       "Boxes": [],
       "NextBoxId": 0,
@@ -52,7 +91,6 @@
       "Sprite": {
         "Columns": 1,
         "Rows": 1,
-        "FrameRate": 60,
         "Sequence": [
           0
         ]
@@ -69,7 +107,6 @@
       "Sprite": {
         "Columns": 4,
         "Rows": 1,
-        "FrameRate": 30,
         "Sequence": [
           0,
           1,
@@ -89,13 +126,12 @@
       "Sprite": {
         "Columns": 2,
         "Rows": 1,
-        "FrameRate": 10,
         "Sequence": [
           0,
           1
         ]
       },
-      "Length": 30,
+      "Length": 6,
       "Loop": false,
       "HitGroups": [],
       "Boxes": [],
@@ -107,14 +143,45 @@
       "Sprite": {
         "Columns": 2,
         "Rows": 1,
-        "FrameRate": 10,
         "Sequence": [
           0,
           1
         ]
       },
-      "Length": 30,
+      "Length": 16,
       "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "HurtStart": {
+      "Animation": "Anims/Hurt",
+      "Sprite": {
+        "Columns": 1,
+        "Rows": 1,
+        "Sequence": [
+          0
+        ]
+      },
+      "Length": 8,
+      "Loop": false,
+      "HitGroups": [],
+      "Boxes": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0
+    },
+    "Hurt": {
+      "Animation": "Anims/Hurt",
+      "Sprite": {
+        "Columns": 1,
+        "Rows": 1,
+        "Sequence": [
+          0
+        ]
+      },
+      "Length": 10,
+      "Loop": true,
       "HitGroups": [],
       "Boxes": [],
       "NextBoxId": 0,
@@ -130,8 +197,24 @@
       },
       "Movement": "IgnoreInput",
       "Animation": "Anims/uTilt.png",
-      "Sprite": null,
-      "Length": 30,
+      "Sprite": {
+        "Columns": 11,
+        "Rows": 1,
+        "Sequence": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "Length": 88,
       "Loop": false,
       "HitGroups": [],
       "Boxes": [],
@@ -146,8 +229,25 @@
       },
       "Movement": "IgnoreInput",
       "Animation": "Anims/bTilt.png",
-      "Sprite": null,
-      "Length": 30,
+      "Sprite": {
+        "Columns": 12,
+        "Rows": 1,
+        "Sequence": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "Length": 72,
       "Loop": false,
       "HitGroups": [],
       "Boxes": [],
@@ -162,8 +262,20 @@
       },
       "Movement": "IgnoreInput",
       "Animation": "Anims/fTilt.png",
-      "Sprite": null,
-      "Length": 30,
+      "Sprite": {
+        "Columns": 7,
+        "Rows": 1,
+        "Sequence": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "Length": 35,
       "Loop": false,
       "HitGroups": [],
       "Boxes": [],
@@ -178,8 +290,22 @@
       },
       "Movement": "IgnoreInput",
       "Animation": "Anims/dTilt.png",
-      "Sprite": null,
-      "Length": 30,
+      "Sprite": {
+        "Columns": 9,
+        "Rows": 1,
+        "Sequence": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "Length": 63,
       "Loop": false,
       "HitGroups": [],
       "Boxes": [],
@@ -194,12 +320,83 @@
       },
       "Movement": "IgnoreInput",
       "Animation": "Anims/fAir.png",
-      "Sprite": null,
-      "Length": 30,
+      "Sprite": {
+        "Columns": 8,
+        "Rows": 1,
+        "Sequence": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      "Length": 48,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "Hitbox 0",
+          "Type": "Hitbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 10,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 4.705883,
+            "y": 4.705883
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 24,
+              "Offset": {
+                "x": 20,
+                "y": 15
+              },
+              "Size": {
+                "x": 25,
+                "y": 45
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 30,
+              "Offset": {
+                "x": 20,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 70
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              24,
+              35
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 1,
       "NextHitGroupId": 0
     },
     "BAir": {
@@ -210,8 +407,24 @@
       },
       "Movement": "IgnoreInput",
       "Animation": "Anims/bAir.png",
-      "Sprite": null,
-      "Length": 30,
+      "Sprite": {
+        "Columns": 11,
+        "Rows": 1,
+        "Sequence": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ]
+      },
+      "Length": 110,
       "Loop": false,
       "HitGroups": [],
       "Boxes": [],
@@ -226,8 +439,21 @@
       },
       "Movement": "IgnoreInput",
       "Animation": "Anims/nAir.png",
-      "Sprite": null,
-      "Length": 30,
+      "Sprite": {
+        "Columns": 7,
+        "Rows": 1,
+        "Sequence": [
+          0,
+          1,
+          2,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "Length": 48,
       "Loop": false,
       "HitGroups": [],
       "Boxes": [],
@@ -245,7 +471,6 @@
       "Sprite": {
         "Columns": 8,
         "Rows": 1,
-        "FrameRate": 10,
         "Sequence": [
           0,
           1,
@@ -257,12 +482,39 @@
           7
         ]
       },
-      "Length": 50,
+      "Length": 56,
       "Loop": false,
       "HitGroups": [],
       "Boxes": [],
       "NextBoxId": 0,
       "NextHitGroupId": 0
     }
+  },
+  "BodySize": {
+    "x": 1.6000000001,
+    "y": 2.1000000001
+  },
+  "VisualOffset": {
+    "x": 1,
+    "y": 15
+  },
+  "Ground": {
+    "Acceleration": 60,
+    "MaxVelocity": 10,
+    "Friction": 20,
+    "TurnaroundMultiplier": 10
+  },
+  "Air": {
+    "Acceleration": 20,
+    "MaxVelocity": 30,
+    "FallAcceleration": 40,
+    "MaxFallVelocity": 10,
+    "Friction": 3,
+    "TurnaroundMultiplier": 5
+  },
+  "Jump": {
+    "Velocity": 20,
+    "AirJumps": 2,
+    "AirHorizontalImpulse": 2
   }
 }

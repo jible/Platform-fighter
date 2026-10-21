@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 // Draws a character. Display only: it is told what to show after the ticks run, and never
 // keeps its own clock, so a rollback is fixed up by the next Show with no extra work.
@@ -6,7 +7,7 @@ using Godot;
 public interface ICharacterView
 {
     // frame is a tick within the animation, already looped or held by the state.
-    // length is the state's length in ticks, or 0 when the state has no authored data.
+    // length is the ticks the animation plays over, usually the state's length, or 0 when the state has no authored data.
     // sprite is the state's sprite sequence, or null to spread the animation evenly over length
     void Show(string animation, int frame, int length, SpriteTrack sprite, Character.Direction facing);
     // Distinct images the animation steps through, like a sprite sheet's frames, so an editor can step one at a time.
@@ -28,6 +29,7 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     // Not named Input, which would hide Godot's Input class inside Character
     public InputHandler InputHandler { get; private set; }
     public int PlayerIndex { get; private set; }
+    public CharacterId CharacterId { get; private set; }
     public CharacterData Data { get; private set; }
     // Hitboxes and the animation each state plays, from the character's files
     public CharacterDefinition Definition { get; private set; }
@@ -37,6 +39,18 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     public CharacterMovement Movement { get; private set; }
     // Starts attacks from input, and remembers which one the Attack state is playing
     public AttackHandler Attacks { get; private set; }
+    public LifeData Life { get; private set; }
+
+    // Fired by the Off state when the character loses their last life. Fires inside the tick, and again when a
+    // rollback resimulates it, so listeners must only change rollback state
+    public event Action<Character> OutOfLives;
+
+    // The most recent hit taken, for the hurt states to read, since states hold no data
+    private readonly SerializableProperty<ReceivedHit> lastHit = new();
+    public ReceivedHit LastHit => lastHit.Value;
+
+    // Where the character spawned, and respawns. Set once when configured, so not rollback state
+    private DMVector spawnPosition;
 
     // Set when the character is configured
     private readonly SerializableProperty<Direction> _direction = new();
@@ -52,9 +66,10 @@ public partial class Character : PhysicsObject, ITickable, IEntity
 
     // Called by whatever spawns the character, before it's added under the world root.
     // spawnPosition is in world space, since a character is always a root
-    public void Configure(CharacterId characterId, int playerIndex, InputManager inputManager, DMVector spawnPosition, Direction direction = Direction.Left)
+    public void Configure(CharacterId characterId, int playerIndex, InputManager inputManager, DMVector spawnPosition, int lives, Direction direction = Direction.Left)
     {
-        Data = Roster.Get(characterId);
+        CharacterId = characterId;
+        Data = CharacterFiles.LoadData(characterId);
         Definition = CharacterFiles.LoadDefinition(characterId);
         // Rollback state, so made here, before the world is built, and never resized
         HitGroups = HitGroup.CreateSet(Definition.MaxHitGroups);
@@ -66,12 +81,15 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         Layer = CollisionLayers.Characters;
         Mask = CollisionLayers.Stage;
         SimTransform.LocalPosition = spawnPosition;
+        this.spawnPosition = spawnPosition;
 
-        View = CharacterViews.Create(characterId);
+        View = CharacterViews.Create(characterId, Data);
         if (View is Node viewNode) AddChild(viewNode);
         InputHandler = new InputHandler(playerIndex, inputManager);
         Movement = new CharacterMovement(this);
         Attacks = new AttackHandler(this, InputHandler);
+        Life = new LifeData(lives);
+        Life.HealthDepleted += () => StateMachine.ChangeState(CharacterStateId.Dying);
         // Last, since entering the first state can use everything above
         StateMachine = new CharacterStateMachine(this, CreateStates(), CharacterStateId.Idle);
         this.direction = direction;
@@ -88,21 +106,58 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         new LandState(),
         new TurnState(),
         new AttackState(),
+        new HurtStartState(),
+        new HurtState(),
+        new DyingState(),
+        new OffState(),
     };
 
     public void Tick()
     {
         StateMachine.Tick();
-        Movement.Tick();
+        // An off character is out of play, so nothing moves them until they respawn
+        if (!StateMachine.IsInState(CharacterStateId.Off)) Movement.Tick();
     }
 
     // Called by the HitboxManager at the end of a tick, after every hit for the tick has been found.
     // Runs again when a rollback resimulates the tick, so anything done here must be rolled back state
     public void ReceiveHit(Character attacker, HitDefinition hit)
     {
-        // Placeholder until there's damage and a hitstun state to apply it to
-        GD.Print($"{Name} was hit by {attacker.Name} for {hit.Damage}");
+        // Already dying or off, so the hit does nothing
+        if (!Life.IsAlive) return;
+
+        Life.ChangeHealth(-hit.Damage);
+        // Placeholder until there's a health display
+        GD.Print($"{Name} was hit by {attacker.Name} for {hit.Damage}, {Life.Health} health left");
+        // The hit was fatal, and the character is already Dying
+        if (!Life.IsAlive) return;
+
+        // Knockback is authored as if the attacker faces right
+        lastHit.Value = new ReceivedHit { Knockback = hit.KnockbackFacing(attacker.direction) };
+        // Reentered, so a hit during HurtStart starts it over with the new knockback
+        StateMachine.ChangeState(CharacterStateId.HurtStart, reenter: true);
     }
+
+    // Called by the Off state when the character leaves play
+    public void TurnOff()
+    {
+        velocity.Value = DMVector.zero;
+        // The physics server skips inactive bodies, so an off character can't land on anything
+        isActive = false;
+    }
+
+    // Called by the Off state when there's a life left to play. Back where they first spawned, at full health
+    public void Respawn()
+    {
+        SimTransform.LocalPosition = spawnPosition;
+        velocity.Value = DMVector.zero;
+        isActive = true;
+        Life.RestoreHealth();
+        StateMachine.ChangeState(CharacterStateId.Fall);
+    }
+
+    // Called by the Off state when the last life is lost
+    public void NotifyOutOfLives() => OutOfLives?.Invoke(this);
 
     // After the play manager ticks, so it draws the final state of this frame, including any rollback
     protected override void OnProcess(double delta)
@@ -110,6 +165,8 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         if (View == null) return;
 
         CharacterStateId stateId = StateMachine.CurrentStateId;
+        // Set every frame, since a rollback can move the character into or out of the Off state
+        if (View is Node3D viewNode) viewNode.Visible = stateId != CharacterStateId.Off;
         StateDefinition state = StateMachine.CurrentDefinition;
         if (state != null)
         {
@@ -121,4 +178,11 @@ public partial class Character : PhysicsObject, ITickable, IEntity
             View.Show(stateId.ToString(), (int)StateMachine.TicksInState, 0, null, direction);
         }
     }
+}
+
+// What the character keeps of the last hit it took. Unmanaged, so it fits in a SerializableProperty
+public struct ReceivedHit
+{
+    // Already mirrored for the attacker's facing
+    public DMVector Knockback;
 }

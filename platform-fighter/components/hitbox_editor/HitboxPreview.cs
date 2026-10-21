@@ -19,12 +19,14 @@ public class HitboxPreview : IDisposable
     public Color HurtboxColor = new(1f, 0.85f, 0.1f);
     public Color HitboxColor = new(1f, 0.15f, 0.15f);
     public Color PushboxColor = new(0.2f, 0.5f, 1f);
+    public Color BodyColor = new(0.2f, 0.9f, 0.4f);
 
     // Stands in for the character root, so the view and boxes are placed relative to it
     private readonly Node3D root;
     private readonly DebugBoxDrawer drawer;
     private ICharacterView view;
-    private CharacterId? viewFor;
+    // The view reads its visuals from this, so a reload, which loads new data, needs a new view
+    private CharacterData viewFor;
 
     public HitboxPreview(Node3D root)
     {
@@ -35,23 +37,26 @@ public class HitboxPreview : IDisposable
     // 0 when there's no view, or the animation doesn't step
     public int FrameCount(string animation) => view?.FrameCount(animation) ?? 0;
 
-    // Only rebuilds the view when the character changes, so its loaded sheets are kept between redraws
-    public void SetCharacter(CharacterId characterId)
+    // Only rebuilds the view when the data changes, so its loaded sheets are kept between redraws.
+    // data is the editor's own copy, see HitboxEditorManager.Data
+    public void SetCharacter(CharacterId characterId, CharacterData data)
     {
-        if (viewFor == characterId) return;
+        if (viewFor == data) return;
         if (view is Node oldView) oldView.QueueFree();
-        view = CharacterViews.Create(characterId);
+        view = CharacterViews.Create(characterId, data);
         if (view is Node viewNode) root.AddChild(viewNode);
-        viewFor = characterId;
+        viewFor = data;
     }
 
-    // stateName is any CharacterStateId name. A state with no data plays the sheet named after it, like the game does
-    public void Show(CharacterDefinition definition, string stateName, int frame, int selectedBoxId)
+    // stateName is any CharacterStateId name. A state with no data plays the sheet named after it, like the game does.
+    // body is the physics body's size to draw over everything, or null to leave it out
+    public void Show(CharacterDefinition definition, string stateName, int frame, int selectedBoxId, DMVector? body = null)
     {
         StateDefinition state = definition.GetStateOrAttack(stateName);
         if (state == null)
         {
             view?.Show(stateName, frame, 0, null, Character.Direction.Right);
+            DrawBody(body);
             drawer.Submit();
             return;
         }
@@ -67,7 +72,17 @@ public class HitboxPreview : IDisposable
             else if (box.IsActive(frame)) Draw(box, frame, UnselectedAlpha);
         }
         if (selected != null) Draw(selected, frame, selected.IsActive(frame) ? SelectedAlpha : InactiveAlpha);
+        DrawBody(body);
         drawer.Submit();
+    }
+
+    // Centered on the root, like the body is centered on the character's position
+    private void DrawBody(DMVector? body)
+    {
+        if (!body.HasValue) return;
+        Color color = BodyColor;
+        color.A = SelectedAlpha;
+        drawer.Draw(new Vector3(0, 0, BoxZ), body.Value.ToVector3(BoxThickness), color);
     }
 
     public void Dispose()

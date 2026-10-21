@@ -16,6 +16,9 @@ public static class CharacterFileJson
     public static CharacterFile ReadCharacter(string json) => JsonConvert.DeserializeObject<CharacterFile>(json, settings);
     public static string WriteCharacter(CharacterFile file) => JsonConvert.SerializeObject(file, Formatting.Indented, settings);
 
+    // A deep copy, through the same JSON the files use, so nothing shared with the original can be changed through it
+    public static T Copy<T>(T value) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(value, settings), settings);
+
     public static BakedSkeletonFile ReadSkeleton(string json) => JsonConvert.DeserializeObject<BakedSkeletonFile>(json, settings);
     // Not indented, since nobody edits the bake by hand and it holds a value per bone per tick
     public static string WriteSkeleton(BakedSkeletonFile file) => JsonConvert.SerializeObject(file, Formatting.None, settings);

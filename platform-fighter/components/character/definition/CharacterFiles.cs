@@ -59,6 +59,22 @@ public static class CharacterFiles
         access.StoreString(CharacterFileJson.WriteCharacter(file));
     }
 
+    // The character's data with its file's overrides applied. A copy, so the Roster keeps the code's values
+    // and editing it changes nothing else. Read fresh on every call, like LoadDefinition
+    public static CharacterData LoadData(CharacterId id) => LoadData(id, ReadCharacter(id));
+
+    public static CharacterData LoadData(CharacterId id, CharacterFile file)
+    {
+        CharacterData data = CharacterFileJson.Copy(Roster.Get(id));
+        if (file.BodySize.HasValue) data.Body.Size = file.BodySize.Value;
+        if (file.VisualOffset.HasValue) data.Visuals.Offset = file.VisualOffset.Value;
+        // Copied, so editing the data never changes the file it came from
+        if (file.Ground != null) data.Ground = CharacterFileJson.Copy(file.Ground);
+        if (file.Air != null) data.Air = CharacterFileJson.Copy(file.Air);
+        if (file.Jump != null) data.Jump = CharacterFileJson.Copy(file.Jump);
+        return data;
+    }
+
     // Read fresh on every call, so edits made in the hitbox editor show up on the next match
     public static CharacterDefinition LoadDefinition(CharacterId id)
     {

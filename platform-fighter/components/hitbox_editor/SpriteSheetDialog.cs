@@ -1,13 +1,13 @@
 using Godot;
 using System;
 
-// The Set Anim popup: picks a state's sheet, how it's cut into frames and how fast its sequence plays.
+// The Set Anim popup: picks a state's sheet and how it's cut into frames. How fast it plays is the state's length.
 // Frame size and the column and row counts are two views of the same grid, so editing one updates the other,
 // and only the counts are submitted. Builds its own controls. Editor UI only
 public partial class SpriteSheetDialog : ConfirmationDialog
 {
-    // Sheet name relative to the character's folder, columns, rows and frame rate
-    public event Action<string, int, int, int> Submitted;
+    // Sheet name relative to the character's folder, columns and rows
+    public event Action<string, int, int> Submitted;
 
     private static readonly Color WarningColor = new(1f, 0.75f, 0.3f);
 
@@ -18,8 +18,8 @@ public partial class SpriteSheetDialog : ConfirmationDialog
     private bool syncing;
 
     private LineEdit pathInput;
-    private Label sheetLabel, gridWarning, frameRateHint;
-    private SpinBox columnsInput, rowsInput, widthInput, heightInput, frameRateInput;
+    private Label sheetLabel, gridWarning;
+    private SpinBox columnsInput, rowsInput, widthInput, heightInput;
 
     private int SheetWidth => sheet?.GetWidth() ?? 1;
     private int SheetHeight => sheet?.GetHeight() ?? 1;
@@ -40,20 +40,16 @@ public partial class SpriteSheetDialog : ConfirmationDialog
         widthInput = AddRow(grid, "Frame width:", NewSpinBox("px"));
         heightInput = AddRow(grid, "Frame height:", NewSpinBox("px"));
         gridWarning = AddRow(grid, "", new Label { Modulate = WarningColor });
-        frameRateInput = AddRow(grid, "Frame rate:", NewSpinBox("fps"));
-        frameRateInput.MaxValue = TickManager.TicksPerSecond;
-        frameRateHint = AddRow(grid, "", new Label());
 
         pathInput.TextChanged += _ => OnPathChanged();
         columnsInput.ValueChanged += _ => OnCountChanged();
         rowsInput.ValueChanged += _ => OnCountChanged();
         widthInput.ValueChanged += _ => OnSizeChanged();
         heightInput.ValueChanged += _ => OnSizeChanged();
-        frameRateInput.ValueChanged += _ => ShowFrameRateHint();
     }
 
     // folder is where sheet names are looked up, see SpriteCharacterView.SheetPath
-    public void Open(string folder, string sheetName, int columns, int rows, int frameRate)
+    public void Open(string folder, string sheetName, int columns, int rows)
     {
         this.folder = folder;
         pathInput.Text = sheetName;
@@ -61,10 +57,8 @@ public partial class SpriteSheetDialog : ConfirmationDialog
         syncing = true;
         columnsInput.Value = columns;
         rowsInput.Value = rows;
-        frameRateInput.Value = SpriteSequenceMath.ClampFrameRate(frameRate);
         syncing = false;
         OnCountChanged();
-        ShowFrameRateHint();
         PopupCentered();
     }
 
@@ -124,20 +118,10 @@ public partial class SpriteSheetDialog : ConfirmationDialog
         gridWarning.Visible = gridWarning.Text != "";
     }
 
-    // Ticks are what boxes are timed in, so this is the number that matters for tuning
-    private void ShowFrameRateHint()
-    {
-        int frameRate = SpriteSequenceMath.ClampFrameRate((int)frameRateInput.Value);
-        int ticks = TickManager.TicksPerSecond / frameRate;
-        frameRateHint.Text = TickManager.TicksPerSecond % frameRate == 0
-            ? $"{ticks} ticks per frame"
-            : $"{ticks} to {ticks + 1} ticks per frame, uneven";
-    }
-
     private void OnConfirmed()
     {
         if (sheet == null) return;
-        Submitted?.Invoke(pathInput.Text.Trim(), (int)columnsInput.Value, (int)rowsInput.Value, (int)frameRateInput.Value);
+        Submitted?.Invoke(pathInput.Text.Trim(), (int)columnsInput.Value, (int)rowsInput.Value);
     }
 
     private static T AddRow<T>(GridContainer grid, string label, T control) where T : Control

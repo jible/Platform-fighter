@@ -4,10 +4,11 @@ using Godot;
 // make views here, so the editor always shows exactly what plays. A new VisualKind only needs a case here
 public static class CharacterViews
 {
-    // Null when the character's VisualKind isn't supported yet. The view is a node the caller adds to the tree
-    public static ICharacterView Create(CharacterId characterId)
+    // Null when the character's VisualKind isn't supported yet. The view is a node the caller adds to the tree.
+    // data is the character's loaded data, see CharacterFiles.LoadData. The view keeps reading its visuals,
+    // so the editor's changes to them show on the next Show
+    public static ICharacterView Create(CharacterId characterId, CharacterData data)
     {
-        CharacterData data = Roster.Get(characterId);
         switch (data.Visuals.Kind)
         {
             case VisualKind.Sprite:

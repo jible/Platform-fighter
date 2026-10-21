@@ -14,6 +14,14 @@ public enum CharacterStateId : byte
     Turn,
     // Plays whichever attack the AttackHandler started. Its data is the attack's, not its own
     Attack,
+    // Just got hit. The knockback lands when it ends
+    HurtStart,
+    // Flying from the knockback, until landing or slowing down
+    Hurt,
+    // Health ran out. Plays out, then goes Off
+    Dying,
+    // Out of play: hidden, with no boxes or physics. Respawns when it ends if there's a life left, otherwise stays here
+    Off,
 }
 
 // Everything the state machine needs to roll back. Kept unmanaged so it fits in a SerializableProperty
@@ -73,9 +81,10 @@ public class CharacterStateMachine
 
     public bool IsInState(CharacterStateId id) { return data.Value.Id == id; }
 
-    public void ChangeState(CharacterStateId id)
+    // Changing to the current state does nothing, unless reenter is set, which exits and enters it again from its first tick
+    public void ChangeState(CharacterStateId id, bool reenter = false)
     {
-        if (IsInState(id)) return;
+        if (IsInState(id) && !reenter) return;
 
         CurrentState.ExitState(this);
         data.Value = new CharacterStateData { Id = id, TicksInState = 0 };

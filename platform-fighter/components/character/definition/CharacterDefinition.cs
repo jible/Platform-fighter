@@ -122,23 +122,27 @@ public sealed class AttackDefinition : StateDefinition
     }
 }
 
-// Which frame of the state's sheet shows on each frame of the state, with the sequence already expanded
+// The frames of the state's sheet in the order they play, spread evenly over however long the animation plays.
+// That's usually the state's length, but a state like hitstun can stretch it over a time decided at runtime
 public sealed class SpriteTrack
 {
     // The sheet's grid, for Sprite3D's Hframes and Vframes
     public readonly int Columns;
     public readonly int Rows;
-    // Indexed by frame and as long as the state. Always within the grid
-    private readonly int[] sprites;
+    // Never empty. Always within the grid
+    private readonly int[] sequence;
 
-    public SpriteTrack(int columns, int rows, int[] sprites)
+    public SpriteTrack(int columns, int rows, int[] sequence)
     {
         Columns = columns;
         Rows = rows;
-        this.sprites = sprites;
+        this.sequence = sequence;
     }
 
-    public int SpriteAt(int frame) => sprites[frame];
+    public int Count => sequence.Length;
+
+    // frame is within 0..duration - 1
+    public int SpriteAt(int frame, int duration) => sequence[SpriteSequenceMath.EntryAt(frame, sequence.Length, duration)];
 }
 
 // What a hitbox deals. Each hitbox has its own, so a sweet spot and a sour spot in one hit group can differ

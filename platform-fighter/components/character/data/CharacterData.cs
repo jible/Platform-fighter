@@ -2,6 +2,8 @@ using System;
 
 // Every character shares this shape, only the values differ.
 // Defaults live on the fields, so a character only lists what it changes.
+// The Roster's copy is the code's values. A character's file can override some of them, so play and the
+// editor use the copy from CharacterFiles.LoadData instead
 // Velocities are in units per second, accelerations in units per second per second.
 // Only the physics server converts velocity to units per tick.
 [Serializable]
@@ -20,7 +22,7 @@ public class CharacterData
 [Serializable]
 public class BodyData
 {
-    // Full width and height, centered on the character's position
+    // Full width and height in world units, centered on the character's position. Overridden by CharacterFile.BodySize
     public DMVector Size = new DMVector(2, 2);
 }
 
@@ -45,6 +47,10 @@ public class VisualData
     // World units per pixel of a sprite sheet. A sprite character's boxes are authored in the same pixels,
     // so this also sizes them in play and must be a DM64. Changing it rescales art and boxes together
     public DM64 PixelSize = new DM64(1) / 100;
+    // Where the art sits relative to the character's position, in box units like a box offset, so it lines up with
+    // the boxes and body the same way in play and in the editor. Authored facing right and mirrored with the character.
+    // Overridden by CharacterFile.VisualOffset
+    public DMVector Offset = DMVector.zero;
 
     // World units per unit of an authored box offset or size: pixels for sprites, world units for models
     public DM64 BoxUnit => Kind == VisualKind.Sprite ? PixelSize : new DM64(1);

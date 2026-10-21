@@ -9,7 +9,7 @@ public partial class CharacterHolder : Node3D
 
     // Called by the play manager before the world is built.
     // Spawns in player number order, so the tick order is the same on every machine
-    public void SpawnCharacters(InputManager inputManager, StageHolder stage)
+    public void SpawnCharacters(InputManager inputManager, StageHolder stage, int lives)
     {
         for (int playerNumber = 0; playerNumber < PlayerManager.MaxPlayerCount; playerNumber++)
         {
@@ -20,7 +20,7 @@ public partial class CharacterHolder : Node3D
             var character = new Character { Name = $"Player {playerNumber + 1} ({profile.Character})" };
             // Face the middle of the stage
             var facing = spawn.x > 0 ? Character.Direction.Left : Character.Direction.Right;
-            character.Configure(profile.Character, playerNumber, inputManager, spawn, facing);
+            character.Configure(profile.Character, playerNumber, inputManager, spawn, lives, facing);
             AddChild(character);
 
             Characters[playerNumber] = character;

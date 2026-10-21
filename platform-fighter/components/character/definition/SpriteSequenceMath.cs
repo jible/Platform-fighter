@@ -1,30 +1,18 @@
 using System;
 
-// Sprite sequence timing shared by the runtime build and the editor, so both always agree on which entry shows.
-// Integer math only, so it stays deterministic. Frame rates are clamped to 1..TicksPerSecond,
-// so the position never skips an entry and grows by at most one a tick
+// Sprite sequence timing shared by the runtime and the editor, so both always agree on which entry shows.
+// The entries are spread evenly over however many ticks the animation plays for, so when the ticks don't
+// divide evenly some entries show a tick longer. Integer math only, so it stays deterministic
 public static class SpriteSequenceMath
 {
-    public static int ClampFrameRate(int frameRate) => Math.Clamp(frameRate, 1, TickManager.TicksPerSecond);
-
-    // Entries shown up to and including the tick, minus one, counting every pass of a loop.
-    // Without a loop it holds on the last entry
-    public static int PositionAt(int tick, int frameRate, int count, bool loop)
+    // Index into the sequence shown on the tick. count must be above 0, and tick is within 0..duration - 1.
+    // A duration shorter than the sequence skips entries, which the editor never authors but a caller might ask for
+    public static int EntryAt(int tick, int count, int duration)
     {
-        int position = tick * ClampFrameRate(frameRate) / TickManager.TicksPerSecond;
-        return loop ? position : Math.Min(position, count - 1);
+        if (duration <= 0) return 0;
+        return Math.Clamp(tick * count / duration, 0, count - 1);
     }
 
-    // Index into the sequence shown on the tick. count must be above 0
-    public static int EntryAt(int tick, int frameRate, int count, bool loop) => PositionAt(tick, frameRate, count, loop) % count;
-
-    // First tick an entry shows on, in the first pass. The inverse of PositionAt
-    public static int EntryStart(int entry, int frameRate)
-    {
-        int rate = ClampFrameRate(frameRate);
-        return (entry * TickManager.TicksPerSecond + rate - 1) / rate;
-    }
-
-    // Ticks one pass through the sequence takes
-    public static int Duration(int count, int frameRate) => EntryStart(count, frameRate);
+    // First tick the entry shows on. The inverse of EntryAt, so EntryStart(count, ...) is the duration
+    public static int EntryStart(int entry, int count, int duration) => (entry * duration + count - 1) / count;
 }

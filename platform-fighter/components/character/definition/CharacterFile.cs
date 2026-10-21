@@ -18,6 +18,16 @@ public class CharacterFile
     // Keyed by attack name, which also names the sheet when Animation is empty, like a state.
     // Names are shared with states, so an attack can't be named after a CharacterStateId
     public Dictionary<string, AttackFile> Attacks = new();
+    // Override the character's BodyData.Size and VisualData.Offset, so the editor can tune them.
+    // Null keeps the value from code, see CharacterFiles.LoadData
+    public DMVector? BodySize;
+    public DMVector? VisualOffset;
+    // Override the character's movement data, so the property editor can tune it. Null keeps the section from code.
+    // A section replaces the code's whole section, so a field missing from it takes the class default, not the code's value.
+    // The property editor always saves every field, so that only matters for hand edited files
+    public GroundMovementData Ground;
+    public AirMovementData Air;
+    public JumpData Jump;
 }
 
 [Serializable]
@@ -27,7 +37,7 @@ public class StateFile
     public string Animation = "";
     // How a sprite sheet is cut up and played. Null spreads a single row sheet evenly over the state
     public SpriteFile Sprite;
-    // Ticks in one play through of the state
+    // Ticks in one play through of the state, which its sprite sequence is spread over
     public int Length = 1;
     public bool Loop;
     public List<HitGroupFile> HitGroups = new();
@@ -108,14 +118,14 @@ public enum MovementType
 }
 
 // The state's sheet (StateFile.Animation) as a grid of frames, numbered left to right then top to bottom from 0.
-// Sequence is the frames in the order they play, each shown for the same time, so a repeated frame holds longer
+// Sequence is the frames in the order they play, spread evenly over the state's length, so a repeated frame holds
+// longer. Lengths that don't divide by the entry count show some entries a tick longer.
+// The editor keeps StateFile.Length at least the entry count, so every entry gets a tick
 [Serializable]
 public class SpriteFile
 {
     public int Columns = 1;
     public int Rows = 1;
-    // Sequence entries per second. Rates that don't divide TicksPerSecond show some entries a tick longer
-    public int FrameRate = 10;
     public List<int> Sequence = new();
 }
 

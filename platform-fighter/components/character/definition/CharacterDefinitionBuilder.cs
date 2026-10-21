@@ -90,31 +90,37 @@ public static class CharacterDefinitionBuilder
                 FindBoneTrack(animation, box.Bone, $"{name} box {box.Id}"));
         }
 
-        return new StateDefinition(name, state.Animation, length, state.Loop, boxes, BuildSprite(name, state.Sprite, length, state.Loop));
+        return new StateDefinition(name, state.Animation, length, state.Loop, boxes, BuildSprite(name, state.Sprite, length));
     }
 
     // Null when there's no sequence to play
-    private static SpriteTrack BuildSprite(string name, SpriteFile file, int length, bool loop)
+    private static SpriteTrack BuildSprite(string name, SpriteFile file, int length)
     {
         if (file == null || file.Sequence.Count == 0) return null;
         int columns = Math.Max(1, file.Columns);
         int rows = Math.Max(1, file.Rows);
         int spriteCount = columns * rows;
 
-        var sprites = new int[length];
-        bool warned = false;
-        for (int frame = 0; frame < length; frame++)
+        // The editor keeps the length at least this long, so only a hand edited file gets here
+        if (length < file.Sequence.Count)
         {
-            int sprite = file.Sequence[SpriteSequenceMath.EntryAt(frame, file.FrameRate, file.Sequence.Count, loop)];
+            GD.PushWarning($"{name} is {length} ticks long, so some of its {file.Sequence.Count} sprites never show");
+        }
+
+        var sequence = new int[file.Sequence.Count];
+        bool warned = false;
+        for (int i = 0; i < sequence.Length; i++)
+        {
+            int sprite = file.Sequence[i];
             // The grid may have been made smaller after the sequence was set
             if ((sprite < 0 || sprite >= spriteCount) && !warned)
             {
                 GD.PushWarning($"{name} plays sprite {sprite}, but its {columns}x{rows} sheet only has {spriteCount}");
                 warned = true;
             }
-            sprites[frame] = Math.Clamp(sprite, 0, spriteCount - 1);
+            sequence[i] = Math.Clamp(sprite, 0, spriteCount - 1);
         }
-        return new SpriteTrack(columns, rows, sprites);
+        return new SpriteTrack(columns, rows, sequence);
     }
 
     private static void ExpandKeys(BoxFile box, int length, DM64 boxUnit, out DMVector[] offsets, out DMVector[] sizes, string context)

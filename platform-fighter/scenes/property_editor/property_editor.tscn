@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://do6n44v0s4to4"]
+
+[ext_resource type="Script" uid="uid://bvjk20ln42i81" path="res://scenes/property_editor/PropertyEditor.cs" id="1_editor"]
+[ext_resource type="PackedScene" uid="uid://t16aulelxjm1" path="res://scenes/play_manager.tscn" id="2_play"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.08, 0.08, 0.1, 0.7)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="PropertyEditor" type="Node" unique_id=596631046]
+script = ExtResource("1_editor")
+PlayScene = ExtResource("2_play")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -276.0
+offset_top = 16.0
+offset_right = -16.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Layout" type="VBoxContainer" parent="UI/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CharacterLabel" type="Label" parent="UI/Panel/Layout"]
+layout_mode = 2
+text = "Character"
+
+[node name="CharacterSelect" type="OptionButton" parent="UI/Panel/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+
+[node name="CategoryLabel" type="Label" parent="UI/Panel/Layout"]
+layout_mode = 2
+text = "Properties"
+
+[node name="CategorySelect" type="OptionButton" parent="UI/Panel/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+
+[node name="Separator" type="HSeparator" parent="UI/Panel/Layout"]
+layout_mode = 2
+
+[node name="PropertyList" type="VBoxContainer" parent="UI/Panel/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SaveButton" type="Button" parent="UI/Panel/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Save"

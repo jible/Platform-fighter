@@ -11,6 +11,8 @@ public class HitboxEditorManager
 
     public CharacterId CharacterId => characterId;
     public CharacterFile Loaded { get; private set; }
+    // The character's data with the loaded file's overrides applied. Edited along with the file, so the preview shows them
+    public CharacterData Data { get; private set; }
     // Null when the character has no bake, as with sprite characters
     public BakedSkeletonFile Skeleton { get; private set; }
     public bool HasUnsavedChanges { get; private set; }
@@ -21,14 +23,14 @@ public class HitboxEditorManager
     // Rebuilt lazily after edits, so the preview draws exactly what play would use
     private CharacterDefinition definition;
     public CharacterDefinition Definition => definition ??=
-        CharacterDefinitionBuilder.Build(Loaded, Roster.Get(characterId).Visuals.BoxUnit, Skeleton);
+        CharacterDefinitionBuilder.Build(Loaded, Data.Visuals.BoxUnit, Skeleton);
 
     // New boxes start about a world unit across, in the character's box units, so they're visible at any pixel size
     private DMVector NewBoxSize
     {
         get
         {
-            DM64 side = DM64.Max(new DM64(1), (new DM64(1) / Roster.Get(characterId).Visuals.BoxUnit).Round());
+            DM64 side = DM64.Max(new DM64(1), (new DM64(1) / Data.Visuals.BoxUnit).Round());
             return new DMVector(side, side);
         }
     }
@@ -59,6 +61,7 @@ public class HitboxEditorManager
         characterId = id;
         Loaded = CharacterFiles.ReadCharacter(id);
         Skeleton = CharacterFiles.ReadSkeleton(id);
+        Data = CharacterFiles.LoadData(id, Loaded);
         definition = null;
         HasUnsavedChanges = false;
         Changed?.Invoke();
@@ -70,6 +73,29 @@ public class HitboxEditorManager
         HasUnsavedChanges = false;
         Changed?.Invoke();
     }
+
+    // ---------- Collision ----------
+    // Not keyed, so these are the same in every state
+
+    // In world units, like the physics body
+    public void SetBodySize(DMVector size)
+    {
+        size = new DMVector(DM64.Max(size.x, MinBodySide), DM64.Max(size.y, MinBodySide));
+        Loaded.BodySize = size;
+        Data.Body.Size = size;
+        MarkChanged();
+    }
+
+    // In box units, like box offsets
+    public void SetVisualOffset(DMVector offset)
+    {
+        Loaded.VisualOffset = offset;
+        Data.Visuals.Offset = offset;
+        MarkChanged();
+    }
+
+    // A body with no width or height would fall through the stage
+    private static readonly DM64 MinBodySide = new DM64(1) / 100;
 
     // ---------- States ----------
 
@@ -87,7 +113,7 @@ public class HitboxEditorManager
     {
         if (HasState(stateName)) return GetState(stateName);
         // Starts as long as the game ran the state before it had data
-        var state = new StateFile { Length = Roster.Get(characterId).DefaultStateLength };
+        var state = new StateFile { Length = Data.DefaultStateLength };
         Loaded.States[stateName] = state;
         MarkChanged();
         return state;
@@ -98,13 +124,22 @@ public class HitboxEditorManager
         if (Loaded.States.Remove(stateName)) MarkChanged();
     }
 
+    // Never shorter than the sprite sequence, so every entry shows for at least a tick.
     // Keys and active frames past the new end are kept, so shortening by mistake loses nothing.
     // The runtime build ignores them. Active ranges that ran to the old end are stretched to the new one
     public void SetStateLength(string stateName, int length)
     {
-        StateFile state = GetState(stateName);
+        ApplyLength(GetState(stateName), length);
+        MarkChanged();
+    }
+
+    // Ticks the state can't be shorter than
+    public int MinStateLength(string stateName) => Math.Max(1, GetState(stateName).Sprite?.Sequence.Count ?? 0);
+
+    private void ApplyLength(StateFile state, int length)
+    {
         int oldEnd = state.Length - 1;
-        state.Length = Math.Max(1, length);
+        state.Length = Math.Max(length, Math.Max(1, state.Sprite?.Sequence.Count ?? 0));
         if (state.Length - 1 > oldEnd)
         {
             foreach (var box in state.Boxes)
@@ -115,7 +150,6 @@ public class HitboxEditorManager
                 }
             }
         }
-        MarkChanged();
     }
 
     public void SetStateLoop(string stateName, bool loop)
@@ -136,8 +170,9 @@ public class HitboxEditorManager
     public SpriteFile GetSprite(string stateName) => GetState(stateName).Sprite;
 
     // Sets the sheet and how it's cut up and played. A sequence that still plays every frame in order is
-    // remade for the new grid, but one that was edited is kept, so changing the grid never loses work
-    public void SetSprite(string stateName, string sheet, int columns, int rows, int frameRate)
+    // remade for the new grid, but one that was edited is kept, so changing the grid never loses work.
+    // The state grows if the remade sequence no longer fits in it
+    public void SetSprite(string stateName, string sheet, int columns, int rows)
     {
         StateFile state = GetState(stateName);
         SpriteFile sprite = state.Sprite ??= new SpriteFile();
@@ -146,20 +181,21 @@ public class HitboxEditorManager
         state.Animation = sheet ?? "";
         sprite.Columns = Math.Max(1, columns);
         sprite.Rows = Math.Max(1, rows);
-        sprite.FrameRate = SpriteSequenceMath.ClampFrameRate(frameRate);
         if (playsAllFrames)
         {
             sprite.Sequence.Clear();
             for (int i = 0; i < sprite.Columns * sprite.Rows; i++) sprite.Sequence.Add(i);
         }
+        ApplyLength(state, state.Length);
         MarkChanged();
     }
 
-    // Inserted before index, so passing the count adds to the end
+    // Inserted before index, so passing the count adds to the end. A state already as short as it can be grows a tick
     public void AddSequenceEntry(string stateName, int index, int sprite)
     {
         List<int> sequence = GetSequence(stateName);
         sequence.Insert(Math.Clamp(index, 0, sequence.Count), sprite);
+        ApplyLength(GetState(stateName), GetState(stateName).Length);
         MarkChanged();
     }
 
