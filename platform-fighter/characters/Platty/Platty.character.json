@@ -196,6 +196,7 @@
         "Context": "Ground"
       },
       "Movement": "IgnoreInput",
+      "CancelOnLand": false,
       "Animation": "Anims/uTilt.png",
       "Sprite": {
         "Columns": 11,
@@ -228,6 +229,7 @@
         "Context": "Ground"
       },
       "Movement": "IgnoreInput",
+      "CancelOnLand": false,
       "Animation": "Anims/bTilt.png",
       "Sprite": {
         "Columns": 12,
@@ -261,6 +263,7 @@
         "Context": "Ground"
       },
       "Movement": "IgnoreInput",
+      "CancelOnLand": false,
       "Animation": "Anims/fTilt.png",
       "Sprite": {
         "Columns": 7,
@@ -278,8 +281,42 @@
       "Length": 35,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "Hitbox 0",
+          "Type": "Hitbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 10,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": -7.071068,
+            "y": 7.071068
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 30,
+                "y": 10
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              15,
+              29
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 1,
       "NextHitGroupId": 0
     },
     "DTilt": {
@@ -289,6 +326,7 @@
         "Context": "Ground"
       },
       "Movement": "IgnoreInput",
+      "CancelOnLand": false,
       "Animation": "Anims/dTilt.png",
       "Sprite": {
         "Columns": 9,

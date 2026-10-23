@@ -29,6 +29,9 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
         PixelSize = visuals.PixelSize.ToFloat();
         // Pixel art, so no blurring between pixels
         TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest;
+        // Cut out instead of blended, so the sprite draws with the opaque pass and writes depth. Blended, it is sorted
+        // against the debug box MultiMesh by bounding box centre, which flips as characters move
+        AlphaCut = AlphaCutMode.Discard;
         // Sheets from a previous folder don't apply any more
         sheets.Clear();
         PlaceAtOffset(Character.Direction.Right);

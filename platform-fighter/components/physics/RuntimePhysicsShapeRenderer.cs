@@ -3,6 +3,7 @@
 public class RuntimePhysicsShapeRenderer : IWorldRenderer
 {
     public bool Visible = true;
+    // Where the front face sits. Just behind the character sprites at z = 0, so the sprites draw over the shapes
     public float RenderZAxis = -.01f;
     public float RenderThickness = .5f;
 
@@ -26,7 +27,8 @@ public class RuntimePhysicsShapeRenderer : IWorldRenderer
             if (obj.shape is Square square)
             {
                 drawer.Draw(
-                    obj.SimTransform.GlobalPosition.ToVector3(RenderZAxis),
+                    // Centred half the thickness further back, so no part of the box is in front of RenderZAxis
+                    obj.SimTransform.GlobalPosition.ToVector3(RenderZAxis - RenderThickness / 2),
                     square.size.ToVector3(RenderThickness),
                     obj.renderColor);
             }
