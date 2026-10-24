@@ -28,6 +28,7 @@ PlayerManager="*uid://q4w1p8f8b6rb"
 
 [display]
 
+window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
 

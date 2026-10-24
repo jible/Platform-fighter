@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 
 // Lets a number field's label be dragged to change the field, like Unity's or Blender's labels.
+// Dragging right or up raises it, and left or down lowers it.
 // Each step writes the new value into the field and hands it to the field's own edit handler,
 // so a scrub is applied exactly like typing that value would be.
 // Plain C#, made by the HitboxEditor. The label holds its handlers, so nothing needs disposing
@@ -16,22 +17,19 @@ public class FieldScrubber
     private readonly LineEdit field;
     private readonly Action<string> handler;
     private readonly decimal step;
-    // Dragging up raises the value instead of dragging right, for fields that move things vertically
-    private readonly bool vertical;
 
     private bool dragging;
     private decimal value;
     // Travel not yet turned into a step
     private float pixels;
 
-    public FieldScrubber(Label label, LineEdit field, Action<string> handler, decimal step, bool vertical)
+    public FieldScrubber(Label label, LineEdit field, Action<string> handler, decimal step)
     {
         this.field = field;
         this.handler = handler;
         this.step = step;
-        this.vertical = vertical;
         label.MouseFilter = Control.MouseFilterEnum.Stop;
-        label.MouseDefaultCursorShape = vertical ? Control.CursorShape.Vsize : Control.CursorShape.Hsize;
+        label.MouseDefaultCursorShape = Control.CursorShape.Move;
         label.GuiInput += OnGuiInput;
     }
 
@@ -46,7 +44,7 @@ public class FieldScrubber
         else if (dragging && input is InputEventMouseMotion motion)
         {
             // Screen y grows downwards
-            Drag(vertical ? -motion.Relative.Y : motion.Relative.X, motion.ShiftPressed);
+            Drag(motion.Relative.X - motion.Relative.Y, motion.ShiftPressed);
         }
     }
 

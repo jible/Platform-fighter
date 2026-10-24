@@ -20,6 +20,10 @@ public partial class HitboxEditor : Node
     [Export] public int PlaybackFramesPerSecond = 60;
     // Write the character file after every edit
     [Export] public bool AutoSave = true;
+    // The preview camera's orthographic size, in world units shown top to bottom. Each wheel notch scales it by ZoomStep
+    [Export] public float MinZoomSize = 0.5f;
+    [Export] public float MaxZoomSize = 20f;
+    [Export] public float ZoomStep = 1.15f;
 
     private static readonly CharacterId[] Characters = Enum.GetValues<CharacterId>();
     // In property dropdown order. The animation and collision follow them
@@ -45,6 +49,7 @@ public partial class HitboxEditor : Node
 
     private HitboxEditorManager manager;
     private HitboxPreview preview;
+    private Camera3D previewCamera;
     private double playbackTime;
     // The text each field was last shown, so leaving a field that wasn't changed isn't an edit
     private readonly Dictionary<LineEdit, string> shownText = new();
@@ -65,7 +70,7 @@ public partial class HitboxEditor : Node
     private CheckBox cancelOnLandToggle;
     // Shared box properties
     private Control sharedProperties;
-    private LineEdit nameInput, widthInput, heightInput;
+    private LineEdit nameInput;
     private OptionButton parentDropdown;
     // One section per box type, only the selected type's shown
     private readonly Dictionary<BoxType, Control> typeSections = new();
@@ -90,7 +95,7 @@ public partial class HitboxEditor : Node
     private Button playButton, pauseButton, previousFrameButton, nextFrameButton;
     // Frame properties
     private Label frameHeader, keyStateLabel;
-    private LineEdit positionXInput, positionYInput;
+    private LineEdit positionXInput, positionYInput, widthInput, heightInput;
     private CheckBox activeToggle;
     private Button removeKeyButton;
 
@@ -104,7 +109,10 @@ public partial class HitboxEditor : Node
         sheetDialog.Submitted += OnSheetSubmitted;
 
         var characterRoot = new Node3D { Name = "CharacterRoot" };
-        GetNode<SubViewport>("%SubViewport").AddChild(characterRoot);
+        var subViewport = GetNode<SubViewport>("%SubViewport");
+        subViewport.AddChild(characterRoot);
+        previewCamera = subViewport.GetNode<Camera3D>("Camera3D");
+        subViewport.GetParent<Control>().GuiInput += OnPreviewInput;
         preview = new HitboxPreview(characterRoot);
 
         manager = new HitboxEditorManager();
@@ -256,33 +264,32 @@ public partial class HitboxEditor : Node
         ConnectScrubbers();
     }
 
-    // Number fields whose labels can be dragged. Each uses the same handler as typing into it.
-    // Vertical ones are dragged up to raise them, so the box follows the mouse
+    // Number fields whose labels can be dragged. Each uses the same handler as typing into it
     private void ConnectScrubbers()
     {
         Scrub(lengthInput, OnLengthEdited, 1m);
         Scrub(widthInput, OnWidthEdited, 1m);
-        Scrub(heightInput, OnHeightEdited, 1m, vertical: true);
+        Scrub(heightInput, OnHeightEdited, 1m);
         Scrub(damageInput, OnDamageEdited, 1m);
         Scrub(hitstunInput, OnHitstunEdited, 1m);
         // The body is in world units, which are much bigger than the pixels everything else is in
         Scrub(bodyWidthInput, text => OnBodySizeEdited(text, true), 0.1m);
-        Scrub(bodyHeightInput, text => OnBodySizeEdited(text, false), 0.1m, vertical: true);
+        Scrub(bodyHeightInput, text => OnBodySizeEdited(text, false), 0.1m);
         Scrub(spriteOffsetXInput, text => OnSpriteOffsetEdited(text, true), 1m);
-        Scrub(spriteOffsetYInput, text => OnSpriteOffsetEdited(text, false), 1m, vertical: true);
+        Scrub(spriteOffsetYInput, text => OnSpriteOffsetEdited(text, false), 1m);
         Scrub(positionXInput, OnPositionXEdited, 1m);
-        Scrub(positionYInput, OnPositionYEdited, 1m, vertical: true);
+        Scrub(positionYInput, OnPositionYEdited, 1m);
     }
 
     // The label is the one just before the field in its row, like "X:" or the row's own label
-    private static void Scrub(LineEdit field, Action<string> handler, decimal step, bool vertical = false)
+    private static void Scrub(LineEdit field, Action<string> handler, decimal step)
     {
         if (field.GetParent().GetChild(field.GetIndex() - 1) is not Label label)
         {
             GD.PushWarning($"{field.Name} has no label before it to scrub with");
             return;
         }
-        new FieldScrubber(label, field, handler, step, vertical);
+        new FieldScrubber(label, field, handler, step);
     }
 
     // A field's edit is applied on enter or when it loses focus, so a half typed value is never applied
@@ -296,6 +303,27 @@ public partial class HitboxEditor : Node
     {
         if (shownText.TryGetValue(field, out string shown) && shown == field.Text) return;
         handler(field.Text);
+    }
+
+    // ---------- Preview ----------
+
+    // The wheel, a trackpad's two finger scroll or a pinch zooms the camera about the character,
+    // which sits at the middle of the view. Trackpads send gestures rather than wheel clicks
+    private void OnPreviewInput(InputEvent input)
+    {
+        float scale = input switch
+        {
+            InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.WheelUp } => 1f / ZoomStep,
+            InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.WheelDown } => ZoomStep,
+            // Scrolling down, which is a positive delta, zooms out like the wheel
+            InputEventPanGesture pan => Mathf.Pow(ZoomStep, pan.Delta.Y),
+            // Spreading the fingers is a factor above 1, which zooms in
+            InputEventMagnifyGesture magnify when magnify.Factor > 0f => 1f / magnify.Factor,
+            _ => 1f,
+        };
+        if (scale == 1f) return;
+        previewCamera.Size = Mathf.Clamp(previewCamera.Size * scale, MinZoomSize, MaxZoomSize);
+        GetViewport().SetInputAsHandled();
     }
 
     // ---------- Manager ----------
