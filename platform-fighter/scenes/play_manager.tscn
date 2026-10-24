@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://t16aulelxjm1"]
 
-[ext_resource type="Script" uid="uid://dc1ntk6chgu8k" path="res://components/scene/PlayManager.cs" id="1_play"]
-[ext_resource type="Script" uid="uid://cu45470np3jab" path="res://components/scene/StageHolder.cs" id="2_stage"]
-[ext_resource type="Script" uid="uid://iu7c3i82t8dr" path="res://components/scene/CharacterHolder.cs" id="3_chars"]
+[ext_resource type="Script" uid="uid://ci3aih3ftovyf" path="res://components/scene/PlayManager.cs" id="1_play"]
+[ext_resource type="Script" uid="uid://bd0yg580st5ge" path="res://components/scene/StageHolder.cs" id="2_stage"]
+[ext_resource type="Script" uid="uid://caw412lgns31w" path="res://components/scene/CharacterHolder.cs" id="3_chars"]
 [ext_resource type="Script" uid="uid://c3tmsr2hf5rlu" path="res://components/scene/InputManager.cs" id="5_lxgt1"]
 
 [node name="Play" type="Node3D" unique_id=693341415 node_paths=PackedStringArray("InputManager", "WorldRoot", "StageHolder", "CharacterHolder")]
@@ -11,6 +11,7 @@ InputManager = NodePath("Input Manager")
 WorldRoot = NodePath("World")
 StageHolder = NodePath("World/Stage Holder")
 CharacterHolder = NodePath("World/Character Holder")
+DebugPlayers = Array[int]([0, 0])
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=599953160]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)

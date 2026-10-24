@@ -252,6 +252,37 @@ public partial class HitboxEditor : Node
         OnEndEdit(positionYInput, OnPositionYEdited);
         activeToggle.Toggled += OnActiveToggled;
         removeKeyButton.Pressed += OnRemoveKeyClicked;
+
+        ConnectScrubbers();
+    }
+
+    // Number fields whose labels can be dragged. Each uses the same handler as typing into it.
+    // Vertical ones are dragged up to raise them, so the box follows the mouse
+    private void ConnectScrubbers()
+    {
+        Scrub(lengthInput, OnLengthEdited, 1m);
+        Scrub(widthInput, OnWidthEdited, 1m);
+        Scrub(heightInput, OnHeightEdited, 1m, vertical: true);
+        Scrub(damageInput, OnDamageEdited, 1m);
+        Scrub(hitstunInput, OnHitstunEdited, 1m);
+        // The body is in world units, which are much bigger than the pixels everything else is in
+        Scrub(bodyWidthInput, text => OnBodySizeEdited(text, true), 0.1m);
+        Scrub(bodyHeightInput, text => OnBodySizeEdited(text, false), 0.1m, vertical: true);
+        Scrub(spriteOffsetXInput, text => OnSpriteOffsetEdited(text, true), 1m);
+        Scrub(spriteOffsetYInput, text => OnSpriteOffsetEdited(text, false), 1m, vertical: true);
+        Scrub(positionXInput, OnPositionXEdited, 1m);
+        Scrub(positionYInput, OnPositionYEdited, 1m, vertical: true);
+    }
+
+    // The label is the one just before the field in its row, like "X:" or the row's own label
+    private static void Scrub(LineEdit field, Action<string> handler, decimal step, bool vertical = false)
+    {
+        if (field.GetParent().GetChild(field.GetIndex() - 1) is not Label label)
+        {
+            GD.PushWarning($"{field.Name} has no label before it to scrub with");
+            return;
+        }
+        new FieldScrubber(label, field, handler, step, vertical);
     }
 
     // A field's edit is applied on enter or when it loses focus, so a half typed value is never applied

@@ -65,8 +65,42 @@
       "Length": 18,
       "Loop": true,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              17
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 1,
       "NextHitGroupId": 0
     },
     "Walk": {
@@ -82,8 +116,42 @@
       "Length": 30,
       "Loop": true,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              29
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 1,
       "NextHitGroupId": 0
     },
     "JumpSquat": {
@@ -98,8 +166,42 @@
       "Length": 1,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              0
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 1,
       "NextHitGroupId": 0
     },
     "Jump": {
@@ -117,8 +219,42 @@
       "Length": 16,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              15
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 1,
       "NextHitGroupId": 0
     },
     "Land": {
@@ -134,8 +270,42 @@
       "Length": 6,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              5
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 1,
       "NextHitGroupId": 0
     },
     "Turn": {
@@ -151,8 +321,42 @@
       "Length": 16,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              15
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 1,
       "NextHitGroupId": 0
     },
     "HurtStart": {
@@ -167,8 +371,42 @@
       "Length": 8,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              7
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 1,
       "NextHitGroupId": 0
     },
     "Hurt": {
@@ -183,8 +421,42 @@
       "Length": 10,
       "Loop": true,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              9
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 1,
       "NextHitGroupId": 0
     }
   },
@@ -218,8 +490,135 @@
       "Length": 88,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              87
+            ]
+          ]
+        },
+        {
+          "Id": 1,
+          "Name": "Hitbox 1",
+          "Type": "Hitbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 16,
+              "Offset": {
+                "x": 22,
+                "y": -9
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 24,
+              "Offset": {
+                "x": 19,
+                "y": 20
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 32,
+              "Offset": {
+                "x": 13,
+                "y": 27
+              },
+              "Size": {
+                "x": 42,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 40,
+              "Offset": {
+                "x": 1,
+                "y": 27
+              },
+              "Size": {
+                "x": 53,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 48,
+              "Offset": {
+                "x": -14,
+                "y": 27
+              },
+              "Size": {
+                "x": 28,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              16,
+              55
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 2,
       "NextHitGroupId": 0
     },
     "BTilt": {
@@ -252,8 +651,70 @@
       "Length": 72,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              71
+            ]
+          ]
+        },
+        {
+          "Id": 1,
+          "Name": "Hitbox 1",
+          "Type": "Hitbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": -5.5882349999,
+            "y": 2.6470590001
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": []
+        }
+      ],
+      "NextBoxId": 2,
       "NextHitGroupId": 0
     },
     "FTilt": {
@@ -314,9 +775,42 @@
               29
             ]
           ]
+        },
+        {
+          "Id": 1,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              34
+            ]
+          ]
         }
       ],
-      "NextBoxId": 1,
+      "NextBoxId": 2,
       "NextHitGroupId": 0
     },
     "DTilt": {
@@ -346,8 +840,87 @@
       "Length": 63,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              62
+            ]
+          ]
+        },
+        {
+          "Id": 1,
+          "Name": "Hitbox 1",
+          "Type": "Hitbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 8,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0.5882353,
+            "y": 6.764706
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 21,
+              "Offset": {
+                "x": 0,
+                "y": -12
+              },
+              "Size": {
+                "x": 66,
+                "y": 35
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              21,
+              48
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 2,
       "NextHitGroupId": 0
     },
     "FAir": {
@@ -433,9 +1006,42 @@
               35
             ]
           ]
+        },
+        {
+          "Id": 1,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              47
+            ]
+          ]
         }
       ],
-      "NextBoxId": 1,
+      "NextBoxId": 2,
       "NextHitGroupId": 0
     },
     "BAir": {
@@ -464,11 +1070,90 @@
           10
         ]
       },
-      "Length": 110,
+      "Length": 55,
       "Loop": false,
       "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              109
+            ]
+          ]
+        },
+        {
+          "Id": 1,
+          "Name": "Hitbox 1",
+          "Type": "Hitbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 25,
+              "Offset": {
+                "x": -18,
+                "y": 17
+              },
+              "Size": {
+                "x": 43,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              25,
+              34
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 2,
       "NextHitGroupId": 0
     },
     "NAir": {
@@ -496,10 +1181,179 @@
       },
       "Length": 48,
       "Loop": false,
-      "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "HitGroups": [
+        {
+          "Id": 0,
+          "Name": "Hit 0"
+        }
+      ],
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              47
+            ]
+          ]
+        },
+        {
+          "Id": 1,
+          "Name": "Left Leg",
+          "Type": "Hitbox",
+          "Bone": "",
+          "HitGroup": 0,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": -0.8823529,
+            "y": 7.6470590001
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 30,
+              "Offset": {
+                "x": -17,
+                "y": -18
+              },
+              "Size": {
+                "x": 16,
+                "y": 18
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 36,
+              "Offset": {
+                "x": -35,
+                "y": -26
+              },
+              "Size": {
+                "x": 16,
+                "y": 18
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              30,
+              47
+            ]
+          ]
+        },
+        {
+          "Id": 2,
+          "Name": "Right Leg",
+          "Type": "Hitbox",
+          "Bone": "",
+          "HitGroup": 0,
+          "Damage": 17,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 2.6470590001,
+            "y": 5.294118
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 30,
+              "Offset": {
+                "x": 14,
+                "y": -19
+              },
+              "Size": {
+                "x": 18,
+                "y": 18
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 36,
+              "Offset": {
+                "x": 24,
+                "y": -25
+              },
+              "Size": {
+                "x": 18,
+                "y": 18
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 42,
+              "Offset": {
+                "x": 21,
+                "y": -24
+              },
+              "Size": {
+                "x": 16,
+                "y": 17
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              30,
+              35
+            ],
+            [
+              42,
+              47
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 3,
+      "NextHitGroupId": 1
     },
     "DAir": {
       "Input": {
@@ -526,10 +1380,139 @@
       },
       "Length": 56,
       "Loop": false,
-      "HitGroups": [],
-      "Boxes": [],
-      "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "HitGroups": [
+        {
+          "Id": 0,
+          "Name": "Hit 0"
+        }
+      ],
+      "Boxes": [
+        {
+          "Id": 0,
+          "Name": "body",
+          "Type": "Hurtbox",
+          "Bone": "",
+          "HitGroup": -1,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0,
+            "y": 0
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              0,
+              55
+            ]
+          ]
+        },
+        {
+          "Id": 1,
+          "Name": "Sweet Spot",
+          "Type": "Hitbox",
+          "Bone": "",
+          "HitGroup": 0,
+          "Damage": 0,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 0.8304548,
+            "y": -9.9654580001
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 14,
+              "Offset": {
+                "x": -1,
+                "y": -14
+              },
+              "Size": {
+                "x": 25,
+                "y": 27
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              14,
+              27
+            ]
+          ]
+        },
+        {
+          "Id": 2,
+          "Name": "Sour Spot",
+          "Type": "Hitbox",
+          "Bone": "",
+          "HitGroup": 0,
+          "Damage": 9,
+          "Hitstun": 0,
+          "Knockback": {
+            "x": 5.8823530001,
+            "y": 4.705883
+          },
+          "Keys": [
+            {
+              "Frame": 0,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            },
+            {
+              "Frame": 28,
+              "Offset": {
+                "x": -2,
+                "y": -15
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              },
+              "Interpolation": "Hold"
+            }
+          ],
+          "Active": [
+            [
+              28,
+              41
+            ]
+          ]
+        }
+      ],
+      "NextBoxId": 3,
+      "NextHitGroupId": 1
     }
   },
   "BodySize": {
