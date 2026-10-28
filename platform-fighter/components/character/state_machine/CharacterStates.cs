@@ -206,28 +206,9 @@ public class OffState : CharacterState
     }
 }
 
-// The moment after a hit, before the knockback. A new hit restarts it.
-// When it ends, the character is launched and turns to face whatever hit them
-public class HurtStartState : CharacterState
-{
-    public override CharacterStateId Id => CharacterStateId.HurtStart;
-    public override bool ApplyGravity => true;
-    public override bool Cancellable => false;
-
-    public override void OnAnimFinished(CharacterStateMachine machine)
-    {
-        Character character = machine.Character;
-        DMVector knockback = character.LastHit.Knockback;
-        // Placeholder knockback, the hit's vector as is
-        character.Movement.SetUncappedVelocity(knockback);
-        // Pushed right means the hit came from the right. No sideways push keeps the old facing
-        if (knockback.x > 0) character.direction = Character.Direction.Left;
-        else if (knockback.x < 0) character.direction = Character.Direction.Right;
-        machine.ChangeState(CharacterStateId.Hurt);
-    }
-}
-
-// Flying from the knockback. Ends on landing, or once the speed along the knockback's main axis drops low enough
+// Just got hit. The first phase is the moment before the knockback, and a new hit restarts it.
+// When the first phase ends for the first time, the character is launched and turns to face whatever hit them.
+// From then on it ends on landing, or once the speed along the knockback's main axis drops low enough
 public class HurtState : CharacterState
 {
     public override CharacterStateId Id => CharacterStateId.Hurt;
@@ -237,8 +218,32 @@ public class HurtState : CharacterState
     // Speed along the knockback's main axis that counts as done. Placeholder, to be tuned
     private static readonly DM64 EndSpeed = new DM64(1) / 2;
 
+    // Still in the first play of the first phase. Every tick in the state has been in that phase until it ends or
+    // restarts, so the two counts only match until then. The length check covers a first phase that ends the state
+    // and holds. Stateless, so it rolls back with the machine
+    private static bool BeforeLaunch(CharacterStateMachine machine)
+    {
+        int firstLength = machine.CurrentDefinition?.Phases[0].Length ?? machine.Character.Data.DefaultStateLength;
+        return machine.CurrentPhase == 0 && machine.TicksInPhase == machine.TicksInState && machine.TicksInPhase < firstLength;
+    }
+
+    public override void OnPhaseFinished(CharacterStateMachine machine, int phase)
+    {
+        // Only the first time it ends, which is when it's been the only phase played
+        if (phase != 0 || machine.TicksInPhase != machine.TicksInState) return;
+        Character character = machine.Character;
+        DMVector knockback = character.LastHit.Knockback;
+        // Placeholder knockback, the hit's vector as is
+        character.Movement.SetUncappedVelocity(knockback);
+        // Pushed right means the hit came from the right. No sideways push keeps the old facing
+        if (knockback.x > 0) character.direction = Character.Direction.Left;
+        else if (knockback.x < 0) character.direction = Character.Direction.Right;
+    }
+
     public override void Tick(CharacterStateMachine machine)
     {
+        // Not launched yet, so there's no knockback to end
+        if (BeforeLaunch(machine)) return;
         Character character = machine.Character;
         if (character.Movement.IsGrounded)
         {

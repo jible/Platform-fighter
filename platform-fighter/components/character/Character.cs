@@ -106,7 +106,6 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         new LandState(),
         new TurnState(),
         new AttackState(),
-        new HurtStartState(),
         new HurtState(),
         new DyingState(),
         new OffState(),
@@ -134,8 +133,8 @@ public partial class Character : PhysicsObject, ITickable, IEntity
 
         // Knockback is authored as if the attacker faces right
         lastHit.Value = new ReceivedHit { Knockback = hit.KnockbackFacing(attacker.direction) };
-        // Reentered, so a hit during HurtStart starts it over with the new knockback
-        StateMachine.ChangeState(CharacterStateId.HurtStart, reenter: true);
+        // Reentered, so a hit while hurt starts it over, and the new knockback lands when its first phase ends
+        StateMachine.ChangeState(CharacterStateId.Hurt, reenter: true);
     }
 
     // Called by the Off state when the character leaves play

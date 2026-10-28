@@ -14,9 +14,7 @@ public enum CharacterStateId : byte
     Turn,
     // Plays whichever attack the AttackHandler started. Its data is the attack's, not its own
     Attack,
-    // Just got hit. The knockback lands when it ends
-    HurtStart,
-    // Flying from the knockback, until landing or slowing down
+    // Just got hit. The knockback lands when its first phase ends, then it flies until landing or slowing down
     Hurt,
     // Health ran out. Plays out, then goes Off
     Dying,
@@ -117,20 +115,26 @@ public class CharacterStateMachine
     }
 
     // Timing comes from the state's data, never the art, so it is the same on every machine.
-    // OnAnimFinished fires once, on the tick the last phase runs out. A phase that loops or goes back never gets there.
-    // If the state doesn't leave then, its ticks keep counting and the last sprite holds
+    // OnPhaseFinished fires on every tick a phase runs out, then OnAnimFinished once, if it was the last phase.
+    // A phase that loops or goes back never gets there. If the state doesn't leave then, its ticks keep counting
+    // and the last sprite holds. A state with no data plays as one phase, DefaultStateLength long
     private void AdvancePhase()
     {
+        data.Value.TicksInPhase++;
         StateDefinition state = CurrentDefinition;
         if (state == null)
         {
-            if (data.Value.TicksInState == Character.Data.DefaultStateLength) CurrentState.OnAnimFinished(this);
+            if (data.Value.TicksInPhase != Character.Data.DefaultStateLength) return;
+            CurrentState.OnPhaseFinished(this, 0);
+            if (!changedThisTick) CurrentState.OnAnimFinished(this);
             return;
         }
 
-        data.Value.TicksInPhase++;
         PhaseDefinition phase = state.Phases[Math.Min(data.Value.Phase, state.Phases.Length - 1)];
         if (data.Value.TicksInPhase != phase.Length) return;
+        CurrentState.OnPhaseFinished(this, data.Value.Phase);
+        // The state may have left, which already reset the phase
+        if (changedThisTick) return;
         if (phase.Next == PhaseDefinition.EndsState)
         {
             CurrentState.OnAnimFinished(this);
@@ -148,6 +152,8 @@ public abstract class CharacterState
     public virtual void ExitState(CharacterStateMachine machine) { }
     public virtual void Tick(CharacterStateMachine machine) { }
     public virtual void OnAnimFinished(CharacterStateMachine machine) { }
+    // phase is the index of the phase that just ran out, before the machine moves on from it
+    public virtual void OnPhaseFinished(CharacterStateMachine machine, int phase) { }
     public abstract bool ApplyGravity {get;}
     // An attack input can start an attack from this state. Whole state for now
     public abstract bool Cancellable { get; }

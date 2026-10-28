@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cq55gwn8bibb6"]
 
 [ext_resource type="Script" uid="uid://ca6lukejfr4bf" path="res://components/hitbox_editor/KnockbackPicker.cs" id="1_knockback"]
-[ext_resource type="Script" path="res://components/hitbox_editor/HitboxEditor.cs" id="2_editor"]
-[ext_resource type="Script" path="res://components/hitbox_editor/PhaseTimeline.cs" id="3_timeline"]
+[ext_resource type="Script" uid="uid://cucwiowsrt8vg" path="res://components/hitbox_editor/HitboxEditor.cs" id="2_editor"]
+[ext_resource type="Script" uid="uid://bu2mt0qbo8ng5" path="res://components/hitbox_editor/PhaseTimeline.cs" id="3_timeline"]
 
 [node name="Node" type="Node" unique_id=216545646]
 script = ExtResource("2_editor")
@@ -96,186 +96,186 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AnimationLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content"]
+[node name="AnimationLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1890461761]
 unique_name_in_owner = true
 layout_mode = 2
-autowrap_mode = 3
 text = "Found animation"
+autowrap_mode = 3
 
-[node name="GridRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content"]
+[node name="GridRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1798214858]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/GridRow"]
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/GridRow" unique_id=1377386868]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Grid:"
 
-[node name="GridSummaryLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/GridRow"]
+[node name="GridSummaryLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/GridRow" unique_id=19223310]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SetGridButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/GridRow"]
+[node name="SetGridButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/GridRow" unique_id=816243215]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Set how the sheet is cut into sprites"
 text = "Set Grid"
 
-[node name="SheetChangedRow" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content"]
+[node name="SheetChangedRow" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1279616188]
 unique_name_in_owner = true
-layout_mode = 2
 visible = false
+layout_mode = 2
 
-[node name="SheetChangedLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow"]
+[node name="SheetChangedLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow" unique_id=427365824]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.55, 0.35, 1)
 autowrap_mode = 3
 
-[node name="SheetChangedIndexRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow"]
+[node name="SheetChangedIndexRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow" unique_id=650559562]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow/SheetChangedIndexRow"]
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow/SheetChangedIndexRow" unique_id=890957450]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Sprite:"
 
-[node name="SheetChangedIndexInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow/SheetChangedIndexRow"]
+[node name="SheetChangedIndexInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow/SheetChangedIndexRow" unique_id=1767415137]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SheetChangedButtons" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow"]
+[node name="SheetChangedButtons" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow" unique_id=1533624841]
 layout_mode = 2
 
-[node name="ApplySheetChangeButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow/SheetChangedButtons"]
+[node name="ApplySheetChangeButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow/SheetChangedButtons" unique_id=1421927484]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Move boxes and phases along with the sprites that moved"
 text = "Move data"
 
-[node name="IgnoreSheetChangeButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow/SheetChangedButtons"]
+[node name="IgnoreSheetChangeButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SheetChangedRow/SheetChangedButtons" unique_id=1744190675]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Keep the grid and data as they are, and stop asking"
 text = "Ignore"
 
-[node name="CancelOnLandRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content"]
+[node name="CancelOnLandRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1437259875]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CancelOnLandRow"]
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CancelOnLandRow" unique_id=250450671]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Cancel On Land:"
 
-[node name="CancelOnLandToggle" type="CheckBox" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CancelOnLandRow"]
+[node name="CancelOnLandToggle" type="CheckBox" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/CancelOnLandRow" unique_id=204372363]
 unique_name_in_owner = true
 layout_mode = 2
 
 [node name="StateDivider" type="HSeparator" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1252173892]
 layout_mode = 2
 
-[node name="PhaseRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content"]
+[node name="PhaseRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=204838223]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseRow"]
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseRow" unique_id=1590071379]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Phase:"
 
-[node name="PhaseDropdown" type="OptionButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseRow"]
+[node name="PhaseDropdown" type="OptionButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseRow" unique_id=74227641]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RemovePhaseButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseRow"]
+[node name="RemovePhaseButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseRow" unique_id=1194477367]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
 tooltip_text = "Merge the phase into the one before it"
 text = "-"
 
-[node name="AddPhaseButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseRow"]
+[node name="AddPhaseButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseRow" unique_id=869013598]
 unique_name_in_owner = true
-layout_mode = 2
 custom_minimum_size = Vector2(22, 0)
+layout_mode = 2
 tooltip_text = "Split the phase in two"
 text = "+"
 
-[node name="RangesRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content"]
+[node name="RangesRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1578920382]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/RangesRow"]
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/RangesRow" unique_id=1393967719]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Ranges:"
 
-[node name="EditRangesToggle" type="CheckButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/RangesRow"]
+[node name="EditRangesToggle" type="CheckButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/RangesRow" unique_id=1131954678]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Drag the markers above the timeline to move where phases start and end"
 text = "Edit phase ranges"
 
-[node name="PhaseProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content"]
+[node name="PhaseProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=1119735987]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Header" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties"]
+[node name="Header" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties" unique_id=1059971836]
 layout_mode = 2
 text = "PHASE"
 
-[node name="PhaseNameRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties"]
+[node name="PhaseNameRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties" unique_id=2056271119]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/PhaseNameRow"]
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/PhaseNameRow" unique_id=1989560192]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Name:"
 
-[node name="PhaseNameInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/PhaseNameRow"]
+[node name="PhaseNameInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/PhaseNameRow" unique_id=1548094391]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="OnEndRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties"]
+[node name="OnEndRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties" unique_id=1690731428]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/OnEndRow"]
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/OnEndRow" unique_id=919063886]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "On end:"
 
-[node name="OnEndDropdown" type="OptionButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/OnEndRow"]
+[node name="OnEndDropdown" type="OptionButton" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/OnEndRow" unique_id=145774185]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PhaseLengthRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties"]
+[node name="PhaseLengthRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties" unique_id=648970023]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/PhaseLengthRow"]
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/PhaseLengthRow" unique_id=1119910262]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 text = "Length:"
 
-[node name="PhaseLengthInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/PhaseLengthRow"]
+[node name="PhaseLengthInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/PhaseLengthRow" unique_id=9796289]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Ticks the phase plays for. Its sprites are spread evenly over them"
 
-[node name="PhaseLengthWarning" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/PhaseLengthRow"]
+[node name="PhaseLengthWarning" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/PhaseProperties/PhaseLengthRow" unique_id=1626129999]
 unique_name_in_owner = true
-layout_mode = 2
 visible = false
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.1, 1)
 text = "Uneven"
 
-[node name="PhaseDivider" type="HSeparator" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content"]
+[node name="PhaseDivider" type="HSeparator" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=879066778]
 layout_mode = 2
 
 [node name="PropertySection" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=2138756420]
@@ -584,23 +584,25 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="HitboxEditor/Margins/Columns/DisplaySection/CharacterDisplay/SubViewportContainer" unique_id=904972865]
 unique_name_in_owner = true
 own_world_3d = true
-size = Vector2i(623, 462)
+handle_input_locally = false
+size = Vector2i(623, 458)
+render_target_update_mode = 4
 
 [node name="Camera3D" type="Camera3D" parent="HitboxEditor/Margins/Columns/DisplaySection/CharacterDisplay/SubViewportContainer/SubViewport" unique_id=1671775570]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 projection = 1
 size = 4.0
 
-[node name="PhaseTimelineRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection"]
+[node name="PhaseTimelineRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection" unique_id=1233395722]
 layout_mode = 2
 
-[node name="PhaseTimeline" type="Control" parent="HitboxEditor/Margins/Columns/DisplaySection/PhaseTimelineRow"]
+[node name="PhaseTimeline" type="Control" parent="HitboxEditor/Margins/Columns/DisplaySection/PhaseTimelineRow" unique_id=1201292367]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("3_timeline")
 
-[node name="Spacer" type="Control" parent="HitboxEditor/Margins/Columns/DisplaySection/PhaseTimelineRow"]
+[node name="Spacer" type="Control" parent="HitboxEditor/Margins/Columns/DisplaySection/PhaseTimelineRow" unique_id=1554259619]
 custom_minimum_size = Vector2(56, 0)
 layout_mode = 2
 
@@ -659,42 +661,42 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "SPRITE 0"
 
-[node name="FrameProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection"]
+[node name="FrameProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection" unique_id=596031901]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="PositionRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties"]
+[node name="PositionRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties" unique_id=2019986853]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow"]
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow" unique_id=2055851097]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Position:"
 
-[node name="XLabel" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow"]
+[node name="XLabel" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow" unique_id=106481343]
 custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
 text = "X:"
 
-[node name="PositionXInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow"]
+[node name="PositionXInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow" unique_id=908394220]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="YLabel" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow"]
+[node name="YLabel" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow" unique_id=792441126]
 custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
 text = "Y:"
 
-[node name="PositionYInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow"]
+[node name="PositionYInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow" unique_id=1877164618]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CopyRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties"]
+[node name="CopyRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties" unique_id=1689254387]
 layout_mode = 2
 
-[node name="CopyToNextButton" type="Button" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/CopyRow"]
+[node name="CopyToNextButton" type="Button" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/CopyRow" unique_id=1626461674]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3

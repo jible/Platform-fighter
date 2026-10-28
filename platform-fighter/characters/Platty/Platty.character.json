@@ -98,14 +98,56 @@
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
       "HitGroups": [],
-      "NextBoxId": 0,
+      "NextBoxId": 1,
       "NextHitGroupId": 0,
       "NextPhaseId": 1
     },
@@ -131,14 +173,56 @@
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
       "HitGroups": [],
-      "NextBoxId": 0,
+      "NextBoxId": 1,
       "NextHitGroupId": 0,
       "NextPhaseId": 1
     },
@@ -164,11 +248,32 @@
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
       "HitGroups": [],
-      "NextBoxId": 0,
+      "NextBoxId": 1,
       "NextHitGroupId": 0,
       "NextPhaseId": 1
     },
@@ -194,20 +299,104 @@
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
       "HitGroups": [],
-      "NextBoxId": 0,
+      "NextBoxId": 1,
       "NextHitGroupId": 0,
       "NextPhaseId": 1
     },
@@ -233,14 +422,56 @@
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
       "HitGroups": [],
-      "NextBoxId": 0,
+      "NextBoxId": 1,
       "NextHitGroupId": 0,
       "NextPhaseId": 1
     },
@@ -266,44 +497,56 @@
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
       "HitGroups": [],
-      "NextBoxId": 0,
-      "NextHitGroupId": 0,
-      "NextPhaseId": 1
-    },
-    "HurtStart": {
-      "Sprite": {
-        "Columns": 1,
-        "Rows": 1,
-        "SheetWidth": 200,
-        "SheetHeight": 200,
-        "Count": 1
-      },
-      "Phases": [
-        {
-          "Id": 0,
-          "Name": "Main",
-          "Start": 0,
-          "End": 0,
-          "Length": 8,
-          "OnEnd": "Next",
-          "Target": -1,
-          "SpriteCount": 1
-        }
-      ],
-      "Frames": [
-        {
-          "Boxes": []
-        }
-      ],
-      "HitGroups": [],
-      "NextBoxId": 0,
+      "NextBoxId": 1,
       "NextHitGroupId": 0,
       "NextPhaseId": 1
     },
@@ -321,7 +564,7 @@
           "Name": "Main",
           "Start": 0,
           "End": 0,
-          "Length": 10,
+          "Length": 8,
           "OnEnd": "Restart",
           "Target": -1,
           "SpriteCount": 1
@@ -329,11 +572,32 @@
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
       "HitGroups": [],
-      "NextBoxId": 0,
+      "NextBoxId": 1,
       "NextHitGroupId": 0,
       "NextPhaseId": 1
     }
@@ -357,54 +621,410 @@
       "Phases": [
         {
           "Id": 0,
-          "Name": "Main",
+          "Name": "Startup",
           "Start": 0,
-          "End": 10,
-          "Length": 88,
+          "End": 3,
+          "Length": 32,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 11
+          "SpriteCount": 4
+        },
+        {
+          "Id": 1,
+          "Name": "Active",
+          "Start": 4,
+          "End": 7,
+          "Length": 32,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 4
+        },
+        {
+          "Id": 2,
+          "Name": "EndLag",
+          "Start": 8,
+          "End": 10,
+          "Length": 24,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 3
         }
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 22,
+                "y": -9
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 19,
+                "y": 20
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 13,
+                "y": 27
+              },
+              "Size": {
+                "x": 42,
+                "y": 25
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 1,
+                "y": 27
+              },
+              "Size": {
+                "x": 53,
+                "y": 25
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": -14,
+                "y": 27
+              },
+              "Size": {
+                "x": 28,
+                "y": 25
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
-      "HitGroups": [],
-      "NextBoxId": 0,
-      "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "HitGroups": [
+        {
+          "Id": 0,
+          "Name": "Hitbox 1"
+        }
+      ],
+      "NextBoxId": 2,
+      "NextHitGroupId": 1,
+      "NextPhaseId": 3
     },
     "BTilt": {
       "Input": {
@@ -424,57 +1044,334 @@
       "Phases": [
         {
           "Id": 0,
-          "Name": "Main",
+          "Name": "Start Up",
           "Start": 0,
-          "End": 11,
-          "Length": 72,
+          "End": 5,
+          "Length": 36,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 12
+          "SpriteCount": 6
+        },
+        {
+          "Id": 1,
+          "Name": "Phase 1",
+          "Start": 6,
+          "End": 8,
+          "Length": 18,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 3
+        },
+        {
+          "Id": 2,
+          "Name": "Phase 2",
+          "Start": 9,
+          "End": 11,
+          "Length": 18,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 3
         }
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
-      "HitGroups": [],
-      "NextBoxId": 0,
-      "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "HitGroups": [
+        {
+          "Id": 0,
+          "Name": "Hitbox 1"
+        }
+      ],
+      "NextBoxId": 2,
+      "NextHitGroupId": 1,
+      "NextPhaseId": 3
     },
     "FTilt": {
       "Input": {
@@ -494,42 +1391,274 @@
       "Phases": [
         {
           "Id": 0,
-          "Name": "Main",
+          "Name": "Startup",
           "Start": 0,
-          "End": 6,
-          "Length": 35,
+          "End": 2,
+          "Length": 15,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 7
+          "SpriteCount": 3
+        },
+        {
+          "Id": 1,
+          "Name": "Active",
+          "Start": 3,
+          "End": 4,
+          "Length": 10,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
+        },
+        {
+          "Id": 2,
+          "Name": "EndLag",
+          "Start": 5,
+          "End": 6,
+          "Length": 10,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
         }
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "Hitbox 0",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 10,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": -7.071068,
+                "y": 7.071068
+              },
+              "Offset": {
+                "x": 30,
+                "y": 10
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "Hitbox 0",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 10,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": -7.071068,
+                "y": 7.071068
+              },
+              "Offset": {
+                "x": 30,
+                "y": 10
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "Hitbox 0",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 10,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": -7.071068,
+                "y": 7.071068
+              },
+              "Offset": {
+                "x": 30,
+                "y": 10
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
-      "HitGroups": [],
-      "NextBoxId": 0,
-      "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "HitGroups": [
+        {
+          "Id": 0,
+          "Name": "Hitbox 0"
+        }
+      ],
+      "NextBoxId": 2,
+      "NextHitGroupId": 1,
+      "NextPhaseId": 3
     },
     "DTilt": {
       "Input": {
@@ -549,48 +1678,342 @@
       "Phases": [
         {
           "Id": 0,
-          "Name": "Main",
+          "Name": "Startup",
           "Start": 0,
-          "End": 8,
-          "Length": 63,
+          "End": 2,
+          "Length": 21,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 9
+          "SpriteCount": 3
+        },
+        {
+          "Id": 1,
+          "Name": "Active",
+          "Start": 3,
+          "End": 5,
+          "Length": 21,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 3
+        },
+        {
+          "Id": 2,
+          "Name": "EndLag",
+          "Start": 6,
+          "End": 8,
+          "Length": 21,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 3
         }
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 8,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0.5882353,
+                "y": 6.764706
+              },
+              "Offset": {
+                "x": 0,
+                "y": -12
+              },
+              "Size": {
+                "x": 66,
+                "y": 35
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 8,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0.5882353,
+                "y": 6.764706
+              },
+              "Offset": {
+                "x": 0,
+                "y": -12
+              },
+              "Size": {
+                "x": 66,
+                "y": 35
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 8,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0.5882353,
+                "y": 6.764706
+              },
+              "Offset": {
+                "x": 0,
+                "y": -12
+              },
+              "Size": {
+                "x": 66,
+                "y": 35
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 8,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0.5882353,
+                "y": 6.764706
+              },
+              "Offset": {
+                "x": 0,
+                "y": -12
+              },
+              "Size": {
+                "x": 66,
+                "y": 35
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
-      "HitGroups": [],
-      "NextBoxId": 0,
-      "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "HitGroups": [
+        {
+          "Id": 0,
+          "Name": "Hitbox 1"
+        }
+      ],
+      "NextBoxId": 2,
+      "NextHitGroupId": 1,
+      "NextPhaseId": 3
     },
     "FAir": {
       "Input": {
@@ -641,16 +2064,100 @@
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
           "Boxes": [
@@ -672,6 +2179,26 @@
               "Size": {
                 "x": 25,
                 "y": 45
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
               }
             }
           ]
@@ -697,23 +2224,85 @@
                 "x": 25,
                 "y": 70
               }
+            },
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
             }
           ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
       "HitGroups": [
         {
           "Id": 0,
-          "Name": "Hit 0"
+          "Name": "Hitbox 0"
         }
       ],
-      "NextBoxId": 1,
+      "NextBoxId": 2,
       "NextHitGroupId": 1,
       "NextPhaseId": 3
     },
@@ -737,71 +2326,347 @@
           "Id": 0,
           "Name": "Start Up",
           "Start": 0,
-          "End": 3,
-          "Length": 60,
-          "OnEnd": "Next",
-          "Target": -1,
-          "SpriteCount": 4
-        },
-        {
-          "Id": 1,
-          "Name": "Active",
-          "Start": 4,
-          "End": 8,
+          "End": 4,
           "Length": 30,
           "OnEnd": "Next",
           "Target": -1,
           "SpriteCount": 5
         },
         {
+          "Id": 1,
+          "Name": "Active",
+          "Start": 5,
+          "End": 6,
+          "Length": 16,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
+        },
+        {
           "Id": 2,
           "Name": "End Lag",
-          "Start": 9,
+          "Start": 7,
           "End": 10,
           "Length": 20,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 2
+          "SpriteCount": 4
         }
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": -18,
+                "y": 17
+              },
+              "Size": {
+                "x": 43,
+                "y": 25
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Hitbox 1",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": -18,
+                "y": 17
+              },
+              "Size": {
+                "x": 43,
+                "y": 25
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
-      "HitGroups": [],
-      "NextBoxId": 0,
-      "NextHitGroupId": 0,
+      "HitGroups": [
+        {
+          "Id": 0,
+          "Name": "Hitbox 1"
+        }
+      ],
+      "NextBoxId": 2,
+      "NextHitGroupId": 1,
       "NextPhaseId": 3
     },
     "NAir": {
@@ -822,42 +2687,314 @@
       "Phases": [
         {
           "Id": 0,
-          "Name": "Main",
+          "Name": "Startup",
           "Start": 0,
-          "End": 6,
-          "Length": 48,
+          "End": 2,
+          "Length": 21,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 7
+          "SpriteCount": 3
+        },
+        {
+          "Id": 1,
+          "Name": "Active",
+          "Start": 3,
+          "End": 4,
+          "Length": 14,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
+        },
+        {
+          "Id": 2,
+          "Name": "EndLag",
+          "Start": 5,
+          "End": 6,
+          "Length": 13,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
         }
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Left Leg",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": -0.8823529,
+                "y": 7.6470590001
+              },
+              "Offset": {
+                "x": -17,
+                "y": -18
+              },
+              "Size": {
+                "x": 16,
+                "y": 18
+              }
+            },
+            {
+              "Id": 2,
+              "Name": "Right Leg",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 17,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 2.6470590001,
+                "y": 5.294118
+              },
+              "Offset": {
+                "x": 14,
+                "y": -19
+              },
+              "Size": {
+                "x": 18,
+                "y": 18
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Left Leg",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": -0.8823529,
+                "y": 7.6470590001
+              },
+              "Offset": {
+                "x": -35,
+                "y": -26
+              },
+              "Size": {
+                "x": 16,
+                "y": 18
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Left Leg",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": -0.8823529,
+                "y": 7.6470590001
+              },
+              "Offset": {
+                "x": -35,
+                "y": -26
+              },
+              "Size": {
+                "x": 16,
+                "y": 18
+              }
+            },
+            {
+              "Id": 2,
+              "Name": "Right Leg",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 17,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 2.6470590001,
+                "y": 5.294118
+              },
+              "Offset": {
+                "x": 21,
+                "y": -24
+              },
+              "Size": {
+                "x": 16,
+                "y": 17
+              }
+            }
+          ]
         }
       ],
-      "HitGroups": [],
-      "NextBoxId": 0,
-      "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "HitGroups": [
+        {
+          "Id": 0,
+          "Name": "Hit 0"
+        }
+      ],
+      "NextBoxId": 3,
+      "NextHitGroupId": 1,
+      "NextPhaseId": 3
     },
     "DAir": {
       "Input": {
@@ -877,45 +3014,318 @@
       "Phases": [
         {
           "Id": 0,
-          "Name": "Main",
+          "Name": "Startup",
           "Start": 0,
-          "End": 7,
-          "Length": 56,
+          "End": 2,
+          "Length": 21,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 8
+          "SpriteCount": 3
+        },
+        {
+          "Id": 1,
+          "Name": "Active",
+          "Start": 3,
+          "End": 5,
+          "Length": 21,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 3
+        },
+        {
+          "Id": 2,
+          "Name": "EndLag",
+          "Start": 6,
+          "End": 7,
+          "Length": 14,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
         }
       ],
       "Frames": [
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Sweet Spot",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0.8304548,
+                "y": -9.9654580001
+              },
+              "Offset": {
+                "x": -1,
+                "y": -14
+              },
+              "Size": {
+                "x": 25,
+                "y": 27
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "Sweet Spot",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0.8304548,
+                "y": -9.9654580001
+              },
+              "Offset": {
+                "x": -1,
+                "y": -14
+              },
+              "Size": {
+                "x": 25,
+                "y": 27
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 2,
+              "Name": "Sour Spot",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 9,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 5.8823530001,
+                "y": 4.705883
+              },
+              "Offset": {
+                "x": -2,
+                "y": -15
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 2,
+              "Name": "Sour Spot",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 9,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 5.8823530001,
+                "y": 4.705883
+              },
+              "Offset": {
+                "x": -2,
+                "y": -15
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         },
         {
-          "Boxes": []
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
         }
       ],
-      "HitGroups": [],
-      "NextBoxId": 0,
-      "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "HitGroups": [
+        {
+          "Id": 0,
+          "Name": "Hit 0"
+        }
+      ],
+      "NextBoxId": 3,
+      "NextHitGroupId": 1,
+      "NextPhaseId": 3
     }
   },
   "BodySize": {

@@ -21,6 +21,10 @@ public partial class HitboxEditor : Node
     [Export] public int PlaybackFramesPerSecond = 60;
     // Write the character file after every edit
     [Export] public bool AutoSave = true;
+    // The preview camera's orthographic size, in world units shown top to bottom. Each wheel notch scales it by ZoomStep
+    [Export] public float MinZoomSize = 0.5f;
+    [Export] public float MaxZoomSize = 20f;
+    [Export] public float ZoomStep = 1.15f;
 
     private static readonly CharacterId[] Characters = Enum.GetValues<CharacterId>();
     // In property dropdown order. Collision follows them
@@ -44,6 +48,7 @@ public partial class HitboxEditor : Node
 
     private HitboxEditorManager manager;
     private HitboxPreview preview;
+    private Camera3D previewCamera;
     // Playback runs every phase once in order, then returns to CurrentSprite
     private double playbackTime;
     private int playbackPhase;
@@ -116,7 +121,10 @@ public partial class HitboxEditor : Node
         sheetDialog.Submitted += OnGridSubmitted;
 
         var characterRoot = new Node3D { Name = "CharacterRoot" };
-        GetNode<SubViewport>("%SubViewport").AddChild(characterRoot);
+        var subViewport = GetNode<SubViewport>("%SubViewport");
+        subViewport.AddChild(characterRoot);
+        previewCamera = subViewport.GetNode<Camera3D>("Camera3D");
+        subViewport.GetParent<Control>().GuiInput += OnPreviewInput;
         preview = new HitboxPreview(characterRoot);
 
         manager = new HitboxEditorManager();
@@ -301,6 +309,27 @@ public partial class HitboxEditor : Node
     {
         if (shownText.TryGetValue(field, out string shown) && shown == field.Text) return;
         handler(field.Text);
+    }
+
+    // ---------- Preview ----------
+
+    // The wheel, a trackpad's two finger scroll or a pinch zooms the camera about the character,
+    // which sits at the middle of the view. Trackpads send gestures rather than wheel clicks
+    private void OnPreviewInput(InputEvent input)
+    {
+        float scale = input switch
+        {
+            InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.WheelUp } => 1f / ZoomStep,
+            InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.WheelDown } => ZoomStep,
+            // Scrolling down, which is a positive delta, zooms out like the wheel
+            InputEventPanGesture pan => Mathf.Pow(ZoomStep, pan.Delta.Y),
+            // Spreading the fingers is a factor above 1, which zooms in
+            InputEventMagnifyGesture magnify when magnify.Factor > 0f => 1f / magnify.Factor,
+            _ => 1f,
+        };
+        if (scale == 1f) return;
+        previewCamera.Size = Mathf.Clamp(previewCamera.Size * scale, MinZoomSize, MaxZoomSize);
+        GetViewport().SetInputAsHandled();
     }
 
     // ---------- Manager ----------
