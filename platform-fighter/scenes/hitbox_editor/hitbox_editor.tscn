@@ -413,15 +413,15 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
 
-[node name="HitstunRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties" unique_id=274092091]
+[node name="KnockbackScalingRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties" unique_id=1408275361]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/HitstunRow" unique_id=1693750481]
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackScalingRow" unique_id=1739520846]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
-text = "Hitstun:"
+text = "KB Scaling:"
 
-[node name="HitstunInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/HitstunRow" unique_id=861933150]
+[node name="KnockbackScalingInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/HitboxProperties/KnockbackScalingRow" unique_id=902648153]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2

@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using System.Text;
 
-// Plays a character while a side panel edits their movement data live, and saves it to their file.
+// Plays a character while a side panel edits their movement and combat data live, and saves it to their file.
 // The match is the play scene, instanced here so it can be rebuilt when the character changes.
 // Edits write straight into the live characters' CharacterData, which their movement reads every tick, so nothing restarts.
 // Offline only: the data isn't rollback state, and edits aren't sent to other machines
@@ -17,6 +17,7 @@ public partial class PropertyEditor : Node
         ("Ground Movement", data => data.Ground),
         ("Air Movement", data => data.Air),
         ("Jump", data => data.Jump),
+        ("Combat", data => data.Combat),
     };
 
     private const decimal DMScale = 4294967296m; // 2^32, DM64's fractional bits
@@ -146,8 +147,9 @@ public partial class PropertyEditor : Node
         file.Ground = CharacterFileJson.Copy(character.Data.Ground);
         file.Air = CharacterFileJson.Copy(character.Data.Air);
         file.Jump = CharacterFileJson.Copy(character.Data.Jump);
+        file.Combat = CharacterFileJson.Copy(character.Data.Combat);
         CharacterFiles.WriteCharacter(character.CharacterId, file);
-        GD.Print($"Saved {character.CharacterId}'s movement data");
+        GD.Print($"Saved {character.CharacterId}'s character data");
     }
 
     // MaxFallVelocity reads as Max Fall Velocity

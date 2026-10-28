@@ -14,7 +14,7 @@ public enum CharacterStateId : byte
     Turn,
     // Plays whichever attack the AttackHandler started. Its data is the attack's, not its own
     Attack,
-    // Just got hit. The knockback lands when its first phase ends, then it flies until landing or slowing down
+    // Just got hit. The knockback lands when its first phase ends, then it flies until landing or its hitstun runs out
     Hurt,
     // Health ran out. Plays out, then goes Off
     Dying,

@@ -12,6 +12,7 @@ public class CharacterData
     public GroundMovementData Ground = new();
     public AirMovementData Air = new();
     public JumpData Jump = new();
+    public CombatData Combat = new();
     public BodyData Body = new();
     public VisualData Visuals = new();
     // Ticks a state lasts when it has no authored data, so states that end on their animation still end
@@ -78,6 +79,14 @@ public class AirMovementData
     // Fraction of horizontal velocity lost per second, applied a tick's share at a time
     public DM64 Friction = new DM64(2);
     public DM64 TurnaroundMultiplier = new DM64(5);
+}
+
+// How the character takes hits
+[Serializable]
+public class CombatData
+{
+    // Scales how fast knockback dissipates, so heavier characters fly less far. Doesn't change hitstun
+    public DM64 Weight = new DM64(1);
 }
 
 [Serializable]

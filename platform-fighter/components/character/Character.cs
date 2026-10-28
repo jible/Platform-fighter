@@ -13,11 +13,13 @@ public interface ICharacterView
     // Distinct images the animation steps through, like a sprite sheet's frames, so an editor can step one at a time.
     // 0 when the animation has none, or doesn't step, as with a model
     int FrameCount(string animation);
+    // What's showing, in world units tall, centered on the view's position. 0 when nothing shows
+    float Height { get; }
 }
 
 // Owns a character's state machine and holds every reference its states need.
 // Built in code, with no scene: whatever spawns it calls Configure, then adds it under the world root.
-// It is its own physics body, so it must be a root of the simulation. Its only child node is the view
+// It is its own physics body, so it must be a root of the simulation. Its only child nodes are the view and the health bar
 public partial class Character : PhysicsObject, ITickable, IEntity
 {
     public enum Direction
@@ -40,6 +42,12 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     // Starts attacks from input, and remembers which one the Attack state is playing
     public AttackHandler Attacks { get; private set; }
     public LifeData Life { get; private set; }
+
+    // Display only, drawn in screen space over the character's head
+    private ProgressBar healthBar;
+    private static readonly Vector2 HealthBarSize = new(60, 8);
+    // World units between the top of the sprite and the bar
+    private const float HealthBarGap = 0.1f;
 
     // Fired by the Off state when the character loses their last life. Fires inside the tick, and again when a
     // rollback resimulates it, so listeners must only change rollback state
@@ -86,6 +94,16 @@ public partial class Character : PhysicsObject, ITickable, IEntity
 
         View = CharacterViews.Create(characterId, Data);
         if (View is Node viewNode) AddChild(viewNode);
+        healthBar = new ProgressBar
+        {
+            Name = "HealthBar",
+            MaxValue = LifeData.MaxHealth,
+            ShowPercentage = false,
+            Size = HealthBarSize,
+            // Never takes clicks from the UI under it
+            MouseFilter = Control.MouseFilterEnum.Ignore,
+        };
+        AddChild(healthBar);
         InputHandler = new InputHandler(playerIndex, inputManager);
         Movement = new CharacterMovement(this);
         Attacks = new AttackHandler(this, InputHandler);
@@ -132,11 +150,27 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         // The hit was fatal, and the character is already Dying
         if (!Life.IsAlive) return;
 
-        // Knockback is authored as if the attacker faces right
-        lastHit.Value = new ReceivedHit { Knockback = hit.KnockbackFacing(attacker.direction) };
+        // Knockback is authored as if the attacker faces right. Scaled by the health left after this hit's damage
+        DMVector knockback = CalculateKnockback(hit.KnockbackFacing(attacker.direction), Life.Health, hit.KnockbackScaling);
+        lastHit.Value = new ReceivedHit { Knockback = knockback, Hitstun = CalculateHitstun(knockback) };
         // Reentered, so a hit while hurt starts it over, and the new knockback lands when its first phase ends
         StateMachine.ChangeState(CharacterStateId.Hurt, reenter: true);
     }
+
+    // Ticks of hitstun per unit of knockback. Placeholder, to be tuned
+    private static readonly DM64 HitstunPerKnockback = new DM64(4);
+
+    // Knockback a hit launches with. Everyone flies further as their health runs out:
+    // knockback * (1 + (1 - health / max health) * knockbackScaling). Weight comes in later, as how fast it dissipates.
+    // Placeholder formula, to be tuned
+    public static DMVector CalculateKnockback(DMVector knockback, int health, DM64 knockbackScaling)
+    {
+        DM64 healthLost = new DM64(LifeData.MaxHealth - health) / LifeData.MaxHealth;
+        return knockback * (1 + healthLost * knockbackScaling);
+    }
+
+    // Ticks the Hurt state lasts after the launch, from how hard it is
+    public static uint CalculateHitstun(DMVector knockback) => (uint)(knockback.GetMagnitude() * HitstunPerKnockback).to_int();
 
     // Called by the Off state when the character leaves play
     public void TurnOff()
@@ -177,12 +211,31 @@ public partial class Character : PhysicsObject, ITickable, IEntity
             // No authored data yet, so play the sheet named after the state
             View.Show(CharacterFiles.AnimationName(stateId.ToString()), null, (int)StateMachine.TicksInState, direction);
         }
+        // After Show, so it sits on top of this frame's sprite
+        UpdateHealthBar(stateId != CharacterStateId.Off);
+    }
+
+    // Read from the health every frame rather than on a change event, since a rollback restores health without firing one
+    private void UpdateHealthBar(bool visible)
+    {
+        Camera3D camera = GetViewport().GetCamera3D();
+        // Centered on the view, so half its height up is the top of the sprite
+        Vector3 head = GlobalPosition + Vector3.Up * ((View as Node3D)?.Position.Y ?? 0);
+        head.Y += (View?.Height ?? 0) / 2 + HealthBarGap;
+        healthBar.Visible = visible && camera != null && !camera.IsPositionBehind(head);
+        if (!healthBar.Visible) return;
+
+        if (healthBar.Value != Life.Health) healthBar.Value = Life.Health;
+        // Centered above the head
+        healthBar.Position = camera.UnprojectPosition(head) - new Vector2(HealthBarSize.X / 2, HealthBarSize.Y);
     }
 }
 
 // What the character keeps of the last hit it took. Unmanaged, so it fits in a SerializableProperty
 public struct ReceivedHit
 {
-    // Already mirrored for the attacker's facing
+    // Already mirrored for the attacker's facing, and scaled by CalculateKnockback
     public DMVector Knockback;
+    // Ticks from the launch until the Hurt state ends, see CalculateHitstun
+    public uint Hitstun;
 }

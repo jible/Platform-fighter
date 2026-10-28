@@ -72,6 +72,7 @@ public static class CharacterFiles
         if (file.Ground != null) data.Ground = CharacterFileJson.Copy(file.Ground);
         if (file.Air != null) data.Air = CharacterFileJson.Copy(file.Air);
         if (file.Jump != null) data.Jump = CharacterFileJson.Copy(file.Jump);
+        if (file.Combat != null) data.Combat = CharacterFileJson.Copy(file.Combat);
         return data;
     }
 

@@ -8,13 +8,24 @@ public class CharacterMovement
     // Probed by the physics server at the end of each step, so it holds steady while standing still
     public bool IsGrounded => character.OnGround;
     private readonly SerializableProperty<int> usedAirJumps = new();
+    // What's left of the last launch, which is part of velocity. Tracked apart from the rest so it can dissipate on its own
+    // without fighting gravity. Only used in the Hurt state, which clears it on entering and leaving
+    private readonly SerializableProperty<DMVector> knockback = new();
     private CharacterData Data => character.Data;
     // Horizontal max depends on whether we're grounded, vertical max is the fall speed cap
     private DMVector MaxVelocity => new(IsGrounded ? Data.Ground.MaxVelocity : Data.Air.MaxVelocity, Data.Air.MaxFallVelocity);
     // Stick x in the range [-1, 1]
     private DM64 InputX => character.InputHandler.LeftStick().x / StickState.MAX_STICK_AXIS_VALUE;
+    // Stick in the range [-1, 1] on each axis
+    private DMVector InputDirection => character.InputHandler.LeftStick() / new DM64(StickState.MAX_STICK_AXIS_VALUE);
     // Turns a per second rate (acceleration, friction) into how much of it applies this tick
     private static DM64 PerTick(DM64 perSecond) => perSecond / TickManager.TicksPerSecond;
+
+    // Knockback lost per second, times the character's weight. Placeholder, to be tuned
+    private static readonly DM64 KnockbackDissipation = new DM64(15);
+    // How hard the stick steers knockback, per second. Well under air acceleration, so it nudges rather than steers.
+    // The same for every character. Placeholder, to be tuned
+    private static readonly DM64 DIAcceleration = new DM64(3);
 
     public CharacterMovement(Character character)
     {
@@ -87,11 +98,48 @@ public class CharacterMovement
         character.velocity.Value.x -= character.velocity.Value.x * PerTick(friction);
     }
 
+    // The fall cap only limits the character's own falling, not what's left of a launch, so a spike isn't cut short.
+    // Knockback is zero outside the Hurt state, so this is the plain cap there
     public void StandardGravity()
     {
         if (IsGrounded) return;
         ref DMVector velocity = ref character.velocity.Value;
-        velocity.y = DM64.Max(velocity.y - PerTick(Data.Air.FallAcceleration), -Data.Air.MaxFallVelocity);
+        velocity.y = DM64.Max(velocity.y - PerTick(Data.Air.FallAcceleration), knockback.Value.y - Data.Air.MaxFallVelocity);
+    }
+
+    // Replaces velocity with the launch, so whatever the character was doing is gone
+    public void Launch(DMVector launch)
+    {
+        character.velocity.Value = launch;
+        knockback.Value = launch;
+    }
+
+    public void ClearKnockback() => knockback.Value = DMVector.zero;
+
+    // Shrinks what's left of the launch by a fixed amount each tick, heavier characters faster, and never past zero
+    public void ApplyKnockbackDissipation()
+    {
+        DMVector current = knockback.Value;
+        DM64 magnitude = current.GetMagnitude();
+        if (magnitude == 0) return;
+        DM64 remaining = DM64.Max(magnitude - PerTick(KnockbackDissipation * Data.Combat.Weight), new DM64(0));
+        SetKnockback(current * (remaining / magnitude));
+    }
+
+    // Directional influence: the stick pushes the launch a little in any direction. Part of the knockback, so it
+    // dissipates with it, and pushing against the launch makes it end sooner
+    public void ApplyDI()
+    {
+        DMVector input = InputDirection;
+        if (input == DMVector.zero) return;
+        SetKnockback(knockback.Value + input * PerTick(DIAcceleration));
+    }
+
+    // Velocity changes by the same amount, so the character's own motion within it is untouched
+    private void SetKnockback(DMVector value)
+    {
+        character.velocity.Value += value - knockback.Value;
+        knockback.Value = value;
     }
 
     // Won't push an axis past its max, but won't slow down an axis that's already over it either
@@ -127,8 +175,17 @@ public class CharacterMovement
 
     public void Tick()
     {
-        StandardMovement();
-        StandardDrag();
+        // Hurt has its own processes in place of stick movement and drag. Later states may pick theirs with flags
+        if (character.StateMachine.IsInState(CharacterStateId.Hurt))
+        {
+            ApplyKnockbackDissipation();
+            ApplyDI();
+        }
+        else
+        {
+            StandardMovement();
+            StandardDrag();
+        }
 
         // Apply gravity
         StandardGravity();

@@ -504,12 +504,12 @@ public class HitboxEditorManager
     }
 
     // What this sprite's copy deals
-    public void SetBoxHit(string stateName, int sprite, int boxId, int damage, int hitstun, DMVector knockback)
+    public void SetBoxHit(string stateName, int sprite, int boxId, int damage, DMVector knockback, DM64 knockbackScaling)
     {
         BoxFile box = GetBox(stateName, sprite, boxId);
         box.Damage = damage;
-        box.Hitstun = hitstun;
         box.Knockback = knockback;
+        box.KnockbackScaling = knockbackScaling;
         MarkChanged();
     }
 

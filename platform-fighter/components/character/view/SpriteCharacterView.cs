@@ -41,6 +41,9 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
         Position = offset;
     }
 
+    // The showing sprite's height in world units, 0 before anything shows
+    public float Height => Texture != null ? GetItemRect().Size.Y * PixelSize : 0;
+
     public void Show(string animation, SpriteGrid? grid, int sprite, Character.Direction facing)
     {
         // Art is drawn facing right

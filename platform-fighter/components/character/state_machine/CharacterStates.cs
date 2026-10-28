@@ -208,24 +208,30 @@ public class OffState : CharacterState
 
 // Just got hit. The first phase is the moment before the knockback, and a new hit restarts it.
 // When the first phase ends for the first time, the character is launched and turns to face whatever hit them.
-// From then on it ends on landing, or once the speed along the knockback's main axis drops low enough
+// From then on it ends on landing, or once the hit's hitstun has passed. CharacterMovement swaps in knockback
+// dissipation and DI for the usual movement while in this state
 public class HurtState : CharacterState
 {
     public override CharacterStateId Id => CharacterStateId.Hurt;
     public override bool ApplyGravity => true;
     public override bool Cancellable => false;
 
-    // Speed along the knockback's main axis that counts as done. Placeholder, to be tuned
-    private static readonly DM64 EndSpeed = new DM64(1) / 2;
+    private static int FirstPhaseLength(CharacterStateMachine machine) =>
+        machine.CurrentDefinition?.Phases[0].Length ?? machine.Character.Data.DefaultStateLength;
 
     // Still in the first play of the first phase. Every tick in the state has been in that phase until it ends or
     // restarts, so the two counts only match until then. The length check covers a first phase that ends the state
     // and holds. Stateless, so it rolls back with the machine
     private static bool BeforeLaunch(CharacterStateMachine machine)
     {
-        int firstLength = machine.CurrentDefinition?.Phases[0].Length ?? machine.Character.Data.DefaultStateLength;
-        return machine.CurrentPhase == 0 && machine.TicksInPhase == machine.TicksInState && machine.TicksInPhase < firstLength;
+        return machine.CurrentPhase == 0 && machine.TicksInPhase == machine.TicksInState && machine.TicksInPhase < FirstPhaseLength(machine);
     }
+
+    // Leftover knockback from an earlier hit would otherwise keep dissipating out of velocity it's no longer part of
+    public override void EnterState(CharacterStateMachine machine) => machine.Character.Movement.ClearKnockback();
+
+    // The rest of the launch stays in velocity, for the usual movement to take over
+    public override void ExitState(CharacterStateMachine machine) => machine.Character.Movement.ClearKnockback();
 
     public override void OnPhaseFinished(CharacterStateMachine machine, int phase)
     {
@@ -233,8 +239,7 @@ public class HurtState : CharacterState
         if (phase != 0 || machine.TicksInPhase != machine.TicksInState) return;
         Character character = machine.Character;
         DMVector knockback = character.LastHit.Knockback;
-        // Placeholder knockback, the hit's vector as is
-        character.Movement.SetUncappedVelocity(knockback);
+        character.Movement.Launch(knockback);
         // Pushed right means the hit came from the right. No sideways push keeps the old facing
         if (knockback.x > 0) character.direction = Character.Direction.Left;
         else if (knockback.x < 0) character.direction = Character.Direction.Right;
@@ -251,11 +256,8 @@ public class HurtState : CharacterState
             return;
         }
 
-        // The axis the knockback pushed hardest along, x on a tie
-        DMVector knockback = character.LastHit.Knockback;
-        DMVector velocity = character.velocity.Value;
-        DM64 speed = knockback.y.Abs() > knockback.x.Abs() ? velocity.y.Abs() : velocity.x.Abs();
-        if (speed < EndSpeed)
+        // The launch happened as TicksInState reached the first phase's length
+        if (machine.TicksInState - FirstPhaseLength(machine) >= character.LastHit.Hitstun)
         {
             machine.ChangeState(CharacterStateId.Fall);
         }

@@ -81,7 +81,7 @@ public static class CharacterDefinitionBuilder
                     box.Id,
                     box.Type,
                     hitGroupIndex,
-                    box.Type == BoxType.Hitbox ? new HitDefinition(box.Damage, box.Hitstun, box.Knockback) : null,
+                    box.Type == BoxType.Hitbox ? new HitDefinition(box.Damage, box.Knockback, box.KnockbackScaling) : null,
                     box.Offset * boxUnit,
                     box.Size * boxUnit);
             }

@@ -162,14 +162,15 @@ public readonly struct SpriteGrid
 public sealed class HitDefinition
 {
     public readonly int Damage;
-    public readonly int Hitstun;
     public readonly DMVector Knockback;
+    // See BoxFile.KnockbackScaling
+    public readonly DM64 KnockbackScaling;
 
-    public HitDefinition(int damage, int hitstun, DMVector knockback)
+    public HitDefinition(int damage, DMVector knockback, DM64 knockbackScaling)
     {
         Damage = damage;
-        Hitstun = hitstun;
         Knockback = knockback;
+        KnockbackScaling = knockbackScaling;
     }
 
     public DMVector KnockbackFacing(Character.Direction facing) => BoxDefinition.Mirror(Knockback, facing);

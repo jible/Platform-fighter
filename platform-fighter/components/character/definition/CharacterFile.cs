@@ -31,6 +31,7 @@ public class CharacterFile
     public GroundMovementData Ground;
     public AirMovementData Air;
     public JumpData Jump;
+    public CombatData Combat;
 }
 
 // A state's sheet is found by its name, see CharacterFiles.AnimationName, so it has no path of its own
@@ -213,10 +214,11 @@ public class BoxFile
     public int HitGroup = NoHitGroup;
     // What the box deals. Only hitboxes use these
     public int Damage;
-    // Ticks the target is stunned for
-    public int Hitstun;
     // Facing right, mirrored with the attacker
     public DMVector Knockback;
+    // How much more knockback the hit deals as the target's health runs out. 0 never grows, 1 doubles at no health.
+    // Defaults to 1, so boxes saved before this existed load with it
+    public DM64 KnockbackScaling = new DM64(1);
     // Center of the box, relative to the character root
     public DMVector Offset;
     // Full width and height

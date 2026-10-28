@@ -95,7 +95,7 @@ public partial class HitboxEditor : Node
     // Hitbox properties
     private OptionButton hitGroupDropdown;
     private Button addHitGroupButton, removeHitGroupButton;
-    private LineEdit damageInput, hitstunInput;
+    private LineEdit damageInput, knockbackScalingInput;
     private KnockbackPicker knockbackPicker;
     // Collision properties
     private Control collisionProperties;
@@ -217,7 +217,7 @@ public partial class HitboxEditor : Node
         addHitGroupButton = GetNode<Button>("%AddHitGroupButton");
         removeHitGroupButton = GetNode<Button>("%RemoveHitGroupButton");
         damageInput = GetNode<LineEdit>("%DamageInput");
-        hitstunInput = GetNode<LineEdit>("%HitstunInput");
+        knockbackScalingInput = GetNode<LineEdit>("%KnockbackScalingInput");
         knockbackPicker = GetNode<KnockbackPicker>("%KnockbackPicker");
 
         collisionProperties = GetNode<Control>("%CollisionProperties");
@@ -274,7 +274,7 @@ public partial class HitboxEditor : Node
         addHitGroupButton.Pressed += OnAddHitGroupClicked;
         removeHitGroupButton.Pressed += OnRemoveHitGroupClicked;
         OnEndEdit(damageInput, OnDamageEdited);
-        OnEndEdit(hitstunInput, OnHitstunEdited);
+        OnEndEdit(knockbackScalingInput, OnKnockbackScalingEdited);
         // The picker keeps its own X and Y fields in sync, so only its result is connected
         knockbackPicker.ValueChanged += OnKnockbackChanged;
 
@@ -615,17 +615,17 @@ public partial class HitboxEditor : Node
             Refresh();
             return;
         }
-        manager.SetBoxHit(SelectedState, CurrentSprite, SelectedBoxId, damage, box.Hitstun, box.Knockback);
+        manager.SetBoxHit(SelectedState, CurrentSprite, SelectedBoxId, damage, box.Knockback, box.KnockbackScaling);
     }
 
-    private void OnHitstunEdited(string text)
+    private void OnKnockbackScalingEdited(string text)
     {
-        if (!TryGetHitbox(out BoxFile box) || !int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int hitstun))
+        if (!TryGetHitbox(out BoxFile box) || !TryParse(text, out DM64 scaling))
         {
             Refresh();
             return;
         }
-        manager.SetBoxHit(SelectedState, CurrentSprite, SelectedBoxId, box.Damage, hitstun, box.Knockback);
+        manager.SetBoxHit(SelectedState, CurrentSprite, SelectedBoxId, box.Damage, box.Knockback, scaling);
     }
 
     private void OnKnockbackChanged(Vector2 knockback)
@@ -635,7 +635,7 @@ public partial class HitboxEditor : Node
             Refresh();
             return;
         }
-        manager.SetBoxHit(SelectedState, CurrentSprite, SelectedBoxId, box.Damage, box.Hitstun, new DMVector(ToDM64(knockback.X), ToDM64(knockback.Y)));
+        manager.SetBoxHit(SelectedState, CurrentSprite, SelectedBoxId, box.Damage, new DMVector(ToDM64(knockback.X), ToDM64(knockback.Y)), box.KnockbackScaling);
     }
 
     // ---------- Collision properties ----------
@@ -891,7 +891,7 @@ public partial class HitboxEditor : Node
         removeHitGroupButton.Disabled = !hasBox || hitGroupIndex < 0 || !manager.CanRemoveHitGroup(SelectedState, box.HitGroup);
 
         ShowText(damageInput, hasBox ? box.Damage.ToString(CultureInfo.InvariantCulture) : "", hasBox);
-        ShowText(hitstunInput, hasBox ? box.Hitstun.ToString(CultureInfo.InvariantCulture) : "", hasBox);
+        ShowText(knockbackScalingInput, hasBox ? Format(box.KnockbackScaling) : "", hasBox);
         knockbackPicker.SetValue(hasBox ? box.Knockback.ToStandardVector() : Vector2.Zero);
         knockbackPicker.MouseFilter = hasBox ? Control.MouseFilterEnum.Stop : Control.MouseFilterEnum.Ignore;
         knockbackPicker.XInput.Editable = hasBox;
