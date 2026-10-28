@@ -5,8 +5,8 @@ public class CharacterMovement
 {
     private readonly Character character;
     // Set by a downward collision during the physics step, read by states on the next tick
-    private readonly SerializableProperty<bool> grounded = new();
-    public bool IsGrounded => grounded.Value;
+    // Probed by the physics server at the end of each step, so it holds steady while standing still
+    public bool IsGrounded => character.OnGround;
     private readonly SerializableProperty<int> usedAirJumps = new();
     private CharacterData Data => character.Data;
     // Horizontal max depends on whether we're grounded, vertical max is the fall speed cap
@@ -27,7 +27,6 @@ public class CharacterMovement
         if (side == DMVector.Down)
         {
             character.velocity.Value.y = new(0);
-            grounded.Value = true;
             usedAirJumps.Value = 0;
         }
     }
@@ -133,10 +132,5 @@ public class CharacterMovement
 
         // Apply gravity
         StandardGravity();
-
-        // Cleared last so everything above sees the previous physics step's result.
-        // The physics step after this sets it again if we're still standing on something
-        grounded.Value = false;
-
     }
 }

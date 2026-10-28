@@ -80,6 +80,7 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         objectType = ObjectType.CollisionObject;
         Layer = CollisionLayers.Characters;
         Mask = CollisionLayers.Stage;
+        probesGround = true;
         SimTransform.LocalPosition = spawnPosition;
         this.spawnPosition = spawnPosition;
 

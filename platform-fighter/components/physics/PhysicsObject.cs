@@ -35,6 +35,17 @@ public partial class PhysicsObject : DeterministicNode3D
         set => serializedIsActive.Value = value;
     }
 
+    // Read when the world is built. A dynamic body with this set has the physics server check for ground under it
+    // at the end of every step, see PhysicsServer.ProbeGround
+    public bool probesGround;
+    private readonly SerializableProperty<bool> serializedOnGround = new();
+    // Whether the last physics step found ground just below this body. Always false without probesGround
+    public bool OnGround
+    {
+        get => serializedOnGround.Value;
+        set => serializedOnGround.Value = value;
+    }
+
     /// <summary>
     /// Emitted when this object has been entered by another object
     /// </summary>

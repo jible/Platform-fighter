@@ -6,6 +6,8 @@ using System.Linq;
 public class PhysicsServer
 {
     public DM64 Epsilon = new(.0001f);
+    // How far below a body the ground probe reaches. A body is pushed out to Epsilon above what it lands on, so it must be more
+    public DM64 GroundProbeDistance = new(.001f);
 
     private const int LayerCount = 32;
     // Every object, in the world's collection order
@@ -14,6 +16,8 @@ public class PhysicsServer
     private readonly PhysicsObject[] triggers;
     // Collision objects that get moved and pushed out of static ones
     private readonly PhysicsObject[] dynamicBodies;
+    // Dynamic bodies that want OnGround kept up to date
+    private readonly PhysicsObject[] groundProbers;
     // Triggers can overlap anything, but only static colliders are ever collided against
     private readonly PhysicsObject[][] bucketByLayer;
     private readonly PhysicsObject[][] staticBucketByLayer;
@@ -30,6 +34,7 @@ public class PhysicsServer
         all = objects.ToArray();
         triggers = all.Where(obj => obj.objectType == PhysicsObject.ObjectType.TriggerBox).ToArray();
         dynamicBodies = all.Where(obj => obj.objectType == PhysicsObject.ObjectType.CollisionObject && !obj.isStatic).ToArray();
+        groundProbers = dynamicBodies.Where(obj => obj.probesGround).ToArray();
         PhysicsObject[] staticColliders = all.Where(obj => obj.objectType == PhysicsObject.ObjectType.CollisionObject && obj.isStatic).ToArray();
 
         bucketByLayer = BucketByLayer(all);
@@ -58,6 +63,9 @@ public class PhysicsServer
             ApplyVelocity(axis);
             ResolveAllCollisions(axis);
         }
+
+        // After both axes, so it sees where bodies came to rest
+        ProbeAllGround();
 
         DetectTriggers();
 
@@ -120,6 +128,38 @@ public class PhysicsServer
                 }
             }
         }
+    }
+
+    private void ProbeAllGround()
+    {
+        foreach (var body in groundProbers)
+        {
+            body.OnGround = body.isActive && ProbeGround(body, GroundProbeDistance);
+        }
+    }
+
+    // Whether an active static collider the body masks is within distance below it. Probes with a thin box as wide as
+    // the body under its bottom edge, so standing with any part of it over ground counts, ledges included.
+    // One bounds test per collider on the masked layers, the same as one collision query
+    public bool ProbeGround(PhysicsObject body, DM64 distance)
+    {
+        body.shape.GetBounds(body.SimTransform.GlobalPosition, out DMVector min, out DMVector max);
+        DMVector probeMin = new(min.x, min.y - distance);
+        DMVector probeMax = new(max.x, min.y);
+
+        int stamp = ++Stamp;
+        for (int layerIndex = 0; layerIndex < staticBucketByLayer.Length; layerIndex++)
+        {
+            if ((body.Mask & (1 << layerIndex)) == 0) continue;
+            foreach (var solid in staticBucketByLayer[layerIndex])
+            {
+                if (!solid.isActive || solid.visitStamp == stamp) continue;
+                solid.visitStamp = stamp;
+                solid.shape.GetBounds(solid.SimTransform.GlobalPosition, out DMVector solidMin, out DMVector solidMax);
+                if (Overlap.Bounds(probeMin, probeMax, solidMin, solidMax)) return true;
+            }
+        }
+        return false;
     }
 
     private void DetectTriggers()
