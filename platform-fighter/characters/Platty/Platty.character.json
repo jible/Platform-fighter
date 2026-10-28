@@ -34,6 +34,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -57,6 +58,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -107,6 +109,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -130,6 +133,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -180,6 +184,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -203,6 +208,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -253,6 +259,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -303,6 +310,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -326,6 +334,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -349,6 +358,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -372,6 +382,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -422,6 +433,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -445,6 +457,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -495,6 +508,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -518,6 +532,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -568,6 +583,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -607,31 +623,31 @@
           "Id": 0,
           "Name": "Startup",
           "Start": 0,
-          "End": 3,
-          "Length": 32,
+          "End": 1,
+          "Length": 8,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 4
+          "SpriteCount": 2
         },
         {
           "Id": 1,
           "Name": "Active",
-          "Start": 4,
-          "End": 7,
+          "Start": 2,
+          "End": 6,
           "Length": 32,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 4
+          "SpriteCount": 5
         },
         {
           "Id": 2,
           "Name": "EndLag",
-          "Start": 8,
+          "Start": 7,
           "End": 10,
           "Length": 24,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 3
+          "SpriteCount": 4
         }
       ],
       "Frames": [
@@ -647,6 +663,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -670,6 +687,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -693,6 +711,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -707,11 +726,12 @@
               "Name": "Hitbox 1",
               "Type": "Hitbox",
               "HitGroup": 0,
-              "Damage": 0,
+              "Damage": 5,
               "Knockback": {
-                "x": 0,
-                "y": 0
+                "x": 0.8823529,
+                "y": 7.3529409999
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 22,
                 "y": -9
@@ -735,6 +755,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -749,11 +770,12 @@
               "Name": "Hitbox 1",
               "Type": "Hitbox",
               "HitGroup": 0,
-              "Damage": 0,
+              "Damage": 14,
               "Knockback": {
-                "x": 0,
-                "y": 0
+                "x": -2.6470590001,
+                "y": 5.8823530001
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 19,
                 "y": 20
@@ -777,6 +799,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -791,11 +814,12 @@
               "Name": "Hitbox 1",
               "Type": "Hitbox",
               "HitGroup": 0,
-              "Damage": 0,
+              "Damage": 12,
               "Knockback": {
-                "x": 0,
-                "y": 0
+                "x": -3.235294,
+                "y": 6.470589
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 13,
                 "y": 27
@@ -819,6 +843,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -833,17 +858,18 @@
               "Name": "Hitbox 1",
               "Type": "Hitbox",
               "HitGroup": 0,
-              "Damage": 0,
+              "Damage": 12,
               "Knockback": {
-                "x": 0,
-                "y": 0
+                "x": -3.235294,
+                "y": 6.470589
               },
+              "KnockbackScaling": 1,
               "Offset": {
-                "x": 1,
+                "x": -3,
                 "y": 27
               },
               "Size": {
-                "x": 53,
+                "x": 42,
                 "y": 25
               }
             }
@@ -861,6 +887,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -875,17 +902,18 @@
               "Name": "Hitbox 1",
               "Type": "Hitbox",
               "HitGroup": 0,
-              "Damage": 0,
+              "Damage": 12,
               "Knockback": {
-                "x": 0,
-                "y": 0
+                "x": -3.235294,
+                "y": 6.470589
               },
+              "KnockbackScaling": 1,
               "Offset": {
-                "x": -14,
+                "x": -12,
                 "y": 27
               },
               "Size": {
-                "x": 28,
+                "x": 29,
                 "y": 25
               }
             }
@@ -903,6 +931,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -926,6 +955,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -949,6 +979,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -972,6 +1003,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1014,21 +1046,21 @@
           "Id": 0,
           "Name": "Start Up",
           "Start": 0,
-          "End": 5,
+          "End": 4,
           "Length": 36,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 6
+          "SpriteCount": 5
         },
         {
           "Id": 1,
           "Name": "Phase 1",
-          "Start": 6,
+          "Start": 5,
           "End": 8,
           "Length": 18,
           "OnEnd": "Next",
           "Target": -1,
-          "SpriteCount": 3
+          "SpriteCount": 4
         },
         {
           "Id": 2,
@@ -1054,6 +1086,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1077,6 +1110,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1100,6 +1134,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1123,6 +1158,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1146,6 +1182,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1169,6 +1206,183 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 2,
+              "Name": "Hitbox 2",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 14,
+              "Knockback": {
+                "x": -6.470589,
+                "y": 2.9411770001
+              },
+              "KnockbackScaling": 1.5,
+              "Offset": {
+                "x": -62,
+                "y": 10
+              },
+              "Size": {
+                "x": 39,
+                "y": 35
+              }
+            }
+          ]
+        },
+        {
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "KnockbackScaling": 1,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 2,
+              "Name": "Hitbox 2",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 14,
+              "Knockback": {
+                "x": -6.470589,
+                "y": 2.9411770001
+              },
+              "KnockbackScaling": 1.5,
+              "Offset": {
+                "x": -62,
+                "y": 10
+              },
+              "Size": {
+                "x": 39,
+                "y": 35
+              }
+            }
+          ]
+        },
+        {
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "KnockbackScaling": 1,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 2,
+              "Name": "Hitbox 2",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 14,
+              "Knockback": {
+                "x": -6.470589,
+                "y": 2.9411770001
+              },
+              "KnockbackScaling": 1.5,
+              "Offset": {
+                "x": -62,
+                "y": 10
+              },
+              "Size": {
+                "x": 39,
+                "y": 35
+              }
+            }
+          ]
+        },
+        {
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "KnockbackScaling": 1,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            },
+            {
+              "Id": 2,
+              "Name": "Hitbox 2",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 14,
+              "Knockback": {
+                "x": -6.470589,
+                "y": 2.9411770001
+              },
+              "KnockbackScaling": 1.5,
+              "Offset": {
+                "x": -62,
+                "y": 10
+              },
+              "Size": {
+                "x": 39,
+                "y": 35
+              }
+            }
+          ]
+        },
+        {
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1192,6 +1406,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1215,98 +1430,7 @@
                 "x": 0,
                 "y": 0
               },
-              "Offset": {
-                "x": 0,
-                "y": 0
-              },
-              "Size": {
-                "x": 25,
-                "y": 50
-              }
-            }
-          ]
-        },
-        {
-          "Boxes": [
-            {
-              "Id": 0,
-              "Name": "body",
-              "Type": "Hurtbox",
-              "HitGroup": -1,
-              "Damage": 0,
-              "Knockback": {
-                "x": 0,
-                "y": 0
-              },
-              "Offset": {
-                "x": 0,
-                "y": 0
-              },
-              "Size": {
-                "x": 25,
-                "y": 50
-              }
-            }
-          ]
-        },
-        {
-          "Boxes": [
-            {
-              "Id": 0,
-              "Name": "body",
-              "Type": "Hurtbox",
-              "HitGroup": -1,
-              "Damage": 0,
-              "Knockback": {
-                "x": 0,
-                "y": 0
-              },
-              "Offset": {
-                "x": 0,
-                "y": 0
-              },
-              "Size": {
-                "x": 25,
-                "y": 50
-              }
-            }
-          ]
-        },
-        {
-          "Boxes": [
-            {
-              "Id": 0,
-              "Name": "body",
-              "Type": "Hurtbox",
-              "HitGroup": -1,
-              "Damage": 0,
-              "Knockback": {
-                "x": 0,
-                "y": 0
-              },
-              "Offset": {
-                "x": 0,
-                "y": 0
-              },
-              "Size": {
-                "x": 25,
-                "y": 50
-              }
-            }
-          ]
-        },
-        {
-          "Boxes": [
-            {
-              "Id": 0,
-              "Name": "body",
-              "Type": "Hurtbox",
-              "HitGroup": -1,
-              "Damage": 0,
-              "Knockback": {
-                "x": 0,
-                "y": 0
-              },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1325,7 +1449,7 @@
           "Name": "Hitbox 1"
         }
       ],
-      "NextBoxId": 2,
+      "NextBoxId": 3,
       "NextHitGroupId": 1,
       "NextPhaseId": 3
     },
@@ -1389,6 +1513,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1412,6 +1537,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1435,48 +1561,7 @@
                 "x": 0,
                 "y": 0
               },
-              "Offset": {
-                "x": 0,
-                "y": 0
-              },
-              "Size": {
-                "x": 25,
-                "y": 50
-              }
-            }
-          ]
-        },
-        {
-          "Boxes": [
-            {
-              "Id": 0,
-              "Name": "Hitbox 0",
-              "Type": "Hitbox",
-              "HitGroup": 0,
-              "Damage": 10,
-              "Knockback": {
-                "x": -7.071068,
-                "y": 7.071068
-              },
-              "Offset": {
-                "x": 30,
-                "y": 10
-              },
-              "Size": {
-                "x": 25,
-                "y": 25
-              }
-            },
-            {
-              "Id": 1,
-              "Name": "body",
-              "Type": "Hurtbox",
-              "HitGroup": -1,
-              "Damage": 0,
-              "Knockback": {
-                "x": 0,
-                "y": 0
-              },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1500,6 +1585,7 @@
                 "x": -7.071068,
                 "y": 7.071068
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 30,
                 "y": 10
@@ -1519,6 +1605,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1542,6 +1629,7 @@
                 "x": -7.071068,
                 "y": 7.071068
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 30,
                 "y": 10
@@ -1561,6 +1649,51 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
+          ]
+        },
+        {
+          "Boxes": [
+            {
+              "Id": 0,
+              "Name": "Hitbox 0",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 10,
+              "Knockback": {
+                "x": -7.071068,
+                "y": 7.071068
+              },
+              "KnockbackScaling": 1,
+              "Offset": {
+                "x": 30,
+                "y": 10
+              },
+              "Size": {
+                "x": 25,
+                "y": 25
+              }
+            },
+            {
+              "Id": 1,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1584,6 +1717,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1666,6 +1800,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1689,6 +1824,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1712,6 +1848,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1735,6 +1872,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1754,6 +1892,7 @@
                 "x": 0.5882353,
                 "y": 6.764706
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": -12
@@ -1777,6 +1916,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1796,6 +1936,7 @@
                 "x": 0.5882353,
                 "y": 6.764706
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": -12
@@ -1819,6 +1960,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1838,6 +1980,7 @@
                 "x": 0.5882353,
                 "y": 6.764706
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": -12
@@ -1861,6 +2004,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1880,6 +2024,7 @@
                 "x": 0.5882353,
                 "y": 6.764706
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": -12
@@ -1903,6 +2048,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -1926,6 +2072,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2008,6 +2155,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2031,6 +2179,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2054,6 +2203,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2077,6 +2227,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2097,9 +2248,10 @@
               "HitGroup": 0,
               "Damage": 10,
               "Knockback": {
-                "x": 4.705883,
-                "y": 4.705883
+                "x": 5.8823530001,
+                "y": 0.2941177001
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 20,
                 "y": 15
@@ -2119,6 +2271,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2142,6 +2295,7 @@
                 "x": 4.705883,
                 "y": 4.705883
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 20,
                 "y": 0
@@ -2161,6 +2315,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2184,6 +2339,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2207,6 +2363,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2289,6 +2446,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2312,6 +2470,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2335,6 +2494,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2358,6 +2518,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2381,6 +2542,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2404,6 +2566,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2418,11 +2581,12 @@
               "Name": "Hitbox 1",
               "Type": "Hitbox",
               "HitGroup": 0,
-              "Damage": 0,
+              "Damage": 10,
               "Knockback": {
-                "x": 0,
-                "y": 0
+                "x": -5.294118,
+                "y": 1.764706
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": -18,
                 "y": 17
@@ -2446,6 +2610,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2460,11 +2625,12 @@
               "Name": "Hitbox 1",
               "Type": "Hitbox",
               "HitGroup": 0,
-              "Damage": 0,
+              "Damage": 10,
               "Knockback": {
-                "x": 0,
-                "y": 0
+                "x": -5.294118,
+                "y": 1.764706
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": -18,
                 "y": 17
@@ -2488,6 +2654,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2511,6 +2678,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2534,6 +2702,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2557,6 +2726,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2639,6 +2809,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2662,6 +2833,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2685,6 +2857,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2708,6 +2881,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2731,6 +2905,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2750,6 +2925,7 @@
                 "x": -0.8823529,
                 "y": 7.6470590001
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": -17,
                 "y": -18
@@ -2769,6 +2945,7 @@
                 "x": 2.6470590001,
                 "y": 5.294118
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 14,
                 "y": -19
@@ -2792,6 +2969,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2811,6 +2989,7 @@
                 "x": -0.8823529,
                 "y": 7.6470590001
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": -35,
                 "y": -26
@@ -2834,6 +3013,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2853,6 +3033,7 @@
                 "x": -0.8823529,
                 "y": 7.6470590001
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": -35,
                 "y": -26
@@ -2872,6 +3053,7 @@
                 "x": 2.6470590001,
                 "y": 5.294118
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 21,
                 "y": -24
@@ -2954,6 +3136,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -2977,6 +3160,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -3000,6 +3184,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -3019,6 +3204,7 @@
                 "x": 0.8304548,
                 "y": -9.9654580001
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": -1,
                 "y": -14
@@ -3042,6 +3228,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -3061,6 +3248,7 @@
                 "x": 0.8304548,
                 "y": -9.9654580001
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": -1,
                 "y": -14
@@ -3084,6 +3272,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -3103,6 +3292,7 @@
                 "x": 5.8823530001,
                 "y": 4.705883
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": -2,
                 "y": -15
@@ -3126,6 +3316,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -3145,6 +3336,7 @@
                 "x": 5.8823530001,
                 "y": 4.705883
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": -2,
                 "y": -15
@@ -3168,6 +3360,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -3191,6 +3384,7 @@
                 "x": 0,
                 "y": 0
               },
+              "KnockbackScaling": 1,
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -3240,5 +3434,6 @@
     "Velocity": 20,
     "AirJumps": 2,
     "AirHorizontalImpulse": 2
-  }
+  },
+  "Combat": null
 }

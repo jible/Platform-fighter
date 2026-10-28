@@ -367,6 +367,44 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="PositionRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties" unique_id=2019986853]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/PositionRow" unique_id=2055851097]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Position:"
+
+[node name="XLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/PositionRow" unique_id=106481343]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "X:"
+
+[node name="PositionXInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/PositionRow" unique_id=908394220]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="YLabel" type="Label" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/PositionRow" unique_id=792441126]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "Y:"
+
+[node name="PositionYInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/PositionRow" unique_id=1877164618]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CopyRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties" unique_id=1689254387]
+layout_mode = 2
+
+[node name="CopyToNextButton" type="Button" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content/SharedProperties/CopyRow" unique_id=1626461674]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Copy this box onto the next sprite and step there. Boxes never carry over between sprites on their own"
+text = "Copy box to next sprite"
+
 [node name="HitboxProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/UISection/Rows/Content" unique_id=602454052]
 unique_name_in_owner = true
 layout_mode = 2
@@ -660,45 +698,3 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 text = "SPRITE 0"
-
-[node name="FrameProperties" type="VBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection" unique_id=596031901]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="PositionRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties" unique_id=2019986853]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow" unique_id=2055851097]
-custom_minimum_size = Vector2(80, 0)
-layout_mode = 2
-text = "Position:"
-
-[node name="XLabel" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow" unique_id=106481343]
-custom_minimum_size = Vector2(16, 0)
-layout_mode = 2
-text = "X:"
-
-[node name="PositionXInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow" unique_id=908394220]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="YLabel" type="Label" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow" unique_id=792441126]
-custom_minimum_size = Vector2(16, 0)
-layout_mode = 2
-text = "Y:"
-
-[node name="PositionYInput" type="LineEdit" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/PositionRow" unique_id=1877164618]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="CopyRow" type="HBoxContainer" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties" unique_id=1689254387]
-layout_mode = 2
-
-[node name="CopyToNextButton" type="Button" parent="HitboxEditor/Margins/Columns/DisplaySection/FrameProperties/CopyRow" unique_id=1626461674]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-tooltip_text = "Copy this box onto the next sprite and step there. Boxes never carry over between sprites on their own"
-text = "Copy box to next sprite"

@@ -107,7 +107,6 @@ public partial class HitboxEditor : Node
     private Button playButton, stopButton, previousFrameButton, nextFrameButton;
     // Sprite properties
     private Label frameHeader;
-    private Control frameProperties;
     private LineEdit positionXInput, positionYInput;
     private Button copyToNextButton;
 
@@ -235,7 +234,6 @@ public partial class HitboxEditor : Node
         nextFrameButton = GetNode<Button>("%NextFrameButton");
 
         frameHeader = GetNode<Label>("%FrameHeader");
-        frameProperties = GetNode<Control>("%FrameProperties");
         positionXInput = GetNode<LineEdit>("%PositionXInput");
         positionYInput = GetNode<LineEdit>("%PositionYInput");
         copyToNextButton = GetNode<Button>("%CopyToNextButton");
@@ -296,6 +294,38 @@ public partial class HitboxEditor : Node
         OnEndEdit(positionXInput, text => OnBoxRectEdited(text, BoxField.X));
         OnEndEdit(positionYInput, text => OnBoxRectEdited(text, BoxField.Y));
         copyToNextButton.Pressed += OnCopyToNextClicked;
+
+        ConnectScrubbers();
+    }
+
+    // Number fields whose labels can be dragged. Each step is entered like typing it, so it's applied the same way
+    private void ConnectScrubbers()
+    {
+        Scrub(phaseLengthInput, 1m);
+        Scrub(widthInput, 1m);
+        Scrub(heightInput, 1m);
+        Scrub(positionXInput, 1m);
+        Scrub(positionYInput, 1m);
+        Scrub(damageInput, 1m);
+        Scrub(knockbackScalingInput, 0.1m);
+        Scrub(knockbackPicker.XInput, 0.1m);
+        Scrub(knockbackPicker.YInput, 0.1m);
+        // The body is in world units, which are much bigger than the pixels everything else is in
+        Scrub(bodyWidthInput, 0.1m);
+        Scrub(bodyHeightInput, 0.1m);
+        Scrub(spriteOffsetXInput, 1m);
+        Scrub(spriteOffsetYInput, 1m);
+    }
+
+    // The label is the one just before the field in its row, like "X:" or the row's own label
+    private static void Scrub(LineEdit field, decimal step)
+    {
+        if (field.GetParent().GetChild(field.GetIndex() - 1) is not Label label)
+        {
+            GD.PushWarning($"{field.Name} has no label before it to scrub with");
+            return;
+        }
+        new FieldScrubber(label, field, text => field.EmitSignal(LineEdit.SignalName.TextSubmitted, text), step);
     }
 
     // A field's edit is applied on enter or when it loses focus, so a half typed value is never applied
@@ -747,8 +777,7 @@ public partial class HitboxEditor : Node
 
         ShowTimeline(state);
 
-        // Sprite properties
-        frameProperties.Visible = editingBoxes;
+        // Per sprite box properties, shown in the box's properties
         ShowText(positionXInput, hasBox ? Format(box.Offset.x) : "", hasBox);
         ShowText(positionYInput, hasBox ? Format(box.Offset.y) : "", hasBox);
         copyToNextButton.Disabled = !hasBox || CurrentSprite >= SpriteRangeEnd;

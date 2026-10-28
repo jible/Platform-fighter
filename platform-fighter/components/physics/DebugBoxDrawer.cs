@@ -20,6 +20,9 @@ public class DebugBoxDrawer : IDisposable
         Transparency = BaseMaterial3D.TransparencyEnum.Alpha,
         DepthDrawMode = BaseMaterial3D.DepthDrawModeEnum.Disabled,
         CullMode = BaseMaterial3D.CullModeEnum.Disabled,
+        // All boxes are one instance, so Godot depth sorts them against sprites by the whole MultiMesh's center,
+        // which moves as anything in the scene moves. Below the sprites' 0, so they always draw over the boxes
+        RenderPriority = -1,
     };
     private readonly Rid multimesh;
     private readonly Rid instance;
