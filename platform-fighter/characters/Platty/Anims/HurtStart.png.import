@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7ibnii082cql"
-path="res://.godot/imported/bTilt.png-436dab0afad0c5a4eafeb7a833610d73.ctex"
+uid="uid://cp0qmdlwph1vr"
+path="res://.godot/imported/HurtStart.png-c1a32afb55528156ccc1a9bb064c9609.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/bTilt.png"
-dest_files=["res://.godot/imported/bTilt.png-436dab0afad0c5a4eafeb7a833610d73.ctex"]
+source_file="res://characters/Platty/Anims/HurtStart.png"
+dest_files=["res://.godot/imported/HurtStart.png-c1a32afb55528156ccc1a9bb064c9609.ctex"]
 
 [params]
 

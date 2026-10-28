@@ -86,14 +86,13 @@ public class HitboxManager : IWorldSystem
     {
         StateDefinition state = character.StateMachine.CurrentDefinition;
         if (state == null) return;
-        int frame = state.FrameAt(character.StateMachine.TicksInState);
         DMVector root = character.SimTransform.GlobalPosition;
 
-        foreach (var box in state.Boxes)
+        // Only the showing sprite's boxes exist, so a phase cut short takes its hitboxes with it
+        foreach (var box in state.BoxesAt(character.StateMachine.CurrentSprite))
         {
-            if (!box.IsActive(frame)) continue;
-            DMVector center = root + box.CenterAt(frame, character.direction);
-            DMVector size = box.SizeAt(frame);
+            DMVector center = root + box.CenterFacing(character.direction);
+            DMVector size = box.Size;
 
             if (box.Type == BoxType.Hurtbox)
             {

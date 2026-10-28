@@ -1,13 +1,13 @@
 using Godot;
 using System;
 
-// The Set Anim popup: picks a state's sheet and how it's cut into frames. How fast it plays is the state's length.
+// The Set Grid popup: how a state's sheet is cut into sprites. The sheet is found by the state's name, so it's only shown.
 // Frame size and the column and row counts are two views of the same grid, so editing one updates the other,
 // and only the counts are submitted. Builds its own controls. Editor UI only
 public partial class SpriteSheetDialog : ConfirmationDialog
 {
-    // Sheet name relative to the character's folder, columns and rows
-    public event Action<string, int, int> Submitted;
+    // Columns, rows, and the sheet's size in pixels
+    public event Action<int, int, int, int> Submitted;
 
     private static readonly Color WarningColor = new(1f, 0.75f, 0.3f);
 
@@ -26,14 +26,14 @@ public partial class SpriteSheetDialog : ConfirmationDialog
 
     public override void _Ready()
     {
-        Title = "Set Animation";
+        Title = "Set Grid";
         OkButtonText = "Submit";
         CancelButtonText = "Cancel";
         Confirmed += OnConfirmed;
 
         var grid = new GridContainer { Columns = 2 };
         AddChild(grid);
-        pathInput = AddRow(grid, "Sheet:", new LineEdit { CustomMinimumSize = new Vector2(220, 0), PlaceholderText = "Jab.png" });
+        pathInput = AddRow(grid, "Sheet:", new LineEdit { CustomMinimumSize = new Vector2(220, 0), Editable = false });
         sheetLabel = AddRow(grid, "", new Label());
         columnsInput = AddRow(grid, "Columns:", NewSpinBox());
         rowsInput = AddRow(grid, "Rows:", NewSpinBox());
@@ -41,7 +41,6 @@ public partial class SpriteSheetDialog : ConfirmationDialog
         heightInput = AddRow(grid, "Frame height:", NewSpinBox("px"));
         gridWarning = AddRow(grid, "", new Label { Modulate = WarningColor });
 
-        pathInput.TextChanged += _ => OnPathChanged();
         columnsInput.ValueChanged += _ => OnCountChanged();
         rowsInput.ValueChanged += _ => OnCountChanged();
         widthInput.ValueChanged += _ => OnSizeChanged();
@@ -60,12 +59,6 @@ public partial class SpriteSheetDialog : ConfirmationDialog
         syncing = false;
         OnCountChanged();
         PopupCentered();
-    }
-
-    private void OnPathChanged()
-    {
-        LoadSheet();
-        OnCountChanged();
     }
 
     // Counts set the size, rounded down when the sheet doesn't split evenly
@@ -121,7 +114,7 @@ public partial class SpriteSheetDialog : ConfirmationDialog
     private void OnConfirmed()
     {
         if (sheet == null) return;
-        Submitted?.Invoke(pathInput.Text.Trim(), (int)columnsInput.Value, (int)rowsInput.Value);
+        Submitted?.Invoke((int)columnsInput.Value, (int)rowsInput.Value, SheetWidth, SheetHeight);
     }
 
     private static T AddRow<T>(GridContainer grid, string label, T control) where T : Control

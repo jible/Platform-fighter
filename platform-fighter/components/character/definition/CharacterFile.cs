@@ -7,15 +7,18 @@ using System.Collections.Generic;
 // Positions are authored facing right and mirrored at runtime.
 // Box offsets and sizes are in the character's box units: sprite pixels (y up, 0,0 at the sprite's center)
 // for sprite characters, world units for models. The builder converts them, see VisualData.BoxUnit.
+// Everything is per sprite of the state's sheet. Models have no sprites yet, so they'll need frames of their own
 
 [Serializable]
 public class CharacterFile
 {
-    // Bump when the layout changes, so old files can be upgraded on load
-    public int Version = 1;
+    // Bump when the layout changes, so old files can be upgraded on load.
+    // 3 split states into phases and gave each sprite its own boxes
+    public int Version = CurrentVersion;
+    public const int CurrentVersion = 3;
     // Keyed by the CharacterStateId name, not its number, so reordering the enum does not remap data
     public Dictionary<string, StateFile> States = new();
-    // Keyed by attack name, which also names the sheet when Animation is empty, like a state.
+    // Keyed by attack name, which also names the sheet, like a state.
     // Names are shared with states, so an attack can't be named after a CharacterStateId
     public Dictionary<string, AttackFile> Attacks = new();
     // Override the character's BodyData.Size and VisualData.Offset, so the editor can tune them.
@@ -30,21 +33,64 @@ public class CharacterFile
     public JumpData Jump;
 }
 
+// A state's sheet is found by its name, see CharacterFiles.AnimationName, so it has no path of its own
 [Serializable]
 public class StateFile
 {
-    // Sprite animation path or model clip name. Also picks which baked bone tracks the boxes follow
-    public string Animation = "";
-    // How a sprite sheet is cut up and played. Null spreads a single row sheet evenly over the state
+    // How the sheet is cut up. Null until the grid is set, which plays a single row sheet on its own
     public SpriteFile Sprite;
-    // Ticks in one play through of the state, which its sprite sequence is spread over
-    public int Length = 1;
-    public bool Loop;
+    // In play order, covering every sprite of the sheet in order with no gaps. The first always plays first
+    public List<PhaseFile> Phases = new();
+    // One per sprite of the sheet, holding that sprite's boxes. Boxes never carry over from one sprite to the next
+    public List<FrameFile> Frames = new();
+    // Shared by every frame and phase, so boxes on different frames can share one hit
     public List<HitGroupFile> HitGroups = new();
-    public List<BoxFile> Boxes = new();
-    // Handed to the next box created in this state, so ids stay stable when boxes are renamed or deleted
+    // Handed to the next box, group or phase created in this state, so ids stay stable when others are deleted
     public int NextBoxId;
     public int NextHitGroupId;
+    public int NextPhaseId;
+}
+
+// A run of the sheet's sprites, played over its own length.
+// Its sprites are spread evenly over Length, so tuning how a phase feels never touches the art
+[Serializable]
+public class PhaseFile
+{
+    // Unique within its state only. What OnEnd targets point at, so renaming or moving a phase breaks nothing
+    public int Id;
+    // Editor display only
+    public string Name = "";
+    // Sprites it plays, inclusive on both ends
+    public int Start;
+    public int End;
+    // Ticks it plays for. The editor keeps it at least the sprite count, so every sprite shows for a tick
+    public int Length = 1;
+    public PhaseEnd OnEnd = PhaseEnd.Next;
+    // Phase id OnEnd goes to, for PhaseEnd.Phase only
+    public int Target = NoPhase;
+
+    public const int NoPhase = -1;
+
+    public int SpriteCount => End - Start + 1;
+}
+
+// What a phase does when its length runs out. Saved by name, so renaming a value breaks existing files
+public enum PhaseEnd
+{
+    // The next phase, or the state ends after the last one
+    Next,
+    // Plays itself again, which is how a state loops
+    Restart,
+    First,
+    // The phase whose id is PhaseFile.Target
+    Phase,
+}
+
+// Everything on one sprite of the sheet
+[Serializable]
+public class FrameFile
+{
+    public List<BoxFile> Boxes = new();
 }
 
 // A move, played by the shared Attack state. Everything a state has, plus what starts it
@@ -120,16 +166,18 @@ public enum MovementType
     DI,
 }
 
-// The state's sheet (StateFile.Animation) as a grid of frames, numbered left to right then top to bottom from 0.
-// Sequence is the frames in the order they play, spread evenly over the state's length, so a repeated frame holds
-// longer. Lengths that don't divide by the entry count show some entries a tick longer.
-// The editor keeps StateFile.Length at least the entry count, so every entry gets a tick
+// The state's sheet as a grid of sprites, numbered left to right then top to bottom from 0
 [Serializable]
 public class SpriteFile
 {
     public int Columns = 1;
     public int Rows = 1;
-    public List<int> Sequence = new();
+    // The sheet's size in pixels when the grid was last set, so the editor can tell when sprites were added or
+    // removed and ask where, before the frame data drifts onto the wrong sprites. 0 when unknown
+    public int SheetWidth;
+    public int SheetHeight;
+
+    public int Count => Math.Max(1, Columns) * Math.Max(1, Rows);
 }
 
 // Boxes in one group share a single hit, so a multi box attack only connects once per target.
@@ -152,17 +200,16 @@ public enum BoxType
     Pushbox,
 }
 
+// One box on one sprite. Copying it to the next sprite keeps its id and name, so the editor can follow it
 [Serializable]
 public class BoxFile
 {
-    // Unique within its state only
+    // Unique within its state only, shared by copies of the box on other sprites
     public int Id;
     // Editor display only
     public string Name = "";
     public BoxType Type;
-    // Bone the offsets are relative to. Empty means the character root
-    public string Bone = "";
-    // Hit group id, or NoHitGroup. Only hitboxes use it
+    // Hit group id. Every hitbox has one, other boxes leave it at NoHitGroup
     public int HitGroup = NoHitGroup;
     // What the box deals. Only hitboxes use these
     public int Damage;
@@ -170,44 +217,10 @@ public class BoxFile
     public int Hitstun;
     // Facing right, mirrored with the attacker
     public DMVector Knockback;
-    public List<BoxKey> Keys = new();
-    // Frames the box exists on. A box with no ranges is never active
-    public List<FrameRange> Active = new();
-
-    public const int NoHitGroup = -1;
-}
-
-// How a key blends into the next key
-// Saved by name, so renaming a value breaks existing files
-public enum KeyInterpolation
-{
-    // Keep this key's values until the next key
-    Hold,
-    // Blend linearly toward the next key
-    Linear,
-}
-
-[Serializable]
-public struct BoxKey
-{
-    public int Frame;
-    // Center of the box, relative to the bone (or root)
+    // Center of the box, relative to the character root
     public DMVector Offset;
     // Full width and height
     public DMVector Size;
-    public KeyInterpolation Interpolation;
-}
 
-// Inclusive on both ends. Saved as [start, end]
-[Serializable]
-public struct FrameRange
-{
-    public int Start;
-    public int End;
-
-    public FrameRange(int start, int end)
-    {
-        Start = start;
-        End = end;
-    }
+    public const int NoHitGroup = -1;
 }

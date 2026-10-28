@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cams4h6frdl38"
-path="res://.godot/imported/bAir.png-c282f6346f2cc9e590ee3534034706ee.ctex"
+uid="uid://c1ienu3na0e4b"
+path="res://.godot/imported/Hurt.png-11f4233bcdebe4d261e6b2d9aaa744f3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/bAir.png"
-dest_files=["res://.godot/imported/bAir.png-c282f6346f2cc9e590ee3534034706ee.ctex"]
+source_file="res://characters/Platty/Anims/Hurt.png"
+dest_files=["res://.godot/imported/Hurt.png-11f4233bcdebe4d261e6b2d9aaa744f3.ctex"]
 
 [params]
 

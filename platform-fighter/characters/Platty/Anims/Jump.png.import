@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvijwyuend18m"
-path="res://.godot/imported/hurt.png-89e9409349da66847a2063239ec160a3.ctex"
+uid="uid://c13rdovwceatf"
+path="res://.godot/imported/Jump.png-9bc2aea9e707f901f9918c7168942758.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/hurt.png"
-dest_files=["res://.godot/imported/hurt.png-89e9409349da66847a2063239ec160a3.ctex"]
+source_file="res://characters/Platty/Anims/Jump.png"
+dest_files=["res://.godot/imported/Jump.png-9bc2aea9e707f901f9918c7168942758.ctex"]
 
 [params]
 

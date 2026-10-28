@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnj31wutbpu4e"
-path="res://.godot/imported/walk.png-6ddb2865c08b6fbd18cbf11d82d1669e.ctex"
+uid="uid://c8b444u7y3qxf"
+path="res://.godot/imported/Fall.png-cca4a5e824f89e1af9f18f6c01c3fe72.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/walk.png"
-dest_files=["res://.godot/imported/walk.png-6ddb2865c08b6fbd18cbf11d82d1669e.ctex"]
+source_file="res://characters/Platty/Anims/Fall.png"
+dest_files=["res://.godot/imported/Fall.png-cca4a5e824f89e1af9f18f6c01c3fe72.ctex"]
 
 [params]
 

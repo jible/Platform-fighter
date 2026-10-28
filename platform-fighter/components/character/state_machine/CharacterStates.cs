@@ -85,7 +85,7 @@ public class JumpState : CharacterState
     }
 }
 
-// Ends on landing, so its data should loop
+// Ends on landing, so its last phase should restart
 public class FallState : CharacterState
 {
     public override CharacterStateId Id => CharacterStateId.Fall;
@@ -164,7 +164,7 @@ public class AttackState : CharacterState
         }
     }
 
-    // An attack set to loop never gets here, so it plays until something else changes the state
+    // An attack whose last phase loops or goes back never gets here, so it plays until something else changes the state
     public override void OnAnimFinished(CharacterStateMachine machine)
     {
         machine.ChangeState(machine.Character.Movement.IsGrounded ? CharacterStateId.Idle : CharacterStateId.Fall);

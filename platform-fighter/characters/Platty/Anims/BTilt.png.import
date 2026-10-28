@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cddavehkwitq5"
-path="res://.godot/imported/fAir.png-9d9fe5689740655c928adbcd25c25123.ctex"
+uid="uid://dkv2dx4trkmpo"
+path="res://.godot/imported/BTilt.png-93f0fe3a009d86a4c2a02cbbdd4a0bd9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/fAir.png"
-dest_files=["res://.godot/imported/fAir.png-9d9fe5689740655c928adbcd25c25123.ctex"]
+source_file="res://characters/Platty/Anims/BTilt.png"
+dest_files=["res://.godot/imported/BTilt.png-93f0fe3a009d86a4c2a02cbbdd4a0bd9.ctex"]
 
 [params]
 

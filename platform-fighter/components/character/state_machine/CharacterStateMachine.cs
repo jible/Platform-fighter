@@ -29,11 +29,14 @@ public struct CharacterStateData
 {
     public CharacterStateId Id;
     public uint TicksInState;
+    // Index into the current definition's phases, and ticks since it started. Unused by states with no data
+    public byte Phase;
+    public uint TicksInPhase;
 }
 
 // Runs a character's states. Plain C#, made and owned by the character.
 // The states are handed in by the character, one per CharacterStateId. They must not hold data:
-// per character data belongs on the Character, so the only rollback state is the current id and its tick count
+// per character data belongs on the Character, so the only rollback state is the current id, phase and tick counts
 public class CharacterStateMachine
 {
     public readonly Character Character;
@@ -45,9 +48,13 @@ public class CharacterStateMachine
     public Action<CharacterStateId> StateChanged;
     public CharacterStateId CurrentStateId => data.Value.Id;
     public uint TicksInState => data.Value.TicksInState;
+    public int CurrentPhase => data.Value.Phase;
+    public uint TicksInPhase => data.Value.TicksInPhase;
     public CharacterState CurrentState => states[(int)data.Value.Id];
-    // The data the current state plays: its length, boxes and animation. Null when it has no authored data
+    // The data the current state plays: its phases, boxes and animation. Null when it has no authored data
     public StateDefinition CurrentDefinition => CurrentState.GetDefinition(Character);
+    // Sprite of the current definition showing this tick
+    public int CurrentSprite => CurrentDefinition?.SpriteAt(data.Value.Phase, data.Value.TicksInPhase) ?? 0;
 
     public CharacterStateMachine(Character character, CharacterState[] stateList, CharacterStateId startingState)
     {
@@ -105,17 +112,32 @@ public class CharacterStateMachine
         if (!changedThisTick)
         {
             data.Value.TicksInState++;
-
-            // Timing comes from the state's data, never the art, so it is the same on every machine
-            StateDefinition state = CurrentDefinition;
-            bool loops = state != null && state.Loop;
-            int length = state != null ? state.Length : Character.Data.DefaultStateLength;
-            // Fires once, on the tick the animation runs out. Looping states never finish
-            if (!loops && data.Value.TicksInState == length)
-            {
-                CurrentState.OnAnimFinished(this);
-            }
+            AdvancePhase();
         }
+    }
+
+    // Timing comes from the state's data, never the art, so it is the same on every machine.
+    // OnAnimFinished fires once, on the tick the last phase runs out. A phase that loops or goes back never gets there.
+    // If the state doesn't leave then, its ticks keep counting and the last sprite holds
+    private void AdvancePhase()
+    {
+        StateDefinition state = CurrentDefinition;
+        if (state == null)
+        {
+            if (data.Value.TicksInState == Character.Data.DefaultStateLength) CurrentState.OnAnimFinished(this);
+            return;
+        }
+
+        data.Value.TicksInPhase++;
+        PhaseDefinition phase = state.Phases[Math.Min(data.Value.Phase, state.Phases.Length - 1)];
+        if (data.Value.TicksInPhase != phase.Length) return;
+        if (phase.Next == PhaseDefinition.EndsState)
+        {
+            CurrentState.OnAnimFinished(this);
+            return;
+        }
+        data.Value.Phase = (byte)phase.Next;
+        data.Value.TicksInPhase = 0;
     }
 }
 

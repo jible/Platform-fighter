@@ -2,12 +2,11 @@ using Godot;
 using System.Collections.Generic;
 
 // Draws a sprite character. It is the sprite itself, so a character's view is one node.
-// Each animation is a sheet in the character's folder. A state with a sprite sequence cuts its sheet into the
-// sequence's grid and spreads the sequence evenly over the length. Otherwise the sheet is one row of
-// frames, SpriteFrameWidth wide, spread evenly over the state's length
+// Each animation is a sheet in the character's folder, cut into the state's grid. The state picks the sprite.
+// A state with no data treats its sheet as one row of frames, SpriteFrameWidth wide, and steps through it alone
 public partial class SpriteCharacterView : Sprite3D, ICharacterView
 {
-    // Used when the state has no authored length, so new art plays before its state is set up
+    // Used when the state has no data, so new art plays before its state is set up
     private const int UnauthoredTicksPerSprite = 6;
 
     private string folder;
@@ -42,21 +41,25 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
         Position = offset;
     }
 
-    public void Show(string animation, int frame, int length, SpriteTrack sprite, Character.Direction facing)
+    public void Show(string animation, SpriteGrid? grid, int sprite, Character.Direction facing)
     {
         // Art is drawn facing right
         FlipH = facing == Character.Direction.Left;
         PlaceAtOffset(facing);
 
         Texture2D sheet = GetSheet(animation);
-        // The sequence's grid is for its own sheet, not the default standing in for it
-        if (sheet == null) sprite = null;
+        // The grid is for the state's own sheet, not the default standing in for it
+        if (sheet == null && grid != null)
+        {
+            grid = null;
+            sprite = 0;
+        }
         sheet ??= GetSheet(defaultAnimation);
         // No sheet and no default keeps whatever was showing, so a missing animation is visible but not blank
         if (sheet == null) return;
 
-        int columns = sprite?.Columns ?? FrameCount(sheet);
-        int rows = sprite?.Rows ?? 1;
+        int columns = grid?.Columns ?? FrameCount(sheet);
+        int rows = grid?.Rows ?? 1;
         if (Texture != sheet || Hframes != columns || Vframes != rows)
         {
             // Reset first, since the old frame may be past the end of the new grid
@@ -66,14 +69,11 @@ public partial class SpriteCharacterView : Sprite3D, ICharacterView
             Vframes = rows;
         }
 
-        int index;
-        if (sprite != null) index = length > 0 ? sprite.SpriteAt(frame, length) : 0;
-        else if (length > 0) index = frame * columns / length;
-        else index = frame / UnauthoredTicksPerSprite % columns;
+        int index = grid != null ? sprite : sprite / UnauthoredTicksPerSprite % columns;
         Frame = Mathf.Clamp(index, 0, columns * rows - 1);
     }
 
-    // Frames Show spreads over the state for this animation, or 0 when there is no sheet and no default
+    // Frames in the sheet when it's one row of square frames, or 0 when there is no sheet and no default
     public int FrameCount(string animation)
     {
         Texture2D sheet = ResolveSheet(animation);

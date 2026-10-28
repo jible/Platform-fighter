@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://da3robwxscd13"
-path="res://.godot/imported/land.png-dd58402e870938b1ff75084ce0710c8e.ctex"
+uid="uid://jmix0wo2fa36"
+path="res://.godot/imported/Idle.png-4703df0fd50e2cf54d40e60c780080ae.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/land.png"
-dest_files=["res://.godot/imported/land.png-dd58402e870938b1ff75084ce0710c8e.ctex"]
+source_file="res://characters/Platty/Anims/Idle.png"
+dest_files=["res://.godot/imported/Idle.png-4703df0fd50e2cf54d40e60c780080ae.ctex"]
 
 [params]
 

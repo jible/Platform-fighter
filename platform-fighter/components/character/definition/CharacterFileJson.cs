@@ -8,7 +8,7 @@ public static class CharacterFileJson
 {
     private static readonly JsonSerializerSettings settings = new()
     {
-        Converters = { new StringEnumConverter(), new DM64JsonConverter(), new FrameRangeJsonConverter() },
+        Converters = { new StringEnumConverter(), new DM64JsonConverter() },
         // Decimal instead of double, so DM64 values never pass through a float
         FloatParseHandling = FloatParseHandling.Decimal,
     };
@@ -47,27 +47,5 @@ public class DM64JsonConverter : JsonConverter<DM64>
             _ => throw new JsonSerializationException($"Expected a number for DM64, got {reader.TokenType}"),
         };
         return DM64.FromRaw((long)Math.Round(number * Scale, MidpointRounding.AwayFromZero));
-    }
-}
-
-// Writes a frame range as [start, end]
-public class FrameRangeJsonConverter : JsonConverter<FrameRange>
-{
-    public override void WriteJson(JsonWriter writer, FrameRange value, JsonSerializer serializer)
-    {
-        writer.WriteStartArray();
-        writer.WriteValue(value.Start);
-        writer.WriteValue(value.End);
-        writer.WriteEndArray();
-    }
-
-    public override FrameRange ReadJson(JsonReader reader, Type objectType, FrameRange existingValue, bool hasExistingValue, JsonSerializer serializer)
-    {
-        int[] pair = serializer.Deserialize<int[]>(reader);
-        if (pair == null || pair.Length != 2)
-        {
-            throw new JsonSerializationException("Frame range must be [start, end]");
-        }
-        return new FrameRange(pair[0], pair[1]);
     }
 }

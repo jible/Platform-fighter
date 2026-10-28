@@ -21,24 +21,24 @@ public static class CharacterFiles
         ? ResourceFolder(id)
         : $"user://characters/{id}";
 
-    // A character with no file yet reads as empty
+    // A character with no file yet reads as empty. An older layout loads as empty states, with an error,
+    // since its data can't be read as phases. Upgrade it first
     public static CharacterFile ReadCharacter(CharacterId id)
     {
         string json = ReadText(id, CharacterName(id));
         CharacterFile file = json != null ? CharacterFileJson.ReadCharacter(json) : new CharacterFile();
-
-        // Hand edited files may have keys out of order, and everything that reads keys assumes they are sorted
-        foreach (var state in file.States.Values)
+        if (file.Version != CharacterFile.CurrentVersion)
         {
-            foreach (var box in state.Boxes)
-            {
-                BoxKeyMath.Sort(box.Keys);
-            }
+            GD.PushError($"{id}'s character file is version {file.Version}, but only version {CharacterFile.CurrentVersion} can be read");
         }
         return file;
     }
 
-    // Null when the character has no bake, as with sprite characters
+    // Where a state's sheet is, relative to the character's folder. Found by name, so every state's sheet is
+    // Anims/<state name>.png, and dropping a sheet in with the right name is all it takes
+    public static string AnimationName(string stateName) => $"Anims/{stateName}";
+
+    // Null when the character has no bake, as with sprite characters. Nothing reads bakes while boxes are per sprite
     public static BakedSkeletonFile ReadSkeleton(CharacterId id)
     {
         string json = ReadText(id, SkeletonName(id));
@@ -78,7 +78,7 @@ public static class CharacterFiles
     // Read fresh on every call, so edits made in the hitbox editor show up on the next match
     public static CharacterDefinition LoadDefinition(CharacterId id)
     {
-        return CharacterDefinitionBuilder.Build(ReadCharacter(id), Roster.Get(id).Visuals.BoxUnit, ReadSkeleton(id));
+        return CharacterDefinitionBuilder.Build(ReadCharacter(id), Roster.Get(id).Visuals.BoxUnit);
     }
 
     // Null when the file doesn't exist

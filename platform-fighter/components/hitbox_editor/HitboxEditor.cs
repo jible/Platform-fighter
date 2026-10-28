@@ -6,67 +6,85 @@ using System.Linq;
 
 // Connects the hitbox editor scene's controls to the HitboxEditorManager.
 // Controls raise edits, which go to the manager, and its Changed event redraws everything.
-// Selection, the selected property and the current frame live here, since the manager only holds file data.
+// Selection, the current sprite and playback live here, since the manager only holds file data.
+// Two modes: editing phase ranges, where the timeline covers the whole sheet and its markers move phase boundaries,
+// and editing a phase, where the timeline is locked to the phase's sprites and boxes are edited sprite by sprite.
 // Controls are found by their unique names, and signals are connected in _Ready
 public partial class HitboxEditor : Node
 {
     private const int NoBox = -1;
-    private const int NoEntry = -1;
     // DM64's fractional bits, for converting typed text without passing through a float, like CharacterFileJson
     private const decimal DMScale = 4294967296m;
-    // Sequence entries that never show or aren't in the sheet
     private static readonly Color WarningColor = new(1f, 0.55f, 0.35f);
+    private static readonly Color FoundColor = new(0.55f, 0.9f, 0.55f);
 
     [Export] public int PlaybackFramesPerSecond = 60;
     // Write the character file after every edit
     [Export] public bool AutoSave = true;
 
     private static readonly CharacterId[] Characters = Enum.GetValues<CharacterId>();
-    // In property dropdown order. The animation and collision follow them
+    // In property dropdown order. Collision follows them
     private static readonly BoxType[] BoxTypes = { BoxType.Pushbox, BoxType.Hitbox, BoxType.Hurtbox };
-    private static readonly int AnimationIndex = BoxTypes.Length;
-    private static readonly int CollisionIndex = BoxTypes.Length + 1;
+    private static readonly int CollisionIndex = BoxTypes.Length;
 
-    // A state with no data yet can still be selected, and is created on the first edit to it
+    // A state with no data yet can still be selected, and is set up by setting its grid
     public string SelectedState { get; private set; } = HitboxEditorManager.AllStateNames[0];
+    public int SelectedPhase { get; private set; }
+    // The timeline covers the whole sheet and moves phase boundaries, instead of editing the selected phase
+    public bool EditingRanges { get; private set; }
     // Only boxes of this type are listed, and new boxes are made with it
     public BoxType SelectedType { get; private set; } = BoxType.Hitbox;
-    // Editing the state's sprite sequence instead of its boxes. SelectedType is kept for switching back
-    public bool EditingAnimation { get; private set; }
-    // Editing the character's body and sprite offset, which aren't per state or keyed
+    // Editing the character's body and sprite offset, which aren't per state. SelectedType is kept for switching back
     public bool EditingCollision { get; private set; }
-    public bool EditingBoxes => !EditingAnimation && !EditingCollision;
+    // Kept while stepping to sprites without the box, so stepping back to one with it selects it again
     public int SelectedBoxId { get; private set; } = NoBox;
-    // Index into the sprite sequence, or NoEntry. Follows the timeline, and picking one moves the timeline to it
-    public int SelectedEntry { get; private set; } = NoEntry;
-    // Always a tick. When stepping by sprite it is the first tick of the current sprite, except mid playback
-    public int CurrentFrame { get; private set; }
+    // Sprite of the sheet being edited. Always within the selected phase unless editing ranges
+    public int CurrentSprite { get; private set; }
     public bool Playing { get; private set; }
 
     private HitboxEditorManager manager;
     private HitboxPreview preview;
+    // Playback runs every phase once in order, then returns to CurrentSprite
     private double playbackTime;
+    private int playbackPhase;
+    private int playbackTick;
     // The text each field was last shown, so leaving a field that wasn't changed isn't an edit
     private readonly Dictionary<LineEdit, string> shownText = new();
+    // What each On End dropdown item sets, in item order
+    private readonly List<(PhaseEnd OnEnd, int Target)> onEndOptions = new();
 
     // File
     private Label unsavedLabel;
     private Button reloadButton, saveButton;
-    // Pickers
-    private OptionButton characterDropdown, stateDropdown, propertyDropdown, boxDropdown;
-    private Control boxRow;
-    private Button addBoxButton, removeBoxButton;
-    // State properties
-    private LineEdit lengthInput;
-    private Label lengthWarning;
-    private CheckBox loopToggle;
+    // State
+    private OptionButton characterDropdown, stateDropdown;
+    private Label animationLabel, gridSummaryLabel;
+    private Button setGridButton;
+    private SpriteSheetDialog sheetDialog;
+    // Shown when the sheet's size no longer matches the grid
+    private Control sheetChangedRow, sheetChangedIndexRow;
+    private Label sheetChangedLabel;
+    private LineEdit sheetChangedIndexInput;
+    private Button applySheetChangeButton, ignoreSheetChangeButton;
     // Attacks only, so the row is hidden for states
     private Control cancelOnLandRow;
     private CheckBox cancelOnLandToggle;
+    // Phases
+    private OptionButton phaseDropdown;
+    private Button addPhaseButton, removePhaseButton;
+    private CheckButton editRangesToggle;
+    private Control phaseProperties;
+    private LineEdit phaseNameInput, phaseLengthInput;
+    private Label phaseLengthWarning;
+    private OptionButton onEndDropdown;
+    // Property and box
+    private Control propertySection;
+    private OptionButton propertyDropdown, boxDropdown;
+    private Control boxRow;
+    private Button addBoxButton, removeBoxButton;
     // Shared box properties
     private Control sharedProperties;
     private LineEdit nameInput, widthInput, heightInput;
-    private OptionButton parentDropdown;
     // One section per box type, only the selected type's shown
     private readonly Dictionary<BoxType, Control> typeSections = new();
     // Hitbox properties
@@ -74,25 +92,19 @@ public partial class HitboxEditor : Node
     private Button addHitGroupButton, removeHitGroupButton;
     private LineEdit damageInput, hitstunInput;
     private KnockbackPicker knockbackPicker;
-    // Animation properties
-    private Control animationProperties;
-    private Button setAnimButton, addEntryButton, removeEntryButton;
-    private Label sheetSummaryLabel;
-    private SequenceList sequenceList;
-    private LineEdit entrySpriteInput;
-    private SpriteSheetDialog sheetDialog;
     // Collision properties
     private Control collisionProperties;
     private LineEdit bodyWidthInput, bodyHeightInput, spriteOffsetXInput, spriteOffsetYInput;
     // Timeline
+    private PhaseTimeline phaseTimeline;
     private HSlider frameSlider;
     private Label frameLabel;
-    private Button playButton, pauseButton, previousFrameButton, nextFrameButton;
-    // Frame properties
-    private Label frameHeader, keyStateLabel;
+    private Button playButton, stopButton, previousFrameButton, nextFrameButton;
+    // Sprite properties
+    private Label frameHeader;
+    private Control frameProperties;
     private LineEdit positionXInput, positionYInput;
-    private CheckBox activeToggle;
-    private Button removeKeyButton;
+    private Button copyToNextButton;
 
     public override void _Ready()
     {
@@ -101,7 +113,7 @@ public partial class HitboxEditor : Node
 
         sheetDialog = new SpriteSheetDialog { Name = "SpriteSheetDialog" };
         AddChild(sheetDialog);
-        sheetDialog.Submitted += OnSheetSubmitted;
+        sheetDialog.Submitted += OnGridSubmitted;
 
         var characterRoot = new Node3D { Name = "CharacterRoot" };
         GetNode<SubViewport>("%SubViewport").AddChild(characterRoot);
@@ -117,19 +129,32 @@ public partial class HitboxEditor : Node
         preview?.Dispose();
     }
 
-    // Playback always loops, whether or not the state does
+    // Plays every phase once in order at its real speed, ignoring where each phase goes on ending
     public override void _Process(double delta)
     {
         if (!Playing) return;
-        playbackTime += delta;
-        double frameTime = 1.0 / PlaybackFramesPerSecond;
-        if (playbackTime < frameTime) return;
-        while (playbackTime >= frameTime)
+        if (!HasData)
         {
-            playbackTime -= frameTime;
-            CurrentFrame = (CurrentFrame + 1) % StateLength;
+            StopPlayback();
+            return;
         }
-        FollowFrame();
+        playbackTime += delta;
+        double tickTime = 1.0 / PlaybackFramesPerSecond;
+        if (playbackTime < tickTime) return;
+        List<PhaseFile> phases = manager.GetState(SelectedState).Phases;
+        while (playbackTime >= tickTime)
+        {
+            playbackTime -= tickTime;
+            playbackTick++;
+            if (playbackTick < phases[playbackPhase].Length) continue;
+            playbackTick = 0;
+            playbackPhase++;
+            if (playbackPhase >= phases.Count)
+            {
+                StopPlayback();
+                return;
+            }
+        }
         Refresh();
     }
 
@@ -143,21 +168,37 @@ public partial class HitboxEditor : Node
 
         characterDropdown = GetNode<OptionButton>("%CharacterDropdown");
         stateDropdown = GetNode<OptionButton>("%StateDropdown");
+        animationLabel = GetNode<Label>("%AnimationLabel");
+        gridSummaryLabel = GetNode<Label>("%GridSummaryLabel");
+        setGridButton = GetNode<Button>("%SetGridButton");
+        sheetChangedRow = GetNode<Control>("%SheetChangedRow");
+        sheetChangedLabel = GetNode<Label>("%SheetChangedLabel");
+        sheetChangedIndexRow = GetNode<Control>("%SheetChangedIndexRow");
+        sheetChangedIndexInput = GetNode<LineEdit>("%SheetChangedIndexInput");
+        applySheetChangeButton = GetNode<Button>("%ApplySheetChangeButton");
+        ignoreSheetChangeButton = GetNode<Button>("%IgnoreSheetChangeButton");
+        cancelOnLandRow = GetNode<Control>("%CancelOnLandRow");
+        cancelOnLandToggle = GetNode<CheckBox>("%CancelOnLandToggle");
+
+        phaseDropdown = GetNode<OptionButton>("%PhaseDropdown");
+        addPhaseButton = GetNode<Button>("%AddPhaseButton");
+        removePhaseButton = GetNode<Button>("%RemovePhaseButton");
+        editRangesToggle = GetNode<CheckButton>("%EditRangesToggle");
+        phaseProperties = GetNode<Control>("%PhaseProperties");
+        phaseNameInput = GetNode<LineEdit>("%PhaseNameInput");
+        onEndDropdown = GetNode<OptionButton>("%OnEndDropdown");
+        phaseLengthInput = GetNode<LineEdit>("%PhaseLengthInput");
+        phaseLengthWarning = GetNode<Label>("%PhaseLengthWarning");
+
+        propertySection = GetNode<Control>("%PropertySection");
         propertyDropdown = GetNode<OptionButton>("%PropertyDropdown");
         boxRow = GetNode<Control>("%BoxRow");
         boxDropdown = GetNode<OptionButton>("%BoxDropdown");
         addBoxButton = GetNode<Button>("%AddBoxButton");
         removeBoxButton = GetNode<Button>("%RemoveBoxButton");
 
-        lengthInput = GetNode<LineEdit>("%LengthInput");
-        lengthWarning = GetNode<Label>("%LengthWarning");
-        loopToggle = GetNode<CheckBox>("%LoopToggle");
-        cancelOnLandRow = GetNode<Control>("%CancelOnLandRow");
-        cancelOnLandToggle = GetNode<CheckBox>("%CancelOnLandToggle");
-
         sharedProperties = GetNode<Control>("%SharedProperties");
         nameInput = GetNode<LineEdit>("%NameInput");
-        parentDropdown = GetNode<OptionButton>("%ParentDropdown");
         widthInput = GetNode<LineEdit>("%WidthInput");
         heightInput = GetNode<LineEdit>("%HeightInput");
 
@@ -171,33 +212,25 @@ public partial class HitboxEditor : Node
         hitstunInput = GetNode<LineEdit>("%HitstunInput");
         knockbackPicker = GetNode<KnockbackPicker>("%KnockbackPicker");
 
-        animationProperties = GetNode<Control>("%AnimationProperties");
-        setAnimButton = GetNode<Button>("%SetAnimButton");
-        sheetSummaryLabel = GetNode<Label>("%SheetSummaryLabel");
-        sequenceList = GetNode<SequenceList>("%SequenceList");
-        entrySpriteInput = GetNode<LineEdit>("%EntrySpriteInput");
-        addEntryButton = GetNode<Button>("%AddEntryButton");
-        removeEntryButton = GetNode<Button>("%RemoveEntryButton");
-
         collisionProperties = GetNode<Control>("%CollisionProperties");
         bodyWidthInput = GetNode<LineEdit>("%BodyWidthInput");
         bodyHeightInput = GetNode<LineEdit>("%BodyHeightInput");
         spriteOffsetXInput = GetNode<LineEdit>("%SpriteOffsetXInput");
         spriteOffsetYInput = GetNode<LineEdit>("%SpriteOffsetYInput");
 
+        phaseTimeline = GetNode<PhaseTimeline>("%PhaseTimeline");
         frameSlider = GetNode<HSlider>("%FrameSlider");
         frameLabel = GetNode<Label>("%FrameLabel");
         playButton = GetNode<Button>("%PlayButton");
-        pauseButton = GetNode<Button>("%PauseButton");
+        stopButton = GetNode<Button>("%StopButton");
         previousFrameButton = GetNode<Button>("%PreviousFrameButton");
         nextFrameButton = GetNode<Button>("%NextFrameButton");
 
         frameHeader = GetNode<Label>("%FrameHeader");
+        frameProperties = GetNode<Control>("%FrameProperties");
         positionXInput = GetNode<LineEdit>("%PositionXInput");
         positionYInput = GetNode<LineEdit>("%PositionYInput");
-        activeToggle = GetNode<CheckBox>("%ActiveToggle");
-        keyStateLabel = GetNode<Label>("%KeyStateLabel");
-        removeKeyButton = GetNode<Button>("%RemoveKeyButton");
+        copyToNextButton = GetNode<Button>("%CopyToNextButton");
     }
 
     private void ConnectControls()
@@ -207,19 +240,27 @@ public partial class HitboxEditor : Node
 
         characterDropdown.ItemSelected += index => OnCharacterSelected((int)index);
         stateDropdown.ItemSelected += index => OnStateSelected((int)index);
+        setGridButton.Pressed += OnSetGridClicked;
+        applySheetChangeButton.Pressed += OnApplySheetChangeClicked;
+        ignoreSheetChangeButton.Pressed += OnIgnoreSheetChangeClicked;
+        cancelOnLandToggle.Toggled += on => manager.SetAttackCancelOnLand(SelectedState, on);
+
+        phaseDropdown.ItemSelected += index => SelectPhase((int)index);
+        addPhaseButton.Pressed += OnAddPhaseClicked;
+        removePhaseButton.Pressed += OnRemovePhaseClicked;
+        editRangesToggle.Toggled += OnEditRangesToggled;
+        OnEndEdit(phaseNameInput, OnPhaseNameEdited);
+        onEndDropdown.ItemSelected += index => OnOnEndSelected((int)index);
+        OnEndEdit(phaseLengthInput, OnPhaseLengthEdited);
+
         propertyDropdown.ItemSelected += index => OnPropertySelected((int)index);
         boxDropdown.ItemSelected += index => OnBoxSelected((int)index);
         addBoxButton.Pressed += OnAddBoxClicked;
         removeBoxButton.Pressed += OnRemoveBoxClicked;
 
-        OnEndEdit(lengthInput, OnLengthEdited);
-        loopToggle.Toggled += OnLoopToggled;
-        cancelOnLandToggle.Toggled += on => manager.SetAttackCancelOnLand(SelectedState, on);
-
         OnEndEdit(nameInput, OnBoxNameEdited);
-        parentDropdown.ItemSelected += index => OnBoxParentSelected((int)index);
-        OnEndEdit(widthInput, OnWidthEdited);
-        OnEndEdit(heightInput, OnHeightEdited);
+        OnEndEdit(widthInput, text => OnBoxRectEdited(text, BoxField.Width));
+        OnEndEdit(heightInput, text => OnBoxRectEdited(text, BoxField.Height));
 
         hitGroupDropdown.ItemSelected += index => OnHitGroupSelected((int)index);
         addHitGroupButton.Pressed += OnAddHitGroupClicked;
@@ -229,29 +270,24 @@ public partial class HitboxEditor : Node
         // The picker keeps its own X and Y fields in sync, so only its result is connected
         knockbackPicker.ValueChanged += OnKnockbackChanged;
 
-        setAnimButton.Pressed += OnSetAnimClicked;
-        sequenceList.ItemSelected += index => OnEntrySelected((int)index);
-        sequenceList.ItemMoved += OnEntryMoved;
-        OnEndEdit(entrySpriteInput, OnEntrySpriteEdited);
-        addEntryButton.Pressed += OnAddEntryClicked;
-        removeEntryButton.Pressed += OnRemoveEntryClicked;
-
         OnEndEdit(bodyWidthInput, text => OnBodySizeEdited(text, true));
         OnEndEdit(bodyHeightInput, text => OnBodySizeEdited(text, false));
         OnEndEdit(spriteOffsetXInput, text => OnSpriteOffsetEdited(text, true));
         OnEndEdit(spriteOffsetYInput, text => OnSpriteOffsetEdited(text, false));
 
+        phaseTimeline.BoundaryMoved += OnBoundaryMoved;
+        phaseTimeline.SpriteClicked += OnTimelineSpriteClicked;
+        phaseTimeline.DragPreviewed += OnBoundaryDragPreviewed;
         frameSlider.Step = 1;
-        frameSlider.ValueChanged += value => OnFrameChanged((int)Math.Round(value));
+        frameSlider.ValueChanged += value => OnSliderChanged((int)Math.Round(value));
         playButton.Pressed += OnPlayClicked;
-        pauseButton.Pressed += OnPauseClicked;
-        previousFrameButton.Pressed += OnPreviousFrameClicked;
-        nextFrameButton.Pressed += OnNextFrameClicked;
+        stopButton.Pressed += StopPlayback;
+        previousFrameButton.Pressed += () => StepSprite(-1);
+        nextFrameButton.Pressed += () => StepSprite(1);
 
-        OnEndEdit(positionXInput, OnPositionXEdited);
-        OnEndEdit(positionYInput, OnPositionYEdited);
-        activeToggle.Toggled += OnActiveToggled;
-        removeKeyButton.Pressed += OnRemoveKeyClicked;
+        OnEndEdit(positionXInput, text => OnBoxRectEdited(text, BoxField.X));
+        OnEndEdit(positionYInput, text => OnBoxRectEdited(text, BoxField.Y));
+        copyToNextButton.Pressed += OnCopyToNextClicked;
     }
 
     // A field's edit is applied on enter or when it loses focus, so a half typed value is never applied
@@ -282,33 +318,167 @@ public partial class HitboxEditor : Node
         Refresh();
     }
 
-    // ---------- Pickers ----------
+    // ---------- State ----------
 
     // Unsaved edits to the previous character are dropped, the same as a reload
     private void OnCharacterSelected(int index)
     {
+        Playing = false;
+        SelectedPhase = 0;
         SelectedBoxId = NoBox;
-        SelectedEntry = NoEntry;
-        CurrentFrame = 0;
+        CurrentSprite = 0;
         manager.LoadCharacter(Characters[index]);
     }
 
     private void OnStateSelected(int index)
     {
+        Playing = false;
         SelectedState = manager.StateNames[index];
+        SelectedPhase = 0;
         SelectedBoxId = NoBox;
-        SelectedEntry = NoEntry;
-        CurrentFrame = 0;
+        CurrentSprite = 0;
         ValidateSelection();
         Refresh();
     }
 
+    // A state with no data starts from its sheet cut into square sprites, as the view guesses
+    private void OnSetGridClicked()
+    {
+        SpriteFile sprite = HasData ? manager.GetState(SelectedState).Sprite : null;
+        string animation = CharacterFiles.AnimationName(SelectedState);
+        sheetDialog.Open(
+            CharacterFiles.ResourceFolder(manager.CharacterId),
+            animation,
+            sprite?.Columns ?? Math.Max(1, preview.FrameCount(animation)),
+            sprite?.Rows ?? 1);
+    }
+
+    // Sets the state up if it has no data yet
+    private void OnGridSubmitted(int columns, int rows, int sheetWidth, int sheetHeight)
+    {
+        manager.AddState(SelectedState, columns, rows, sheetWidth, sheetHeight);
+    }
+
+    // Moves the data with the sprites added or removed. Bad text puts the old value back
+    private void OnApplySheetChangeClicked()
+    {
+        if (!TryGetSheetChange(out SheetChange change)) return;
+        if (change.Delta == 0)
+        {
+            manager.SetGrid(SelectedState, change.Columns, change.Rows, change.Width, change.Height);
+            return;
+        }
+        if (!int.TryParse(sheetChangedIndexInput.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index))
+        {
+            Refresh();
+            return;
+        }
+        manager.ShiftSprites(SelectedState, index, change.Delta, change.Columns, change.Rows, change.Width, change.Height);
+    }
+
+    private void OnIgnoreSheetChangeClicked()
+    {
+        if (!TryGetSheetChange(out SheetChange change)) return;
+        manager.AcceptSheetSize(SelectedState, change.Width, change.Height);
+    }
+
+    // ---------- Phases ----------
+
+    // Moves the timeline to the phase's first sprite
+    private void SelectPhase(int index)
+    {
+        if (!HasData) return;
+        Playing = false;
+        SelectedPhase = Math.Clamp(index, 0, manager.GetState(SelectedState).Phases.Count - 1);
+        CurrentSprite = manager.GetPhase(SelectedState, SelectedPhase).Start;
+        ValidateSelection();
+        Refresh();
+    }
+
+    // Splits the selected phase and selects its back half
+    private void OnAddPhaseClicked()
+    {
+        if (!HasData || !manager.CanSplitPhase(SelectedState, SelectedPhase)) return;
+        int added = manager.SplitPhase(SelectedState, SelectedPhase);
+        SelectPhase(added);
+    }
+
+    private void OnRemovePhaseClicked()
+    {
+        if (!HasData) return;
+        int removed = SelectedPhase;
+        SelectedPhase = Math.Max(0, removed - 1);
+        manager.RemovePhase(SelectedState, removed);
+    }
+
+    private void OnEditRangesToggled(bool on)
+    {
+        Playing = false;
+        EditingRanges = on;
+        ValidateSelection();
+        Refresh();
+    }
+
+    private void OnPhaseNameEdited(string text)
+    {
+        if (!HasData) return;
+        manager.RenamePhase(SelectedState, SelectedPhase, text);
+    }
+
+    private void OnOnEndSelected(int index)
+    {
+        if (!HasData || index < 0 || index >= onEndOptions.Count) return;
+        (PhaseEnd onEnd, int target) = onEndOptions[index];
+        manager.SetPhaseEnd(SelectedState, SelectedPhase, onEnd, target);
+    }
+
+    // Never shorter than its sprites, so each shows for at least a tick. Bad text puts the old value back
+    private void OnPhaseLengthEdited(string text)
+    {
+        if (!HasData || !int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int length))
+        {
+            Refresh();
+            return;
+        }
+        manager.SetPhaseLength(SelectedState, SelectedPhase, length);
+    }
+
+    private void OnBoundaryMoved(int phaseIndex, int lastSprite)
+    {
+        if (!HasData) return;
+        manager.SetPhaseBoundary(SelectedState, phaseIndex, lastSprite);
+    }
+
+    // Shows the sprite the dragged marker is on, so it's clear what the phase will start or end on.
+    // Nothing is edited until the drag is released, so the phase list still shows the old ranges
+    private void OnBoundaryDragPreviewed(int sprite)
+    {
+        if (!HasData) return;
+        Playing = false;
+        CurrentSprite = Math.Clamp(sprite, 0, manager.SpriteCount(SelectedState) - 1);
+        Refresh();
+    }
+
+    // Selects the phase playing the sprite too, so the phase list follows the timeline
+    private void OnTimelineSpriteClicked(int sprite)
+    {
+        if (!HasData) return;
+        Playing = false;
+        int phase = manager.PhaseOf(SelectedState, sprite);
+        // Outside ranges mode the timeline only moves within the phase, so clicking another phase selects it
+        if (phase != SelectedPhase) SelectedPhase = phase;
+        CurrentSprite = sprite;
+        ValidateSelection();
+        Refresh();
+    }
+
+    // ---------- Property and box ----------
+
     // A new box type picks its first box, since the old selection was another type
     private void OnPropertySelected(int index)
     {
-        EditingAnimation = index == AnimationIndex;
         EditingCollision = index == CollisionIndex;
-        if (EditingBoxes && BoxTypes[index] != SelectedType)
+        if (!EditingCollision && BoxTypes[index] != SelectedType)
         {
             SelectedType = BoxTypes[index];
             SelectedBoxId = NoBox;
@@ -317,7 +487,7 @@ public partial class HitboxEditor : Node
         Refresh();
     }
 
-    // The dropdown only lists boxes of the selected type
+    // The dropdown only lists boxes of the selected type on the current sprite
     private void OnBoxSelected(int index)
     {
         List<BoxFile> boxes = BoxesOfSelectedType();
@@ -328,44 +498,31 @@ public partial class HitboxEditor : Node
 
     private void OnAddBoxClicked()
     {
-        manager.AddState(SelectedState);
-        BoxFile box = manager.AddBox(SelectedState, SelectedType);
+        if (!HasData) return;
+        BoxFile box = manager.AddBox(SelectedState, CurrentSprite, SelectedType);
         SelectedBoxId = box.Id;
         Refresh();
     }
 
+    // Only this sprite's copy
     private void OnRemoveBoxClicked()
     {
         if (!TryGetBox(out _)) return;
         int boxId = SelectedBoxId;
         SelectedBoxId = NoBox;
-        manager.RemoveBox(SelectedState, boxId);
+        manager.RemoveBox(SelectedState, CurrentSprite, boxId);
     }
 
-    // ---------- State properties ----------
-
-    // Editing a state with no data creates it. Bad text puts the old value back.
-    // Never shorter than its sprites, so each shows for at least a tick
-    private void OnLengthEdited(string text)
+    // Copies the box onto the next sprite of the phase and moves there, so a box held over several sprites
+    // is set up one click per sprite
+    private void OnCopyToNextClicked()
     {
-        if (!int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int length))
-        {
-            Refresh();
-            return;
-        }
-        manager.AddState(SelectedState);
-        // The manager only knows about the sequence, so a sheet spread without one is held to its frame count here
-        if (SelectedSprite == null) length = Math.Max(length, SpriteCount);
-        manager.SetStateLength(SelectedState, length);
+        if (!TryGetBox(out _) || CurrentSprite >= SpriteRangeEnd) return;
+        int next = CurrentSprite + 1;
+        manager.CopyBox(SelectedState, CurrentSprite, SelectedBoxId, next);
+        CurrentSprite = next;
+        Refresh();
     }
-
-    private void OnLoopToggled(bool on)
-    {
-        manager.AddState(SelectedState);
-        manager.SetStateLoop(SelectedState, on);
-    }
-
-    // ---------- Shared box properties ----------
 
     private void OnBoxNameEdited(string text)
     {
@@ -373,45 +530,37 @@ public partial class HitboxEditor : Node
         manager.RenameBox(SelectedState, SelectedBoxId, text);
     }
 
-    // Index 0 is the root
-    private void OnBoxParentSelected(int index)
-    {
-        if (!TryGetBox(out BoxFile box)) return;
-        List<string> parents = GetParentOptions(box);
-        manager.SetParent(SelectedState, SelectedBoxId, index == 0 ? "" : parents[index]);
-    }
+    private enum BoxField { X, Y, Width, Height }
 
-    // Size is keyed, so this sets it on the current frame. Bad text puts the old value back
-    private void OnWidthEdited(string text)
+    // This sprite's copy only. Bad text puts the old value back
+    private void OnBoxRectEdited(string text, BoxField field)
     {
-        if (!TryGetBox(out _) || !TryParse(text, out DM64 width))
+        if (!TryGetBox(out BoxFile box) || !TryParse(text, out DM64 value))
         {
             Refresh();
             return;
         }
-        manager.SampleBox(SelectedState, SelectedBoxId, CurrentFrame, out _, out DMVector size);
-        manager.SetSize(SelectedState, SelectedBoxId, CurrentFrame, new DMVector(width, size.y));
-    }
-
-    private void OnHeightEdited(string text)
-    {
-        if (!TryGetBox(out _) || !TryParse(text, out DM64 height))
+        DMVector offset = box.Offset;
+        DMVector size = box.Size;
+        switch (field)
         {
-            Refresh();
-            return;
+            case BoxField.X: offset = new DMVector(value, offset.y); break;
+            case BoxField.Y: offset = new DMVector(offset.x, value); break;
+            case BoxField.Width: size = new DMVector(value, size.y); break;
+            case BoxField.Height: size = new DMVector(size.x, value); break;
         }
-        manager.SampleBox(SelectedState, SelectedBoxId, CurrentFrame, out _, out DMVector size);
-        manager.SetSize(SelectedState, SelectedBoxId, CurrentFrame, new DMVector(size.x, height));
+        manager.SetBoxRect(SelectedState, CurrentSprite, SelectedBoxId, offset, size);
     }
 
     // ---------- Hitbox properties ----------
 
-    // Index 0 is "None". Puts the selected box in the group
+    // Every hitbox is in a group, so there's no "None". Moves every copy of the box
     private void OnHitGroupSelected(int index)
     {
         if (!TryGetHitbox(out _)) return;
-        int hitGroupId = index == 0 ? BoxFile.NoHitGroup : manager.GetState(SelectedState).HitGroups[index - 1].Id;
-        manager.SetBoxHitGroup(SelectedState, SelectedBoxId, hitGroupId);
+        List<HitGroupFile> groups = manager.GetState(SelectedState).HitGroups;
+        if (index < 0 || index >= groups.Count) return;
+        manager.SetBoxHitGroup(SelectedState, SelectedBoxId, groups[index].Id);
     }
 
     // Creates a group and puts the selected box in it
@@ -422,14 +571,14 @@ public partial class HitboxEditor : Node
         manager.SetBoxHitGroup(SelectedState, SelectedBoxId, group.Id);
     }
 
-    // Removes the selected box's group, which also clears it from every other box in it
+    // Removes the selected box's group. Its hitboxes move to the first group left
     private void OnRemoveHitGroupClicked()
     {
-        if (!TryGetHitbox(out BoxFile box) || box.HitGroup == BoxFile.NoHitGroup) return;
+        if (!TryGetHitbox(out BoxFile box)) return;
         manager.RemoveHitGroup(SelectedState, box.HitGroup);
     }
 
-    // What the hit deals belongs to each hitbox, so boxes sharing a hit group can deal different hits
+    // What the hit deals belongs to each copy, so a hitbox can hit harder on its first sprite than its last
     private void OnDamageEdited(string text)
     {
         if (!TryGetHitbox(out BoxFile box) || !int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int damage))
@@ -437,7 +586,7 @@ public partial class HitboxEditor : Node
             Refresh();
             return;
         }
-        manager.SetBoxHit(SelectedState, SelectedBoxId, damage, box.Hitstun, box.Knockback);
+        manager.SetBoxHit(SelectedState, CurrentSprite, SelectedBoxId, damage, box.Hitstun, box.Knockback);
     }
 
     private void OnHitstunEdited(string text)
@@ -447,7 +596,7 @@ public partial class HitboxEditor : Node
             Refresh();
             return;
         }
-        manager.SetBoxHit(SelectedState, SelectedBoxId, box.Damage, hitstun, box.Knockback);
+        manager.SetBoxHit(SelectedState, CurrentSprite, SelectedBoxId, box.Damage, hitstun, box.Knockback);
     }
 
     private void OnKnockbackChanged(Vector2 knockback)
@@ -457,96 +606,7 @@ public partial class HitboxEditor : Node
             Refresh();
             return;
         }
-        manager.SetBoxHit(SelectedState, SelectedBoxId, box.Damage, box.Hitstun, new DMVector(ToDM64(knockback.X), ToDM64(knockback.Y)));
-    }
-
-    // ---------- Animation properties ----------
-
-    // A state with no sequence yet starts from its sheet cut into square frames, as the view guesses
-    private void OnSetAnimClicked()
-    {
-        StateFile state = manager.HasState(SelectedState) ? manager.GetState(SelectedState) : null;
-        SpriteFile sprite = state?.Sprite;
-        string sheet = state != null && state.Animation != "" ? state.Animation : SelectedState;
-        sheetDialog.Open(
-            CharacterFiles.ResourceFolder(manager.CharacterId),
-            sheet,
-            sprite?.Columns ?? Math.Max(1, preview.FrameCount(sheet)),
-            sprite?.Rows ?? 1);
-    }
-
-    private void OnSheetSubmitted(string sheet, int columns, int rows)
-    {
-        manager.AddState(SelectedState);
-        manager.SetSprite(SelectedState, sheet, columns, rows);
-    }
-
-    private void OnEntrySelected(int index)
-    {
-        SelectEntry(index);
-        Refresh();
-    }
-
-    private void OnEntryMoved(int from, int to)
-    {
-        SelectEntry(to);
-        manager.MoveSequenceEntry(SelectedState, from, to);
-    }
-
-    // Bad text, or a sprite the sheet doesn't have, puts the old value back
-    private void OnEntrySpriteEdited(string text)
-    {
-        SpriteFile sprite = SelectedSprite;
-        if (sprite == null || SelectedEntry == NoEntry
-            || !int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
-            || value < 0 || value >= sprite.Columns * sprite.Rows)
-        {
-            Refresh();
-            return;
-        }
-        manager.SetSequenceEntry(SelectedState, SelectedEntry, value);
-    }
-
-    // Adds a copy of the selected entry after it, so holding a sprite longer is one click.
-    // The state grows a tick if it's already as short as the sequence.
-    // Works on an emptied sequence too, so SelectedSprite isn't used
-    private void OnAddEntryClicked()
-    {
-        SpriteFile sprite = manager.HasState(SelectedState) ? manager.GetSprite(SelectedState) : null;
-        if (sprite == null) return;
-        bool hasEntry = SelectedEntry != NoEntry && SelectedEntry < sprite.Sequence.Count;
-        int index = hasEntry ? SelectedEntry + 1 : sprite.Sequence.Count;
-        int value = hasEntry ? sprite.Sequence[SelectedEntry] : 0;
-        // Selected after it's added, since where an entry starts depends on how many there are
-        manager.AddSequenceEntry(SelectedState, index, value);
-        SelectEntry(index);
-        Refresh();
-    }
-
-    private void OnRemoveEntryClicked()
-    {
-        if (SelectedSprite == null || SelectedEntry == NoEntry) return;
-        manager.RemoveSequenceEntry(SelectedState, SelectedEntry);
-    }
-
-    // Moves the timeline to the entry's first tick. An entry the state is too short to reach is still selected
-    private void SelectEntry(int index)
-    {
-        Playing = false;
-        SelectedEntry = index;
-        SpriteFile sprite = manager.HasState(SelectedState) ? manager.GetSprite(SelectedState) : null;
-        if (sprite == null || sprite.Sequence.Count == 0) return;
-        int start = SpriteSequenceMath.EntryStart(index, sprite.Sequence.Count, StateLength);
-        if (start < StateLength) CurrentFrame = start;
-    }
-
-    // Selects the entry showing on the current frame, after the timeline moves
-    private void FollowFrame()
-    {
-        SpriteFile sprite = SelectedSprite;
-        SelectedEntry = sprite == null
-            ? NoEntry
-            : SpriteSequenceMath.EntryAt(CurrentFrame, sprite.Sequence.Count, StateLength);
+        manager.SetBoxHit(SelectedState, CurrentSprite, SelectedBoxId, box.Damage, box.Hitstun, new DMVector(ToDM64(knockback.X), ToDM64(knockback.Y)));
     }
 
     // ---------- Collision properties ----------
@@ -576,87 +636,41 @@ public partial class HitboxEditor : Node
 
     // ---------- Timeline ----------
 
-    // The slider is in steps, which are sprites or ticks
-    private void OnFrameChanged(int step)
+    // The slider covers the whole sheet when editing ranges, otherwise just the selected phase
+    private void OnSliderChanged(int step)
     {
-        CurrentFrame = StepStart(Math.Clamp(step, 0, StepCount - 1));
-        FollowFrame();
+        Playing = false;
+        CurrentSprite = Math.Clamp(SpriteRangeStart + step, SpriteRangeStart, SpriteRangeEnd);
+        ValidateSelection();
+        Refresh();
+    }
+
+    // Wraps within the slider's range
+    private void StepSprite(int direction)
+    {
+        Playing = false;
+        int count = SpriteRangeEnd - SpriteRangeStart + 1;
+        int step = (CurrentSprite - SpriteRangeStart + direction + count) % count;
+        CurrentSprite = SpriteRangeStart + step;
+        ValidateSelection();
         Refresh();
     }
 
     private void OnPlayClicked()
     {
+        if (!HasData) return;
         Playing = true;
         playbackTime = 0;
+        playbackPhase = 0;
+        playbackTick = 0;
         Refresh();
     }
 
-    // Snaps back to the start of the sprite, so edits never land mid sprite
-    private void OnPauseClicked()
+    // Back to the sprite being edited, which playback never moves
+    private void StopPlayback()
     {
         Playing = false;
-        CurrentFrame = StepStart(StepOf(CurrentFrame));
-        FollowFrame();
         Refresh();
-    }
-
-    private void OnPreviousFrameClicked()
-    {
-        Playing = false;
-        CurrentFrame = StepStart((StepOf(CurrentFrame) - 1 + StepCount) % StepCount);
-        FollowFrame();
-        Refresh();
-    }
-
-    private void OnNextFrameClicked()
-    {
-        Playing = false;
-        CurrentFrame = StepStart((StepOf(CurrentFrame) + 1) % StepCount);
-        FollowFrame();
-        Refresh();
-    }
-
-    // ---------- Frame properties ----------
-
-    private void OnPositionXEdited(string text)
-    {
-        if (!TryGetBox(out _) || !TryParse(text, out DM64 x))
-        {
-            Refresh();
-            return;
-        }
-        manager.SampleBox(SelectedState, SelectedBoxId, CurrentFrame, out DMVector offset, out _);
-        manager.SetPosition(SelectedState, SelectedBoxId, CurrentFrame, new DMVector(x, offset.y));
-    }
-
-    private void OnPositionYEdited(string text)
-    {
-        if (!TryGetBox(out _) || !TryParse(text, out DM64 y))
-        {
-            Refresh();
-            return;
-        }
-        manager.SampleBox(SelectedState, SelectedBoxId, CurrentFrame, out DMVector offset, out _);
-        manager.SetPosition(SelectedState, SelectedBoxId, CurrentFrame, new DMVector(offset.x, y));
-    }
-
-    // Covers every tick the current sprite is shown for
-    private void OnActiveToggled(bool on)
-    {
-        if (!TryGetBox(out _)) return;
-        bool[] active = manager.GetActiveFrames(SelectedState, SelectedBoxId);
-        int step = StepOf(CurrentFrame);
-        for (int frame = StepStart(step); frame < StepStart(step + 1); frame++)
-        {
-            active[frame] = on;
-        }
-        manager.SetActiveFrames(SelectedState, SelectedBoxId, active);
-    }
-
-    private void OnRemoveKeyClicked()
-    {
-        if (!TryGetBox(out _)) return;
-        manager.RemoveKey(SelectedState, SelectedBoxId, CurrentFrame);
     }
 
     // ---------- Refresh ----------
@@ -673,99 +687,179 @@ public partial class HitboxEditor : Node
         string[] stateNames = manager.StateNames;
         Fill(stateDropdown, stateNames, Array.IndexOf(stateNames, SelectedState));
 
-        // State properties. Always editable, since editing a state with no data creates it
-        StateFile state = manager.HasState(SelectedState) ? manager.GetState(SelectedState) : null;
-        ShowText(lengthInput, state != null ? state.Length.ToString(CultureInfo.InvariantCulture) : "", true);
-        loopToggle.SetPressedNoSignal(state != null && state.Loop);
-        AttackFile attack = manager.GetAttack(SelectedState);
-        cancelOnLandRow.Visible = attack != null;
-        cancelOnLandToggle.SetPressedNoSignal(attack != null && attack.CancelOnLand);
-        string warning = LengthWarning();
-        lengthWarning.Visible = warning != "";
-        lengthInput.TooltipText = warning;
+        StateFile state = HasData ? manager.GetState(SelectedState) : null;
+        ShowStateProperties(state);
+        ShowPhaseProperties(state);
 
-        // Property and box. The box controls are hidden while editing the animation
-        Fill(propertyDropdown, BoxTypes.Select(type => type.ToString()).Append("Animation").Append("Collision"),
-            EditingAnimation ? AnimationIndex : EditingCollision ? CollisionIndex : Array.IndexOf(BoxTypes, SelectedType));
-        boxRow.Visible = EditingBoxes;
-        sharedProperties.Visible = EditingBoxes;
+        // Property and box. Hidden while editing ranges, and the box controls while editing collision
+        propertySection.Visible = !EditingRanges;
+        Fill(propertyDropdown, BoxTypes.Select(type => type.ToString()).Append("Collision"),
+            EditingCollision ? CollisionIndex : Array.IndexOf(BoxTypes, SelectedType));
+        bool editingBoxes = EditingBoxes;
+        boxRow.Visible = editingBoxes;
+        sharedProperties.Visible = editingBoxes;
         List<BoxFile> boxes = BoxesOfSelectedType();
         Fill(boxDropdown, boxes.Select(b => b.Name), boxes.FindIndex(b => b.Id == SelectedBoxId));
         boxDropdown.Disabled = boxes.Count == 0;
+        addBoxButton.Disabled = !HasData;
         bool hasBox = TryGetBox(out BoxFile box);
         removeBoxButton.Disabled = !hasBox;
 
-        DMVector offset = DMVector.zero;
-        DMVector size = DMVector.zero;
-        bool active = false;
-        bool hasKey = false;
-        if (hasBox)
-        {
-            manager.SampleBox(SelectedState, SelectedBoxId, CurrentFrame, out offset, out size);
-            active = manager.GetActiveFrames(SelectedState, SelectedBoxId)[CurrentFrame];
-            hasKey = manager.HasKey(SelectedState, SelectedBoxId, CurrentFrame);
-        }
-
-        // Shared properties
         ShowText(nameInput, hasBox ? box.Name : "", hasBox);
-        List<string> parents = hasBox ? GetParentOptions(box) : new List<string> { "Root" };
-        Fill(parentDropdown, parents, hasBox && box.Bone != "" ? parents.IndexOf(box.Bone) : 0);
-        parentDropdown.Disabled = !hasBox;
-        ShowText(widthInput, hasBox ? Format(size.x) : "", hasBox);
-        ShowText(heightInput, hasBox ? Format(size.y) : "", hasBox);
-
-        // Only the selected type's own properties
+        ShowText(widthInput, hasBox ? Format(box.Size.x) : "", hasBox);
+        ShowText(heightInput, hasBox ? Format(box.Size.y) : "", hasBox);
         foreach (var (type, section) in typeSections)
         {
-            section.Visible = EditingBoxes && type == SelectedType;
+            section.Visible = editingBoxes && type == SelectedType;
         }
         ShowHitboxProperties(hasBox ? box : null);
-        animationProperties.Visible = EditingAnimation;
-        ShowAnimationProperties(state);
-        collisionProperties.Visible = EditingCollision;
+        collisionProperties.Visible = !EditingRanges && EditingCollision;
         ShowCollisionProperties();
 
-        // Timeline. Key notches aren't drawn yet, see the scene's FrameSlider
-        int stepCount = StepCount;
-        int currentStep = StepOf(CurrentFrame);
-        frameSlider.MaxValue = Math.Max(0, stepCount - 1);
-        frameSlider.SetValueNoSignal(currentStep);
-        frameLabel.Text = $"{currentStep} / {stepCount - 1}";
-        playButton.Disabled = Playing;
-        pauseButton.Disabled = !Playing;
+        ShowTimeline(state);
 
-        // Frame properties
-        frameHeader.Text = $"FRAME {currentStep}";
-        ShowText(positionXInput, hasBox ? Format(offset.x) : "", hasBox);
-        ShowText(positionYInput, hasBox ? Format(offset.y) : "", hasBox);
-        activeToggle.SetPressedNoSignal(active);
-        activeToggle.Disabled = !hasBox;
-        keyStateLabel.Text = !hasBox ? "" : hasKey ? "Keyed" : "Blended";
-        removeKeyButton.Disabled = !(hasBox && hasKey && box.Keys.Count > 1);
+        // Sprite properties
+        frameProperties.Visible = editingBoxes;
+        ShowText(positionXInput, hasBox ? Format(box.Offset.x) : "", hasBox);
+        ShowText(positionYInput, hasBox ? Format(box.Offset.y) : "", hasBox);
+        copyToNextButton.Disabled = !hasBox || CurrentSprite >= SpriteRangeEnd;
 
-        preview.Show(manager.Definition, SelectedState, CurrentFrame, hasBox ? SelectedBoxId : NoBox,
-            EditingCollision ? manager.Data.Body.Size : null);
+        preview.Show(manager.Definition, SelectedState, ShownSprite, hasBox ? SelectedBoxId : NoBox,
+            EditingCollision && !EditingRanges ? manager.Data.Body.Size : null);
+    }
+
+    // state is null when the state has no data yet
+    private void ShowStateProperties(StateFile state)
+    {
+        string path = SpriteCharacterView.SheetPath(CharacterFiles.ResourceFolder(manager.CharacterId), CharacterFiles.AnimationName(SelectedState));
+        bool found = LoadSheet() != null;
+        animationLabel.Text = found ? $"Found animation at {path}" : $"Did not find animation at {path}";
+        animationLabel.Modulate = found ? FoundColor : WarningColor;
+
+        SpriteFile sprite = state?.Sprite;
+        gridSummaryLabel.Text = state == null
+            ? "Not set up. Set the grid to start"
+            : $"{sprite.Columns} x {sprite.Rows}, {sprite.Count} sprites";
+        setGridButton.Disabled = !found;
+
+        bool changed = TryGetSheetChange(out SheetChange change);
+        sheetChangedRow.Visible = changed;
+        if (changed)
+        {
+            string was = $"{sprite.SheetWidth} x {sprite.SheetHeight}";
+            string now = $"{change.Width} x {change.Height}";
+            sheetChangedLabel.Text = change.Delta > 0 ? $"The sheet grew from {was} to {now}: {change.Delta} sprites were added. Before which sprite?"
+                : change.Delta < 0 ? $"The sheet shrank from {was} to {now}: {-change.Delta} sprites were removed. Starting at which sprite?"
+                : $"The sheet changed from {was} to {now}, but has as many sprites. Recut it at the new size?";
+            sheetChangedIndexRow.Visible = change.Delta != 0;
+            // Defaults to the end, and left alone while being typed in
+            if (!sheetChangedIndexInput.HasFocus())
+            {
+                ShowText(sheetChangedIndexInput, (change.Delta > 0 ? sprite.Count : Math.Max(0, sprite.Count + change.Delta)).ToString(CultureInfo.InvariantCulture), true);
+            }
+            applySheetChangeButton.Text = change.Delta == 0 ? "Recut" : "Move data";
+        }
+
+        AttackFile attack = manager.GetAttack(SelectedState);
+        cancelOnLandRow.Visible = attack != null;
+        cancelOnLandToggle.SetPressedNoSignal(attack != null && attack.CancelOnLand);
+    }
+
+    private void ShowPhaseProperties(StateFile state)
+    {
+        bool hasData = state != null;
+        Fill(phaseDropdown, hasData ? state.Phases.Select((p, i) => $"{i}: {p.Name}  ({p.Start}-{p.End})") : Array.Empty<string>(), SelectedPhase);
+        phaseDropdown.Disabled = !hasData;
+        addPhaseButton.Disabled = !hasData || !manager.CanSplitPhase(SelectedState, SelectedPhase);
+        removePhaseButton.Disabled = !hasData || state.Phases.Count < 2;
+        editRangesToggle.SetPressedNoSignal(EditingRanges);
+        editRangesToggle.Disabled = !hasData;
+
+        phaseProperties.Visible = hasData && !EditingRanges;
+        if (!hasData) return;
+        PhaseFile phase = state.Phases[SelectedPhase];
+        ShowText(phaseNameInput, phase.Name, true);
+        ShowText(phaseLengthInput, phase.Length.ToString(CultureInfo.InvariantCulture), true);
+        string warning = phase.Length % phase.SpriteCount == 0
+            ? ""
+            : $"{phase.Length} ticks don't divide evenly into {phase.SpriteCount} sprites, so some show a tick longer";
+        phaseLengthWarning.Visible = warning != "";
+        phaseLengthInput.TooltipText = warning;
+
+        // Next, restart and first, then going to any other phase by name
+        onEndOptions.Clear();
+        var names = new List<string>();
+        bool last = SelectedPhase == state.Phases.Count - 1;
+        onEndOptions.Add((PhaseEnd.Next, PhaseFile.NoPhase));
+        names.Add(last ? "End the state" : "Go to next phase");
+        onEndOptions.Add((PhaseEnd.Restart, PhaseFile.NoPhase));
+        names.Add("Restart phase");
+        onEndOptions.Add((PhaseEnd.First, PhaseFile.NoPhase));
+        names.Add("Go to first phase");
+        for (int i = 0; i < state.Phases.Count; i++)
+        {
+            if (i == SelectedPhase) continue;
+            onEndOptions.Add((PhaseEnd.Phase, state.Phases[i].Id));
+            names.Add($"Go to {state.Phases[i].Name}");
+        }
+        int selected = onEndOptions.FindIndex(option => option.OnEnd == phase.OnEnd
+            && (phase.OnEnd != PhaseEnd.Phase || option.Target == phase.Target));
+        Fill(onEndDropdown, names, selected);
+    }
+
+    private void ShowTimeline(StateFile state)
+    {
+        bool hasData = state != null;
+        int count = hasData ? state.Sprite?.Count ?? 1 : 1;
+        IEnumerable<(int, int, string)> ranges = hasData
+            ? state.Phases.Select(p => (p.Start, p.End, p.Name))
+            : Array.Empty<(int, int, string)>();
+        phaseTimeline.Show(count, ranges, SelectedPhase, ShownSprite, hasData && EditingRanges && !Playing);
+
+        int start = SpriteRangeStart;
+        int end = SpriteRangeEnd;
+        frameSlider.MaxValue = Math.Max(0, end - start);
+        frameSlider.SetValueNoSignal(CurrentSprite - start);
+        frameSlider.Editable = hasData;
+        frameLabel.Text = $"{CurrentSprite - start} / {end - start}";
+        playButton.Disabled = Playing || !hasData;
+        stopButton.Disabled = !Playing;
+
+        if (!hasData)
+        {
+            frameHeader.Text = "SPRITE 0";
+            return;
+        }
+        int sprite = ShownSprite;
+        int phaseIndex = Playing ? playbackPhase : manager.PhaseOf(SelectedState, sprite);
+        PhaseFile phase = state.Phases[phaseIndex];
+        int entry = sprite - phase.Start;
+        int first = SpriteSequenceMath.EntryStart(entry, phase.SpriteCount, phase.Length);
+        int last = SpriteSequenceMath.EntryStart(entry + 1, phase.SpriteCount, phase.Length) - 1;
+        frameHeader.Text = Playing
+            ? $"PLAYING  {phase.Name}  tick {playbackTick} / {phase.Length - 1}"
+            : $"SPRITE {sprite}  ({phase.Name}, ticks {first}-{last} of {phase.Length})";
     }
 
     // box is null when no box is selected
     private void ShowHitboxProperties(BoxFile box)
     {
         bool hasBox = box != null;
-        var hitGroupNames = new List<string> { "None" };
-        int hitGroupIndex = 0;
-        if (manager.HasState(SelectedState))
+        var hitGroupNames = new List<string>();
+        int hitGroupIndex = -1;
+        if (HasData)
         {
             List<HitGroupFile> groups = manager.GetState(SelectedState).HitGroups;
             for (int i = 0; i < groups.Count; i++)
             {
                 hitGroupNames.Add(groups[i].Name);
-                if (hasBox && groups[i].Id == box.HitGroup) hitGroupIndex = i + 1;
+                if (hasBox && groups[i].Id == box.HitGroup) hitGroupIndex = i;
             }
         }
         Fill(hitGroupDropdown, hitGroupNames, hitGroupIndex);
         hitGroupDropdown.Disabled = !hasBox;
         addHitGroupButton.Disabled = !hasBox;
-        removeHitGroupButton.Disabled = !hasBox || hitGroupIndex == 0;
+        removeHitGroupButton.Disabled = !hasBox || hitGroupIndex < 0 || !manager.CanRemoveHitGroup(SelectedState, box.HitGroup);
 
         ShowText(damageInput, hasBox ? box.Damage.ToString(CultureInfo.InvariantCulture) : "", hasBox);
         ShowText(hitstunInput, hasBox ? box.Hitstun.ToString(CultureInfo.InvariantCulture) : "", hasBox);
@@ -773,58 +867,6 @@ public partial class HitboxEditor : Node
         knockbackPicker.MouseFilter = hasBox ? Control.MouseFilterEnum.Stop : Control.MouseFilterEnum.Ignore;
         knockbackPicker.XInput.Editable = hasBox;
         knockbackPicker.YInput.Editable = hasBox;
-    }
-
-    // state is null when the state has no data yet
-    private void ShowAnimationProperties(StateFile state)
-    {
-        SpriteFile sprite = state?.Sprite;
-        sheetSummaryLabel.Text = sprite == null
-            ? "No sequence, the sheet is spread evenly over the state"
-            : $"{state.Animation}: {sprite.Columns} x {sprite.Rows}, spread over {state.Length} ticks";
-
-        // Only rebuilt when an entry changes, so the list keeps its scroll while the timeline plays
-        var items = new List<string>();
-        var problems = new List<bool>();
-        if (sprite != null)
-        {
-            for (int i = 0; i < sprite.Sequence.Count; i++)
-            {
-                int start = SpriteSequenceMath.EntryStart(i, sprite.Sequence.Count, StateLength);
-                int end = SpriteSequenceMath.EntryStart(i + 1, sprite.Sequence.Count, StateLength) - 1;
-                bool inSheet = sprite.Sequence[i] >= 0 && sprite.Sequence[i] < sprite.Columns * sprite.Rows;
-                // Only a hand edited file is shorter than its sequence
-                bool shows = end >= start;
-                string note = !inSheet ? "  (not in sheet)" : !shows ? "  (never shows)" : "";
-                items.Add($"{i}:  sprite {sprite.Sequence[i]}    ticks {start}-{end}{note}");
-                problems.Add(!inSheet || !shows);
-            }
-        }
-        bool same = items.Count == sequenceList.ItemCount;
-        for (int i = 0; same && i < items.Count; i++) same = sequenceList.GetItemText(i) == items[i];
-        if (!same)
-        {
-            sequenceList.Clear();
-            for (int i = 0; i < items.Count; i++)
-            {
-                sequenceList.AddItem(items[i]);
-                if (problems[i]) sequenceList.SetItemCustomFgColor(i, WarningColor);
-            }
-        }
-
-        bool hasEntry = sprite != null && SelectedEntry != NoEntry && SelectedEntry < sprite.Sequence.Count;
-        if (hasEntry)
-        {
-            sequenceList.Select(SelectedEntry);
-            sequenceList.EnsureCurrentIsVisible();
-        }
-        else
-        {
-            sequenceList.DeselectAll();
-        }
-        ShowText(entrySpriteInput, hasEntry ? sprite.Sequence[SelectedEntry].ToString(CultureInfo.InvariantCulture) : "", hasEntry);
-        addEntryButton.Disabled = sprite == null;
-        removeEntryButton.Disabled = !hasEntry;
     }
 
     // The character's, not the state's, so always editable
@@ -855,99 +897,47 @@ public partial class HitboxEditor : Node
 
     // ---------- Helpers ----------
 
-    // 1 for a state with no data yet
-    private int StateLength => manager.Loaded != null && manager.HasState(SelectedState) ? manager.GetState(SelectedState).Length : 1;
+    private bool HasData => manager.Loaded != null && manager.HasState(SelectedState);
 
-    // The selected state's sprite sequence. Null when it has none, or it's empty, since an empty one isn't played
-    private SpriteFile SelectedSprite
+    private bool EditingBoxes => !EditingRanges && !EditingCollision;
+
+    // First and last sprite the slider covers: the whole sheet when editing ranges, otherwise the selected phase
+    private int SpriteRangeStart => HasData && !EditingRanges ? manager.GetPhase(SelectedState, SelectedPhase).Start : 0;
+    private int SpriteRangeEnd => !HasData ? 0
+        : EditingRanges ? manager.SpriteCount(SelectedState) - 1
+        : manager.GetPhase(SelectedState, SelectedPhase).End;
+
+    // The sprite on screen, which is playback's while playing
+    private int ShownSprite
     {
         get
         {
-            if (manager.Loaded == null || !manager.HasState(SelectedState)) return null;
-            SpriteFile sprite = manager.GetSprite(SelectedState);
-            return sprite != null && sprite.Sequence.Count > 0 ? sprite : null;
+            if (!Playing || !HasData) return CurrentSprite;
+            PhaseFile phase = manager.GetPhase(SelectedState, playbackPhase);
+            return phase.Start + SpriteSequenceMath.EntryAt(playbackTick, phase.SpriteCount, phase.Length);
         }
     }
 
-    // In file order, for the box dropdown
+    // On the current sprite, in file order, for the box dropdown
     private List<BoxFile> BoxesOfSelectedType()
     {
-        if (manager.Loaded == null || !manager.HasState(SelectedState)) return new List<BoxFile>();
-        return manager.GetState(SelectedState).Boxes.Where(box => box.Type == SelectedType).ToList();
+        if (!HasData) return new List<BoxFile>();
+        return manager.GetFrame(SelectedState, CurrentSprite).Boxes.Where(box => box.Type == SelectedType).ToList();
     }
 
-    // ---------- Steps ----------
-    // The timeline moves one step at a time. For a sprite animation a step is one sprite, or one sequence entry,
-    // covering every tick it's shown for, since boxes never need to change mid sprite. Otherwise a step is one tick.
-    // Steps are numbered from 0 and grow by at most one a tick, since the state is never shorter than its sprites,
-    // so StepOf alone defines them
-
-    // 0 when there's no data for the state, no sheet, or the view doesn't step
-    private int SpriteCount
-    {
-        get
-        {
-            if (manager.Loaded == null || !manager.HasState(SelectedState)) return 0;
-            StateDefinition state = manager.Definition.GetStateOrAttack(SelectedState);
-            return preview.FrameCount(state != null ? state.AnimationName : SelectedState);
-        }
-    }
-
-    // A state shorter than its sheet can't give every sprite a tick, so it steps per tick instead
-    private bool StepsBySprite => SpriteCount > 0 && SpriteCount < StateLength;
-
-    private int StepCount => StepOf(StateLength - 1) + 1;
-
-    // Matches SpriteCharacterView, which spreads the sequence, or the sheet without one, evenly over the length
-    private int StepOf(int frame)
-    {
-        SpriteFile sprite = SelectedSprite;
-        if (sprite != null) return SpriteSequenceMath.EntryAt(frame, sprite.Sequence.Count, StateLength);
-        return StepsBySprite ? frame * SpriteCount / StateLength : frame;
-    }
-
-    // First tick of the step. StepStart(StepCount) is the state's length
-    private int StepStart(int step)
-    {
-        for (int frame = 0; frame < StateLength; frame++)
-        {
-            if (StepOf(frame) >= step) return frame;
-        }
-        return StateLength;
-    }
-
-    // Empty when the length splits evenly over the sequence, or the sheet without one, or there are no sprites
-    private string LengthWarning()
-    {
-        SpriteFile sprite = SelectedSprite;
-        int sprites = sprite != null ? sprite.Sequence.Count : SpriteCount;
-        int length = StateLength;
-        if (sprites == 0 || length % sprites == 0) return "";
-        if (length < sprites) return $"{length} ticks is shorter than the {sprites} sprites, so some will never show";
-        return $"{length} ticks don't divide evenly into {sprites} sprites, so some show a tick longer than others";
-    }
-
-    // Never while editing the animation or collision, so box controls and edits are off without losing the selection
+    // The selected box's copy on the current sprite. Never while editing ranges or collision
     private bool TryGetBox(out BoxFile box)
     {
         box = null;
-        if (!EditingBoxes) return false;
-        if (SelectedBoxId == NoBox || manager.Loaded == null || !manager.HasState(SelectedState)) return false;
-        foreach (var candidate in manager.GetState(SelectedState).Boxes)
-        {
-            if (candidate.Id == SelectedBoxId)
-            {
-                box = candidate;
-                return true;
-            }
-        }
-        return false;
+        if (!EditingBoxes || SelectedBoxId == NoBox || !HasData) return false;
+        box = manager.FindBox(SelectedState, CurrentSprite, SelectedBoxId);
+        return box != null && box.Type == SelectedType;
     }
 
     private bool TryGetHitbox(out BoxFile box) => TryGetBox(out box) && box.Type == BoxType.Hitbox;
 
-    // After a load, removal or type change the selected box may be gone, so the type's first box is picked instead.
-    // The state may also have shrunk past the current frame, or its sequence past the selected entry
+    // After a load or edit the selected state, phase or sprite may be gone, so each is pulled back into range.
+    // A selected box missing from the sprite gives way to the type's first box there, if it has one
     private void ValidateSelection()
     {
         if (manager.Loaded == null) return;
@@ -956,29 +946,78 @@ public partial class HitboxEditor : Node
         {
             SelectedState = HitboxEditorManager.AllStateNames[0];
             SelectedBoxId = NoBox;
-            SelectedEntry = NoEntry;
         }
-        if (EditingBoxes && (!TryGetBox(out BoxFile box) || box.Type != SelectedType))
+        if (!HasData)
+        {
+            SelectedPhase = 0;
+            CurrentSprite = 0;
+            return;
+        }
+
+        int count = manager.SpriteCount(SelectedState);
+        CurrentSprite = Math.Clamp(CurrentSprite, 0, count - 1);
+        SelectedPhase = Math.Clamp(SelectedPhase, 0, manager.GetState(SelectedState).Phases.Count - 1);
+        if (EditingRanges) SelectedPhase = manager.PhaseOf(SelectedState, CurrentSprite);
+        else CurrentSprite = Math.Clamp(CurrentSprite, SpriteRangeStart, SpriteRangeEnd);
+        if (Playing && playbackPhase >= manager.GetState(SelectedState).Phases.Count) Playing = false;
+
+        if (EditingBoxes && !TryGetBox(out _))
         {
             List<BoxFile> boxes = BoxesOfSelectedType();
-            SelectedBoxId = boxes.Count > 0 ? boxes[0].Id : NoBox;
+            if (boxes.Count > 0) SelectedBoxId = boxes[0].Id;
         }
-        CurrentFrame = Math.Clamp(CurrentFrame, 0, StateLength - 1);
-        if (!Playing) CurrentFrame = StepStart(StepOf(CurrentFrame));
-
-        SpriteFile sprite = SelectedSprite;
-        if (sprite == null) SelectedEntry = NoEntry;
-        else if (SelectedEntry >= sprite.Sequence.Count) SelectedEntry = sprite.Sequence.Count - 1;
-        else if (SelectedEntry == NoEntry) FollowFrame();
     }
 
-    // "Root", then the bones baked for the state. The box's own bone is kept even when it has no bake
-    private List<string> GetParentOptions(BoxFile box)
+    // ---------- Sheet ----------
+
+    // How the sheet's size moved away from the grid's. Sprites keep the size they were cut at,
+    // so a sheet that grew by whole sprites reads as sprites added
+    private readonly struct SheetChange
     {
-        var parents = new List<string> { "Root" };
-        parents.AddRange(manager.GetBones(SelectedState));
-        if (box.Bone != "" && !parents.Contains(box.Bone)) parents.Add(box.Bone);
-        return parents;
+        public readonly int Width, Height, Columns, Rows, Delta;
+
+        public SheetChange(int width, int height, int columns, int rows, int delta)
+        {
+            Width = width;
+            Height = height;
+            Columns = columns;
+            Rows = rows;
+            Delta = delta;
+        }
+    }
+
+    // False when the state has no data, no sheet, no remembered size, or the size still matches
+    private bool TryGetSheetChange(out SheetChange change)
+    {
+        change = default;
+        if (!HasData) return false;
+        SpriteFile sprite = manager.GetState(SelectedState).Sprite;
+        Texture2D sheet = LoadSheet();
+        if (sprite == null || sheet == null || sprite.SheetWidth <= 0 || sprite.SheetHeight <= 0) return false;
+        int width = sheet.GetWidth();
+        int height = sheet.GetHeight();
+        if (width == sprite.SheetWidth && height == sprite.SheetHeight) return false;
+
+        int spriteWidth = Math.Max(1, sprite.SheetWidth / Math.Max(1, sprite.Columns));
+        int spriteHeight = Math.Max(1, sprite.SheetHeight / Math.Max(1, sprite.Rows));
+        int columns = Math.Max(1, width / spriteWidth);
+        int rows = Math.Max(1, height / spriteHeight);
+        // Same count means the sprites themselves changed size, so the grid is kept as it was
+        int delta = columns * rows - sprite.Count;
+        if (delta == 0)
+        {
+            columns = sprite.Columns;
+            rows = sprite.Rows;
+        }
+        change = new SheetChange(width, height, columns, rows, delta);
+        return true;
+    }
+
+    // Null when the state's sheet isn't where its name says. Loaded fresh, so a sheet changed outside shows up
+    private Texture2D LoadSheet()
+    {
+        string path = SpriteCharacterView.SheetPath(CharacterFiles.ResourceFolder(manager.CharacterId), CharacterFiles.AnimationName(SelectedState));
+        return ResourceLoader.Exists(path) ? GD.Load<Texture2D>(path) : null;
     }
 
     // Through decimal, so typed text never passes through a float and 0.1 saves as exactly what was typed

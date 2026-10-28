@@ -6,10 +6,10 @@ using System;
 // One implementation per VisualKind, each a node the character adds as its child
 public interface ICharacterView
 {
-    // frame is a tick within the animation, already looped or held by the state.
-    // length is the ticks the animation plays over, usually the state's length, or 0 when the state has no authored data.
-    // sprite is the state's sprite sequence, or null to spread the animation evenly over length
-    void Show(string animation, int frame, int length, SpriteTrack sprite, Character.Direction facing);
+    // animation is a path relative to the character's folder, see CharacterFiles.AnimationName.
+    // grid is how the state cuts its sheet, and sprite the one to show, numbered left to right then top to bottom.
+    // A state with no data passes a null grid and its ticks as sprite, and the view steps through the sheet on its own
+    void Show(string animation, SpriteGrid? grid, int sprite, Character.Direction facing);
     // Distinct images the animation steps through, like a sprite sheet's frames, so an editor can step one at a time.
     // 0 when the animation has none, or doesn't step, as with a model
     int FrameCount(string animation);
@@ -170,12 +170,12 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         StateDefinition state = StateMachine.CurrentDefinition;
         if (state != null)
         {
-            View.Show(state.AnimationName, state.FrameAt(StateMachine.TicksInState), state.Length, state.Sprite, direction);
+            View.Show(state.AnimationName, state.Grid, StateMachine.CurrentSprite, direction);
         }
         else
         {
             // No authored data yet, so play the sheet named after the state
-            View.Show(stateId.ToString(), (int)StateMachine.TicksInState, 0, null, direction);
+            View.Show(CharacterFiles.AnimationName(stateId.ToString()), null, (int)StateMachine.TicksInState, direction);
         }
     }
 }

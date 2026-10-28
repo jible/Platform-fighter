@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0ccpejdbpfwu"
-path="res://.godot/imported/dTilt.png-4102b80c18e8cf2385f99cdfca3325a5.ctex"
+uid="uid://jgiv3jqpeqtk"
+path="res://.godot/imported/JumpSquat.png-1a121001f6baf26a8c0af529ff1b31d0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/dTilt.png"
-dest_files=["res://.godot/imported/dTilt.png-4102b80c18e8cf2385f99cdfca3325a5.ctex"]
+source_file="res://characters/Platty/Anims/JumpSquat.png"
+dest_files=["res://.godot/imported/JumpSquat.png-1a121001f6baf26a8c0af529ff1b31d0.ctex"]
 
 [params]
 

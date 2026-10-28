@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ba8kwxvy7bwj6"
-path="res://.godot/imported/fTilt.png-30190981b750aaa10f80cdb513cf7af7.ctex"
+uid="uid://b13yxr5p6ndd"
+path="res://.godot/imported/BAir.png-37e77d6de5e8b631499164074e09dcb7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/fTilt.png"
-dest_files=["res://.godot/imported/fTilt.png-30190981b750aaa10f80cdb513cf7af7.ctex"]
+source_file="res://characters/Platty/Anims/BAir.png"
+dest_files=["res://.godot/imported/BAir.png-37e77d6de5e8b631499164074e09dcb7.ctex"]
 
 [params]
 

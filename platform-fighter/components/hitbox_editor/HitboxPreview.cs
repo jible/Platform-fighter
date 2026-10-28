@@ -1,8 +1,8 @@
 using Godot;
 using System;
 
-// The hitbox editor's view of the character: the same view the game draws with, plus the selected state's boxes.
-// Boxes are read from the built definition, so keys are blended and bone offsets applied exactly as in play.
+// The hitbox editor's view of the character: the same view the game draws with, plus one sprite's boxes.
+// Boxes are read from the built definition, so they're scaled exactly as in play.
 // Lives in the editor's SubViewport, whose own world keeps it apart from everything else.
 // Plain C#, owned by the HitboxEditor, which redraws it after every refresh and disposes it on exit
 public class HitboxPreview : IDisposable
@@ -10,8 +10,6 @@ public class HitboxPreview : IDisposable
     // Unselected boxes are drawn fainter, so the one being edited stands out
     private const float SelectedAlpha = 0.7f;
     private const float UnselectedAlpha = 0.35f;
-    // The selected box is still drawn on frames it's inactive, so a new box can be placed before it's turned on
-    private const float InactiveAlpha = 0.12f;
     // In front of the sprite, which sits at z = 0
     private const float BoxZ = 0.1f;
     private const float BoxThickness = 0.01f;
@@ -48,30 +46,30 @@ public class HitboxPreview : IDisposable
         viewFor = data;
     }
 
-    // stateName is any CharacterStateId name. A state with no data plays the sheet named after it, like the game does.
-    // body is the physics body's size to draw over everything, or null to leave it out
-    public void Show(CharacterDefinition definition, string stateName, int frame, int selectedBoxId, DMVector? body = null)
+    // stateName is any CharacterStateId name or attack. A state with no data shows the start of the sheet named
+    // after it, like the game does. body is the physics body's size to draw over everything, or null to leave it out
+    public void Show(CharacterDefinition definition, string stateName, int sprite, int selectedBoxId, DMVector? body = null)
     {
         StateDefinition state = definition.GetStateOrAttack(stateName);
         if (state == null)
         {
-            view?.Show(stateName, frame, 0, null, Character.Direction.Right);
+            view?.Show(CharacterFiles.AnimationName(stateName), null, 0, Character.Direction.Right);
             DrawBody(body);
             drawer.Submit();
             return;
         }
 
-        frame = Math.Clamp(frame, 0, state.Length - 1);
-        view?.Show(state.AnimationName, frame, state.Length, state.Sprite, Character.Direction.Right);
+        sprite = Math.Clamp(sprite, 0, state.Grid.Count - 1);
+        view?.Show(state.AnimationName, state.Grid, sprite, Character.Direction.Right);
 
         // The selected box last, so it draws over the rest
         BoxDefinition selected = null;
-        foreach (BoxDefinition box in state.Boxes)
+        foreach (BoxDefinition box in state.BoxesAt(sprite))
         {
             if (box.Id == selectedBoxId) selected = box;
-            else if (box.IsActive(frame)) Draw(box, frame, UnselectedAlpha);
+            else Draw(box, UnselectedAlpha);
         }
-        if (selected != null) Draw(selected, frame, selected.IsActive(frame) ? SelectedAlpha : InactiveAlpha);
+        if (selected != null) Draw(selected, SelectedAlpha);
         DrawBody(body);
         drawer.Submit();
     }
@@ -90,7 +88,7 @@ public class HitboxPreview : IDisposable
         drawer.Dispose();
     }
 
-    private void Draw(BoxDefinition box, int frame, float alpha)
+    private void Draw(BoxDefinition box, float alpha)
     {
         Color color = box.Type switch
         {
@@ -99,6 +97,6 @@ public class HitboxPreview : IDisposable
             _ => HurtboxColor,
         };
         color.A = alpha;
-        drawer.Draw(box.CenterAt(frame).ToVector3(BoxZ), box.SizeAt(frame).ToVector3(BoxThickness), color);
+        drawer.Draw(box.Center.ToVector3(BoxZ), box.Size.ToVector3(BoxThickness), color);
     }
 }

@@ -1,35 +1,40 @@
 {
-  "Version": 1,
+  "Version": 3,
   "States": {
     "Idle": {
-      "Animation": "Anims/idle.png",
       "Sprite": {
         "Columns": 2,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1
-        ]
+        "SheetWidth": 400,
+        "SheetHeight": 200,
+        "Count": 2
       },
-      "Length": 120,
-      "Loop": true,
-      "HitGroups": [],
-      "Boxes": [
+      "Phases": [
         {
-          "Id": 3,
-          "Name": "body",
-          "Type": "Hurtbox",
-          "Bone": "",
-          "HitGroup": -1,
-          "Damage": 0,
-          "Hitstun": 0,
-          "Knockback": {
-            "x": 0,
-            "y": 0
-          },
-          "Keys": [
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 1,
+          "Length": 120,
+          "OnEnd": "Restart",
+          "Target": -1,
+          "SpriteCount": 2
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": [
             {
-              "Frame": 0,
+              "Id": 3,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
               "Offset": {
                 "x": 0,
                 "y": 0
@@ -37,155 +42,300 @@
               "Size": {
                 "x": 25,
                 "y": 50
-              },
-              "Interpolation": "Hold"
+              }
             }
-          ],
-          "Active": [
-            [
-              0,
-              119
-            ]
+          ]
+        },
+        {
+          "Boxes": [
+            {
+              "Id": 3,
+              "Name": "body",
+              "Type": "Hurtbox",
+              "HitGroup": -1,
+              "Damage": 0,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 0,
+                "y": 0
+              },
+              "Offset": {
+                "x": 0,
+                "y": 0
+              },
+              "Size": {
+                "x": 25,
+                "y": 50
+              }
+            }
           ]
         }
       ],
+      "HitGroups": [],
       "NextBoxId": 4,
-      "NextHitGroupId": 3
+      "NextHitGroupId": 3,
+      "NextPhaseId": 1
     },
     "Fall": {
-      "Animation": "Anims/fall.png",
       "Sprite": {
         "Columns": 2,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1
-        ]
+        "SheetWidth": 400,
+        "SheetHeight": 200,
+        "Count": 2
       },
-      "Length": 18,
-      "Loop": true,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 1,
+          "Length": 18,
+          "OnEnd": "Restart",
+          "Target": -1,
+          "SpriteCount": 2
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "Walk": {
-      "Animation": "Anims/walk",
       "Sprite": {
         "Columns": 2,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1
-        ]
+        "SheetWidth": 400,
+        "SheetHeight": 200,
+        "Count": 2
       },
-      "Length": 30,
-      "Loop": true,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 1,
+          "Length": 30,
+          "OnEnd": "Restart",
+          "Target": -1,
+          "SpriteCount": 2
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "JumpSquat": {
-      "Animation": "Anims/jumpSquat",
       "Sprite": {
         "Columns": 1,
         "Rows": 1,
-        "Sequence": [
-          0
-        ]
+        "SheetWidth": 200,
+        "SheetHeight": 200,
+        "Count": 1
       },
-      "Length": 1,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 0,
+          "Length": 1,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 1
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "Jump": {
-      "Animation": "Anims/jump",
       "Sprite": {
         "Columns": 4,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1,
-          2,
-          3
-        ]
+        "SheetWidth": 800,
+        "SheetHeight": 200,
+        "Count": 4
       },
-      "Length": 16,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 3,
+          "Length": 16,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 4
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "Land": {
-      "Animation": "Anims/land",
       "Sprite": {
         "Columns": 2,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1
-        ]
+        "SheetWidth": 400,
+        "SheetHeight": 200,
+        "Count": 2
       },
-      "Length": 6,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 1,
+          "Length": 6,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "Turn": {
-      "Animation": "Anims/turn",
       "Sprite": {
         "Columns": 2,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1
-        ]
+        "SheetWidth": 400,
+        "SheetHeight": 200,
+        "Count": 2
       },
-      "Length": 16,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 1,
+          "Length": 16,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "HurtStart": {
-      "Animation": "Anims/Hurt",
       "Sprite": {
         "Columns": 1,
         "Rows": 1,
-        "Sequence": [
-          0
-        ]
+        "SheetWidth": 200,
+        "SheetHeight": 200,
+        "Count": 1
       },
-      "Length": 8,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 0,
+          "Length": 8,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 1
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "Hurt": {
-      "Animation": "Anims/Hurt",
       "Sprite": {
         "Columns": 1,
         "Rows": 1,
-        "Sequence": [
-          0
-        ]
+        "SheetWidth": 200,
+        "SheetHeight": 200,
+        "Count": 1
       },
-      "Length": 10,
-      "Loop": true,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 0,
+          "Length": 10,
+          "OnEnd": "Restart",
+          "Target": -1,
+          "SpriteCount": 1
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     }
   },
   "Attacks": {
@@ -196,30 +346,65 @@
         "Context": "Ground"
       },
       "Movement": "IgnoreInput",
-      "Animation": "Anims/uTilt.png",
+      "CancelOnLand": false,
       "Sprite": {
         "Columns": 11,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10
-        ]
+        "SheetWidth": 2200,
+        "SheetHeight": 200,
+        "Count": 11
       },
-      "Length": 88,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 10,
+          "Length": 88,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 11
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "BTilt": {
       "Input": {
@@ -228,31 +413,68 @@
         "Context": "Ground"
       },
       "Movement": "IgnoreInput",
-      "Animation": "Anims/bTilt.png",
+      "CancelOnLand": false,
       "Sprite": {
         "Columns": 12,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11
-        ]
+        "SheetWidth": 2400,
+        "SheetHeight": 200,
+        "Count": 12
       },
-      "Length": 72,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 11,
+          "Length": 72,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 12
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "FTilt": {
       "Input": {
@@ -261,26 +483,53 @@
         "Context": "Ground"
       },
       "Movement": "IgnoreInput",
-      "Animation": "Anims/fTilt.png",
+      "CancelOnLand": false,
       "Sprite": {
         "Columns": 7,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ]
+        "SheetWidth": 1400,
+        "SheetHeight": 200,
+        "Count": 7
       },
-      "Length": 35,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 6,
+          "Length": 35,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 7
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "DTilt": {
       "Input": {
@@ -289,28 +538,59 @@
         "Context": "Ground"
       },
       "Movement": "IgnoreInput",
-      "Animation": "Anims/dTilt.png",
+      "CancelOnLand": false,
       "Sprite": {
         "Columns": 9,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8
-        ]
+        "SheetWidth": 1800,
+        "SheetHeight": 200,
+        "Count": 9
       },
-      "Length": 63,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 8,
+          "Length": 63,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 9
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "FAir": {
       "Input": {
@@ -320,52 +600,71 @@
       },
       "Movement": "IgnoreInput",
       "CancelOnLand": true,
-      "Animation": "Anims/fAir.png",
       "Sprite": {
         "Columns": 8,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7
-        ]
+        "SheetWidth": 1600,
+        "SheetHeight": 200,
+        "Count": 8
       },
-      "Length": 48,
-      "Loop": false,
-      "HitGroups": [],
-      "Boxes": [
+      "Phases": [
         {
           "Id": 0,
-          "Name": "Hitbox 0",
-          "Type": "Hitbox",
-          "Bone": "",
-          "HitGroup": -1,
-          "Damage": 10,
-          "Hitstun": 0,
-          "Knockback": {
-            "x": 4.705883,
-            "y": 4.705883
-          },
-          "Keys": [
+          "Name": "Startup",
+          "Start": 0,
+          "End": 3,
+          "Length": 24,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 4
+        },
+        {
+          "Id": 1,
+          "Name": "Active",
+          "Start": 4,
+          "End": 5,
+          "Length": 12,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
+        },
+        {
+          "Id": 2,
+          "Name": "EndLag",
+          "Start": 6,
+          "End": 7,
+          "Length": 12,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": [
             {
-              "Frame": 0,
-              "Offset": {
-                "x": 0,
-                "y": 0
+              "Id": 0,
+              "Name": "Hitbox 0",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 10,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 4.705883,
+                "y": 4.705883
               },
-              "Size": {
-                "x": 25,
-                "y": 25
-              },
-              "Interpolation": "Hold"
-            },
-            {
-              "Frame": 24,
               "Offset": {
                 "x": 20,
                 "y": 15
@@ -373,11 +672,23 @@
               "Size": {
                 "x": 25,
                 "y": 45
-              },
-              "Interpolation": "Hold"
-            },
+              }
+            }
+          ]
+        },
+        {
+          "Boxes": [
             {
-              "Frame": 30,
+              "Id": 0,
+              "Name": "Hitbox 0",
+              "Type": "Hitbox",
+              "HitGroup": 0,
+              "Damage": 10,
+              "Hitstun": 0,
+              "Knockback": {
+                "x": 4.705883,
+                "y": 4.705883
+              },
               "Offset": {
                 "x": 20,
                 "y": 0
@@ -385,20 +696,26 @@
               "Size": {
                 "x": 25,
                 "y": 70
-              },
-              "Interpolation": "Hold"
+              }
             }
-          ],
-          "Active": [
-            [
-              24,
-              35
-            ]
           ]
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
+      "HitGroups": [
+        {
+          "Id": 0,
+          "Name": "Hit 0"
         }
       ],
       "NextBoxId": 1,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 1,
+      "NextPhaseId": 3
     },
     "BAir": {
       "Input": {
@@ -408,30 +725,84 @@
       },
       "Movement": "IgnoreInput",
       "CancelOnLand": true,
-      "Animation": "Anims/bAir.png",
       "Sprite": {
         "Columns": 11,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10
-        ]
+        "SheetWidth": 2200,
+        "SheetHeight": 200,
+        "Count": 11
       },
-      "Length": 110,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Start Up",
+          "Start": 0,
+          "End": 3,
+          "Length": 60,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 4
+        },
+        {
+          "Id": 1,
+          "Name": "Active",
+          "Start": 4,
+          "End": 8,
+          "Length": 30,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 5
+        },
+        {
+          "Id": 2,
+          "Name": "End Lag",
+          "Start": 9,
+          "End": 10,
+          "Length": 20,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 2
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 3
     },
     "NAir": {
       "Input": {
@@ -441,27 +812,52 @@
       },
       "Movement": "IgnoreInput",
       "CancelOnLand": true,
-      "Animation": "Anims/nAir.png",
       "Sprite": {
         "Columns": 7,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1,
-          2,
-          2,
-          3,
-          4,
-          5,
-          6
-        ]
+        "SheetWidth": 1400,
+        "SheetHeight": 200,
+        "Count": 7
       },
-      "Length": 48,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 6,
+          "Length": 48,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 7
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     },
     "DAir": {
       "Input": {
@@ -471,27 +867,55 @@
       },
       "Movement": "IgnoreInput",
       "CancelOnLand": true,
-      "Animation": "Anims/dAir.png",
       "Sprite": {
         "Columns": 8,
         "Rows": 1,
-        "Sequence": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7
-        ]
+        "SheetWidth": 1600,
+        "SheetHeight": 200,
+        "Count": 8
       },
-      "Length": 56,
-      "Loop": false,
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 7,
+          "Length": 56,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 8
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        },
+        {
+          "Boxes": []
+        }
+      ],
       "HitGroups": [],
-      "Boxes": [],
       "NextBoxId": 0,
-      "NextHitGroupId": 0
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1
     }
   },
   "BodySize": {

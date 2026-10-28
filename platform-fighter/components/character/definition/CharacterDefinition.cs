@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 // Runtime form of a character, built once from its files by CharacterDefinitionBuilder.
-// Everything is expanded to one value per frame, so a tick only ever indexes arrays.
+// Everything is expanded to plain arrays, so a tick only ever indexes them.
 // Read only after building, so one definition can be shared by every instance of the character.
 
 public sealed class CharacterDefinition
@@ -24,12 +24,12 @@ public sealed class CharacterDefinition
         foreach (var state in states)
         {
             statesByName[state.Name] = state;
-            MaxHitGroups = Math.Max(MaxHitGroups, HitGroupsUsed(state));
+            MaxHitGroups = Math.Max(MaxHitGroups, state.HitGroupCount);
         }
         foreach (var attack in attacks)
         {
             attacksByInput[attack.Input] = attack;
-            MaxHitGroups = Math.Max(MaxHitGroups, HitGroupsUsed(attack));
+            MaxHitGroups = Math.Max(MaxHitGroups, attack.HitGroupCount);
         }
     }
 
@@ -61,48 +61,39 @@ public sealed class CharacterDefinition
         attacksByInput.TryGetValue(input, out AttackDefinition attack);
         return attack;
     }
-
-    private static int HitGroupsUsed(StateDefinition state)
-    {
-        int used = 0;
-        foreach (var box in state.Boxes)
-        {
-            used = Math.Max(used, box.HitGroupIndex + 1);
-        }
-        return used;
-    }
 }
 
 // Not sealed, since an attack is a state with more to it
 public class StateDefinition
 {
     public readonly string Name;
-    public readonly string Animation;
-    public readonly int Length;
-    public readonly bool Loop;
-    public readonly BoxDefinition[] Boxes;
-    // Null when the state has no sprite sequence, so the view spreads the sheet evenly instead
-    public readonly SpriteTrack Sprite;
+    public readonly SpriteGrid Grid;
+    // In file order. Never empty, and the first always plays first
+    public readonly PhaseDefinition[] Phases;
+    // Hit groups its hitboxes use, counting hitboxes that hit on their own
+    public readonly int HitGroupCount;
+    // Indexed by sprite. Never empty, and an entry with no boxes is an empty array
+    private readonly BoxDefinition[][] frames;
 
-    public StateDefinition(string name, string animation, int length, bool loop, BoxDefinition[] boxes, SpriteTrack sprite)
+    public StateDefinition(string name, SpriteGrid grid, PhaseDefinition[] phases, BoxDefinition[][] frames, int hitGroupCount)
     {
         Name = name;
-        Animation = animation;
-        Length = length;
-        Loop = loop;
-        Boxes = boxes;
-        Sprite = sprite;
+        Grid = grid;
+        Phases = phases;
+        this.frames = frames;
+        HitGroupCount = hitGroupCount;
     }
 
-    // The sheet or clip to play. A state with no animation set plays the one named after it
-    public string AnimationName => string.IsNullOrEmpty(Animation) ? Name : Animation;
+    protected StateDefinition(StateDefinition state)
+        : this(state.Name, state.Grid, state.Phases, state.frames, state.HitGroupCount) { }
 
-    // Maps ticks spent in the state to a frame of its data
-    public int FrameAt(uint ticksInState)
-    {
-        if (Loop) return (int)(ticksInState % (uint)Length);
-        return ticksInState >= Length ? Length - 1 : (int)ticksInState;
-    }
+    // The sheet to play, found by the state's name
+    public string AnimationName => CharacterFiles.AnimationName(Name);
+
+    // Sprite showing on a tick of a phase. Past the phase's end it holds the last sprite
+    public int SpriteAt(int phase, uint ticksInPhase) => Phases[Math.Min(phase, Phases.Length - 1)].SpriteAt(ticksInPhase);
+
+    public BoxDefinition[] BoxesAt(int sprite) => frames[Math.Clamp(sprite, 0, frames.Length - 1)];
 }
 
 // A move. Played through the shared Attack state, which hands this to everything that reads the current state
@@ -116,7 +107,7 @@ public sealed class AttackDefinition : StateDefinition
     public readonly bool CancelOnLand;
 
     public AttackDefinition(int index, AttackInput input, MovementType movement, bool cancelOnLand, StateDefinition state)
-        : base(state.Name, state.Animation, state.Length, state.Loop, state.Boxes, state.Sprite)
+        : base(state)
     {
         Index = index;
         Input = input;
@@ -125,27 +116,46 @@ public sealed class AttackDefinition : StateDefinition
     }
 }
 
-// The frames of the state's sheet in the order they play, spread evenly over however long the animation plays.
-// That's usually the state's length, but a state like hitstun can stretch it over a time decided at runtime
-public sealed class SpriteTrack
+// A run of the state's sprites, spread evenly over its own length
+public sealed class PhaseDefinition
 {
-    // The sheet's grid, for Sprite3D's Hframes and Vframes
+    // Index of the phase to play when this one runs out, or EndsState
+    public const int EndsState = -1;
+
+    public readonly int Start;
+    public readonly int SpriteCount;
+    // Ticks, at least SpriteCount unless the file was edited by hand
+    public readonly int Length;
+    public readonly int Next;
+
+    public PhaseDefinition(int start, int spriteCount, int length, int next)
+    {
+        Start = start;
+        SpriteCount = spriteCount;
+        Length = length;
+        Next = next;
+    }
+
+    public int SpriteAt(uint ticksInPhase)
+    {
+        int tick = ticksInPhase >= Length ? Length - 1 : (int)ticksInPhase;
+        return Start + SpriteSequenceMath.EntryAt(tick, SpriteCount, Length);
+    }
+}
+
+// How a sheet is cut into sprites, for Sprite3D's Hframes and Vframes
+public readonly struct SpriteGrid
+{
     public readonly int Columns;
     public readonly int Rows;
-    // Never empty. Always within the grid
-    private readonly int[] sequence;
 
-    public SpriteTrack(int columns, int rows, int[] sequence)
+    public SpriteGrid(int columns, int rows)
     {
         Columns = columns;
         Rows = rows;
-        this.sequence = sequence;
     }
 
-    public int Count => sequence.Length;
-
-    // frame is within 0..duration - 1
-    public int SpriteAt(int frame, int duration) => sequence[SpriteSequenceMath.EntryAt(frame, sequence.Length, duration)];
+    public int Count => Columns * Rows;
 }
 
 // What a hitbox deals. Each hitbox has its own, so a sweet spot and a sour spot in one hit group can differ
@@ -165,52 +175,31 @@ public sealed class HitDefinition
     public DMVector KnockbackFacing(Character.Direction facing) => BoxDefinition.Mirror(Knockback, facing);
 }
 
+// One box on one sprite, in world units
 public sealed class BoxDefinition
 {
+    // Shared with copies of the box on other sprites, so the editor can follow it
     public readonly int Id;
     public readonly BoxType Type;
-    // Index of the box's hit group within its state. Boxes in a group share one hit per target.
-    // Every hitbox has one, since a hitbox without an authored group gets its own. -1 on other boxes
+    // Index of the box's hit group within its state. Boxes in a group share one hit per target. -1 on non hitboxes
     public readonly int HitGroupIndex;
     // Hitboxes only, null otherwise
     public readonly HitDefinition Hit;
+    // Relative to the character root, facing right
+    public readonly DMVector Center;
+    public readonly DMVector Size;
 
-    // All indexed by frame and as long as the state
-    private readonly DMVector[] offsets;
-    private readonly DMVector[] sizes;
-    private readonly bool[] active;
-    // Bone position per frame, null when the box follows the root
-    private readonly DMVector[] bonePositions;
-
-    public BoxDefinition(int id, BoxType type, int hitGroupIndex, HitDefinition hit, DMVector[] offsets, DMVector[] sizes, bool[] active, DMVector[] bonePositions)
+    public BoxDefinition(int id, BoxType type, int hitGroupIndex, HitDefinition hit, DMVector center, DMVector size)
     {
         Id = id;
         Type = type;
         HitGroupIndex = hitGroupIndex;
         Hit = hit;
-        this.offsets = offsets;
-        this.sizes = sizes;
-        this.active = active;
-        this.bonePositions = bonePositions;
+        Center = center;
+        Size = size;
     }
 
-    public bool IsActive(int frame) => active[frame];
-
-    public DMVector SizeAt(int frame) => sizes[frame];
-
-    // Center of the box relative to the character root, facing right
-    public DMVector CenterAt(int frame)
-    {
-        DMVector center = offsets[frame];
-        if (bonePositions != null)
-        {
-            // The bake can be shorter than the state if the animation changed, hold its last frame
-            center += bonePositions[frame < bonePositions.Length ? frame : bonePositions.Length - 1];
-        }
-        return center;
-    }
-
-    public DMVector CenterAt(int frame, Character.Direction facing) => Mirror(CenterAt(frame), facing);
+    public DMVector CenterFacing(Character.Direction facing) => Mirror(Center, facing);
 
     // Data is authored facing right
     public static DMVector Mirror(DMVector v, Character.Direction facing)

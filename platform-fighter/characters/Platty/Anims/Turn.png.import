@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cvexxmyyfteih"
-path="res://.godot/imported/jumpSquat.png-d88440e1d09a0600f53b2a464e4a4f04.ctex"
+uid="uid://cta5ophri7vmm"
+path="res://.godot/imported/Turn.png-2a86744266ab6d14c03b33cc4dc81790.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/jumpSquat.png"
-dest_files=["res://.godot/imported/jumpSquat.png-d88440e1d09a0600f53b2a464e4a4f04.ctex"]
+source_file="res://characters/Platty/Anims/Turn.png"
+dest_files=["res://.godot/imported/Turn.png-2a86744266ab6d14c03b33cc4dc81790.ctex"]
 
 [params]
 

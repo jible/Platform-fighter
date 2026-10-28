@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgxawj626dlov"
-path="res://.godot/imported/uTilt.png-310969ea5db33bd3b90a460c78232273.ctex"
+uid="uid://te8xjbi40ugr"
+path="res://.godot/imported/DAir.png-20a2e3e69b157549f145b44e169d95b7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/uTilt.png"
-dest_files=["res://.godot/imported/uTilt.png-310969ea5db33bd3b90a460c78232273.ctex"]
+source_file="res://characters/Platty/Anims/DAir.png"
+dest_files=["res://.godot/imported/DAir.png-20a2e3e69b157549f145b44e169d95b7.ctex"]
 
 [params]
 

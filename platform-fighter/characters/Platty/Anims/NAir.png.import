@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3ujs6wgnr6gm"
-path="res://.godot/imported/dAir.png-8f75c45893ddeea0306156c11c045718.ctex"
+uid="uid://cyipfkglc127e"
+path="res://.godot/imported/NAir.png-4f44f87d7c93cd4169a7c4de16819f9d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/dAir.png"
-dest_files=["res://.godot/imported/dAir.png-8f75c45893ddeea0306156c11c045718.ctex"]
+source_file="res://characters/Platty/Anims/NAir.png"
+dest_files=["res://.godot/imported/NAir.png-4f44f87d7c93cd4169a7c4de16819f9d.ctex"]
 
 [params]
 

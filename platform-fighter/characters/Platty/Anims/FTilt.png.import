@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://df6ui0snbm4p3"
-path="res://.godot/imported/turn.png-229a055f105e33b6513609b14ed62321.ctex"
+uid="uid://ck1odnaclibsx"
+path="res://.godot/imported/FTilt.png-d805857f63efe515bb393f13f4bc255e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://characters/Platty/Anims/turn.png"
-dest_files=["res://.godot/imported/turn.png-229a055f105e33b6513609b14ed62321.ctex"]
+source_file="res://characters/Platty/Anims/FTilt.png"
+dest_files=["res://.godot/imported/FTilt.png-d805857f63efe515bb393f13f4bc255e.ctex"]
 
 [params]
 
