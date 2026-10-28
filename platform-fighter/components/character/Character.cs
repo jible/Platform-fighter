@@ -166,7 +166,9 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     public static DMVector CalculateKnockback(DMVector knockback, int health, DM64 knockbackScaling)
     {
         DM64 healthLost = new DM64(LifeData.MaxHealth - health) / LifeData.MaxHealth;
-        return knockback * (1 + healthLost * knockbackScaling);
+        DM64 MaxKnockBackScaling = new(5);
+        DM64 MinKnockBackScaling = new(1);
+        return knockback * (healthLost * MaxKnockBackScaling * knockbackScaling);
     }
 
     // Ticks the Hurt state lasts after the launch, from how hard it is
