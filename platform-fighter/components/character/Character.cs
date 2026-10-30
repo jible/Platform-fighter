@@ -46,7 +46,7 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     // Display only, drawn in screen space over the character's head
     private ProgressBar healthBar;
     private static readonly Vector2 HealthBarSize = new(60, 8);
-    // World units between the top of the sprite and the bar
+    // World units between the top of the body and the bar
     private const float HealthBarGap = 0.1f;
 
     // Fired by the Off state when the character loses their last life. Fires inside the tick, and again when a
@@ -119,6 +119,7 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     {
         new IdleState(),
         new WalkState(),
+        new StopState(),
         new JumpSquatState(),
         new JumpState(),
         new ShortHopState(),
@@ -224,9 +225,9 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     private void UpdateHealthBar(bool visible)
     {
         Camera3D camera = GetViewport().GetCamera3D();
-        // Centered on the view, so half its height up is the top of the sprite
-        Vector3 head = GlobalPosition + Vector3.Up * ((View as Node3D)?.Position.Y ?? 0);
-        head.Y += (View?.Height ?? 0) / 2 + HealthBarGap;
+        // The body is centered on the character, so half its height up is its top. From the body rather than the sprite,
+        // so it sits at the same height in every state, whatever the size of each animation's frames
+        Vector3 head = GlobalPosition + Vector3.Up * (Data.Body.Size.y.ToFloat() / 2 + HealthBarGap);
         healthBar.Visible = visible && camera != null && !camera.IsPositionBehind(head);
         if (!healthBar.Visible) return;
 

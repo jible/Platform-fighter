@@ -5,6 +5,8 @@ public enum CharacterStateId : byte
 {
     Idle,
     Walk,
+    // Let go of the stick while walking. Slides to a stop under StopFriction, and can turn from here like Walk
+    Stop,
     // Crouch before leaving the ground. The jump itself happens when it ends
     JumpSquat,
     Jump,

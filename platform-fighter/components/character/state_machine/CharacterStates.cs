@@ -37,13 +37,43 @@ public class WalkState : CharacterState
         }
         else if (character.InputHandler.LeftStick() == DMVector.zero)
         {
-            machine.ChangeState(CharacterStateId.Idle);
+            machine.ChangeState(CharacterStateId.Stop);
         } else if (character.direction != inputDirection)
         {
             machine.ChangeState(CharacterStateId.Turn); // If they click a different direction, get a kick
 
         }
 
+    }
+}
+
+// Ends when its animation does, so its length is how long the slide lasts before Idle's normal friction takes over
+public class StopState : CharacterState
+{
+    public override CharacterStateId Id => CharacterStateId.Stop;
+    public override bool ApplyGravity => false;
+    public override bool Cancellable => true;
+
+    // Pushing against the slide turns, like Walk. With no slide left, against the facing does
+    public override void Tick(CharacterStateMachine machine)
+    {
+        Character character = machine.Character;
+        DM64 stickX = character.InputHandler.LeftStick().x;
+        if (character.InputHandler.TryConsume(ControllerState.ButtonTypes.JUMP))
+        {
+            machine.ChangeState(CharacterStateId.JumpSquat);
+        }
+        else if (stickX != 0)
+        {
+            DM64 moving = character.velocity.Value.x.Sign();
+            if (moving == 0) moving = character.direction == Character.Direction.Right ? new DM64(1) : new DM64(-1);
+            machine.ChangeState(stickX.Sign() == moving ? CharacterStateId.Walk : CharacterStateId.Turn);
+        }
+    }
+
+    public override void OnAnimFinished(CharacterStateMachine machine)
+    {
+        machine.ChangeState(CharacterStateId.Idle);
     }
 }
 
@@ -144,23 +174,34 @@ public class TurnState : CharacterState
     public override bool Cancellable => true;
 
 
-    // Faces the way the stick points, and gives the kick. A stick with no sideways push keeps the old facing
+    // Gives the kick. Facing stays the old way until the turn ends, so a jump or attack out of it comes out backwards
     public override void EnterState(CharacterStateMachine machine)
     {
         Character character = machine.Character;
         character.Movement.GroundedTurnAroundKick();
     }
-    public override void OnAnimFinished(CharacterStateMachine machine)
+
+    public override void Tick(CharacterStateMachine machine)
     {
-        // Give the turn around kick
-        Character character = machine.Character;
-        DM64 stickX = character.InputHandler.LeftStick().x;
-        if (stickX > 0) character.direction = Character.Direction.Right;
-        else if (stickX < 0) character.direction = Character.Direction.Left;
-        machine.ChangeState(CharacterStateId.Walk);
+        if (machine.Character.InputHandler.TryConsume(ControllerState.ButtonTypes.JUMP))
+        {
+            machine.ChangeState(CharacterStateId.JumpSquat);
+        }
     }
 
-    // When the anim ends
+    // Faces the way the stick points and walks. A stick with no sideways push keeps the old facing and slides to a stop
+    public override void OnAnimFinished(CharacterStateMachine machine)
+    {
+        Character character = machine.Character;
+        DM64 stickX = character.InputHandler.LeftStick().x;
+        if (stickX == 0)
+        {
+            machine.ChangeState(CharacterStateId.Stop);
+            return;
+        }
+        character.direction = stickX > 0 ? Character.Direction.Right : Character.Direction.Left;
+        machine.ChangeState(CharacterStateId.Walk);
+    }
 }
 
 // Plays the attack the AttackHandler started. Shared by every attack, so what each one does is in its data

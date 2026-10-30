@@ -3420,7 +3420,8 @@
     "Acceleration": 50,
     "MaxVelocity": 20,
     "Friction": 20,
-    "TurnaroundMultiplier": 30
+    "StopFriction": 40,
+    "TurnaroundMultiplier": 2
   },
   "Air": {
     "Acceleration": 20,

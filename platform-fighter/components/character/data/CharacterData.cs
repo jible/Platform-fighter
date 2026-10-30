@@ -64,6 +64,8 @@ public class GroundMovementData
     public DM64 MaxVelocity = new DM64(2);
     // Fraction of horizontal velocity lost per second, applied a tick's share at a time
     public DM64 Friction = new DM64(6);
+    // Used in place of Friction in the Stop state, after letting go of the stick while walking
+    public DM64 StopFriction = new DM64(12);
     // Acceleration is multiplied by this when pushing against the current velocity
     public DM64 TurnaroundMultiplier = new DM64(5);
 }

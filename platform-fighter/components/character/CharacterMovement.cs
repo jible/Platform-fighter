@@ -98,9 +98,10 @@ public class CharacterMovement
         }
     }
 
-    public void ApplyDrag()
+    public void ApplyDrag() => ApplyDrag(IsGrounded ? Data.Ground.Friction : Data.Air.Friction);
+
+    public void ApplyDrag(DM64 friction)
     {
-        DM64 friction = IsGrounded ? Data.Ground.Friction : Data.Air.Friction;
         character.velocity.Value.x -= character.velocity.Value.x * PerTick(friction);
     }
 
@@ -186,6 +187,11 @@ public class CharacterMovement
         {
             ApplyKnockbackDissipation();
             ApplyDI();
+        }
+        // Any stick input leaves Stop before this runs, so there's only the slide
+        else if (character.StateMachine.IsInState(CharacterStateId.Stop))
+        {
+            ApplyDrag(Data.Ground.StopFriction);
         }
         else
         {
