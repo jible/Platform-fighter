@@ -98,7 +98,13 @@ public class CharacterMovement
         }
     }
 
-    public void ApplyDrag() => ApplyDrag(IsGrounded ? Data.Ground.Friction : Data.Air.Friction);
+    public void ApplyDrag() => ApplyDrag(IsGrounded ? GroundFriction : Data.Air.Friction);
+
+    // Grounded attacks and landing slide, so they use SlideFriction in place of the usual
+    private DM64 GroundFriction =>
+        character.StateMachine.IsInState(CharacterStateId.Attack) || character.StateMachine.IsInState(CharacterStateId.Land)
+            ? Data.Ground.SlideFriction
+            : Data.Ground.Friction;
 
     public void ApplyDrag(DM64 friction)
     {
@@ -192,6 +198,11 @@ public class CharacterMovement
         else if (character.StateMachine.IsInState(CharacterStateId.Stop))
         {
             ApplyDrag(Data.Ground.StopFriction);
+        }
+        // Grounded attacks take no stick movement, they only slide. Aerials keep the usual movement
+        else if (character.StateMachine.IsInState(CharacterStateId.Attack) && IsGrounded)
+        {
+            ApplyDrag(Data.Ground.SlideFriction);
         }
         else
         {

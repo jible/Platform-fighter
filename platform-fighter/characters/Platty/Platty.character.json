@@ -3419,8 +3419,9 @@
   "Ground": {
     "Acceleration": 50,
     "MaxVelocity": 20,
-    "Friction": 20,
-    "StopFriction": 40,
+    "Friction": 6,
+    "StopFriction": 12,
+    "SlideFriction": 8,
     "TurnaroundMultiplier": 2
   },
   "Air": {
