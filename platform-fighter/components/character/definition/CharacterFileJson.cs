@@ -19,6 +19,10 @@ public static class CharacterFileJson
     // A deep copy, through the same JSON the files use, so nothing shared with the original can be changed through it
     public static T Copy<T>(T value) => JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(value, settings), settings);
 
+    // Stages use the same settings, so their DM64 values read back exactly too
+    public static StageData ReadStage(string json) => JsonConvert.DeserializeObject<StageData>(json, settings);
+    public static string WriteStage(StageData stage) => JsonConvert.SerializeObject(stage, Formatting.Indented, settings);
+
     public static BakedSkeletonFile ReadSkeleton(string json) => JsonConvert.DeserializeObject<BakedSkeletonFile>(json, settings);
     // Not indented, since nobody edits the bake by hand and it holds a value per bone per tick
     public static string WriteSkeleton(BakedSkeletonFile file) => JsonConvert.SerializeObject(file, Formatting.None, settings);

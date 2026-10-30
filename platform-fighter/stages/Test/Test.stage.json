@@ -1,0 +1,68 @@
+{
+  "Blocks": [
+    {
+      "Name": "Floor",
+      "Center": {
+        "x": 0,
+        "y": 0
+      },
+      "Size": {
+        "x": 19,
+        "y": 1
+      },
+      "Platform": false
+    },
+    {
+      "Name": "Plat2",
+      "Center": {
+        "x": 5,
+        "y": 4
+      },
+      "Size": {
+        "x": 4,
+        "y": 0.3
+      },
+      "Platform": true
+    },
+    {
+      "Name": "Plat1",
+      "Center": {
+        "x": -5,
+        "y": 4
+      },
+      "Size": {
+        "x": 4,
+        "y": 0.3
+      },
+      "Platform": true
+    }
+  ],
+  "SpawnPoints": [
+    {
+      "x": -3,
+      "y": 2
+    },
+    {
+      "x": 3,
+      "y": 2
+    },
+    {
+      "x": -6,
+      "y": 2
+    },
+    {
+      "x": 6,
+      "y": 2
+    }
+  ],
+  "Perimeter": {
+    "Min": {
+      "x": -32,
+      "y": -17
+    },
+    "Max": {
+      "x": 32,
+      "y": 16
+    }
+  }
+}

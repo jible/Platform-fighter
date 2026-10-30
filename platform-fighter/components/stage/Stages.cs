@@ -7,7 +7,8 @@ public enum StageId
     Test,
 }
 
-// Every stage shares this shape, only the values differ. Built into nodes by the StageHolder
+// Every stage shares this shape, only the values differ. Built into nodes by the StageHolder.
+// Also the layout of a stage's file, see StageFiles
 public class StageData
 {
     // Solid blocks characters stand on and collide with
@@ -34,16 +35,23 @@ public struct StagePerimeter
     public bool Contains(DMVector point) => point.x >= Min.x && point.x <= Max.x && point.y >= Min.y && point.y <= Max.y;
 }
 
-public struct StageBlock
+// A class rather than a struct, so the stage editor can change one in place
+public class StageBlock
 {
+    // For the stage editor. The game never reads it
+    public string Name = "";
     public DMVector Center;
     // Full width and height
     public DMVector Size;
     // Only stops characters landing on it from above, and holding down falls through
     public bool Platform;
 
-    public StageBlock(DMVector center, DMVector size, bool platform = false)
+    // For the JSON reader
+    public StageBlock() { }
+
+    public StageBlock(string name, DMVector center, DMVector size, bool platform = false)
     {
+        Name = name;
         Center = center;
         Size = size;
         Platform = platform;
@@ -52,8 +60,11 @@ public struct StageBlock
 
 public static class Stages
 {
-    // A switch instead of a prebuilt table, like the Roster
-    public static StageData Get(StageId id)
+    // The stage's file when it has one, otherwise its built in data. A copy either way, so editing it changes nothing else
+    public static StageData Get(StageId id) => StageFiles.ReadStage(id) ?? CharacterFileJson.Copy(BuiltIn(id));
+
+    // What a stage is before its file is first saved. A switch instead of a prebuilt table, like the Roster
+    public static StageData BuiltIn(StageId id)
     {
         return id switch
         {
@@ -67,9 +78,9 @@ public static class Stages
     {
         Blocks =
         {
-            new StageBlock(new DMVector(0, 0), new DMVector(18, 1)),
-            new StageBlock(new DMVector(5, 3), new DMVector(4, 1)),
-            new StageBlock(new DMVector(-5, 3), new DMVector(4, 1), platform: true),
+            new StageBlock("Floor", new DMVector(0, 0), new DMVector(18, 1)),
+            new StageBlock("Block", new DMVector(5, 3), new DMVector(4, 1)),
+            new StageBlock("Platform", new DMVector(-5, 3), new DMVector(4, 1), platform: true),
         },
         SpawnPoints =
         {
