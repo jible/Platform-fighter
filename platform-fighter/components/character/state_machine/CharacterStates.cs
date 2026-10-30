@@ -7,7 +7,7 @@ public class IdleState : CharacterState
 
     public override void Tick(CharacterStateMachine machine)
     {
-        if (machine.Character.InputHandler.JustPressed(ControllerState.ButtonTypes.JUMP))
+        if (machine.Character.InputHandler.TryConsume(ControllerState.ButtonTypes.JUMP))
         {
             machine.ChangeState(CharacterStateId.JumpSquat);
         }
@@ -31,7 +31,7 @@ public class WalkState : CharacterState
     {
         Character character = machine.Character;
         var inputDirection = character.InputHandler.LeftStick().x.Sign() < 0? Character.Direction.Left: Character.Direction.Right;
-        if (character.InputHandler.JustPressed(ControllerState.ButtonTypes.JUMP))
+        if (character.InputHandler.TryConsume(ControllerState.ButtonTypes.JUMP))
         {
             machine.ChangeState(CharacterStateId.JumpSquat);
         }
@@ -117,7 +117,8 @@ public class FallState : CharacterState
             machine.ChangeState(CharacterStateId.Land);
         }
         // An air jump. The Jump state's enter does the jump and counts it
-        else if (character.InputHandler.JustPressed(ControllerState.ButtonTypes.JUMP) && character.Movement.CanJump)
+        // CanJump first, so a press that can't jump stays buffered
+        else if (character.Movement.CanJump && character.InputHandler.TryConsume(ControllerState.ButtonTypes.JUMP))
         {
             machine.ChangeState(CharacterStateId.Jump);
         }

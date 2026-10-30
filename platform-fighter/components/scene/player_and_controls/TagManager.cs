@@ -75,6 +75,7 @@ public static class TagManager
         if (copyFrom is int sourceId && Get(sourceId) is InputTag source)
         {
             tag.Deadzone = source.Deadzone;
+            tag.InputBuffer = source.InputBuffer;
             foreach (var (action, binds) in source.Binds)
             {
                 tag.Binds[action] = binds.Select(bind => bind.Copy()).ToList();
@@ -131,6 +132,11 @@ public static class TagManager
     public static void SetDeadzone(int id, float deadzone)
     {
         if (Get(id) is InputTag tag) tag.Deadzone = Mathf.Clamp(deadzone, 0, 1);
+    }
+
+    public static void SetInputBuffer(int id, int ticks)
+    {
+        if (Get(id) is InputTag tag) tag.InputBuffer = Mathf.Clamp(ticks, 0, InputHandler.MaxInputBuffer);
     }
 
     // Moves the tag to the front of ByMostRecent. Saves right away, so the order is kept even if nothing else is saved

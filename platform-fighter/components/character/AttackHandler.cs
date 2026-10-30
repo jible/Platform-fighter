@@ -32,6 +32,8 @@ public class AttackHandler
         AttackDefinition attack = character.Definition.FindAttack(attackInput);
         if (attack == null) return false;
 
+        // Only once an attack starts, so a press with no attack stays buffered
+        input.Consume(attackInput.Button == AttackButton.B ? ControllerState.ButtonTypes.SPECIAL : ControllerState.ButtonTypes.LIGHT);
         currentAttack.Value = attack.Index;
         character.StateMachine.ChangeState(CharacterStateId.Attack);
         return true;
@@ -47,7 +49,7 @@ public class AttackHandler
         return true;
     }
 
-    // Only a press this tick counts. B wins when both are pressed together
+    // A buffered press counts, see InputHandler. B wins when both are pressed together
     public bool TryReadButton(out AttackButton button)
     {
         if (input.JustPressed(ControllerState.ButtonTypes.SPECIAL))

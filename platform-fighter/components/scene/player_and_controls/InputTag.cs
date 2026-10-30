@@ -101,6 +101,8 @@ public class InputTag
     public long LastUsed;
     // Stick distance before a stick bind registers, from 0 to 1
     public float Deadzone = 0.2f;
+    // Ticks a press stays buffered, 0 for none. See InputHandler
+    public int InputBuffer = 4;
     public Dictionary<GameAction, List<Bind>> Binds = new();
 
     // Binds for an action, empty when it has none
