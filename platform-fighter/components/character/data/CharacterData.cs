@@ -62,13 +62,15 @@ public class GroundMovementData
 {
     public DM64 Acceleration = new DM64(30);
     public DM64 MaxVelocity = new DM64(2);
+    // Held for the whole Dash state, before Walk takes over at MaxVelocity
+    public DM64 DashVelocity = new DM64(24);
     // How slippery the character is on the ground. Defaults are Platty's.
     // Each tick loses velocity * friction / 60, so from a given speed the slide covers about speed / friction units.
     // Must stay under 60, or the velocity flips
     public DM64 Friction = new DM64(6);
     // Used in place of Friction in the Stop state, after letting go of the stick while walking
     public DM64 StopFriction = new DM64(12);
-    // Used in place of Friction during grounded attacks and landing. Meant to sit between Friction and StopFriction
+    // Used in place of Friction during grounded attacks, crouching and landing. Meant to sit between Friction and StopFriction
     public DM64 SlideFriction = new DM64(8);
     // Acceleration is multiplied by this when pushing against the current velocity
     public DM64 TurnaroundMultiplier = new DM64(5);

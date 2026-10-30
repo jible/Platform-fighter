@@ -5,8 +5,12 @@ public enum CharacterStateId : byte
 {
     Idle,
     Walk,
+    // The first step from standing or out of a turn. Moves at DashVelocity until it ends, then walks
+    Dash,
     // Let go of the stick while walking. Slides to a stop under StopFriction, and can turn from here like Walk
     Stop,
+    // Holding down from Idle or Walk. Slides under SlideFriction
+    Crouch,
     // Crouch before leaving the ground. The jump itself happens when it ends
     JumpSquat,
     Jump,

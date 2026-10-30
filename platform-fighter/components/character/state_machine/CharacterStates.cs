@@ -11,11 +11,16 @@ public class IdleState : CharacterState
         {
             machine.ChangeState(CharacterStateId.JumpSquat);
         }
-        else if (machine.Character.InputHandler.LeftStick() != DMVector.zero)
+        else if (machine.Character.Attacks.ReadDirection() == StickDirection.Down)
+        {
+            machine.ChangeState(CharacterStateId.Crouch);
+        }
+        // Sideways only, so holding down to drop through a platform doesn't dash
+        else if (machine.Character.InputHandler.LeftStick().x != 0)
         {
             var inputDirection = machine.Character.InputHandler.LeftStick().x < 0 ? Character.Direction.Left :Character.Direction.Right;
             machine.Character.direction = inputDirection;
-            machine.ChangeState(CharacterStateId.Walk);
+            machine.ChangeState(CharacterStateId.Dash);
         }
     }
 }
@@ -35,6 +40,10 @@ public class WalkState : CharacterState
         {
             machine.ChangeState(CharacterStateId.JumpSquat);
         }
+        else if (character.Attacks.ReadDirection() == StickDirection.Down)
+        {
+            machine.ChangeState(CharacterStateId.Crouch);
+        }
         else if (character.InputHandler.LeftStick() == DMVector.zero)
         {
             machine.ChangeState(CharacterStateId.Stop);
@@ -44,6 +53,67 @@ public class WalkState : CharacterState
 
         }
 
+    }
+}
+
+// Held as long as the stick reads down, the same down that starts a down tilt. Only entered from Idle and Walk.
+// No stick movement, it only slides, see CharacterMovement.Tick. Holding down still drops through platforms
+public class CrouchState : CharacterState
+{
+    public override CharacterStateId Id => CharacterStateId.Crouch;
+    public override bool ApplyGravity => false;
+    public override bool Cancellable => true;
+
+    public override void Tick(CharacterStateMachine machine)
+    {
+        Character character = machine.Character;
+        // Slid off a ledge
+        if (!character.Movement.IsGrounded)
+        {
+            machine.ChangeState(CharacterStateId.Fall);
+        }
+        else if (character.InputHandler.TryConsume(ControllerState.ButtonTypes.JUMP))
+        {
+            machine.ChangeState(CharacterStateId.JumpSquat);
+        }
+        // Idle picks up from here, so a sideways push dashes on the next tick
+        else if (character.Attacks.ReadDirection() != StickDirection.Down)
+        {
+            machine.ChangeState(CharacterStateId.Idle);
+        }
+    }
+}
+
+// Holds DashVelocity the way it faces, see CharacterMovement.Tick. Its length is how long the dash lasts.
+// Pushing the other way starts a new dash that way, so it can be danced back and forth
+public class DashState : CharacterState
+{
+    public override CharacterStateId Id => CharacterStateId.Dash;
+    public override bool ApplyGravity => false;
+    public override bool Cancellable => true;
+
+    public override void Tick(CharacterStateMachine machine)
+    {
+        Character character = machine.Character;
+        DM64 stickX = character.InputHandler.LeftStick().x;
+        if (character.InputHandler.TryConsume(ControllerState.ButtonTypes.JUMP))
+        {
+            machine.ChangeState(CharacterStateId.JumpSquat);
+        }
+        else if (stickX == 0)
+        {
+            machine.ChangeState(CharacterStateId.Stop);
+        }
+        else if ((stickX > 0) != (character.direction == Character.Direction.Right))
+        {
+            character.direction = stickX > 0 ? Character.Direction.Right : Character.Direction.Left;
+            machine.ChangeState(CharacterStateId.Dash, reenter: true);
+        }
+    }
+
+    public override void OnAnimFinished(CharacterStateMachine machine)
+    {
+        machine.ChangeState(CharacterStateId.Walk);
     }
 }
 
@@ -189,7 +259,7 @@ public class TurnState : CharacterState
         }
     }
 
-    // Faces the way the stick points and walks. A stick with no sideways push keeps the old facing and slides to a stop
+    // Faces the way the stick points and dashes. A stick with no sideways push keeps the old facing and slides to a stop
     public override void OnAnimFinished(CharacterStateMachine machine)
     {
         Character character = machine.Character;
@@ -200,7 +270,7 @@ public class TurnState : CharacterState
             return;
         }
         character.direction = stickX > 0 ? Character.Direction.Right : Character.Direction.Left;
-        machine.ChangeState(CharacterStateId.Walk);
+        machine.ChangeState(CharacterStateId.Dash);
     }
 }
 

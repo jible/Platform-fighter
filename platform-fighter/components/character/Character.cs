@@ -119,7 +119,9 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     {
         new IdleState(),
         new WalkState(),
+        new DashState(),
         new StopState(),
+        new CrouchState(),
         new JumpSquatState(),
         new JumpState(),
         new ShortHopState(),

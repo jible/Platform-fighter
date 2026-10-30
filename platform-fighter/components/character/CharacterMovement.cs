@@ -89,6 +89,11 @@ public class CharacterMovement
         velocity.x += PerTick(acceleration) * input.Sign() * turnaround;
     }
 
+    private void SetGroundSpeed(DM64 speed)
+    {
+        character.velocity.Value.x = character.direction == Character.Direction.Right ? speed : -speed;
+    }
+
     // Only slows down with no input, or when something like knockback pushed past the max
     public void StandardDrag()
     {
@@ -199,8 +204,18 @@ public class CharacterMovement
         {
             ApplyDrag(Data.Ground.StopFriction);
         }
-        // Grounded attacks take no stick movement, they only slide. Aerials keep the usual movement
-        else if (character.StateMachine.IsInState(CharacterStateId.Attack) && IsGrounded)
+        // Dash and Walk move at a set speed the way the character faces, with no acceleration or friction.
+        // Off the ground they get the usual movement, until something moves them to the Fall state
+        else if (character.StateMachine.IsInState(CharacterStateId.Dash) && IsGrounded)
+        {
+            SetGroundSpeed(Data.Ground.DashVelocity);
+        }
+        else if (character.StateMachine.IsInState(CharacterStateId.Walk) && IsGrounded)
+        {
+            SetGroundSpeed(Data.Ground.MaxVelocity);
+        }
+        // Grounded attacks and crouching take no stick movement, they only slide. Aerials keep the usual movement
+        else if ((character.StateMachine.IsInState(CharacterStateId.Attack) || character.StateMachine.IsInState(CharacterStateId.Crouch)) && IsGrounded)
         {
             ApplyDrag(Data.Ground.SlideFriction);
         }
