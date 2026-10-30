@@ -179,6 +179,11 @@ public class JumpState : CharacterState
         {
             machine.ChangeState(CharacterStateId.Land);
         }
+        // Into Fall, which reads the same down and speeds up the fall
+        else if (machine.Character.Attacks.ReadDirection() == StickDirection.Down)
+        {
+            machine.ChangeState(CharacterStateId.Fall);
+        }
     }
 
     public override void OnAnimFinished(CharacterStateMachine machine)
@@ -209,9 +214,18 @@ public class FallState : CharacterState
     public override bool ApplyGravity => true;
     public override bool Cancellable => true;
 
+    public override void EnterState(CharacterStateMachine machine)
+    {
+        machine.Character.Movement.ResetFallMultiplier();
+    }
+
     public override void Tick(CharacterStateMachine machine)
     {
         Character character = machine.Character;
+        // Up or down sets how fast it falls, and neutral or sideways keeps whatever was last set
+        StickDirection stick = character.Attacks.ReadDirection();
+        if (stick == StickDirection.Up || stick == StickDirection.Down) character.Movement.SetFallMultiplierFromStick();
+
         if (character.Movement.IsGrounded)
         {
             machine.ChangeState(CharacterStateId.Land);
@@ -225,11 +239,34 @@ public class FallState : CharacterState
     }
 }
 
-public class LandState : CharacterState
+// A normal landing. Takes the same actions as Idle: attacks, jumping, crouching and dashing.
+// Its animation is stretched over the character's LandingLag, so it should have one phase.
+// Set here rather than as a duration, so the states that land don't each need to pass it
+public class LandState : IdleState
 {
     public override CharacterStateId Id => CharacterStateId.Land;
+
+    public override void EnterState(CharacterStateMachine machine)
+    {
+        machine.SetPhaseLength(machine.Character.Data.Air.LandingLag);
+    }
+
+    public override void OnAnimFinished(CharacterStateMachine machine)
+    {
+        machine.ChangeState(CharacterStateId.Idle);
+    }
+}
+
+// Landing out of an attack that cancels on land. Can't be left until it ends. The Attack state passes the lag it landed
+// with as the duration, so its animation is stretched over it. Plays the Land state's data until it has its own
+public class LandingLagState : CharacterState
+{
+    public override CharacterStateId Id => CharacterStateId.LandingLag;
     public override bool ApplyGravity => false;
     public override bool Cancellable => false;
+
+    public override StateDefinition GetDefinition(Character character) =>
+        character.Definition.GetState(Id) ?? character.Definition.GetState(CharacterStateId.Land);
 
     public override void OnAnimFinished(CharacterStateMachine machine)
     {
@@ -291,7 +328,9 @@ public class AttackState : CharacterState
         Character character = machine.Character;
         if (character.Attacks.Current.CancelOnLand && character.Movement.IsGrounded)
         {
-            machine.ChangeState(CharacterStateId.Land);
+            // From the phase it touched down in, read before leaving the attack
+            int lag = character.Attacks.Current.LandingLagAt(machine.CurrentPhase) ?? character.Data.Air.LandingLag;
+            machine.ChangeState(CharacterStateId.LandingLag, duration: lag);
         }
     }
 

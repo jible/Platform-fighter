@@ -17,8 +17,10 @@ public enum CharacterStateId : byte
     // A ground jump with jump released before the squat ended
     ShortHop,
     Fall,
-    // Touching down from the air
+    // Touching down from the air. Lasts the character's LandingLag, and can be left with any ground action
     Land,
+    // Touching down out of an attack that cancels on land. Lasts the landing lag of the sprite it landed on, and can't be left
+    LandingLag,
     Turn,
     // Plays whichever attack the AttackHandler started. Its data is the attack's, not its own
     Attack,
@@ -38,6 +40,9 @@ public struct CharacterStateData
     // Index into the current definition's phases, and ticks since it started. Unused by states with no data
     public byte Phase;
     public uint TicksInPhase;
+    // Ticks the current phase plays for in place of its authored length, stretching its sprites to fit. 0 plays it as authored.
+    // Cleared when the phase or state changes. See CharacterStateMachine.SetPhaseLength
+    public ushort PhaseLengthOverride;
 }
 
 // Runs a character's states. Plain C#, made and owned by the character.
@@ -60,7 +65,7 @@ public class CharacterStateMachine
     // The data the current state plays: its phases, boxes and animation. Null when it has no authored data
     public StateDefinition CurrentDefinition => CurrentState.GetDefinition(Character);
     // Sprite of the current definition showing this tick
-    public int CurrentSprite => CurrentDefinition?.SpriteAt(data.Value.Phase, data.Value.TicksInPhase) ?? 0;
+    public int CurrentSprite => CurrentDefinition?.SpriteAt(data.Value.Phase, data.Value.TicksInPhase, data.Value.PhaseLengthOverride) ?? 0;
 
     public CharacterStateMachine(Character character, CharacterState[] stateList, CharacterStateId startingState)
     {
@@ -94,17 +99,30 @@ public class CharacterStateMachine
 
     public bool IsInState(CharacterStateId id) { return data.Value.Id == id; }
 
-    // Changing to the current state does nothing, unless reenter is set, which exits and enters it again from its first tick
-    public void ChangeState(CharacterStateId id, bool reenter = false)
+    // Changing to the current state does nothing, unless reenter is set, which exits and enters it again from its first tick.
+    // duration plays the new state's first phase over that many ticks instead of its authored length, spreading its
+    // sprites over them, so a one phase state lasts exactly that long. Changes nothing saved
+    public void ChangeState(CharacterStateId id, bool reenter = false, int? duration = null)
     {
         if (IsInState(id) && !reenter) return;
 
         CurrentState.ExitState(this);
         data.Value = new CharacterStateData { Id = id, TicksInState = 0 };
+        // Before entering, so EnterState sees it and can set its own instead
+        if (duration is int ticks) SetPhaseLength(ticks);
         changedThisTick = true;
         CurrentState.EnterState(this);
         StateChanged?.Invoke(id);
     }
+
+    // Plays the current phase over this many ticks instead of its authored length, spreading its sprites over them.
+    // Changes nothing saved. Usually passed as ChangeState's duration, so the phase is stretched from its first tick
+    public void SetPhaseLength(int ticks)
+    {
+        data.Value.PhaseLengthOverride = (ushort)Math.Clamp(ticks, 1, ushort.MaxValue);
+    }
+
+    private int CurrentPhaseLength(int authored) => data.Value.PhaseLengthOverride != 0 ? data.Value.PhaseLengthOverride : authored;
 
     public void Tick()
     {
@@ -137,14 +155,14 @@ public class CharacterStateMachine
         StateDefinition state = CurrentDefinition;
         if (state == null)
         {
-            if (data.Value.TicksInPhase != Character.Data.DefaultStateLength) return;
+            if (data.Value.TicksInPhase != CurrentPhaseLength(Character.Data.DefaultStateLength)) return;
             CurrentState.OnPhaseFinished(this, 0);
             if (!changedThisTick) CurrentState.OnAnimFinished(this);
             return;
         }
 
         PhaseDefinition phase = state.Phases[Math.Min(data.Value.Phase, state.Phases.Length - 1)];
-        if (data.Value.TicksInPhase != phase.Length) return;
+        if (data.Value.TicksInPhase != CurrentPhaseLength(phase.Length)) return;
         CurrentState.OnPhaseFinished(this, data.Value.Phase);
         // The state may have left, which already reset the phase
         if (changedThisTick) return;
@@ -155,6 +173,7 @@ public class CharacterStateMachine
         }
         data.Value.Phase = (byte)phase.Next;
         data.Value.TicksInPhase = 0;
+        data.Value.PhaseLengthOverride = 0;
     }
 }
 

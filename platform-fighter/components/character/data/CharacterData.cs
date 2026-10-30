@@ -87,6 +87,8 @@ public class AirMovementData
     // Works like the ground's, see GroundMovementData.Friction
     public DM64 Friction = new DM64(2);
     public DM64 TurnaroundMultiplier = new DM64(5);
+    // Ticks the Land state lasts. Also the landing lag of any attack sprite that doesn't set its own
+    public int LandingLag = 3;
 }
 
 // How the character takes hits

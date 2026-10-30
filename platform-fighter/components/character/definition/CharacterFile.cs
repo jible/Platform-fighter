@@ -71,6 +71,10 @@ public class PhaseFile
     public PhaseEnd OnEnd = PhaseEnd.Next;
     // Phase id OnEnd goes to, for PhaseEnd.Phase only
     public int Target = NoPhase;
+    // Ticks of landing lag when an attack that cancels on land touches down during this phase.
+    // Null uses the character's AirMovementData.LandingLag. Only read for attacks with CancelOnLand
+    [Newtonsoft.Json.JsonProperty(NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public int? LandingLag;
 
     public const int NoPhase = -1;
 

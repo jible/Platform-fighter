@@ -136,7 +136,7 @@ public static class CharacterDefinitionBuilder
                     else GD.PushWarning($"{name} phase {file.Name} goes to missing phase {file.Target}, so it goes to the next instead");
                     break;
             }
-            phases[i] = new PhaseDefinition(start, count, length, next);
+            phases[i] = new PhaseDefinition(start, count, length, next, file.LandingLag ?? -1);
         }
         return phases;
     }

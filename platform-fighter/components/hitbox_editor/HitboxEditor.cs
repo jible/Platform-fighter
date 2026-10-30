@@ -77,6 +77,10 @@ public partial class HitboxEditor : Node
     // Made in code, above the cancel on land row
     private Control cancelInAirRow;
     private CheckBox cancelInAirToggle;
+    // Made in code, below the cancel on land row. Per phase, for attacks that cancel on land
+    private Control landingLagRow;
+    private Label landingLagLabel;
+    private LineEdit landingLagInput;
     // Phases
     private OptionButton phaseDropdown;
     private Button addPhaseButton, removePhaseButton;
@@ -195,6 +199,12 @@ public partial class HitboxEditor : Node
         cancelInAirRow.AddChild(cancelInAirToggle);
         cancelOnLandRow.AddSibling(cancelInAirRow);
         cancelOnLandRow.GetParent().MoveChild(cancelInAirRow, cancelOnLandRow.GetIndex());
+        landingLagInput = new LineEdit { TooltipText = "Ticks of landing lag when landing during the selected phase. Empty uses the character's default", SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+        landingLagLabel = new Label { CustomMinimumSize = new Vector2(110, 0) };
+        landingLagRow = new HBoxContainer();
+        landingLagRow.AddChild(landingLagLabel);
+        landingLagRow.AddChild(landingLagInput);
+        cancelOnLandRow.AddSibling(landingLagRow);
 
         phaseDropdown = GetNode<OptionButton>("%PhaseDropdown");
         addPhaseButton = GetNode<Button>("%AddPhaseButton");
@@ -260,6 +270,7 @@ public partial class HitboxEditor : Node
         ignoreSheetChangeButton.Pressed += OnIgnoreSheetChangeClicked;
         cancelOnLandToggle.Toggled += on => manager.SetAttackCancelOnLand(SelectedState, on);
         cancelInAirToggle.Toggled += on => manager.SetCancelInAir(SelectedState, on);
+        OnEndEdit(landingLagInput, OnLandingLagEdited);
 
         phaseDropdown.ItemSelected += index => SelectPhase((int)index);
         addPhaseButton.Pressed += OnAddPhaseClicked;
@@ -339,6 +350,14 @@ public partial class HitboxEditor : Node
     }
 
     // A field's edit is applied on enter or when it loses focus, so a half typed value is never applied
+    // Empty goes back to the default. Anything that isn't a whole number of ticks is ignored
+    private void OnLandingLagEdited(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) manager.SetLandingLag(SelectedState, SelectedPhase, null);
+        else if (int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int ticks) && ticks > 0) manager.SetLandingLag(SelectedState, SelectedPhase, ticks);
+        Refresh();
+    }
+
     private void OnEndEdit(LineEdit field, Action<string> handler)
     {
         field.TextSubmitted += _ => EndEdit(field, handler);
@@ -831,6 +850,16 @@ public partial class HitboxEditor : Node
         AttackFile attack = manager.GetAttack(SelectedState);
         cancelOnLandRow.Visible = attack != null;
         cancelOnLandToggle.SetPressedNoSignal(attack != null && attack.CancelOnLand);
+        bool showLag = attack != null && attack.CancelOnLand && SelectedPhase < attack.Phases.Count;
+        landingLagRow.Visible = showLag;
+        if (showLag)
+        {
+            PhaseFile phase = attack.Phases[SelectedPhase];
+            landingLagLabel.Text = $"Landing Lag ({phase.Name}):";
+            int? lag = phase.LandingLag;
+            ShowText(landingLagInput, lag?.ToString(CultureInfo.InvariantCulture) ?? "", true);
+            landingLagInput.PlaceholderText = $"{manager.Data.Air.LandingLag} (default)";
+        }
         // Any state with data, attacks included
         cancelInAirRow.Visible = state != null;
         cancelInAirToggle.SetPressedNoSignal(state != null && state.CancelInAir);

@@ -157,6 +157,13 @@ public class HitboxEditorManager
         MarkChanged();
     }
 
+    // Null goes back to the character's default
+    public void SetLandingLag(string stateName, int phaseIndex, int? ticks)
+    {
+        GetPhase(stateName, phaseIndex).LandingLag = ticks;
+        MarkChanged();
+    }
+
     // Sprites in the state's sheet, at least 1
     public int SpriteCount(string stateName) => GetState(stateName).Sprite?.Count ?? 1;
 

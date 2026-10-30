@@ -11,6 +11,8 @@ public class CharacterMovement
     // What's left of the last launch, which is part of velocity. Tracked apart from the rest so it can dissipate on its own
     // without fighting gravity. Only used in the Hurt state, which clears it on entering and leaving
     private readonly SerializableProperty<DMVector> knockback = new();
+    // Scales the fall cap in the Fall state. Set by pushing up or down, kept through neutral, reset on entering Fall
+    private readonly SerializableProperty<DM64> fallMultiplier = new();
     private CharacterData Data => character.Data;
     // Horizontal max depends on whether we're grounded, vertical max is the fall speed cap
     private DMVector MaxVelocity => new(IsGrounded ? Data.Ground.MaxVelocity : Data.Air.MaxVelocity, Data.Air.MaxFallVelocity);
@@ -31,6 +33,7 @@ public class CharacterMovement
     {
         this.character = character;
         character.Colliding += onCollide;
+        fallMultiplier.Value = new DM64(1);
     }
 
     public void onCollide(PhysicsObject colA, PhysicsObject otherObj, DMVector side)
@@ -122,8 +125,19 @@ public class CharacterMovement
     {
         if (IsGrounded) return;
         ref DMVector velocity = ref character.velocity.Value;
-        velocity.y = DM64.Max(velocity.y - PerTick(Data.Air.FallAcceleration), knockback.Value.y - Data.Air.MaxFallVelocity);
+        velocity.y = DM64.Max(velocity.y - PerTick(Data.Air.FallAcceleration), knockback.Value.y - FallSpeed);
     }
+
+    // Only the Fall state scales it, see SetFallMultiplierFromStick
+    private DM64 FallSpeed => character.StateMachine.IsInState(CharacterStateId.Fall)
+        ? Data.Air.MaxFallVelocity * fallMultiplier.Value
+        : Data.Air.MaxFallVelocity;
+
+    public void ResetFallMultiplier() => fallMultiplier.Value = new DM64(1);
+
+    // 1 + down / 2, with down the stick's push from -1 (full up) to 1 (full down), so full down falls 1.5 times
+    // as fast and full up half as fast. The Fall state calls this only while the stick reads up or down. Experimental
+    public void SetFallMultiplierFromStick() => fallMultiplier.Value = new DM64(1) - InputDirection.y / 2;
 
     // Replaces velocity with the launch, so whatever the character was doing is gone
     public void Launch(DMVector launch)
@@ -214,8 +228,9 @@ public class CharacterMovement
         {
             SetGroundSpeed(Data.Ground.MaxVelocity);
         }
-        // Grounded attacks and crouching take no stick movement, they only slide. Aerials keep the usual movement
-        else if ((character.StateMachine.IsInState(CharacterStateId.Attack) || character.StateMachine.IsInState(CharacterStateId.Crouch)) && IsGrounded)
+        // Grounded attacks, crouching and landing lag take no stick movement, they only slide. Aerials keep the usual movement
+        else if ((character.StateMachine.IsInState(CharacterStateId.Attack) || character.StateMachine.IsInState(CharacterStateId.Crouch)
+            || character.StateMachine.IsInState(CharacterStateId.LandingLag)) && IsGrounded)
         {
             ApplyDrag(Data.Ground.SlideFriction);
         }

@@ -94,7 +94,15 @@ public class StateDefinition
     public string AnimationName => CharacterFiles.AnimationName(Name);
 
     // Sprite showing on a tick of a phase. Past the phase's end it holds the last sprite
-    public int SpriteAt(int phase, uint ticksInPhase) => Phases[Math.Min(phase, Phases.Length - 1)].SpriteAt(ticksInPhase);
+    // length is the phase's length in place of its authored one, or 0 for authored
+    public int SpriteAt(int phase, uint ticksInPhase, int length = 0) => Phases[Math.Min(phase, Phases.Length - 1)].SpriteAt(ticksInPhase, length);
+
+    // Ticks of landing lag when an attack that cancels on land touches down during this phase. Null for the character's default
+    public int? LandingLagAt(int phase)
+    {
+        int lag = Phases[Math.Clamp(phase, 0, Phases.Length - 1)].LandingLag;
+        return lag >= 0 ? lag : null;
+    }
 
     public BoxDefinition[] BoxesAt(int sprite) => frames[Math.Clamp(sprite, 0, frames.Length - 1)];
 }
@@ -130,19 +138,24 @@ public sealed class PhaseDefinition
     // Ticks, at least SpriteCount unless the file was edited by hand
     public readonly int Length;
     public readonly int Next;
+    // Ticks of landing lag for an attack that cancels on land touching down in this phase, or -1 for the character's default
+    public readonly int LandingLag;
 
-    public PhaseDefinition(int start, int spriteCount, int length, int next)
+    public PhaseDefinition(int start, int spriteCount, int length, int next, int landingLag = -1)
     {
         Start = start;
         SpriteCount = spriteCount;
         Length = length;
         Next = next;
+        LandingLag = landingLag;
     }
 
-    public int SpriteAt(uint ticksInPhase)
+    // length stands in for Length when it isn't 0, so the phase's sprites spread over that many ticks instead
+    public int SpriteAt(uint ticksInPhase, int length = 0)
     {
-        int tick = ticksInPhase >= Length ? Length - 1 : (int)ticksInPhase;
-        return Start + SpriteSequenceMath.EntryAt(tick, SpriteCount, Length);
+        if (length <= 0) length = Length;
+        int tick = ticksInPhase >= length ? length - 1 : (int)ticksInPhase;
+        return Start + SpriteSequenceMath.EntryAt(tick, SpriteCount, length);
     }
 }
 
