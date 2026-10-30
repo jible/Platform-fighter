@@ -3417,10 +3417,10 @@
     "y": 15
   },
   "Ground": {
-    "Acceleration": 60,
-    "MaxVelocity": 10,
+    "Acceleration": 50,
+    "MaxVelocity": 20,
     "Friction": 20,
-    "TurnaroundMultiplier": 10
+    "TurnaroundMultiplier": 30
   },
   "Air": {
     "Acceleration": 20,
@@ -3435,5 +3435,7 @@
     "AirJumps": 2,
     "AirHorizontalImpulse": 2
   },
-  "Combat": null
+  "Combat": {
+    "Weight": 1
+  }
 }

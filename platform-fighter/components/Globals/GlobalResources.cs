@@ -41,6 +41,8 @@ public static class CollisionLayers
 {
     public const int Stage = 1 << 0;
     public const int Characters = 1 << 1;
+    // One way, see PhysicsObject.oneWay
+    public const int Platforms = 1 << 2;
 }
 
 public static class DebugPrintColors

@@ -43,6 +43,9 @@ public class LifeData
         if (!IsAlive) HealthDepleted?.Invoke();
     }
 
+    // Takes health straight to 0, for deaths that aren't from damage, like leaving the stage's perimeter
+    public void Kill() => ChangeHealth(-health.Value);
+
     public void LoseLife()
     {
         if (lives.Value > 0) lives.Value--;

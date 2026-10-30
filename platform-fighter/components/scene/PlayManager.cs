@@ -49,6 +49,8 @@ public partial class PlayManager : Node3D
         var hitboxManager = new HitboxManager(world.All<Character>().OrderBy(character => character.PlayerIndex).ToArray());
         world.AddSystem(hitboxManager);
         world.AddRenderer(new RuntimeBoxRenderer(hitboxManager, world.BoxDrawer));
+        // After hits, so a launch that carries someone out lands its knockback first
+        world.AddSystem(new PerimeterEnforcer(StageHolder.Data.Perimeter, world.All<Character>().OrderBy(character => character.PlayerIndex).ToArray()));
     }
 
     public override void _Process(double delta)

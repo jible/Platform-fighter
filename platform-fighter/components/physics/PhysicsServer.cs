@@ -155,6 +155,7 @@ public class PhysicsServer
             {
                 if (!solid.isActive || solid.visitStamp == stamp) continue;
                 solid.visitStamp = stamp;
+                if (solid.oneWay && !StandsOnPlatform(body, min.y, solid)) continue;
                 solid.shape.GetBounds(solid.SimTransform.GlobalPosition, out DMVector solidMin, out DMVector solidMax);
                 if (Overlap.Bounds(probeMin, probeMax, solidMin, solidMax)) return true;
             }
@@ -194,10 +195,36 @@ public class PhysicsServer
     private void ResolveCollision(PhysicsObject a, PhysicsObject b, Axis axis)
     {
         // a is a dynamic body that masks b's layer, and b is a static collider
+        if (b.oneWay && !PlatformStops(a, b, axis)) return;
         if (Overlaps(a, b) && HandleCollision(a, b, axis, out DMVector side))
         {
             collisionEvents.Add(new CollisionEvent { Body = a, Solid = b, Side = side });
         }
+    }
+
+    // A platform only stops a body falling onto it from above, so jumping up through it, passing its sides, and
+    // holding drop through all pass. From above means the body's bottom was at or over the platform's top before
+    // this tick's move. Stateless, so nothing to roll back. Cheapest checks first
+    private bool PlatformStops(PhysicsObject a, PhysicsObject platform, Axis axis)
+    {
+        if (axis != Axis.Y || a.dropsThroughPlatforms || a.velocity.Value.y >= 0) return false;
+
+        a.shape.GetBounds(a.SimTransform.GlobalPosition, out DMVector min, out _);
+        // This axis's move has already been applied, so undo it to get where the bottom started
+        DM64 previousBottom = min.y - a.velocity.Value.y / TickManager.TicksPerSecond;
+        return previousBottom >= PlatformTop(platform);
+    }
+
+    // For the ground probe. Landing pushes the body to Epsilon over the top, so resting on it is at or over the top
+    private bool StandsOnPlatform(PhysicsObject body, DM64 bottom, PhysicsObject platform)
+    {
+        return !body.dropsThroughPlatforms && bottom >= PlatformTop(platform);
+    }
+
+    private static DM64 PlatformTop(PhysicsObject platform)
+    {
+        platform.shape.GetBounds(platform.SimTransform.GlobalPosition, out _, out DMVector max);
+        return max.y;
     }
 
     // The side of the collision: zero on the axis the collision didn't happen on, and on the

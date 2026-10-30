@@ -152,6 +152,8 @@ public class AttackState : CharacterState
     // Gravity does nothing on the ground, so aerials and ground attacks can share this
     public override bool ApplyGravity => true;
     public override bool Cancellable => false;
+    // So a down attack doesn't drop the attacker off the platform they're on
+    public override bool CanDropThroughPlatforms => false;
 
     public override StateDefinition GetDefinition(Character character) => character.Attacks.Current;
 

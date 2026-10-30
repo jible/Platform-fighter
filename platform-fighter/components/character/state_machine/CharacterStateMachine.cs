@@ -157,6 +157,8 @@ public abstract class CharacterState
     public abstract bool ApplyGravity {get;}
     // An attack input can start an attack from this state. Whole state for now
     public abstract bool Cancellable { get; }
+    // Holding down in this state falls through platforms
+    public virtual bool CanDropThroughPlatforms => true;
     // The data this state plays. Most states play their own, the Attack state plays the current attack's
     public virtual StateDefinition GetDefinition(Character character) => character.Definition.GetState(Id);
     /*

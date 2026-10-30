@@ -87,7 +87,7 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         shape = new Square { size = Data.Body.Size };
         objectType = ObjectType.CollisionObject;
         Layer = CollisionLayers.Characters;
-        Mask = CollisionLayers.Stage;
+        Mask = CollisionLayers.Stage | CollisionLayers.Platforms;
         probesGround = true;
         SimTransform.LocalPosition = spawnPosition;
         this.spawnPosition = spawnPosition;
@@ -133,6 +133,8 @@ public partial class Character : PhysicsObject, ITickable, IEntity
     public void Tick()
     {
         StateMachine.Tick();
+        // After the state machine, so it's the state physics runs in that decides
+        dropsThroughPlatforms = StateMachine.CurrentState.CanDropThroughPlatforms && Attacks.ReadDirection() == StickDirection.Down;
         // An off character is out of play, so nothing moves them until they respawn
         if (!StateMachine.IsInState(CharacterStateId.Off)) Movement.Tick();
     }

@@ -20,6 +20,11 @@ public partial class PhysicsObject : DeterministicNode3D
     /// </summary>
     public int Layer;
     public bool isStatic = false;
+    // A static collider with this set is a platform: it only stops a body landing on it from above, see PhysicsServer.PlatformStops
+    public bool oneWay;
+    // A dynamic body with this set falls through one way colliders. Set by its owner every tick before physics runs,
+    // so it isn't rollback state
+    public bool dropsThroughPlatforms;
     // Whether the physics shape renderers should draw this object's shape
     public bool renderShape = true;
     // Color the physics shape renderers draw this object's shape with

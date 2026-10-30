@@ -18,6 +18,9 @@ public partial class StageHolder : Node3D
 
     private StageData data;
 
+    // Null until the stage is loaded
+    public StageData Data => data;
+
     // Called by the play manager before the world is built
     public void LoadStage(StageId stageId)
     {
@@ -31,7 +34,8 @@ public partial class StageHolder : Node3D
                 shape = new Square { size = block.Size },
                 objectType = PhysicsObject.ObjectType.CollisionObject,
                 isStatic = true,
-                Layer = CollisionLayers.Stage,
+                Layer = block.Platform ? CollisionLayers.Platforms : CollisionLayers.Stage,
+                oneWay = block.Platform,
                 // The mesh already shows it
                 renderShape = false,
             };
