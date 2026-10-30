@@ -72,20 +72,23 @@ public class StateDefinition
     public readonly PhaseDefinition[] Phases;
     // Hit groups its hitboxes use, counting hitboxes that hit on their own
     public readonly int HitGroupCount;
+    // Falls on any tick it's played off the ground, see StateFile.CancelInAir
+    public readonly bool CancelInAir;
     // Indexed by sprite. Never empty, and an entry with no boxes is an empty array
     private readonly BoxDefinition[][] frames;
 
-    public StateDefinition(string name, SpriteGrid grid, PhaseDefinition[] phases, BoxDefinition[][] frames, int hitGroupCount)
+    public StateDefinition(string name, SpriteGrid grid, PhaseDefinition[] phases, BoxDefinition[][] frames, int hitGroupCount, bool cancelInAir)
     {
         Name = name;
         Grid = grid;
         Phases = phases;
         this.frames = frames;
         HitGroupCount = hitGroupCount;
+        CancelInAir = cancelInAir;
     }
 
     protected StateDefinition(StateDefinition state)
-        : this(state.Name, state.Grid, state.Phases, state.frames, state.HitGroupCount) { }
+        : this(state.Name, state.Grid, state.Phases, state.frames, state.HitGroupCount, state.CancelInAir) { }
 
     // The sheet to play, found by the state's name
     public string AnimationName => CharacterFiles.AnimationName(Name);

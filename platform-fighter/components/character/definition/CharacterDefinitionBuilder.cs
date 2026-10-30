@@ -87,7 +87,7 @@ public static class CharacterDefinitionBuilder
             }
         }
 
-        return new StateDefinition(name, grid, BuildPhases(name, state.Phases, grid.Count), frames, hitGroupCount);
+        return new StateDefinition(name, grid, BuildPhases(name, state.Phases, grid.Count), frames, hitGroupCount, state.CancelInAir);
     }
 
     private static PhaseDefinition[] BuildPhases(string name, List<PhaseFile> files, int spriteCount)

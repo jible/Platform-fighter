@@ -105,6 +105,11 @@ public class CharacterStateMachine
     public void Tick()
     {
         changedThisTick = false;
+        // First, so nothing in a state that's been left off the ground runs. Grounded is from the last physics step
+        if (CurrentDefinition?.CancelInAir == true && !Character.Movement.IsGrounded)
+        {
+            ChangeState(CharacterStateId.Fall);
+        }
         // Before the state runs, so an attack started here plays its first frame this tick and still sees
         // TicksInState == 0, which is what clears its hit memory
         if (CurrentState.Cancellable) Character.Attacks.TryStartAttack();

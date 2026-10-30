@@ -74,7 +74,8 @@
       "HitGroups": [],
       "NextBoxId": 4,
       "NextHitGroupId": 3,
-      "NextPhaseId": 1
+      "NextPhaseId": 1,
+      "CancelInAir": false
     },
     "Fall": {
       "Sprite": {
@@ -149,7 +150,8 @@
       "HitGroups": [],
       "NextBoxId": 1,
       "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "NextPhaseId": 1,
+      "CancelInAir": false
     },
     "Walk": {
       "Sprite": {
@@ -224,7 +226,8 @@
       "HitGroups": [],
       "NextBoxId": 1,
       "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "NextPhaseId": 1,
+      "CancelInAir": true
     },
     "JumpSquat": {
       "Sprite": {
@@ -275,7 +278,8 @@
       "HitGroups": [],
       "NextBoxId": 1,
       "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "NextPhaseId": 1,
+      "CancelInAir": false
     },
     "Jump": {
       "Sprite": {
@@ -398,7 +402,8 @@
       "HitGroups": [],
       "NextBoxId": 1,
       "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "NextPhaseId": 1,
+      "CancelInAir": false
     },
     "Land": {
       "Sprite": {
@@ -473,7 +478,8 @@
       "HitGroups": [],
       "NextBoxId": 1,
       "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "NextPhaseId": 1,
+      "CancelInAir": false
     },
     "Turn": {
       "Sprite": {
@@ -548,7 +554,8 @@
       "HitGroups": [],
       "NextBoxId": 1,
       "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "NextPhaseId": 1,
+      "CancelInAir": false
     },
     "Hurt": {
       "Sprite": {
@@ -599,7 +606,39 @@
       "HitGroups": [],
       "NextBoxId": 1,
       "NextHitGroupId": 0,
-      "NextPhaseId": 1
+      "NextPhaseId": 1,
+      "CancelInAir": false
+    },
+    "Stop": {
+      "Sprite": {
+        "Columns": 1,
+        "Rows": 1,
+        "SheetWidth": 200,
+        "SheetHeight": 200,
+        "Count": 1
+      },
+      "Phases": [
+        {
+          "Id": 0,
+          "Name": "Main",
+          "Start": 0,
+          "End": 0,
+          "Length": 3,
+          "OnEnd": "Next",
+          "Target": -1,
+          "SpriteCount": 1
+        }
+      ],
+      "Frames": [
+        {
+          "Boxes": []
+        }
+      ],
+      "HitGroups": [],
+      "NextBoxId": 0,
+      "NextHitGroupId": 0,
+      "NextPhaseId": 1,
+      "CancelInAir": true
     }
   },
   "Attacks": {
@@ -1024,7 +1063,8 @@
       ],
       "NextBoxId": 2,
       "NextHitGroupId": 1,
-      "NextPhaseId": 3
+      "NextPhaseId": 3,
+      "CancelInAir": true
     },
     "BTilt": {
       "Input": {
@@ -1451,7 +1491,8 @@
       ],
       "NextBoxId": 3,
       "NextHitGroupId": 1,
-      "NextPhaseId": 3
+      "NextPhaseId": 3,
+      "CancelInAir": true
     },
     "FTilt": {
       "Input": {
@@ -1738,7 +1779,8 @@
       ],
       "NextBoxId": 2,
       "NextHitGroupId": 1,
-      "NextPhaseId": 3
+      "NextPhaseId": 3,
+      "CancelInAir": true
     },
     "DTilt": {
       "Input": {
@@ -2093,7 +2135,8 @@
       ],
       "NextBoxId": 2,
       "NextHitGroupId": 1,
-      "NextPhaseId": 3
+      "NextPhaseId": 3,
+      "CancelInAir": true
     },
     "FAir": {
       "Input": {
@@ -2384,7 +2427,8 @@
       ],
       "NextBoxId": 2,
       "NextHitGroupId": 1,
-      "NextPhaseId": 3
+      "NextPhaseId": 3,
+      "CancelInAir": false
     },
     "BAir": {
       "Input": {
@@ -2747,7 +2791,8 @@
       ],
       "NextBoxId": 2,
       "NextHitGroupId": 1,
-      "NextPhaseId": 3
+      "NextPhaseId": 3,
+      "CancelInAir": false
     },
     "NAir": {
       "Input": {
@@ -3074,7 +3119,8 @@
       ],
       "NextBoxId": 3,
       "NextHitGroupId": 1,
-      "NextPhaseId": 3
+      "NextPhaseId": 3,
+      "CancelInAir": false
     },
     "DAir": {
       "Input": {
@@ -3405,7 +3451,8 @@
       ],
       "NextBoxId": 3,
       "NextHitGroupId": 1,
-      "NextPhaseId": 3
+      "NextPhaseId": 3,
+      "CancelInAir": false
     }
   },
   "BodySize": {

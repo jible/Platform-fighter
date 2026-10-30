@@ -50,6 +50,8 @@ public class StateFile
     public int NextBoxId;
     public int NextHitGroupId;
     public int NextPhaseId;
+    // Leaves for the Fall state on any tick it's played off the ground, like a grounded attack carried off a ledge
+    public bool CancelInAir;
 }
 
 // A run of the sheet's sprites, played over its own length.

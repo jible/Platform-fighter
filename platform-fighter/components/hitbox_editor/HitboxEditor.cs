@@ -74,6 +74,9 @@ public partial class HitboxEditor : Node
     // Attacks only, so the row is hidden for states
     private Control cancelOnLandRow;
     private CheckBox cancelOnLandToggle;
+    // Made in code, above the cancel on land row
+    private Control cancelInAirRow;
+    private CheckBox cancelInAirToggle;
     // Phases
     private OptionButton phaseDropdown;
     private Button addPhaseButton, removePhaseButton;
@@ -186,6 +189,12 @@ public partial class HitboxEditor : Node
         ignoreSheetChangeButton = GetNode<Button>("%IgnoreSheetChangeButton");
         cancelOnLandRow = GetNode<Control>("%CancelOnLandRow");
         cancelOnLandToggle = GetNode<CheckBox>("%CancelOnLandToggle");
+        cancelInAirToggle = new CheckBox { TooltipText = "Fall on any tick this is played off the ground" };
+        cancelInAirRow = new HBoxContainer();
+        cancelInAirRow.AddChild(new Label { Text = "Cancel In Air:", CustomMinimumSize = new Vector2(110, 0) });
+        cancelInAirRow.AddChild(cancelInAirToggle);
+        cancelOnLandRow.AddSibling(cancelInAirRow);
+        cancelOnLandRow.GetParent().MoveChild(cancelInAirRow, cancelOnLandRow.GetIndex());
 
         phaseDropdown = GetNode<OptionButton>("%PhaseDropdown");
         addPhaseButton = GetNode<Button>("%AddPhaseButton");
@@ -250,6 +259,7 @@ public partial class HitboxEditor : Node
         applySheetChangeButton.Pressed += OnApplySheetChangeClicked;
         ignoreSheetChangeButton.Pressed += OnIgnoreSheetChangeClicked;
         cancelOnLandToggle.Toggled += on => manager.SetAttackCancelOnLand(SelectedState, on);
+        cancelInAirToggle.Toggled += on => manager.SetCancelInAir(SelectedState, on);
 
         phaseDropdown.ItemSelected += index => SelectPhase((int)index);
         addPhaseButton.Pressed += OnAddPhaseClicked;
@@ -821,6 +831,9 @@ public partial class HitboxEditor : Node
         AttackFile attack = manager.GetAttack(SelectedState);
         cancelOnLandRow.Visible = attack != null;
         cancelOnLandToggle.SetPressedNoSignal(attack != null && attack.CancelOnLand);
+        // Any state with data, attacks included
+        cancelInAirRow.Visible = state != null;
+        cancelInAirToggle.SetPressedNoSignal(state != null && state.CancelInAir);
     }
 
     private void ShowPhaseProperties(StateFile state)

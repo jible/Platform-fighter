@@ -149,6 +149,14 @@ public class HitboxEditorManager
         MarkChanged();
     }
 
+    // States and attacks both, once they have data
+    public void SetCancelInAir(string stateName, bool cancel)
+    {
+        if (!HasState(stateName)) return;
+        GetState(stateName).CancelInAir = cancel;
+        MarkChanged();
+    }
+
     // Sprites in the state's sheet, at least 1
     public int SpriteCount(string stateName) => GetState(stateName).Sprite?.Count ?? 1;
 
