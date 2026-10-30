@@ -8,6 +8,8 @@ public enum CharacterStateId : byte
     // Crouch before leaving the ground. The jump itself happens when it ends
     JumpSquat,
     Jump,
+    // A ground jump with jump released before the squat ended
+    ShortHop,
     Fall,
     // Touching down from the air
     Land,

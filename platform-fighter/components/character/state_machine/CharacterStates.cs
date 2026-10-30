@@ -54,9 +54,11 @@ public class JumpSquatState : CharacterState
     public override bool ApplyGravity => false;
     public override bool Cancellable => false;
 
+    // Still holding jump is a full jump, otherwise a short hop, so the squat's length is the window to release it
     public override void OnAnimFinished(CharacterStateMachine machine)
     {
-        machine.ChangeState(CharacterStateId.Jump);
+        bool held = machine.Character.InputHandler.IsDown(ControllerState.ButtonTypes.JUMP);
+        machine.ChangeState(held ? CharacterStateId.Jump : CharacterStateId.ShortHop);
     }
 }
 
@@ -83,6 +85,21 @@ public class JumpState : CharacterState
     {
         machine.ChangeState(CharacterStateId.Fall);
     }
+}
+
+// A jump at short hop height. Only entered from the ground, so it never uses an air jump
+public class ShortHopState : JumpState
+{
+    public override CharacterStateId Id => CharacterStateId.ShortHop;
+
+    public override void EnterState(CharacterStateMachine machine)
+    {
+        machine.Character.Movement.ShortHop();
+    }
+
+    // Plays the Jump state's data until it has its own
+    public override StateDefinition GetDefinition(Character character) =>
+        character.Definition.GetState(Id) ?? character.Definition.GetState(CharacterStateId.Jump);
 }
 
 // Ends on landing, so its last phase should restart

@@ -59,6 +59,12 @@ public class CharacterMovement
         }
     }
 
+    // Ground only, so there's no air jump to count
+    public void ShortHop()
+    {
+        character.velocity.Value.y = Data.Jump.ShortHopVelocity;
+    }
+
     public void StandardMovement()
     {
         DM64 input = InputX;

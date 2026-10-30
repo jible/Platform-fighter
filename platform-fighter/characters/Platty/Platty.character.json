@@ -240,7 +240,7 @@
           "Name": "Main",
           "Start": 0,
           "End": 0,
-          "Length": 1,
+          "Length": 3,
           "OnEnd": "Next",
           "Target": -1,
           "SpriteCount": 1
@@ -3432,6 +3432,7 @@
   },
   "Jump": {
     "Velocity": 20,
+    "ShortHopVelocity": 12,
     "AirJumps": 2,
     "AirHorizontalImpulse": 2
   },

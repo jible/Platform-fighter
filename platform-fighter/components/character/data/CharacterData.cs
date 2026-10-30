@@ -93,6 +93,8 @@ public class CombatData
 public class JumpData
 {
     public DM64 Velocity = new DM64(50);
+    // Used instead of Velocity when jump is released before the jump squat ends
+    public DM64 ShortHopVelocity = new DM64(30);
     public int AirJumps = 2;
     // Horizontal push in the stick's direction on an air jump, capped by the air max velocity
     public DM64 AirHorizontalImpulse = new DM64(2);
