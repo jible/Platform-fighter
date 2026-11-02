@@ -196,6 +196,7 @@ public partial class Character : PhysicsObject, ITickable, IEntity
         velocity.Value = DMVector.zero;
         isActive = true;
         Life.RestoreHealth();
+        Movement.ResetFallMultiplier();
         StateMachine.ChangeState(CharacterStateId.Fall);
     }
 

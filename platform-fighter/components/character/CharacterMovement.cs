@@ -58,7 +58,8 @@ public class CharacterMovement
         {
             velocity.y = Data.Jump.Velocity;
             usedAirJumps.Value++;
-            AddCappedImpulse(new DMVector(Data.Jump.AirHorizontalImpulse * InputX.Sign(), new DM64(0)));
+            ResetFallMultiplier();
+            velocity.x = Data.Air.MaxVelocity * InputX;
         }
     }
 
@@ -92,10 +93,13 @@ public class CharacterMovement
         velocity.x += PerTick(acceleration) * input.Sign() * turnaround;
     }
 
-    private void SetGroundSpeed(DM64 speed)
+    private void SetFacingSpeed(DM64 speed)
     {
         character.velocity.Value.x = character.direction == Character.Direction.Right ? speed : -speed;
     }
+
+    // Walk speed the way the character faces. Leaving a dash drops to this, so its speed isn't carried off a ledge
+    public void SetRunSpeed() => SetFacingSpeed(Data.Ground.MaxVelocity);
 
     // Only slows down with no input, or when something like knockback pushed past the max
     public void StandardDrag()
@@ -128,16 +132,43 @@ public class CharacterMovement
         velocity.y = DM64.Max(velocity.y - PerTick(Data.Air.FallAcceleration), knockback.Value.y - FallSpeed);
     }
 
-    // Only the Fall state scales it, see SetFallMultiplierFromStick
-    private DM64 FallSpeed => character.StateMachine.IsInState(CharacterStateId.Fall)
-        ? Data.Air.MaxFallVelocity * fallMultiplier.Value
-        : Data.Air.MaxFallVelocity;
+    // See UpdateFallMultiplier
+    private DM64 FallSpeed => Data.Air.MaxFallVelocity * fallMultiplier.Value;
 
     public void ResetFallMultiplier() => fallMultiplier.Value = new DM64(1);
 
-    // 1 + down / 2, with down the stick's push from -1 (full up) to 1 (full down), so full down falls 1.5 times
-    // as fast and full up half as fast. The Fall state calls this only while the stick reads up or down. Experimental
-    public void SetFallMultiplierFromStick() => fallMultiplier.Value = new DM64(1) - InputDirection.y / 2;
+    // Fast fall works anywhere in the air except while being hit, and lasts until landing, an air jump or a hit, even
+    // once the stick lets go. Slow fall is only for the Fall state, which sets it
+    private void UpdateFallMultiplier()
+    {
+        CharacterStateMachine machine = character.StateMachine;
+        if (IsGrounded || machine.IsInState(CharacterStateId.Hurt) || machine.IsInState(CharacterStateId.Dying))
+        {
+            ResetFallMultiplier();
+            return;
+        }
+        if (!machine.IsInState(CharacterStateId.Fall) && fallMultiplier.Value < new DM64(1)) ResetFallMultiplier();
+        if (character.Attacks.ReadDirection() == StickDirection.Down)
+        {
+            SetFallMultiplierFromStick();
+            SnapToFallSpeed();
+        }
+    }
+
+    // Scales from 1 at neutral to FastFallMultiplier at full down or SlowFallMultiplier at full up. Experimental
+    public void SetFallMultiplierFromStick()
+    {
+        DM64 y = InputDirection.y;
+        DM64 fullPush = y < 0 ? Data.Air.FastFallMultiplier : Data.Air.SlowFallMultiplier;
+        fallMultiplier.Value = new DM64(1) + (fullPush - new DM64(1)) * y.Abs();
+    }
+
+    // Goes straight to the fall speed instead of accelerating to it. Not while rising, so it doesn't cut a jump short
+    private void SnapToFallSpeed()
+    {
+        ref DMVector velocity = ref character.velocity.Value;
+        if (velocity.y <= 0) velocity.y = -FallSpeed;
+    }
 
     // Replaces velocity with the launch, so whatever the character was doing is gone
     public void Launch(DMVector launch)
@@ -222,11 +253,11 @@ public class CharacterMovement
         // Off the ground they get the usual movement, until something moves them to the Fall state
         else if (character.StateMachine.IsInState(CharacterStateId.Dash) && IsGrounded)
         {
-            SetGroundSpeed(Data.Ground.DashVelocity);
+            SetFacingSpeed(Data.Ground.DashVelocity);
         }
         else if (character.StateMachine.IsInState(CharacterStateId.Walk) && IsGrounded)
         {
-            SetGroundSpeed(Data.Ground.MaxVelocity);
+            SetFacingSpeed(Data.Ground.MaxVelocity);
         }
         // Grounded attacks, crouching and landing lag take no stick movement, they only slide. Aerials keep the usual movement
         else if ((character.StateMachine.IsInState(CharacterStateId.Attack) || character.StateMachine.IsInState(CharacterStateId.Crouch)
@@ -240,6 +271,7 @@ public class CharacterMovement
             StandardDrag();
         }
 
+        UpdateFallMultiplier();
         // Apply gravity
         StandardGravity();
     }

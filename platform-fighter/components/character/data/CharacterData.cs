@@ -84,6 +84,9 @@ public class AirMovementData
     // Gravity
     public DM64 FallAcceleration = new DM64(10);
     public DM64 MaxFallVelocity = new DM64(2);
+    // Scale MaxFallVelocity with the stick at full down and full up, see CharacterMovement.UpdateFallMultiplier
+    public DM64 FastFallMultiplier = new DM64(9) / 5;
+    public DM64 SlowFallMultiplier = new DM64(1) / 2;
     // Works like the ground's, see GroundMovementData.Friction
     public DM64 Friction = new DM64(2);
     public DM64 TurnaroundMultiplier = new DM64(5);

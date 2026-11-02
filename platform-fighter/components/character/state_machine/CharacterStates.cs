@@ -85,7 +85,8 @@ public class CrouchState : CharacterState
 }
 
 // Holds DashVelocity the way it faces, see CharacterMovement.Tick. Its length is how long the dash lasts.
-// Pushing the other way starts a new dash that way, so it can be danced back and forth
+// Pushing the other way starts a new dash that way, so it can be danced back and forth.
+// Letting go doesn't end it, so the stick can pass through neutral on the way across
 public class DashState : CharacterState
 {
     public override CharacterStateId Id => CharacterStateId.Dash;
@@ -100,15 +101,17 @@ public class DashState : CharacterState
         {
             machine.ChangeState(CharacterStateId.JumpSquat);
         }
-        else if (stickX == 0)
-        {
-            machine.ChangeState(CharacterStateId.Stop);
-        }
-        else if ((stickX > 0) != (character.direction == Character.Direction.Right))
+        else if (stickX != 0 && (stickX > 0) != (character.direction == Character.Direction.Right))
         {
             character.direction = stickX > 0 ? Character.Direction.Right : Character.Direction.Left;
             machine.ChangeState(CharacterStateId.Dash, reenter: true);
         }
+    }
+
+    // However it's left, including running off a ledge into Fall
+    public override void ExitState(CharacterStateMachine machine)
+    {
+        machine.Character.Movement.SetRunSpeed();
     }
 
     public override void OnAnimFinished(CharacterStateMachine machine)
@@ -214,17 +217,11 @@ public class FallState : CharacterState
     public override bool ApplyGravity => true;
     public override bool Cancellable => true;
 
-    public override void EnterState(CharacterStateMachine machine)
-    {
-        machine.Character.Movement.ResetFallMultiplier();
-    }
-
     public override void Tick(CharacterStateMachine machine)
     {
         Character character = machine.Character;
-        // Up or down sets how fast it falls, and neutral or sideways keeps whatever was last set
-        StickDirection stick = character.Attacks.ReadDirection();
-        if (stick == StickDirection.Up || stick == StickDirection.Down) character.Movement.SetFallMultiplierFromStick();
+        // Up slows the fall, and neutral or sideways keeps whatever was last set. Down is in CharacterMovement, as it isn't only for this state
+        if (character.Attacks.ReadDirection() == StickDirection.Up) character.Movement.SetFallMultiplierFromStick();
 
         if (character.Movement.IsGrounded)
         {

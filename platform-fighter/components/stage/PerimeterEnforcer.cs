@@ -19,7 +19,14 @@ public class PerimeterEnforcer : IWorldSystem
         {
             // Already dying or off, so they stay where they left until they respawn
             if (!character.Life.IsAlive) continue;
-            if (!perimeter.Contains(character.SimTransform.GlobalPosition)) character.Life.Kill();
+            DMVector position = character.SimTransform.GlobalPosition;
+            if (!perimeter.Contains(position) && !IsSafeOffTop(character, position)) character.Life.Kill();
         }
     }
+
+    // Off the top only kills a launched character, so jumping up there on their own just falls back down
+    private bool IsSafeOffTop(Character character, DMVector position) =>
+        position.y > perimeter.Max.y
+        && position.x >= perimeter.Min.x && position.x <= perimeter.Max.x
+        && !character.StateMachine.IsInState(CharacterStateId.Hurt);
 }
