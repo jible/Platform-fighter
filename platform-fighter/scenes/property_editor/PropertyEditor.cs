@@ -113,7 +113,8 @@ public partial class PropertyEditor : Node
     {
         bool isInt = field.FieldType == typeof(int);
         var row = new HBoxContainer();
-        row.AddChild(new Label { Text = DisplayName(field.Name), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill });
+        var label = new Label { Text = DisplayName(field.Name), SizeFlagsHorizontal = Control.SizeFlags.ExpandFill };
+        row.AddChild(label);
 
         var input = new SpinBox
         {
@@ -134,6 +135,8 @@ public partial class PropertyEditor : Node
         // The game reads the keyboard directly, so let go of it once a value is entered or typing keeps moving the character
         input.GetLineEdit().TextSubmitted += _ => input.GetLineEdit().ReleaseFocus();
         row.AddChild(input);
+        // Dragging the label enters each step like typing it, so the SpinBox clamps it and raises ValueChanged
+        new FieldScrubber(label, input.GetLineEdit(), _ => input.Apply(), isInt ? 1m : 0.1m);
         return row;
     }
 

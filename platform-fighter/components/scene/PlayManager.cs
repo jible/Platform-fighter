@@ -25,6 +25,9 @@ public partial class PlayManager : Node3D
     public MatchResults Results { get; private set; }
     public event System.Action<MatchResults> MatchEnded;
 
+    private const string LocalCharacterSelectScenePath = "uid://cl3dgdjb3y1tx";
+    private const string OnlineCharacterSelectScenePath = "uid://cdcq8ql8pxore";
+
     public override void _Ready()
     {
         // Before the deterministic nodes, so a frame's ticks run before they draw it
@@ -104,6 +107,10 @@ public partial class PlayManager : Node3D
             GD.Print($"Player {playerNumber + 1} ({character.CharacterId}) placed {character.Life.Placement}");
         }
         MatchEnded?.Invoke(Results);
+
+        // The local select can't show remote players, so online matches go back to the online one
+        bool isOnline = NetworkManager.GlobalInstance.connectionType != NetworkManager.ConnectionType.DISCONNECTED;
+        GetTree().ChangeSceneToFile(isOnline ? OnlineCharacterSelectScenePath : LocalCharacterSelectScenePath);
     }
 
     public override void _ExitTree()

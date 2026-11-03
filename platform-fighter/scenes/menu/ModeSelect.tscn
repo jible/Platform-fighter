@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://cwlsejxx2roi7"]
+
+[ext_resource type="Script" uid="uid://bjae6knskg0lb" path="res://scenes/menu/ModeSelect.cs" id="1_mode"]
+
+[node name="ModeSelect" type="Control" node_paths=PackedStringArray("LocalPlayButton", "ControllerCustomizationButton")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_mode")
+LocalPlayButton = NodePath("Options/LocalPlay")
+ControllerCustomizationButton = NodePath("Options/ControllerCustomization")
+
+[node name="Options" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LocalPlay" type="Button" parent="Options"]
+layout_mode = 2
+text = "Local Play"
+
+[node name="ControllerCustomization" type="Button" parent="Options"]
+layout_mode = 2
+text = "Controller Customization"

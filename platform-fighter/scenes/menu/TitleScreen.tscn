@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cq0kkekwdufu8"]
+
+[ext_resource type="Script" path="res://scenes/menu/TitleScreen.cs" id="1_title"]
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_title")
+
+[node name="StartPrompt" type="Label" parent="."]
+layout_mode = 0
+text = "Click to start"

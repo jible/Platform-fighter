@@ -1,0 +1,94 @@
+[gd_scene format=3 uid="uid://cm5nlcuvc8yuq"]
+
+[ext_resource type="Script" path="res://scenes/menu/ControllerCustomization.cs" id="1_custom"]
+[ext_resource type="PackedScene" uid="uid://cthei3jwochui" path="res://scenes/menu/BindRow.tscn" id="2_row"]
+
+[node name="ControllerCustomization" type="Control" node_paths=PackedStringArray("TagDropdown", "NewTagButton", "ModeDropdown", "Rows", "SaveButton", "BackButton", "BindOverlay", "BindPrompt", "NewTagDialog", "NewTagName", "NewTagError")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_custom")
+TagDropdown = NodePath("Contents/TagControls/TagDropdown")
+NewTagButton = NodePath("Contents/TagControls/NewTagButton")
+ModeDropdown = NodePath("Contents/ModeDropdown")
+RowScene = ExtResource("2_row")
+Rows = NodePath("Contents/Rows")
+SaveButton = NodePath("Contents/Actions/SaveButton")
+BackButton = NodePath("Contents/Actions/BackButton")
+BindOverlay = NodePath("BindOverlay")
+BindPrompt = NodePath("BindOverlay/Center/BindPrompt")
+NewTagDialog = NodePath("NewTagDialog")
+NewTagName = NodePath("NewTagDialog/Fields/NewTagName")
+NewTagError = NodePath("NewTagDialog/Fields/NewTagError")
+
+[node name="Contents" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TagControls" type="HBoxContainer" parent="Contents"]
+layout_mode = 2
+
+[node name="TagDropdown" type="OptionButton" parent="Contents/TagControls"]
+layout_mode = 2
+
+[node name="NewTagButton" type="Button" parent="Contents/TagControls"]
+layout_mode = 2
+text = "New Tag"
+
+[node name="ModeDropdown" type="OptionButton" parent="Contents"]
+layout_mode = 2
+
+[node name="Rows" type="VBoxContainer" parent="Contents"]
+layout_mode = 2
+
+[node name="Actions" type="HBoxContainer" parent="Contents"]
+layout_mode = 2
+
+[node name="SaveButton" type="Button" parent="Contents/Actions"]
+layout_mode = 2
+text = "Save"
+
+[node name="BackButton" type="Button" parent="Contents/Actions"]
+layout_mode = 2
+text = "Back"
+
+[node name="BindOverlay" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75)
+
+[node name="Center" type="CenterContainer" parent="BindOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BindPrompt" type="Label" parent="BindOverlay/Center"]
+layout_mode = 2
+
+[node name="NewTagDialog" type="ConfirmationDialog" parent="."]
+title = "New Tag"
+visible = false
+ok_button_text = "Create"
+dialog_hide_on_ok = false
+
+[node name="Fields" type="VBoxContainer" parent="NewTagDialog"]
+
+[node name="NewTagName" type="LineEdit" parent="NewTagDialog/Fields"]
+layout_mode = 2
+
+[node name="NewTagError" type="Label" parent="NewTagDialog/Fields"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)

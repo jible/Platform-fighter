@@ -103,6 +103,12 @@ public static class TagManager
 
     public static bool IsDefault(int id) => id == Keyboard1Id || id == Keyboard2Id || id == ControllerId;
 
+    // Ignores case and spaces at either end, so names that read the same can't both exist
+    public static bool IsNameUsed(string name)
+    {
+        return file.Tags.Any(tag => string.Equals(tag.Name.Trim(), name.Trim(), StringComparison.OrdinalIgnoreCase));
+    }
+
     // Binds whatever the event was, like a key the player just pressed in the tag editor.
     // False when the event can't be bound or the action already has it
     public static bool AddBind(int id, GameAction action, InputEvent inputEvent)
@@ -110,10 +116,86 @@ public static class TagManager
         Bind bind = Bind.FromEvent(inputEvent);
         if (bind == null || Get(id) is not InputTag tag) return false;
 
-        if (!tag.Binds.TryGetValue(action, out var binds)) tag.Binds[action] = binds = new List<Bind>();
+        List<Bind> binds = BindListFor(tag, action);
         if (binds.Any(existing => existing.SameAs(bind))) return false;
         binds.Add(bind);
         return true;
+    }
+
+    // Like AddBind, but replaces the action's binds for the event's scheme. A key replaces keys, and
+    // a controller input replaces controller inputs, so the action's other scheme is left alone.
+    // False when the event can't be bound
+    public static bool ReplaceBind(int id, GameAction action, InputEvent inputEvent)
+    {
+        Bind bind = Bind.FromEvent(inputEvent);
+        if (bind == null || Get(id) is not InputTag tag) return false;
+
+        List<Bind> binds = BindListFor(tag, action);
+        binds.RemoveAll(existing => (existing.Type == BindType.Key) == (bind.Type == BindType.Key));
+        binds.Add(bind);
+        return true;
+    }
+
+    // The d-pad always stays on move, whichever stick it's set to
+    public static void SetMoveStick(int id, ControllerState.StickTypes stick)
+    {
+        if (Get(id) is not InputTag tag) return;
+        SetStick(tag, GameAction.MoveUp, GameAction.MoveDown, GameAction.MoveLeft, GameAction.MoveRight, stick);
+        AddDpadBind(tag, GameAction.MoveUp, JoyButton.DpadUp);
+        AddDpadBind(tag, GameAction.MoveDown, JoyButton.DpadDown);
+        AddDpadBind(tag, GameAction.MoveLeft, JoyButton.DpadLeft);
+        AddDpadBind(tag, GameAction.MoveRight, JoyButton.DpadRight);
+    }
+
+    public static void SetAimStick(int id, ControllerState.StickTypes stick)
+    {
+        if (Get(id) is not InputTag tag) return;
+        SetStick(tag, GameAction.AimUp, GameAction.AimDown, GameAction.AimLeft, GameAction.AimRight, stick);
+    }
+
+    // Null when the tag has no stick on the action
+    public static ControllerState.StickTypes? MoveStick(int id) => StickFor(id, GameAction.MoveUp);
+    public static ControllerState.StickTypes? AimStick(int id) => StickFor(id, GameAction.AimUp);
+
+    private static ControllerState.StickTypes? StickFor(int id, GameAction upAction)
+    {
+        if (Get(id) is not InputTag tag) return null;
+        Bind axis = tag.BindsFor(upAction).FirstOrDefault(bind => bind.Type == BindType.JoyAxis);
+        if (axis?.Name == nameof(JoyAxis.LeftY)) return ControllerState.StickTypes.LEFT;
+        if (axis?.Name == nameof(JoyAxis.RightY)) return ControllerState.StickTypes.RIGHT;
+        return null;
+    }
+
+    private static void SetStick(InputTag tag, GameAction up, GameAction down, GameAction left, GameAction right, ControllerState.StickTypes stick)
+    {
+        bool isLeft = stick == ControllerState.StickTypes.LEFT;
+        JoyAxis xAxis = isLeft ? JoyAxis.LeftX : JoyAxis.RightX;
+        JoyAxis yAxis = isLeft ? JoyAxis.LeftY : JoyAxis.RightY;
+        SetAxisBind(tag, up, Bind.JoyAxis(yAxis, -1));
+        SetAxisBind(tag, down, Bind.JoyAxis(yAxis, 1));
+        SetAxisBind(tag, left, Bind.JoyAxis(xAxis, -1));
+        SetAxisBind(tag, right, Bind.JoyAxis(xAxis, 1));
+    }
+
+    private static void SetAxisBind(InputTag tag, GameAction action, Bind axisBind)
+    {
+        List<Bind> binds = BindListFor(tag, action);
+        binds.RemoveAll(existing => existing.Type == BindType.JoyAxis);
+        binds.Add(axisBind);
+    }
+
+    private static void AddDpadBind(InputTag tag, GameAction action, JoyButton button)
+    {
+        List<Bind> binds = BindListFor(tag, action);
+        Bind bind = Bind.JoyButton(button);
+        if (!binds.Any(existing => existing.SameAs(bind))) binds.Add(bind);
+    }
+
+    // Made when the action has no binds yet
+    private static List<Bind> BindListFor(InputTag tag, GameAction action)
+    {
+        if (!tag.Binds.TryGetValue(action, out var binds)) tag.Binds[action] = binds = new List<Bind>();
+        return binds;
     }
 
     // index is the bind's position in the tag's binds for the action

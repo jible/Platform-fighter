@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://crai0i6w3jkp7"]
+
+[ext_resource type="Script" path="res://scenes/menu/PlayerSlot.cs" id="1_slot"]
+
+[node name="PlayerSlot" type="PanelContainer" node_paths=PackedStringArray("PlayerLabel", "ControllerDropdown", "TagDropdown", "CharacterDropdown")]
+script = ExtResource("1_slot")
+PlayerLabel = NodePath("Fields/PlayerLabel")
+ControllerDropdown = NodePath("Fields/ControllerDropdown")
+TagDropdown = NodePath("Fields/TagDropdown")
+CharacterDropdown = NodePath("Fields/CharacterDropdown")
+
+[node name="Fields" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PlayerLabel" type="Label" parent="Fields"]
+layout_mode = 2
+
+[node name="ControllerDropdown" type="OptionButton" parent="Fields"]
+layout_mode = 2
+
+[node name="TagDropdown" type="OptionButton" parent="Fields"]
+layout_mode = 2
+
+[node name="CharacterDropdown" type="OptionButton" parent="Fields"]
+layout_mode = 2

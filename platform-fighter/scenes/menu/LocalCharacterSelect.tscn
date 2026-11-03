@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cl3dgdjb3y1tx"]
+
+[ext_resource type="Script" path="res://scenes/menu/LocalCharacterSelect.cs" id="1_select"]
+[ext_resource type="PackedScene" uid="uid://crai0i6w3jkp7" path="res://scenes/menu/PlayerSlot.tscn" id="2_slot"]
+
+[node name="LocalCharacterSelect" type="Control" node_paths=PackedStringArray("Slots", "StartButton")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_select")
+SlotScene = ExtResource("2_slot")
+Slots = NodePath("Contents/Slots")
+StartButton = NodePath("Contents/StartButton")
+
+[node name="Contents" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Slots" type="HBoxContainer" parent="Contents"]
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="Contents"]
+layout_mode = 2
+text = "Start"

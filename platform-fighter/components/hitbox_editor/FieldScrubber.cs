@@ -6,7 +6,7 @@ using System.Globalization;
 // Dragging right or up raises it, and left or down lowers it.
 // Each step writes the new value into the field and hands it to the field's own edit handler,
 // so a scrub is applied exactly like typing that value would be.
-// Plain C#, made by the HitboxEditor. The label holds its handlers, so nothing needs disposing
+// Plain C#, made by the HitboxEditor and PropertyEditor. The label holds its handlers, so nothing needs disposing
 public class FieldScrubber
 {
     // Mouse travel for one step, so small wobbles don't change the value
@@ -66,5 +66,7 @@ public class FieldScrubber
         string text = value.ToString(CultureInfo.InvariantCulture);
         field.Text = text;
         handler(text);
+        // The handler may have clamped it. Carrying on from what's shown means dragging back doesn't first undo the overshoot
+        if (decimal.TryParse(field.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out decimal shown)) value = shown;
     }
 }

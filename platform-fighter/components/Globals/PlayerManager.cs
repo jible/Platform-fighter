@@ -128,6 +128,25 @@ public partial class PlayerManager : Node
     }
 
 
+    // For a slot picked from a menu, unlike AttemptAddPlayer which takes the first free one.
+    // A player already in the slot keeps their character but moves to the new controller's default tag
+    public void SetLocalPlayer(int PlayerNumber, int DeviceNumber, PlayerProfile.ControllerTypes ControllerType)
+    {
+        bool IsNewPlayer = AllPlayers[PlayerNumber] == null;
+        PlayerProfile playerProfile = AllPlayers[PlayerNumber] ?? new();
+        playerProfile.Configure(PlayerNumber, DeviceNumber, ControllerType);
+
+        AllPlayers[PlayerNumber] = playerProfile;
+        if (IsNewPlayer) EmitSignal("PlayerAdded", PlayerNumber);
+    }
+
+    public void RemovePlayer(int PlayerNumber)
+    {
+        if (AllPlayers[PlayerNumber] == null) return;
+        AllPlayers[PlayerNumber] = null;
+        EmitSignal("PlayerRemoved", PlayerNumber);
+    }
+
     // Outputs -1 if input not bound to player number;
     public int GetPlayerNumberFromInput(InputEvent input)
     { 
