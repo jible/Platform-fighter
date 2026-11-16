@@ -32,6 +32,19 @@ public class CharacterFile
     public AirMovementData Air;
     public JumpData Jump;
     public CombatData Combat;
+    // Override how the character is drawn, so a character needs no code of its own. Null keeps the values from code.
+    // Like the movement sections, it replaces all of them at once
+    public VisualFile Visuals;
+}
+
+// The parts of VisualData a character's file can set. The offset isn't here, since VisualOffset already holds it
+[Serializable]
+public class VisualFile
+{
+    public VisualKind Kind = VisualKind.Sprite;
+    public string DefaultAnimation;
+    public int SpriteFrameWidth = 0;
+    public DM64 PixelSize = new DM64(1) / 100;
 }
 
 // A state's sheet is found by its name, see CharacterFiles.AnimationName, so it has no path of its own

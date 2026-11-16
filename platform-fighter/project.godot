@@ -37,7 +37,7 @@ project/assembly_name="platform fighter"
 
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/character_tools/plugin.cfg")
 
 [global_group]
 

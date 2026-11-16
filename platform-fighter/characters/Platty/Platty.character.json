@@ -3611,5 +3611,11 @@
   },
   "Combat": {
     "Weight": 1
+  },
+  "Visuals": {
+    "Kind": "Sprite",
+    "DefaultAnimation": "BallGamePlayerSpriteSheetV1",
+    "SpriteFrameWidth": 0,
+    "PixelSize": 0.0408163257
   }
 }

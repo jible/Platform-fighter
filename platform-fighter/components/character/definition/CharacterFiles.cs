@@ -73,13 +73,65 @@ public static class CharacterFiles
         if (file.Air != null) data.Air = CharacterFileJson.Copy(file.Air);
         if (file.Jump != null) data.Jump = CharacterFileJson.Copy(file.Jump);
         if (file.Combat != null) data.Combat = CharacterFileJson.Copy(file.Combat);
+        if (file.Visuals != null)
+        {
+            data.Visuals.Kind = file.Visuals.Kind;
+            data.Visuals.DefaultAnimation = file.Visuals.DefaultAnimation;
+            data.Visuals.SpriteFrameWidth = file.Visuals.SpriteFrameWidth;
+            data.Visuals.PixelSize = file.Visuals.PixelSize;
+        }
         return data;
     }
 
-    // Read fresh on every call, so edits made in the hitbox editor show up on the next match
+    // Read fresh on every call, so edits made in the hitbox editor show up on the next match.
+    // Boxes are scaled by the loaded data's box unit, since the file can change the pixel size
     public static CharacterDefinition LoadDefinition(CharacterId id)
     {
-        return CharacterDefinitionBuilder.Build(ReadCharacter(id), Roster.Get(id).Visuals.BoxUnit);
+        CharacterFile file = ReadCharacter(id);
+        return CharacterDefinitionBuilder.Build(file, LoadData(id, file).Visuals.BoxUnit);
+    }
+
+    // New characters start as a copy of this one's files, so they play and have placeholder art right away
+    public const CharacterId Template = CharacterId.Platty;
+
+    // Whether the character has a file of its own yet. A character without one still loads, with empty states
+    public static bool Exists(CharacterId id) => FileAccess.FileExists($"{ResourceFolder(id)}/{CharacterName(id)}");
+
+    // Copies the template's folder into a new character's, renaming files named after the template, like
+    // Platty.character.json. Files already in the new folder are kept, so art dropped in first isn't replaced.
+    // Godot's .import and .uid files are left out, since they'd point at the template's own resources, and
+    // Godot makes new ones when it next scans. Editor only, since an exported build's res:// is read only.
+    // Returns why it failed, or null
+    public static string CreateFromTemplate(CharacterId id)
+    {
+        if (!OS.HasFeature("editor")) return "Characters can only be created from the editor";
+        if (id == Template) return $"{id} is the template";
+        if (Exists(id)) return $"{id} already has a character file";
+        if (!DirAccess.DirExistsAbsolute(ResourceFolder(Template))) return $"No template folder at {ResourceFolder(Template)}";
+        return CopyFolder(ResourceFolder(Template), ResourceFolder(id), $"{Template}.", $"{id}.");
+    }
+
+    private static string CopyFolder(string from, string to, string oldPrefix, string newPrefix)
+    {
+        Error made = DirAccess.MakeDirRecursiveAbsolute(to);
+        if (made != Error.Ok) return $"Couldn't make {to}: {made}";
+        using var dir = DirAccess.Open(from);
+        if (dir == null) return $"Couldn't open {from}: {DirAccess.GetOpenError()}";
+
+        foreach (string name in dir.GetFiles())
+        {
+            if (name.EndsWith(".import") || name.EndsWith(".uid")) continue;
+            string target = $"{to}/{(name.StartsWith(oldPrefix) ? newPrefix + name[oldPrefix.Length..] : name)}";
+            if (FileAccess.FileExists(target)) continue;
+            Error copied = DirAccess.CopyAbsolute($"{from}/{name}", target);
+            if (copied != Error.Ok) return $"Couldn't copy {from}/{name}: {copied}";
+        }
+        foreach (string sub in dir.GetDirectories())
+        {
+            string error = CopyFolder($"{from}/{sub}", $"{to}/{sub}", oldPrefix, newPrefix);
+            if (error != null) return error;
+        }
+        return null;
     }
 
     // Null when the file doesn't exist
